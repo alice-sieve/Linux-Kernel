@@ -22,4 +22,4 @@ Write daily log in - https://github.com/tapaswenipathak/Interns-day-log
 
 # Calendar
 
-[@armorer96 Calendar]()
+[@armorer96 Calendar](https://calendly.com/mamtashukla/30min)
