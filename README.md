@@ -23,3 +23,15 @@ Write daily log in - https://github.com/tapaswenipathak/Interns-day-log
 # Calendar
 
 [@armorer96 Calendar](https://calendly.com/mamtashukla/30min)
+
+# Intern's System Info
+
+OS: Ubuntu 18.04.2 LTS x86_64\
+Kernel: 5.1.0-rc2+\
+Shell: bash 4.4.19\
+CPU: Intel i5-5200U (4) @ 2.700GHz\
+Host: 80E5 Lenovo G50-80
+
+
+
+
