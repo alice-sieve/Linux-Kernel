@@ -2,6 +2,16 @@
 
 Interns would be working w/ me on the listed linux kernel areas.
 
+# List of Projects
+
+You can find the work per research project on listed branches
+
+- https://github.com/alice-sieve/Linux-Kernel/issues/1 - branch - FAUmachine
+- https://github.com/alice-sieve/Linux-Kernel/issues/2 - branch - Current-Session-Disk-Writing
+- https://github.com/alice-sieve/Linux-Kernel/issues/3 - branch - Kernel-APIs
+- https://github.com/alice-sieve/Linux-Kernel/issues/5 - branch - uniform-testing-service
+
+
 # MOM
 
 https://paper.dropbox.com/doc/Meeting-notes-Mamta-Shukla-and-Tapasweni-Pathak--Adcg06yt_5a0o2AEyBjgvbkTAQ-k6uoYajab0yRZHWb8THi3
