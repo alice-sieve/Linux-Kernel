@@ -131,6 +131,59 @@
 ||strnstr|grep -R -n  'mstrnstr  kernel/*    --include '*.c'|
 ||memchr,memchr_inv|grep -R -n  -e 'memchr' -e 'memchr_inv'  kernel/*    --include '*.c'|
 ||strreplace|grep -R -n  'strreplace'  kernel/*    --include '*.c'|
+|Relay API|relay_buf_full|grep -R -n  'relay_buf_full'  kernel/*    --include '*.c'|
+||relay_reset|grep -R -n  'relay_reset'  kernel/*    --include '*.c' |
+||relay_open|grep -R -n  'relay_open'  kernel/*    --include '*.c'|
+||relay_late_setup_files|grep -R -n  'relay_late_setup_files'  kernel/*    --include '*.c'|
+||relay_switch_subbuf |grep -R -n  'relay_switch_subbuf'  kernel/*    --include '*.c'|
+|| relay_subbufs_consumed  |grep -R -n  'relay_subbufs_consumed '  kernel/*    --include '*.c'  |
+|| relay_close| grep -R -n  'relay_close'  kernel/*    --include '*.c' |
+||relay_flush |grep -R -n  'relay_flush'  kernel/*    --include '*.c'|
+||relay_mmap_buf|grep -R -n  'relay_mmap_buf'  kernel/*    --include '*.c|
+||relay_alloc_buf |grep -R -n  'relay_alloc_buf '  kernel/*    --include '*.c'|
+||relay_create_buf|grep -R -n  'relay_create_buf '  kernel/*    --include '*.c'|
+||relay_destroy_channel |grep -R -n  'relay_destroy_channel'  kernel/*    --include '*.c'|
+||relay_destroy_buf |grep -R -n  'relay_destroy_buf '  kernel/*    --include '*.c'|
+||relay_remove_buf| grep -R -n  'relay_remove_buf '  kernel/*    --include '*.c'|
+||relay_buf_empty |grep -R -n  'relay_buf_empty '  kernel/*    --include '*.c'|
+||wakeup_readers|grep -R -n  'wakeup_readers '  kernel/*    --include '*.c'|
+||__relay_reset |grep -R -n  '__relay_reset '  kernel/*    --include '*.c'|
+||relay_close_buf|grep -R -n  'relay_close_buf '  kernel/*    --include '*.c'|
+||relay_file_open |grep -R -n  'relay_file_open'  kernel/*    --include '*.c'|
+||relay_file_mmap |grep -R -n  'relay_file_mmap '  kernel/*    --include '*.c'|
+||relay_file_poll|grep -R -n  'relay_file_poll '  kernel/*    --include '*.c'|
+||relay_file_release |grep -R -n  'relay_file_release'  kernel/*    --include '*.c'|
+||relay_file_read_subbuf_avail|grep -R -n  'relay_file_read_subbuf_avail '  kernel/*    --include '*.c'|
+||relay_file_read_start_pos|grep -R -n  'relay_file_read_start_pos '  kernel/*    --include '*.c'|
+||relay_file_read_end_pos|grep -R -n  'relay_file_read_end_pos'  kernel/*    --include '*.c'| 
+|Accounting API|sys_acct | grep -R -n  'sys_acct'  kernel/*    --include '*.c'|
+||acct_collect| grep -R -n  'acct_collect '  kernel/*    --include '*.c'|
+||acct_process |grep -R -n  'acct_process'  kernel/*    --include '*.c'|
+|Security API|security_init| grep -R -n  'security_init'  kernel/*    --include '*.c'|
+||security_module_enable |grep -R -n  'security_module_enable'  kernel/*    --include '*.c'|
+||security_add_hooks|grep -R -n  'security_add_hooks'  kernel/*    --include '*.c'|
+||securityfs_create_file|grep -R -n  'securityfs_create_file'  kernel/*    --include '*.c'|
+||securityfs_create_dir|grep -R -n  'securityfs_create_dir'  kernel/*    --include '*.c'|
+||securityfs_remove |grep -R -n  'securityfs_remove'  kernel/*    --include '*.c'|
+|Firmware API| DMA Interface||
+||dmi_check_system| grep -R -n  'dmi_check_system'  kernel/*    --include '*.c'|
+||dmi_first_match | grep -R -n  'dmi_first_match'  kernel/*    --include '*.c'|
+||dmi_get_system_info | grep -R -n  'dmi_get_system_info'  kernel/*    --include '*.c'|
+||dmi_name_in_vendors | grep -R -n  'dmi_name_in_vendors'  kernel/*    --include '*.c'|
+|dim_find_device | grep -R -n  'dmi_find_device'  kernel/*    --include '*.c'|
+||dmi_get_date |grep -R -n  'dmi_get_date'  kernel/*    --include '*.c'|
+||dmi_walk|grep -R -n  'dmi_walk'  kernel/*    --include '*.c'|
+||dmi_match|grep -R -n  'dmi_match'  kernel/*    --include '*.c'| 
+||EDD Interface||
+||edd_show_raw_data|grep -R -n  'edd_show_raw_data'  kernel/*    --include '*.c'|
+||edd_release |grep -R -n  'edd_release'  kernel/*    --include '*.c'|
+||edd_dev_is_type |grep -R -n  'edd_dev_is_type'  kernel/*    --include '*.c'|
+||edd_get_pci_dev |grep -R -n  'edd_get_pci_dev'  kernel/*    --include '*.c'|
+||edd_init|grep -R -n  'edd_init'  kernel/*    --include '*.c'|
+
+
+
+
 
 
 
