@@ -1,12 +1,47 @@
 # Linux-Kernel
 
-The calls per Kernel API present in mainline kernel is present as .html file. If you know kernel APIs you would find kernel-api_kernel.html.
+# List of Projects
 
-Kernel API occurrences is present in file [kernel-api-occurrences.md](https://github.com/alice-sieve/Linux-Kernel/blob/Kernel-APIs/kernel-api-occurrences.md).
+You can find the work per research project on listed branches
 
-Kernel API list is present in [kernel-api-list.md](https://github.com/alice-sieve/Linux-Kernel/blob/Kernel-APIs/kernel-api-list.md) file.
+- [FAUmachine](https://github.com/alice-sieve/Linux-Kernel/issues/1)
+- [Current-Session-Disk-Writing](https://github.com/alice-sieve/Linux-Kernel/issues/2)
+- [Kernel-APIs](https://github.com/alice-sieve/Linux-Kernel/issues/3)
+- [Deadlocks-Kernel](https://github.com/alice-sieve/Linux-Kernel/issues/4)
+- [uniform-testing-service](https://github.com/alice-sieve/Linux-Kernel/issues/5)
 
-Few Kernel APIs occurrences parsed are present as kernel-api-name-occurrences.txt.
+
+# MOM
+
+[@mamtashukla Timeline]()
 
 
+# Daily Logs
 
+Write daily log in - https://github.com/tapaswenipathak/Interns-day-log
+
+
+# Calendar
+
+[@mamtashukla Calendar](https://calendly.com/mamtashukla/15min)
+
+# Intern's System Info
+
+OS: Ubuntu 18.04.2 LTS x86_64\
+Kernel: 5.1.0-rc2+\
+Shell: bash 4.4.19\
+Architecture: amd64\
+Vendor_id	: GenuineIntel\
+Cpu family	: 6\
+Model		: 61\
+CPU: Intel i5-5200U (4) @ 2.700GHz\
+CPU cores: 2\
+Host: 80E5 Lenovo G50-80\
+Stepping	: 4\
+CPU MHz:   1744.546\
+Cache size	: 3072 KB\
+Cache_alignment	: 64\
+CPU op-mode(s): 32-bit, 64-bit\
+Byte Order:     Little Endian\
+CPU(s):              4\
+Virtualization:      VT-x
