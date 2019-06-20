@@ -60,3 +60,22 @@ CPU(s):              4\
 Virtualization:      VT-x
 
 @code-monk08
+| OS              | Ubuntu 16.04.3 LTS                        |
+|-----------------|-------------------------------------------|
+| Kernel          | Linux 4.10.0-28-generic (x86_64)          |
+| Shell           | /usr/bin/zsh                              |
+| Architecture    | x86_64                                    |
+| Vendor ID       | GenuineIntel                              |
+| CPU family      | 6                                         |
+| Model           | 158                                       |
+| CPU             | Intel(R) Core(TM) i5-7300HQ CPU @ 2.50GHz |
+| CPU Cores       | 4                                         |
+| Host            | OMEN-by-HP-Laptop                         |
+| Stepping        | 9                                         |
+| CPU MHz         | 799.865                                   |
+| Cache Size      | 3072 KB                                   |
+| Cache Alignment | 64                                        |
+| CPU op-mode(s)  | 32-bit, 64-bit                            |
+| Byte Order      | Little Endian                             |
+| CPU(s)          | 4                                         |
+| Virtualization  | VT-x                                      |
