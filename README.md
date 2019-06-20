@@ -13,7 +13,13 @@ You can find the work per research project on listed branches
 
 # MOM
 
-[@mamtashukla Timeline]()
+https://paper.dropbox.com/doc/Meeting-notes-Mamta-Shukla-and-Tapasweni-Pathak-k6uoYajab0yRZHWb8THi3
+
+https://paper.dropbox.com/doc/Meeting-notes-Mayank-Singh-and-Tapasweni-Pathak--AfZsTtgjGcEXgylmiiV~w3jMAQ-xg5YX79d8W9bWF3b7lXMH
+
+# Timelines
+
+[@mamtashukla Timeline]() [@code-monk08 Timeline]()
 
 
 # Daily Logs
@@ -23,9 +29,12 @@ Write daily log in - https://github.com/tapaswenipathak/Interns-day-log
 
 # Calendar
 
-[@mamtashukla Calendar](https://calendly.com/mamtashukla/15min)
+[@mamtashukla Calendar](https://calendly.com/mamtashukla/15min) [@code-monk08 Calendar]()
+
 
 # Intern's System Info
+
+@mamtashukla
 
 OS: Ubuntu 18.04.2 LTS x86_64\
 Kernel: 5.1.0-rc2+\
@@ -45,3 +54,5 @@ CPU op-mode(s): 32-bit, 64-bit\
 Byte Order:     Little Endian\
 CPU(s):              4\
 Virtualization:      VT-x
+
+@code-monk08
