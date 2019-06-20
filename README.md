@@ -60,8 +60,10 @@ CPU(s):              4\
 Virtualization:      VT-x
 
 @code-monk08
-| OS              | Ubuntu 16.04.3 LTS                        |
+
+| Key             | Spec                                      |
 |-----------------|-------------------------------------------|
+| OS              | Ubuntu 16.04.3 LTS                        |
 | Kernel          | Linux 4.10.0-28-generic (x86_64)          |
 | Shell           | /usr/bin/zsh                              |
 | Architecture    | x86_64                                    |
