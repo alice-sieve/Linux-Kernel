@@ -19,7 +19,9 @@ https://paper.dropbox.com/doc/Meeting-notes-Mayank-Singh-and-Tapasweni-Pathak--A
 
 # Timelines
 
-[@mamtashukla Timeline]() [@code-monk08 Timeline]()
+[@mamtashukla Timeline]() 
+
+[@code-monk08 Timeline](https://paper.dropbox.com/doc/Meeting-notes-Mayank-Singh-and-Tapasweni-Pathak--AfbuKOCVgn425DAn_~Unb6ZDAQ-xg5YX79d8W9bWF3b7lXMH)
 
 
 # Daily Logs
@@ -29,7 +31,9 @@ Write daily log in - https://github.com/tapaswenipathak/Interns-day-log
 
 # Calendar
 
-[@mamtashukla Calendar](https://calendly.com/mamtashukla/15min) [@code-monk08 Calendar]()
+[@mamtashukla Calendar](https://calendly.com/mamtashukla/15min) 
+
+[@code-monk08 Calendar](https://calendly.com/code-monk08)
 
 
 # Intern's System Info
