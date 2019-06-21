@@ -17,12 +17,15 @@ https://paper.dropbox.com/doc/Meeting-notes-Mamta-Shukla-and-Tapasweni-Pathak-k6
 
 https://paper.dropbox.com/doc/Meeting-notes-Mayank-Singh-and-Tapasweni-Pathak--AfZsTtgjGcEXgylmiiV~w3jMAQ-xg5YX79d8W9bWF3b7lXMH
 
+https://paper.dropbox.com/doc/Meeting-notes-Bhaskar-Talla-Balakisan-and-Tapasweni-Pathak--Afd6GVYxctJbT2vscH0TVXIfAQ-sPNMJhy9tPAZ6Svy1DYPw
+
 # Timelines
 
 [@mamtashukla Timeline]() 
 
 [@code-monk08 Timeline](https://paper.dropbox.com/doc/Meeting-notes-Mayank-Singh-and-Tapasweni-Pathak--AfbuKOCVgn425DAn_~Unb6ZDAQ-xg5YX79d8W9bWF3b7lXMH)
 
+[@bhaskartalla Timeline]()
 
 # Daily Logs
 
@@ -35,6 +38,7 @@ Write daily log in - https://github.com/tapaswenipathak/Interns-day-log
 
 [@code-monk08 Calendar](https://calendly.com/code-monk08)
 
+[@bhaskartalla Calendar]()
 
 # Intern's System Info
 
