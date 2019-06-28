@@ -21,6 +21,9 @@ https://paper.dropbox.com/doc/Meeting-notes-Bhaskar-Talla-Balakisan-and-Tapaswen
 
 https://paper.dropbox.com/doc/Meeting-notes-Abhishek-Guragol-and-Tapasweni-Pathak--AfsILNOhPRFBCL1ZhhLiOo6RAQ-QktKzqaOUIDzGmw052e5x
 
+https://paper.dropbox.com/doc/Meeting-notes-Deya-Chatterjee-and-Tapasweni-Pathak--Af7hZ8QxAcfd4uBwRe5y11~pAQ-Ceu94x0sttjhFT7NmVFKs
+
+
 # Timelines
 
 [@mamtashukla Timeline]() 
@@ -30,6 +33,8 @@ https://paper.dropbox.com/doc/Meeting-notes-Abhishek-Guragol-and-Tapasweni-Patha
 [@bhaskartalla Timeline]()
 
 [@Abhishekguragol Timeline]()
+
+[@deyachatterjee Timeline]()
 
 # Daily Logs
 
@@ -45,6 +50,8 @@ Write daily log in - https://github.com/tapaswenipathak/Interns-day-log
 [@bhaskartalla Calendar]()
 
 [@Abhishekguragol Calendar]()
+
+[@deyachatterjee Calendar]()
 
 # Intern's System Info
 
