@@ -25,6 +25,8 @@ https://paper.dropbox.com/doc/Meeting-notes-Deya-Chatterjee-and-Tapasweni-Pathak
 
 https://paper.dropbox.com/doc/Meeting-notes-Mayank-Chauhan-and-Tapasweni-Pathak--Ag191XxDEOttttYitxYWbyGGAg-XuUIaMfM4Y0J762BolNSL
 
+https://paper.dropbox.com/doc/Meeting-notes-Prabal-goel-and-Tapasweni-Pathak--Ag95aPvefqPEcDDEEBMNXBQ~AQ-Wfztl7Enqbv26IX3sf2gt
+
 # Timelines
 
 [@mamtashukla Timeline]() 
@@ -55,6 +57,8 @@ Write daily log in - https://github.com/tapaswenipathak/Interns-day-log
 [@deyachatterjee Calendar]()
 
 [@mayankchauhan971 Calendar]()
+
+[@prabalgoel Calendar]()
 
 # Intern's System Info
 
