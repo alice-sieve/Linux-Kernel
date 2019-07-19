@@ -11,9 +11,6 @@ import subprocess
 #patch_path = "filename.patch"
 #cmd = "patch< filename.patch"
 
-patch_path = "~/kernel/drivers/gpu/drm/vkms/v2-drm-vkms-Add-overlay-plane-support.patch"
-cmd = "patch <kernel/drivers/gpu/drm/vkms/v2-drm-vkms-Add-overlay-plane-support.patch"
-
 #perl   <path to checkpatch.pl>  -f  <path to folder/filename>
 cmd = "perl kernel/scripts/checkpatch.pl -f kernel/drivers/gpu/drm/vkms/*"
 returned_value = subprocess.call(cmd, shell=True)  # returns the exit code in unix
