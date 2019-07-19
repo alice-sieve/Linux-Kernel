@@ -1,680 +1,425 @@
-
-References
-
-   1. https://feedproxy.google.com/LinuxScsiTargetInfrastructure
-   2. https://www.spinics.net/lists/linux-stgt/maillist.html
-   3. https://www.spinics.net/lists/linux-stgt/thrd2.html
-   4. https://www.spinics.net/lists/linux-stgt/msg04754.html
-   5. https://www.spinics.net/lists/linux-stgt/msg04753.html
-   6. https://www.spinics.net/lists/linux-stgt/msg04751.html
-   7. https://www.spinics.net/lists/linux-stgt/msg04752.html
-   8. https://www.spinics.net/lists/linux-stgt/msg04749.html
-   9. https://www.spinics.net/lists/linux-stgt/msg04750.html
-  10. https://www.spinics.net/lists/linux-stgt/msg04747.html
-  11. https://www.spinics.net/lists/linux-stgt/msg04748.html
-  12. https://www.spinics.net/lists/linux-stgt/msg04745.html
-  13. https://www.spinics.net/lists/linux-stgt/msg04746.html
-  14. https://www.spinics.net/lists/linux-stgt/msg04744.html
-  15. https://www.spinics.net/lists/linux-stgt/msg04742.html
-  16. https://www.spinics.net/lists/linux-stgt/msg04743.html
-  17. https://www.spinics.net/lists/linux-stgt/msg04740.html
-  18. https://www.spinics.net/lists/linux-stgt/msg04741.html
-  19. https://www.spinics.net/lists/linux-stgt/msg04739.html
-  20. https://www.spinics.net/lists/linux-stgt/msg04737.html
-  21. https://www.spinics.net/lists/linux-stgt/msg04738.html
-  22. https://www.spinics.net/lists/linux-stgt/msg04736.html
-  23. https://www.spinics.net/lists/linux-stgt/msg04734.html
-  24. https://www.spinics.net/lists/linux-stgt/msg04735.html
-  25. https://www.spinics.net/lists/linux-stgt/msg04732.html
-  26. https://www.spinics.net/lists/linux-stgt/msg04733.html
-  27. https://www.spinics.net/lists/linux-stgt/msg04730.html
-  28. https://www.spinics.net/lists/linux-stgt/msg04731.html
-  29. https://www.spinics.net/lists/linux-stgt/msg04729.html
-  30. https://www.spinics.net/lists/linux-stgt/msg04727.html
-  31. https://www.spinics.net/lists/linux-stgt/msg04728.html
-  32. https://www.spinics.net/lists/linux-stgt/msg04726.html
-  33. https://www.spinics.net/lists/linux-stgt/msg04725.html
-  34. https://www.spinics.net/lists/linux-stgt/msg04724.html
-  35. https://www.spinics.net/lists/linux-stgt/msg04718.html
-  36. https://www.spinics.net/lists/linux-stgt/msg04719.html
-  37. https://www.spinics.net/lists/linux-stgt/msg04721.html
-  38. https://www.spinics.net/lists/linux-stgt/msg04722.html
-  39. https://www.spinics.net/lists/linux-stgt/msg04723.html
-  40. https://www.spinics.net/lists/linux-stgt/msg04720.html
-  41. https://www.spinics.net/lists/linux-stgt/msg04716.html
-  42. https://www.spinics.net/lists/linux-stgt/msg04717.html
-  43. https://www.spinics.net/lists/linux-stgt/msg04714.html
-  44. https://www.spinics.net/lists/linux-stgt/msg04715.html
-  45. https://www.spinics.net/lists/linux-stgt/msg04712.html
-  46. https://www.spinics.net/lists/linux-stgt/msg04713.html
-  47. https://www.spinics.net/lists/linux-stgt/msg04711.html
-  48. https://www.spinics.net/lists/linux-stgt/msg04709.html
-  49. https://www.spinics.net/lists/linux-stgt/msg04710.html
-  50. https://www.spinics.net/lists/linux-stgt/msg04707.html
-  51. https://www.spinics.net/lists/linux-stgt/msg04708.html
-  52. https://www.spinics.net/lists/linux-stgt/msg04705.html
-  53. https://www.spinics.net/lists/linux-stgt/msg04704.html
-  54. https://www.spinics.net/lists/linux-stgt/msg04702.html
-  55. https://www.spinics.net/lists/linux-stgt/msg04703.html
-  56. https://www.spinics.net/lists/linux-stgt/msg04706.html
-  57. https://www.spinics.net/lists/linux-stgt/msg04701.html
-  58. https://www.spinics.net/lists/linux-stgt/msg04698.html
-  59. https://www.spinics.net/lists/linux-stgt/msg04699.html
-  60. https://www.spinics.net/lists/linux-stgt/msg04700.html
-  61. https://www.spinics.net/lists/linux-stgt/msg04695.html
-  62. https://www.spinics.net/lists/linux-stgt/msg04696.html
-  63. https://www.spinics.net/lists/linux-stgt/msg04697.html
-  64. https://www.spinics.net/lists/linux-stgt/msg04691.html
-  65. https://www.spinics.net/lists/linux-stgt/msg04692.html
-  66. https://www.spinics.net/lists/linux-stgt/msg04694.html
-  67. https://www.spinics.net/lists/linux-stgt/msg04693.html
-  68. https://www.spinics.net/lists/linux-stgt/msg04690.html
-  69. https://www.spinics.net/lists/linux-stgt/msg04682.html
-  70. https://www.spinics.net/lists/linux-stgt/msg04683.html
-  71. https://www.spinics.net/lists/linux-stgt/msg04684.html
-  72. https://www.spinics.net/lists/linux-stgt/msg04685.html
-  73. https://www.spinics.net/lists/linux-stgt/msg04686.html
-  74. https://www.spinics.net/lists/linux-stgt/msg04687.html
-  75. https://www.spinics.net/lists/linux-stgt/msg04688.html
-  76. https://www.spinics.net/lists/linux-stgt/msg04689.html
-  77. https://www.spinics.net/lists/linux-stgt/msg04681.html
-  78. https://www.spinics.net/lists/linux-stgt/msg04679.html
-  79. https://www.spinics.net/lists/linux-stgt/msg04680.html
-  80. https://www.spinics.net/lists/linux-stgt/msg04676.html
-  81. https://www.spinics.net/lists/linux-stgt/msg04678.html
-  82. https://www.spinics.net/lists/linux-stgt/msg04675.html
-  83. https://www.spinics.net/lists/linux-stgt/msg04677.html
-  84. https://www.spinics.net/lists/linux-stgt/msg04673.html
-  85. https://www.spinics.net/lists/linux-stgt/msg04670.html
-  86. https://www.spinics.net/lists/linux-stgt/msg04668.html
-  87. https://www.spinics.net/lists/linux-stgt/msg04674.html
-  88. https://www.spinics.net/lists/linux-stgt/msg04667.html
-  89. https://www.spinics.net/lists/linux-stgt/msg04672.html
-  90. https://www.spinics.net/lists/linux-stgt/msg04663.html
-  91. https://www.spinics.net/lists/linux-stgt/msg04659.html
-  92. https://www.spinics.net/lists/linux-stgt/msg04661.html
-  93. https://www.spinics.net/lists/linux-stgt/msg04662.html
-  94. https://www.spinics.net/lists/linux-stgt/msg04664.html
-  95. https://www.spinics.net/lists/linux-stgt/msg04665.html
-  96. https://www.spinics.net/lists/linux-stgt/msg04666.html
-  97. https://www.spinics.net/lists/linux-stgt/msg04669.html
-  98. https://www.spinics.net/lists/linux-stgt/msg04671.html
-  99. https://www.spinics.net/lists/linux-stgt/msg04660.html
- 100. https://www.spinics.net/lists/linux-stgt/msg04657.html
- 101. https://www.spinics.net/lists/linux-stgt/msg04658.html
- 102. https://www.spinics.net/lists/linux-stgt/msg04656.html
- 103. https://www.spinics.net/lists/linux-stgt/msg04654.html
- 104. https://www.spinics.net/lists/linux-stgt/msg04655.html
- 105. https://www.spinics.net/lists/linux-stgt/msg04652.html
- 106. https://www.spinics.net/lists/linux-stgt/msg04648.html
- 107. https://www.spinics.net/lists/linux-stgt/msg04649.html
- 108. https://www.spinics.net/lists/linux-stgt/msg04651.html
- 109. https://www.spinics.net/lists/linux-stgt/msg04653.html
- 110. https://www.spinics.net/lists/linux-stgt/msg04650.html
- 111. https://www.spinics.net/lists/linux-stgt/msg04646.html
- 112. https://www.spinics.net/lists/linux-stgt/msg04647.html
- 113. https://www.spinics.net/lists/linux-stgt/msg04645.html
- 114. https://www.spinics.net/lists/linux-stgt/msg04642.html
- 115. https://www.spinics.net/lists/linux-stgt/msg04641.html
- 116. https://www.spinics.net/lists/linux-stgt/msg04643.html
- 117. https://www.spinics.net/lists/linux-stgt/msg04644.html
- 118. https://www.spinics.net/lists/linux-stgt/msg04639.html
- 119. https://www.spinics.net/lists/linux-stgt/msg04638.html
- 120. https://www.spinics.net/lists/linux-stgt/msg04640.html
- 121. https://www.spinics.net/lists/linux-stgt/msg04636.html
- 122. https://www.spinics.net/lists/linux-stgt/msg04637.html
- 123. https://www.spinics.net/lists/linux-stgt/msg04635.html
- 124. https://www.spinics.net/lists/linux-stgt/msg04633.html
- 125. https://www.spinics.net/lists/linux-stgt/msg04631.html
- 126. https://www.spinics.net/lists/linux-stgt/msg04632.html
- 127. https://www.spinics.net/lists/linux-stgt/msg04630.html
- 128. https://www.spinics.net/lists/linux-stgt/msg04627.html
- 129. https://www.spinics.net/lists/linux-stgt/msg04626.html
- 130. https://www.spinics.net/lists/linux-stgt/msg04624.html
- 131. https://www.spinics.net/lists/linux-stgt/msg04625.html
- 132. https://www.spinics.net/lists/linux-stgt/msg04628.html
- 133. https://www.spinics.net/lists/linux-stgt/msg04629.html
- 134. https://www.spinics.net/lists/linux-stgt/msg04623.html
- 135. https://www.spinics.net/lists/linux-stgt/msg04617.html
- 136. https://www.spinics.net/lists/linux-stgt/msg04618.html
- 137. https://www.spinics.net/lists/linux-stgt/msg04619.html
- 138. https://www.spinics.net/lists/linux-stgt/msg04620.html
- 139. https://www.spinics.net/lists/linux-stgt/msg04615.html
- 140. https://www.spinics.net/lists/linux-stgt/msg04613.html
- 141. https://www.spinics.net/lists/linux-stgt/msg04609.html
- 142. https://www.spinics.net/lists/linux-stgt/msg04610.html
- 143. https://www.spinics.net/lists/linux-stgt/msg04608.html
- 144. https://www.spinics.net/lists/linux-stgt/msg04611.html
- 145. https://www.spinics.net/lists/linux-stgt/msg04612.html
- 146. https://www.spinics.net/lists/linux-stgt/msg04614.html
- 147. https://www.spinics.net/lists/linux-stgt/msg04616.html
- 148. https://www.spinics.net/lists/linux-stgt/msg04621.html
- 149. https://www.spinics.net/lists/linux-stgt/msg04622.html
- 150. https://www.spinics.net/lists/linux-stgt/msg04603.html
- 151. https://www.spinics.net/lists/linux-stgt/msg04604.html
- 152. https://www.spinics.net/lists/linux-stgt/msg04605.html
- 153. https://www.spinics.net/lists/linux-stgt/msg04602.html
- 154. https://www.spinics.net/lists/linux-stgt/msg04606.html
- 155. https://www.spinics.net/lists/linux-stgt/msg04607.html
- 156. https://www.spinics.net/lists/linux-stgt/msg04599.html
- 157. https://www.spinics.net/lists/linux-stgt/msg04600.html
- 158. https://www.spinics.net/lists/linux-stgt/msg04601.html
- 159. https://www.spinics.net/lists/linux-stgt/msg04594.html
- 160. https://www.spinics.net/lists/linux-stgt/msg04595.html
- 161. https://www.spinics.net/lists/linux-stgt/msg04596.html
- 162. https://www.spinics.net/lists/linux-stgt/msg04597.html
- 163. https://www.spinics.net/lists/linux-stgt/msg04585.html
- 164. https://www.spinics.net/lists/linux-stgt/msg04586.html
- 165. https://www.spinics.net/lists/linux-stgt/msg04587.html
- 166. https://www.spinics.net/lists/linux-stgt/msg04592.html
- 167. https://www.spinics.net/lists/linux-stgt/msg04593.html
- 168. https://www.spinics.net/lists/linux-stgt/msg04598.html
- 169. https://www.spinics.net/lists/linux-stgt/msg04588.html
- 170. https://www.spinics.net/lists/linux-stgt/msg04589.html
- 171. https://www.spinics.net/lists/linux-stgt/msg04590.html
- 172. https://www.spinics.net/lists/linux-stgt/msg04591.html
- 173. https://www.spinics.net/lists/linux-stgt/msg04581.html
- 174. https://www.spinics.net/lists/linux-stgt/msg04584.html
- 175. https://www.spinics.net/lists/linux-stgt/msg04582.html
- 176. https://www.spinics.net/lists/linux-stgt/msg04583.html
- 177. https://www.spinics.net/lists/linux-stgt/msg04580.html
- 178. https://www.spinics.net/lists/linux-stgt/msg04579.html
- 179. https://www.spinics.net/lists/linux-stgt/msg04578.html
- 180. https://www.spinics.net/lists/linux-stgt/msg04577.html
- 181. https://www.spinics.net/lists/linux-stgt/msg04575.html
- 182. https://www.spinics.net/lists/linux-stgt/msg04576.html
- 183. https://www.spinics.net/lists/linux-stgt/msg04574.html
- 184. https://www.spinics.net/lists/linux-stgt/msg04571.html
- 185. https://www.spinics.net/lists/linux-stgt/msg04572.html
- 186. https://www.spinics.net/lists/linux-stgt/msg04573.html
- 187. https://www.spinics.net/lists/linux-stgt/msg04570.html
- 188. https://www.spinics.net/lists/linux-stgt/msg04569.html
- 189. https://www.spinics.net/lists/linux-stgt/msg04566.html
- 190. https://www.spinics.net/lists/linux-stgt/msg04565.html
- 191. https://www.spinics.net/lists/linux-stgt/msg04567.html
- 192. https://www.spinics.net/lists/linux-stgt/msg04568.html
- 193. https://www.spinics.net/lists/linux-stgt/msg04563.html
- 194. https://www.spinics.net/lists/linux-stgt/msg04564.html
- 195. https://www.spinics.net/lists/linux-stgt/msg04562.html
- 196. https://www.spinics.net/lists/linux-stgt/msg04560.html
- 197. https://www.spinics.net/lists/linux-stgt/msg04561.html
- 198. https://www.spinics.net/lists/linux-stgt/msg04558.html
- 199. https://www.spinics.net/lists/linux-stgt/msg04559.html
- 200. https://www.spinics.net/lists/linux-stgt/msg04554.html
- 201. https://www.spinics.net/lists/linux-stgt/msg04555.html
- 202. https://www.spinics.net/lists/linux-stgt/msg04556.html
- 203. https://www.spinics.net/lists/linux-stgt/msg04557.html
- 204. https://www.spinics.net/lists/linux-stgt/msg04552.html
- 205. https://www.spinics.net/lists/linux-stgt/msg04553.html
- 206. https://www.spinics.net/lists/linux-stgt/msg04550.html
- 207. https://www.spinics.net/lists/linux-stgt/msg04551.html
- 208. https://www.spinics.net/lists/linux-stgt/msg04541.html
- 209. https://www.spinics.net/lists/linux-stgt/msg04543.html
- 210. https://www.spinics.net/lists/linux-stgt/msg04544.html
- 211. https://www.spinics.net/lists/linux-stgt/msg04542.html
- 212. https://www.spinics.net/lists/linux-stgt/msg04545.html
- 213. https://www.spinics.net/lists/linux-stgt/msg04546.html
- 214. https://www.spinics.net/lists/linux-stgt/msg04549.html
- 215. https://www.spinics.net/lists/linux-stgt/msg04547.html
- 216. https://www.spinics.net/lists/linux-stgt/msg04548.html
- 217. https://www.spinics.net/lists/linux-stgt/msg04540.html
- 218. https://www.spinics.net/lists/linux-stgt/msg04538.html
- 219. https://www.spinics.net/lists/linux-stgt/msg04539.html
- 220. https://www.spinics.net/lists/linux-stgt/msg04537.html
- 221. https://www.spinics.net/lists/linux-stgt/msg04536.html
- 222. https://www.spinics.net/lists/linux-stgt/msg04535.html
- 223. https://www.spinics.net/lists/linux-stgt/msg04531.html
- 224. https://www.spinics.net/lists/linux-stgt/msg04533.html
- 225. https://www.spinics.net/lists/linux-stgt/msg04530.html
- 226. https://www.spinics.net/lists/linux-stgt/msg04532.html
- 227. https://www.spinics.net/lists/linux-stgt/msg04529.html
- 228. https://www.spinics.net/lists/linux-stgt/msg04528.html
- 229. https://www.spinics.net/lists/linux-stgt/msg04527.html
- 230. https://www.spinics.net/lists/linux-stgt/msg04534.html
- 231. https://www.spinics.net/lists/linux-stgt/msg04522.html
- 232. https://www.spinics.net/lists/linux-stgt/msg04523.html
- 233. https://www.spinics.net/lists/linux-stgt/msg04524.html
- 234. https://www.spinics.net/lists/linux-stgt/msg04526.html
- 235. https://www.spinics.net/lists/linux-stgt/msg04521.html
- 236. https://www.spinics.net/lists/linux-stgt/msg04525.html
- 237. https://www.spinics.net/lists/linux-stgt/msg04520.html
- 238. https://www.spinics.net/lists/linux-stgt/msg04517.html
- 239. https://www.spinics.net/lists/linux-stgt/msg04518.html
- 240. https://www.spinics.net/lists/linux-stgt/msg04519.html
- 241. https://www.spinics.net/lists/linux-stgt/msg04514.html
- 242. https://www.spinics.net/lists/linux-stgt/msg04515.html
- 243. https://www.spinics.net/lists/linux-stgt/msg04516.html
- 244. https://www.spinics.net/lists/linux-stgt/msg04510.html
- 245. https://www.spinics.net/lists/linux-stgt/msg04508.html
- 246. https://www.spinics.net/lists/linux-stgt/msg04509.html
- 247. https://www.spinics.net/lists/linux-stgt/msg04511.html
- 248. https://www.spinics.net/lists/linux-stgt/msg04507.html
- 249. https://www.spinics.net/lists/linux-stgt/msg04512.html
- 250. https://www.spinics.net/lists/linux-stgt/msg04513.html
- 251. https://www.spinics.net/lists/linux-stgt/msg04506.html
- 252. https://www.spinics.net/lists/linux-stgt/msg04505.html
- 253. https://www.spinics.net/lists/linux-stgt/msg04503.html
- 254. https://www.spinics.net/lists/linux-stgt/msg04504.html
- 255. https://www.spinics.net/lists/linux-stgt/msg04500.html
- 256. https://www.spinics.net/lists/linux-stgt/msg04501.html
- 257. https://www.spinics.net/lists/linux-stgt/msg04502.html
- 258. https://www.spinics.net/lists/linux-stgt/msg04499.html
- 259. https://www.spinics.net/lists/linux-stgt/msg04498.html
- 260. https://www.spinics.net/lists/linux-stgt/msg04493.html
- 261. https://www.spinics.net/lists/linux-stgt/msg04494.html
- 262. https://www.spinics.net/lists/linux-stgt/msg04495.html
- 263. https://www.spinics.net/lists/linux-stgt/msg04496.html
- 264. https://www.spinics.net/lists/linux-stgt/msg04497.html
- 265. https://www.spinics.net/lists/linux-stgt/msg04492.html
- 266. https://www.spinics.net/lists/linux-stgt/msg04489.html
- 267. https://www.spinics.net/lists/linux-stgt/msg04490.html
- 268. https://www.spinics.net/lists/linux-stgt/msg04491.html
- 269. https://www.spinics.net/lists/linux-stgt/msg04487.html
- 270. https://www.spinics.net/lists/linux-stgt/msg04488.html
- 271. https://www.spinics.net/lists/linux-stgt/msg04486.html
- 272. https://www.spinics.net/lists/linux-stgt/msg04484.html
- 273. https://www.spinics.net/lists/linux-stgt/msg04485.html
- 274. https://www.spinics.net/lists/linux-stgt/msg04479.html
- 275. https://www.spinics.net/lists/linux-stgt/msg04480.html
- 276. https://www.spinics.net/lists/linux-stgt/msg04481.html
- 277. https://www.spinics.net/lists/linux-stgt/msg04482.html
- 278. https://www.spinics.net/lists/linux-stgt/msg04483.html
- 279. https://www.spinics.net/lists/linux-stgt/msg04476.html
- 280. https://www.spinics.net/lists/linux-stgt/msg04477.html
- 281. https://www.spinics.net/lists/linux-stgt/msg04478.html
- 282. https://www.spinics.net/lists/linux-stgt/msg04467.html
- 283. https://www.spinics.net/lists/linux-stgt/msg04468.html
- 284. https://www.spinics.net/lists/linux-stgt/msg04474.html
- 285. https://www.spinics.net/lists/linux-stgt/msg04465.html
- 286. https://www.spinics.net/lists/linux-stgt/msg04466.html
- 287. https://www.spinics.net/lists/linux-stgt/msg04473.html
- 288. https://www.spinics.net/lists/linux-stgt/msg04471.html
- 289. https://www.spinics.net/lists/linux-stgt/msg04464.html
- 290. https://www.spinics.net/lists/linux-stgt/msg04469.html
- 291. https://www.spinics.net/lists/linux-stgt/msg04470.html
- 292. https://www.spinics.net/lists/linux-stgt/msg04472.html
- 293. https://www.spinics.net/lists/linux-stgt/msg04475.html
- 294. https://www.spinics.net/lists/linux-stgt/msg04463.html
- 295. https://www.spinics.net/lists/linux-stgt/msg04461.html
- 296. https://www.spinics.net/lists/linux-stgt/msg04462.html
- 297. https://www.spinics.net/lists/linux-stgt/msg04460.html
- 298. https://www.spinics.net/lists/linux-stgt/msg04454.html
- 299. https://www.spinics.net/lists/linux-stgt/msg04455.html
- 300. https://www.spinics.net/lists/linux-stgt/msg04456.html
- 301. https://www.spinics.net/lists/linux-stgt/msg04457.html
- 302. https://www.spinics.net/lists/linux-stgt/msg04458.html
- 303. https://www.spinics.net/lists/linux-stgt/msg04459.html
- 304. https://www.spinics.net/lists/linux-stgt/msg04448.html
- 305. https://www.spinics.net/lists/linux-stgt/msg04449.html
- 306. https://www.spinics.net/lists/linux-stgt/msg04451.html
- 307. https://www.spinics.net/lists/linux-stgt/msg04446.html
- 308. https://www.spinics.net/lists/linux-stgt/msg04447.html
- 309. https://www.spinics.net/lists/linux-stgt/msg04450.html
- 310. https://www.spinics.net/lists/linux-stgt/msg04444.html
- 311. https://www.spinics.net/lists/linux-stgt/msg04445.html
- 312. https://www.spinics.net/lists/linux-stgt/msg04443.html
- 313. https://www.spinics.net/lists/linux-stgt/msg04452.html
- 314. https://www.spinics.net/lists/linux-stgt/msg04453.html
- 315. https://www.spinics.net/lists/linux-stgt/msg04441.html
- 316. https://www.spinics.net/lists/linux-stgt/msg04442.html
- 317. https://www.spinics.net/lists/linux-stgt/msg04439.html
- 318. https://www.spinics.net/lists/linux-stgt/msg04440.html
- 319. https://www.spinics.net/lists/linux-stgt/msg04437.html
- 320. https://www.spinics.net/lists/linux-stgt/msg04438.html
- 321. https://www.spinics.net/lists/linux-stgt/msg04436.html
- 322. https://www.spinics.net/lists/linux-stgt/msg04424.html
- 323. https://www.spinics.net/lists/linux-stgt/msg04427.html
- 324. https://www.spinics.net/lists/linux-stgt/msg04423.html
- 325. https://www.spinics.net/lists/linux-stgt/msg04428.html
- 326. https://www.spinics.net/lists/linux-stgt/msg04421.html
- 327. https://www.spinics.net/lists/linux-stgt/msg04422.html
- 328. https://www.spinics.net/lists/linux-stgt/msg04425.html
- 329. https://www.spinics.net/lists/linux-stgt/msg04426.html
- 330. https://www.spinics.net/lists/linux-stgt/msg04430.html
- 331. https://www.spinics.net/lists/linux-stgt/msg04414.html
- 332. https://www.spinics.net/lists/linux-stgt/msg04415.html
- 333. https://www.spinics.net/lists/linux-stgt/msg04409.html
- 334. https://www.spinics.net/lists/linux-stgt/msg04410.html
- 335. https://www.spinics.net/lists/linux-stgt/msg04411.html
- 336. https://www.spinics.net/lists/linux-stgt/msg04412.html
- 337. https://www.spinics.net/lists/linux-stgt/msg04413.html
- 338. https://www.spinics.net/lists/linux-stgt/msg04402.html
- 339. https://www.spinics.net/lists/linux-stgt/msg04403.html
- 340. https://www.spinics.net/lists/linux-stgt/msg04405.html
- 341. https://www.spinics.net/lists/linux-stgt/msg04420.html
- 342. https://www.spinics.net/lists/linux-stgt/msg04429.html
- 343. https://www.spinics.net/lists/linux-stgt/msg04431.html
- 344. https://www.spinics.net/lists/linux-stgt/msg04432.html
- 345. https://www.spinics.net/lists/linux-stgt/msg04433.html
- 346. https://www.spinics.net/lists/linux-stgt/msg04434.html
- 347. https://www.spinics.net/lists/linux-stgt/msg04435.html
- 348. https://www.spinics.net/lists/linux-stgt/msg04401.html
- 349. https://www.spinics.net/lists/linux-stgt/msg04407.html
- 350. https://www.spinics.net/lists/linux-stgt/msg04408.html
- 351. https://www.spinics.net/lists/linux-stgt/msg04416.html
- 352. https://www.spinics.net/lists/linux-stgt/msg04417.html
- 353. https://www.spinics.net/lists/linux-stgt/msg04418.html
- 354. https://www.spinics.net/lists/linux-stgt/msg04419.html
- 355. https://www.spinics.net/lists/linux-stgt/msg04395.html
- 356. https://www.spinics.net/lists/linux-stgt/msg04396.html
- 357. https://www.spinics.net/lists/linux-stgt/msg04397.html
- 358. https://www.spinics.net/lists/linux-stgt/msg04398.html
- 359. https://www.spinics.net/lists/linux-stgt/msg04400.html
- 360. https://www.spinics.net/lists/linux-stgt/msg04404.html
- 361. https://www.spinics.net/lists/linux-stgt/msg04392.html
- 362. https://www.spinics.net/lists/linux-stgt/msg04393.html
- 363. https://www.spinics.net/lists/linux-stgt/msg04394.html
- 364. https://www.spinics.net/lists/linux-stgt/msg04399.html
- 365. https://www.spinics.net/lists/linux-stgt/msg04406.html
- 366. https://www.spinics.net/lists/linux-stgt/msg04391.html
- 367. https://www.spinics.net/lists/linux-stgt/msg04634.html
- 368. https://www.spinics.net/lists/linux-stgt/msg04389.html
- 369. https://www.spinics.net/lists/linux-stgt/msg04390.html
- 370. https://www.spinics.net/lists/linux-stgt/msg04384.html
- 371. https://www.spinics.net/lists/linux-stgt/msg04383.html
- 372. https://www.spinics.net/lists/linux-stgt/msg04385.html
- 373. https://www.spinics.net/lists/linux-stgt/msg04386.html
- 374. https://www.spinics.net/lists/linux-stgt/msg04380.html
- 375. https://www.spinics.net/lists/linux-stgt/msg04379.html
- 376. https://www.spinics.net/lists/linux-stgt/msg04381.html
- 377. https://www.spinics.net/lists/linux-stgt/msg04382.html
- 378. https://www.spinics.net/lists/linux-stgt/msg04387.html
- 379. https://www.spinics.net/lists/linux-stgt/msg04388.html
- 380. https://www.spinics.net/lists/linux-stgt/msg04375.html
- 381. https://www.spinics.net/lists/linux-stgt/msg04376.html
- 382. https://www.spinics.net/lists/linux-stgt/msg04377.html
- 383. https://www.spinics.net/lists/linux-stgt/msg04378.html
- 384. https://www.spinics.net/lists/linux-stgt/msg04372.html
- 385. https://www.spinics.net/lists/linux-stgt/msg04374.html
- 386. https://www.spinics.net/lists/linux-stgt/msg04371.html
- 387. https://www.spinics.net/lists/linux-stgt/msg04373.html
- 388. https://www.spinics.net/lists/linux-stgt/msg04370.html
- 389. https://www.spinics.net/lists/linux-stgt/msg04368.html
- 390. https://www.spinics.net/lists/linux-stgt/msg04369.html
- 391. https://www.spinics.net/lists/linux-stgt/msg04365.html
- 392. https://www.spinics.net/lists/linux-stgt/msg04364.html
- 393. https://www.spinics.net/lists/linux-stgt/msg04366.html
- 394. https://www.spinics.net/lists/linux-stgt/msg04367.html
- 395. https://www.spinics.net/lists/linux-stgt/msg04361.html
- 396. https://www.spinics.net/lists/linux-stgt/msg04362.html
- 397. https://www.spinics.net/lists/linux-stgt/msg04357.html
- 398. https://www.spinics.net/lists/linux-stgt/msg04358.html
- 399. https://www.spinics.net/lists/linux-stgt/msg04359.html
- 400. https://www.spinics.net/lists/linux-stgt/msg04356.html
- 401. https://www.spinics.net/lists/linux-stgt/msg04360.html
- 402. https://www.spinics.net/lists/linux-stgt/msg04363.html
- 403. https://www.spinics.net/lists/linux-stgt/msg04353.html
- 404. https://www.spinics.net/lists/linux-stgt/msg04355.html
- 405. https://www.spinics.net/lists/linux-stgt/msg04352.html
- 406. https://www.spinics.net/lists/linux-stgt/msg04354.html
- 407. https://www.spinics.net/lists/linux-stgt/msg04351.html
- 408. https://www.spinics.net/lists/linux-stgt/msg04350.html
- 409. https://www.spinics.net/lists/linux-stgt/msg04349.html
- 410. https://www.spinics.net/lists/linux-stgt/msg04345.html
- 411. https://www.spinics.net/lists/linux-stgt/msg04346.html
- 412. https://www.spinics.net/lists/linux-stgt/msg04344.html
- 413. https://www.spinics.net/lists/linux-stgt/msg04348.html
- 414. https://www.spinics.net/lists/linux-stgt/msg04343.html
- 415. https://www.spinics.net/lists/linux-stgt/msg04347.html
- 416. https://www.spinics.net/lists/linux-stgt/msg04341.html
- 417. https://www.spinics.net/lists/linux-stgt/msg04342.html
- 418. https://www.spinics.net/lists/linux-stgt/msg04339.html
- 419. https://www.spinics.net/lists/linux-stgt/msg04340.html
- 420. https://www.spinics.net/lists/linux-stgt/msg04336.html
- 421. https://www.spinics.net/lists/linux-stgt/msg04337.html
- 422. https://www.spinics.net/lists/linux-stgt/msg04335.html
- 423. https://www.spinics.net/lists/linux-stgt/msg04338.html
- 424. https://www.spinics.net/lists/linux-stgt/msg04325.html
- 425. https://www.spinics.net/lists/linux-stgt/msg04323.html
- 426. https://www.spinics.net/lists/linux-stgt/msg04324.html
- 427. https://www.spinics.net/lists/linux-stgt/msg04318.html
- 428. https://www.spinics.net/lists/linux-stgt/msg04319.html
- 429. https://www.spinics.net/lists/linux-stgt/msg04315.html
- 430. https://www.spinics.net/lists/linux-stgt/msg04316.html
- 431. https://www.spinics.net/lists/linux-stgt/msg04317.html
- 432. https://www.spinics.net/lists/linux-stgt/msg04329.html
- 433. https://www.spinics.net/lists/linux-stgt/msg04332.html
- 434. https://www.spinics.net/lists/linux-stgt/msg04314.html
- 435. https://www.spinics.net/lists/linux-stgt/msg04326.html
- 436. https://www.spinics.net/lists/linux-stgt/msg04327.html
- 437. https://www.spinics.net/lists/linux-stgt/msg04328.html
- 438. https://www.spinics.net/lists/linux-stgt/msg04330.html
- 439. https://www.spinics.net/lists/linux-stgt/msg04331.html
- 440. https://www.spinics.net/lists/linux-stgt/msg04333.html
- 441. https://www.spinics.net/lists/linux-stgt/msg04334.html
- 442. https://www.spinics.net/lists/linux-stgt/msg04313.html
- 443. https://www.spinics.net/lists/linux-stgt/msg04321.html
- 444. https://www.spinics.net/lists/linux-stgt/msg04311.html
- 445. https://www.spinics.net/lists/linux-stgt/msg04312.html
- 446. https://www.spinics.net/lists/linux-stgt/msg04322.html
- 447. https://www.spinics.net/lists/linux-stgt/msg04310.html
- 448. https://www.spinics.net/lists/linux-stgt/msg04320.html
- 449. https://www.spinics.net/lists/linux-stgt/msg04308.html
- 450. https://www.spinics.net/lists/linux-stgt/msg04309.html
- 451. https://www.spinics.net/lists/linux-stgt/msg04307.html
- 452. https://www.spinics.net/lists/linux-stgt/msg04304.html
- 453. https://www.spinics.net/lists/linux-stgt/msg04305.html
- 454. https://www.spinics.net/lists/linux-stgt/msg04301.html
- 455. https://www.spinics.net/lists/linux-stgt/msg04303.html
- 456. https://www.spinics.net/lists/linux-stgt/msg04300.html
- 457. https://www.spinics.net/lists/linux-stgt/msg04306.html
- 458. https://www.spinics.net/lists/linux-stgt/msg04297.html
- 459. https://www.spinics.net/lists/linux-stgt/msg04294.html
- 460. https://www.spinics.net/lists/linux-stgt/msg04299.html
- 461. https://www.spinics.net/lists/linux-stgt/msg04295.html
- 462. https://www.spinics.net/lists/linux-stgt/msg04296.html
- 463. https://www.spinics.net/lists/linux-stgt/msg04298.html
- 464. https://www.spinics.net/lists/linux-stgt/msg04302.html
- 465. https://www.spinics.net/lists/linux-stgt/msg04287.html
- 466. https://www.spinics.net/lists/linux-stgt/msg04288.html
- 467. https://www.spinics.net/lists/linux-stgt/msg04286.html
- 468. https://www.spinics.net/lists/linux-stgt/msg04284.html
- 469. https://www.spinics.net/lists/linux-stgt/msg04285.html
- 470. https://www.spinics.net/lists/linux-stgt/msg04280.html
- 471. https://www.spinics.net/lists/linux-stgt/msg04268.html
- 472. https://www.spinics.net/lists/linux-stgt/msg04269.html
- 473. https://www.spinics.net/lists/linux-stgt/msg04273.html
- 474. https://www.spinics.net/lists/linux-stgt/msg04275.html
- 475. https://www.spinics.net/lists/linux-stgt/msg04277.html
- 476. https://www.spinics.net/lists/linux-stgt/msg04278.html
- 477. https://www.spinics.net/lists/linux-stgt/msg04279.html
- 478. https://www.spinics.net/lists/linux-stgt/msg04281.html
- 479. https://www.spinics.net/lists/linux-stgt/msg04282.html
- 480. https://www.spinics.net/lists/linux-stgt/msg04283.html
- 481. https://www.spinics.net/lists/linux-stgt/msg04267.html
- 482. https://www.spinics.net/lists/linux-stgt/msg04271.html
- 483. https://www.spinics.net/lists/linux-stgt/msg04265.html
- 484. https://www.spinics.net/lists/linux-stgt/msg04266.html
- 485. https://www.spinics.net/lists/linux-stgt/msg04291.html
- 486. https://www.spinics.net/lists/linux-stgt/msg04293.html
- 487. https://www.spinics.net/lists/linux-stgt/msg04270.html
- 488. https://www.spinics.net/lists/linux-stgt/msg04289.html
- 489. https://www.spinics.net/lists/linux-stgt/msg04290.html
- 490. https://www.spinics.net/lists/linux-stgt/msg04292.html
- 491. https://www.spinics.net/lists/linux-stgt/msg04264.html
- 492. https://www.spinics.net/lists/linux-stgt/msg04272.html
- 493. https://www.spinics.net/lists/linux-stgt/msg04274.html
- 494. https://www.spinics.net/lists/linux-stgt/msg04276.html
- 495. https://www.spinics.net/lists/linux-stgt/msg04261.html
- 496. https://www.spinics.net/lists/linux-stgt/msg04262.html
- 497. https://www.spinics.net/lists/linux-stgt/msg04263.html
- 498. https://www.spinics.net/lists/linux-stgt/msg04259.html
- 499. https://www.spinics.net/lists/linux-stgt/msg04260.html
- 500. https://www.spinics.net/lists/linux-stgt/msg04254.html
- 501. https://www.spinics.net/lists/linux-stgt/msg04255.html
- 502. https://www.spinics.net/lists/linux-stgt/msg04256.html
- 503. https://www.spinics.net/lists/linux-stgt/msg04257.html
- 504. https://www.spinics.net/lists/linux-stgt/msg04251.html
- 505. https://www.spinics.net/lists/linux-stgt/msg04252.html
- 506. https://www.spinics.net/lists/linux-stgt/msg04253.html
- 507. https://www.spinics.net/lists/linux-stgt/msg04258.html
- 508. https://www.spinics.net/lists/linux-stgt/msg04250.html
- 509. https://www.spinics.net/lists/linux-stgt/msg04245.html
- 510. https://www.spinics.net/lists/linux-stgt/msg04246.html
- 511. https://www.spinics.net/lists/linux-stgt/msg04249.html
- 512. https://www.spinics.net/lists/linux-stgt/msg04244.html
- 513. https://www.spinics.net/lists/linux-stgt/msg04247.html
- 514. https://www.spinics.net/lists/linux-stgt/msg04242.html
- 515. https://www.spinics.net/lists/linux-stgt/msg04243.html
- 516. https://www.spinics.net/lists/linux-stgt/msg04248.html
- 517. https://www.spinics.net/lists/linux-stgt/msg04240.html
- 518. https://www.spinics.net/lists/linux-stgt/msg04241.html
- 519. https://www.spinics.net/lists/linux-stgt/msg04238.html
- 520. https://www.spinics.net/lists/linux-stgt/msg04239.html
- 521. https://www.spinics.net/lists/linux-stgt/msg04235.html
- 522. https://www.spinics.net/lists/linux-stgt/msg04236.html
- 523. https://www.spinics.net/lists/linux-stgt/msg04233.html
- 524. https://www.spinics.net/lists/linux-stgt/msg04234.html
- 525. https://www.spinics.net/lists/linux-stgt/msg04228.html
- 526. https://www.spinics.net/lists/linux-stgt/msg04229.html
- 527. https://www.spinics.net/lists/linux-stgt/msg04232.html
- 528. https://www.spinics.net/lists/linux-stgt/msg04227.html
- 529. https://www.spinics.net/lists/linux-stgt/msg04231.html
- 530. https://www.spinics.net/lists/linux-stgt/msg04226.html
- 531. https://www.spinics.net/lists/linux-stgt/msg04230.html
- 532. https://www.spinics.net/lists/linux-stgt/msg04224.html
- 533. https://www.spinics.net/lists/linux-stgt/msg04225.html
- 534. https://www.spinics.net/lists/linux-stgt/msg04218.html
- 535. https://www.spinics.net/lists/linux-stgt/msg04220.html
- 536. https://www.spinics.net/lists/linux-stgt/msg04221.html
- 537. https://www.spinics.net/lists/linux-stgt/msg04222.html
- 538. https://www.spinics.net/lists/linux-stgt/msg04219.html
- 539. https://www.spinics.net/lists/linux-stgt/msg04215.html
- 540. https://www.spinics.net/lists/linux-stgt/msg04216.html
- 541. https://www.spinics.net/lists/linux-stgt/msg04217.html
- 542. https://www.spinics.net/lists/linux-stgt/msg04214.html
- 543. https://www.spinics.net/lists/linux-stgt/msg04211.html
- 544. https://www.spinics.net/lists/linux-stgt/msg04212.html
- 545. https://www.spinics.net/lists/linux-stgt/msg04210.html
- 546. https://www.spinics.net/lists/linux-stgt/msg04213.html
- 547. https://www.spinics.net/lists/linux-stgt/msg04205.html
- 548. https://www.spinics.net/lists/linux-stgt/msg04206.html
- 549. https://www.spinics.net/lists/linux-stgt/msg04208.html
- 550. https://www.spinics.net/lists/linux-stgt/msg04209.html
- 551. https://www.spinics.net/lists/linux-stgt/msg04202.html
- 552. https://www.spinics.net/lists/linux-stgt/msg04207.html
- 553. https://www.spinics.net/lists/linux-stgt/msg04199.html
- 554. https://www.spinics.net/lists/linux-stgt/msg04200.html
- 555. https://www.spinics.net/lists/linux-stgt/msg04201.html
- 556. https://www.spinics.net/lists/linux-stgt/msg04203.html
- 557. https://www.spinics.net/lists/linux-stgt/msg04204.html
- 558. https://www.spinics.net/lists/linux-stgt/msg04193.html
- 559. https://www.spinics.net/lists/linux-stgt/msg04196.html
- 560. https://www.spinics.net/lists/linux-stgt/msg04191.html
- 561. https://www.spinics.net/lists/linux-stgt/msg04237.html
- 562. https://www.spinics.net/lists/linux-stgt/msg04184.html
- 563. https://www.spinics.net/lists/linux-stgt/msg04185.html
- 564. https://www.spinics.net/lists/linux-stgt/msg04186.html
- 565. https://www.spinics.net/lists/linux-stgt/msg04195.html
- 566. https://www.spinics.net/lists/linux-stgt/msg04198.html
- 567. https://www.spinics.net/lists/linux-stgt/msg04182.html
- 568. https://www.spinics.net/lists/linux-stgt/msg04183.html
- 569. https://www.spinics.net/lists/linux-stgt/msg04187.html
- 570. https://www.spinics.net/lists/linux-stgt/msg04188.html
- 571. https://www.spinics.net/lists/linux-stgt/msg04189.html
- 572. https://www.spinics.net/lists/linux-stgt/msg04190.html
- 573. https://www.spinics.net/lists/linux-stgt/msg04192.html
- 574. https://www.spinics.net/lists/linux-stgt/msg04169.html
- 575. https://www.spinics.net/lists/linux-stgt/msg04172.html
- 576. https://www.spinics.net/lists/linux-stgt/msg04165.html
- 577. https://www.spinics.net/lists/linux-stgt/msg04173.html
- 578. https://www.spinics.net/lists/linux-stgt/msg04164.html
- 579. https://www.spinics.net/lists/linux-stgt/msg04166.html
- 580. https://www.spinics.net/lists/linux-stgt/msg04167.html
- 581. https://www.spinics.net/lists/linux-stgt/msg04170.html
- 582. https://www.spinics.net/lists/linux-stgt/msg04174.html
- 583. https://www.spinics.net/lists/linux-stgt/msg04180.html
- 584. https://www.spinics.net/lists/linux-stgt/msg04181.html
- 585. https://www.spinics.net/lists/linux-stgt/msg04163.html
- 586. https://www.spinics.net/lists/linux-stgt/msg04158.html
- 587. https://www.spinics.net/lists/linux-stgt/msg04160.html
- 588. https://www.spinics.net/lists/linux-stgt/msg04156.html
- 589. https://www.spinics.net/lists/linux-stgt/msg04157.html
- 590. https://www.spinics.net/lists/linux-stgt/msg04161.html
- 591. https://www.spinics.net/lists/linux-stgt/msg04153.html
- 592. https://www.spinics.net/lists/linux-stgt/msg04154.html
- 593. https://www.spinics.net/lists/linux-stgt/msg04159.html
- 594. https://www.spinics.net/lists/linux-stgt/msg04151.html
- 595. https://www.spinics.net/lists/linux-stgt/msg04194.html
- 596. https://www.spinics.net/lists/linux-stgt/msg04197.html
- 597. https://www.spinics.net/lists/linux-stgt/msg04223.html
- 598. https://www.spinics.net/lists/linux-stgt/msg04150.html
- 599. https://www.spinics.net/lists/linux-stgt/msg04152.html
- 600. https://www.spinics.net/lists/linux-stgt/msg04162.html
- 601. https://www.spinics.net/lists/linux-stgt/msg04148.html
- 602. https://www.spinics.net/lists/linux-stgt/msg04149.html
- 603. https://www.spinics.net/lists/linux-stgt/msg04146.html
- 604. https://www.spinics.net/lists/linux-stgt/msg04147.html
- 605. https://www.spinics.net/lists/linux-stgt/msg04143.html
- 606. https://www.spinics.net/lists/linux-stgt/msg04144.html
- 607. https://www.spinics.net/lists/linux-stgt/msg04145.html
- 608. https://www.spinics.net/lists/linux-stgt/msg04129.html
- 609. https://www.spinics.net/lists/linux-stgt/msg04130.html
- 610. https://www.spinics.net/lists/linux-stgt/msg04131.html
- 611. https://www.spinics.net/lists/linux-stgt/msg04132.html
- 612. https://www.spinics.net/lists/linux-stgt/msg04136.html
- 613. https://www.spinics.net/lists/linux-stgt/msg04138.html
- 614. https://www.spinics.net/lists/linux-stgt/msg04127.html
- 615. https://www.spinics.net/lists/linux-stgt/msg04125.html
- 616. https://www.spinics.net/lists/linux-stgt/msg04124.html
- 617. https://www.spinics.net/lists/linux-stgt/msg04121.html
- 618. https://www.spinics.net/lists/linux-stgt/msg04122.html
- 619. https://www.spinics.net/lists/linux-stgt/msg04123.html
- 620. https://www.spinics.net/lists/linux-stgt/msg04128.html
- 621. https://www.spinics.net/lists/linux-stgt/msg04117.html
- 622. https://www.spinics.net/lists/linux-stgt/msg04118.html
- 623. https://www.spinics.net/lists/linux-stgt/msg04119.html
- 624. https://www.spinics.net/lists/linux-stgt/msg04120.html
- 625. https://www.spinics.net/lists/linux-stgt/msg04112.html
- 626. https://www.spinics.net/lists/linux-stgt/msg04113.html
- 627. https://www.spinics.net/lists/linux-stgt/msg04114.html
- 628. https://www.spinics.net/lists/linux-stgt/msg04115.html
- 629. https://www.spinics.net/lists/linux-stgt/msg04140.html
- 630. https://www.spinics.net/lists/linux-stgt/msg04101.html
- 631. https://www.spinics.net/lists/linux-stgt/msg04102.html
- 632. https://www.spinics.net/lists/linux-stgt/msg04126.html
- 633. https://www.spinics.net/lists/linux-stgt/msg04133.html
- 634. https://www.spinics.net/lists/linux-stgt/msg04137.html
- 635. https://www.spinics.net/lists/linux-stgt/msg04139.html
- 636. https://www.spinics.net/lists/linux-stgt/msg04155.html
- 637. https://www.spinics.net/lists/linux-stgt/msg04168.html
- 638. https://www.spinics.net/lists/linux-stgt/msg04171.html
- 639. https://www.spinics.net/lists/linux-stgt/msg04175.html
- 640. https://www.spinics.net/lists/linux-stgt/msg04176.html
- 641. https://www.spinics.net/lists/linux-stgt/msg04177.html
- 642. https://www.spinics.net/lists/linux-stgt/msg04178.html
- 643. https://www.spinics.net/lists/linux-stgt/msg04179.html
- 644. https://www.spinics.net/lists/linux-stgt/msg04099.html
- 645. https://www.spinics.net/lists/linux-stgt/msg04100.html
- 646. https://www.spinics.net/lists/linux-stgt/msg04134.html
- 647. https://www.spinics.net/lists/linux-stgt/msg04135.html
- 648. https://www.spinics.net/lists/linux-stgt/msg04141.html
- 649. https://www.spinics.net/lists/linux-stgt/msg04142.html
- 650. https://www.spinics.net/lists/linux-stgt/msg04097.html
- 651. https://www.spinics.net/lists/linux-stgt/msg04107.html
- 652. https://www.spinics.net/lists/linux-stgt/msg04109.html
- 653. https://www.spinics.net/lists/linux-stgt/msg04116.html
- 654. https://www.spinics.net/lists/linux-stgt/msg04084.html
- 655. https://www.spinics.net/lists/linux-stgt/msg04085.html
- 656. https://www.spinics.net/lists/linux-stgt/msg04086.html
- 657. https://www.spinics.net/lists/linux-stgt/msg04088.html
- 658. https://www.spinics.net/lists/linux-stgt/msg04093.html
- 659. https://www.spinics.net/lists/linux-stgt/msg04103.html
- 660. https://www.spinics.net/lists/linux-stgt/msg04104.html
- 661. https://www.spinics.net/lists/linux-stgt/msg04078.html
- 662. https://www.spinics.net/lists/linux-stgt/msg04079.html
- 663. https://www.spinics.net/lists/linux-stgt/msg04080.html
- 664. https://www.spinics.net/lists/linux-stgt/msg04089.html
- 665. https://www.spinics.net/lists/linux-stgt/msg04092.html
- 666. https://www.spinics.net/lists/linux-stgt/msg04094.html
- 667. https://www.spinics.net/lists/linux-stgt/msg04095.html
- 668. https://www.spinics.net/lists/linux-stgt/msg04096.html
- 669. https://www.spinics.net/lists/linux-stgt/msg04106.html
- 670. https://www.spinics.net/lists/
- 671. https://www.spinics.net/lists/linux-scsi/
- 672. https://www.spinics.net/lists/raid/
- 673. https://www.spinics.net/lists/linux-usb/
- 674. https://www.spinics.net/lists/linux-media/
- 675. http://www.ske-art.com/z/biglist.php
- 676. https://yosemitenews.info/
- 677. https://www.spinics.net/lists/
+     * [https://www.spinics.net/lists/linux-stgt/msg04754.html][PATCH] remove duplicated function set_medium_error, zhenwei pi
+     * [https://www.spinics.net/lists/linux-stgt/msg04753.html]Re: [External Email] Re: [PATCH RESEND 2/2] tgtd: support log file for tgtd foreground mode, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04751.html][PATCH RESEND 1/2] fix coding style in log.h, zhenwei pi
+          + [https://www.spinics.net/lists/linux-stgt/msg04752.html][PATCH RESEND 2/2] tgtd: support log file for tgtd foreground mode, zhenwei pi
+     * [https://www.spinics.net/lists/linux-stgt/msg04749.html][PATCH 1/2] fix coding style in log.h, zhenwei pi
+          + [https://www.spinics.net/lists/linux-stgt/msg04750.html][PATCH 2/2] tgtd: support log file for tgtd foreground mode, zhenwei pi
+     * [https://www.spinics.net/lists/linux-stgt/msg04747.html][PATCH v3] tgtd: support pid file for tgtd daemon, zhenwei pi
+          + [https://www.spinics.net/lists/linux-stgt/msg04748.html]Re: [PATCH v3] tgtd: support pid file for tgtd daemon, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04745.html][PATCH v2] tgtd: support pid file for tgtd daemon, zhenwei pi
+          + [https://www.spinics.net/lists/linux-stgt/msg04746.html]Re: [PATCH v2] tgtd: support pid file for tgtd daemon, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04744.html][PATCH] tgtd: support pid file for tgtd daemon, zhenwei pi
+     * [https://www.spinics.net/lists/linux-stgt/msg04742.html][PATCH] iscsi_tcp: add support for listening on random port, zhenwei pi
+          + [https://www.spinics.net/lists/linux-stgt/msg04743.html]Re: [PATCH] iscsi_tcp: add support for listening on random port, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04740.html][PATCH RESEND] tgtd: report rotation rate to tgtdadm, zhenwei pi
+          + [https://www.spinics.net/lists/linux-stgt/msg04741.html]Re: [PATCH RESEND] tgtd: report rotation rate to tgtdadm, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04739.html][PATCH] tgtd: report rotation rate to tgtdadm, zhenwei pi
+     * [https://www.spinics.net/lists/linux-stgt/msg04737.html][PATCH v2] spc: implement spc 0xb1 and support rotation rate, zhenwei pi
+          + [https://www.spinics.net/lists/linux-stgt/msg04738.html]Re: [PATCH v2] spc: implement spc 0xb1 and support rotation rate, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04736.html][PATCH] spc: implement spc 0xb1 and support rotation rate, zhenwei pi
+     * [https://www.spinics.net/lists/linux-stgt/msg04734.html][PATCH] fix segmentation fault caused by scsi_sprintf, zhenwei pi
+          + [https://www.spinics.net/lists/linux-stgt/msg04735.html]Re: [PATCH] fix segmentation fault caused by scsi_sprintf, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04732.html][PATCH] AIO backing store now reports a list of supported opcodes, Mike Boruta
+          + [https://www.spinics.net/lists/linux-stgt/msg04733.html]Re: [PATCH] AIO backing store now reports a list of supported opcodes, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04729.html]Re: [PATCH] sg, bsg: mitigate read/write abuse, block uaccess in release, Christoph Hellwig
+     * [https://www.spinics.net/lists/linux-stgt/msg04724.html][PATCH] smc: fix snprintf warnings with gcc7, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04718.html][PATCH 0/2] GCC 7 fixes, still need help with smc.c, Andy Grover
+          + [https://www.spinics.net/lists/linux-stgt/msg04719.html][PATCH 2/2] Remove incorrect size specifier in spc_lu_init, Andy Grover
+               o [https://www.spinics.net/lists/linux-stgt/msg04721.html]Re: [PATCH 2/2] Remove incorrect size specifier in spc_lu_init, FUJITA Tomonori
+                    # [https://www.spinics.net/lists/linux-stgt/msg04722.html]Re: [PATCH 2/2] Remove incorrect size specifier in spc_lu_init, Andy Grover
+                         @ [https://www.spinics.net/lists/linux-stgt/msg04723.html]Re: [PATCH 2/2] Remove incorrect size specifier in spc_lu_init, FUJITA Tomonori
+          + [https://www.spinics.net/lists/linux-stgt/msg04720.html][PATCH 1/2] Fix header warning with GCC 7 for major(), Andy Grover
+     * [https://www.spinics.net/lists/linux-stgt/msg04716.html][PATCH] doc: install targets.conf(5) as well, Apollon Oikonomopoulos
+          + [https://www.spinics.net/lists/linux-stgt/msg04717.html]Re: [PATCH] doc: install targets.conf(5) as well, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04714.html][PATCH 1/1] doc: tgtd.8.xml: add reference to targets.conf.5, Heinrich Schuchardt
+          + [https://www.spinics.net/lists/linux-stgt/msg04715.html]Re: [PATCH 1/1] doc: tgtd.8.xml: add reference to targets.conf.5, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04712.html][PATCH] Fix compiler error in tgtd.c call_program, Andy Grover
+          + [https://www.spinics.net/lists/linux-stgt/msg04713.html]Re: [PATCH] Fix compiler error in tgtd.c call_program, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04707.html][PATCH] use-after-free while iterating session->conn_list (two places), Anton Kovalenko
+          + [https://www.spinics.net/lists/linux-stgt/msg04708.html]Re: [PATCH] use-after-free while iterating session->conn_list (two places), FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04698.html][PATCH v2] sheepdog: reject snapshot as a LUN to avoid deleting working VDI, Takashi Menjo
+          + [https://www.spinics.net/lists/linux-stgt/msg04699.html]Re: [PATCH v2] sheepdog: reject snapshot as a LUN to avoid deleting working VDI, Hitoshi Mitake
+               o [https://www.spinics.net/lists/linux-stgt/msg04700.html]Re: [PATCH v2] sheepdog: reject snapshot as a LUN to avoid deleting working VDI, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04695.html][PATCH] sheepdog: reject snapshot as a LUN to avoid deleting working VDI, Takashi Menjo
+          + [https://www.spinics.net/lists/linux-stgt/msg04696.html]Re: [PATCH] sheepdog: reject snapshot as a LUN to avoid deleting working VDI, FUJITA Tomonori
+               o [https://www.spinics.net/lists/linux-stgt/msg04697.html]RE: [PATCH] sheepdog: reject snapshot as a LUN to avoid deleting working VDI, Takashi Menjo
+          + [https://www.spinics.net/lists/linux-stgt/msg04692.html][PATCH 1/2] Validate the DataOut length in WRITE_SAME_1*, Ronnie Sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04694.html]Re: [PATCH 1/2] Validate the DataOut length in WRITE_SAME_1*, FUJITA Tomonori
+          + [https://www.spinics.net/lists/linux-stgt/msg04693.html][PATCH 2/2] WRITE_SAME_* TL==0 means all blocks from LBA until the end of device., Ronnie Sahlberg
+     * [https://www.spinics.net/lists/linux-stgt/msg04682.html][PATCH 0/6] sheepdog driver cleanup, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04683.html][PATCH 2/6] sheepdog: serialize overwrapping request, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04684.html][PATCH 5/6] sheepdog: don't let ai have min and max dirty data indexes, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04685.html][PATCH 3/6] sheepdog: pass a correct flag to reload_inode(), Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04686.html][PATCH 1/6] sheepdog: prevent double locking during inode reload, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04687.html][PATCH 6/6] sheepdog: handle an inconsistent state of metadata, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04688.html][PATCH 4/6] sheepdog: handle a case of snapshot -> failover, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04689.html]Re: [PATCH 0/6] sheepdog driver cleanup, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04679.html][PATCH] Disable NOP-IN and adjust state for closed conn, Anton Kovalenko
+          + [https://www.spinics.net/lists/linux-stgt/msg04680.html]Re: [PATCH] Disable NOP-IN and adjust state for closed conn, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04676.html][PATCH] Fix compile warnings, Roi Dayan
+          + [https://www.spinics.net/lists/linux-stgt/msg04678.html]Re: [PATCH] Fix compile warnings, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04675.html][PATCH] Reject target names with invalid characters, Roi Dayan
+          + [https://www.spinics.net/lists/linux-stgt/msg04677.html]Re: [PATCH] Reject target names with invalid characters, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04668.html][PATCH] Fix accepting invalid block size, Roi Dayan
+          + [https://www.spinics.net/lists/linux-stgt/msg04674.html]Re: [PATCH] Fix accepting invalid block size, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04667.html][PATCH] tgt-setup-lun: fix error when blocksize not given, Roi Dayan
+          + [https://www.spinics.net/lists/linux-stgt/msg04672.html]Re: [PATCH] tgt-setup-lun: fix error when blocksize not given, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04663.html][PATCH] iser: fix segfault when not passing options to iser param, Roi Dayan
+     * [https://www.spinics.net/lists/linux-stgt/msg04648.html][PATCH 1/2] fix memory leak in session.c, Feng Li
+          + [https://www.spinics.net/lists/linux-stgt/msg04649.html]Resend [PATCH 2/2] convert scsi_cmnd.h macro to normal functions, Feng Li
+               o [https://www.spinics.net/lists/linux-stgt/msg04651.html]Re: Resend [PATCH 2/2] convert scsi_cmnd.h macro to normal functions, FUJITA Tomonori
+                    # [https://www.spinics.net/lists/linux-stgt/msg04653.html]Re: Resend [PATCH 2/2] convert scsi_cmnd.h macro to normal functions, 冯力
+          + [https://www.spinics.net/lists/linux-stgt/msg04650.html]Re: [PATCH 1/2] fix memory leak in session.c, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04646.html][PATCH] Use ULLONG_MAX when checking for strtoull overflow, Apollon Oikonomopoulos
+          + [https://www.spinics.net/lists/linux-stgt/msg04647.html]Re: [PATCH] Use ULLONG_MAX when checking for strtoull overflow, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04645.html][PATCH] convert scsi_cmnd.h macro to normal functions, Feng Li
+     * [https://www.spinics.net/lists/linux-stgt/msg04641.html][PATCH] fix timerfd support, Feng Li
+          + [https://www.spinics.net/lists/linux-stgt/msg04643.html]Re: [PATCH] fix timerfd support, FUJITA Tomonori
+               o [https://www.spinics.net/lists/linux-stgt/msg04644.html]Re: [PATCH] fix timerfd support, Alex Feng
+     * [https://www.spinics.net/lists/linux-stgt/msg04638.html][PATCH] fix errno use after strtoull, Ryan Harper
+          + [https://www.spinics.net/lists/linux-stgt/msg04640.html]Re: [PATCH] fix errno use after strtoull, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04636.html][PATCH] Enable tgt-admin to bring up Gluster backing stores, Andy Grover
+          + [https://www.spinics.net/lists/linux-stgt/msg04637.html]Re: [PATCH] Enable tgt-admin to bring up Gluster backing stores, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04633.html][PATCH] tgtd: oom_adjust don't fail on EACCES error, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04631.html][PATCH] targets.conf manpage should not refer to Wikipedia, Andy Grover
+          + [https://www.spinics.net/lists/linux-stgt/msg04632.html]Re: [PATCH] targets.conf manpage should not refer to Wikipedia, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04608.html][PATCH] Handle access of a target that has been removed, Lee Duncan
+          + [https://www.spinics.net/lists/linux-stgt/msg04611.html]Re: [PATCH] Handle access of a target that has been removed, FUJITA Tomonori
+               o [https://www.spinics.net/lists/linux-stgt/msg04612.html]Re: [PATCH] Handle access of a target that has been removed, Lee Duncan
+                    # [https://www.spinics.net/lists/linux-stgt/msg04614.html]Re: [PATCH] Handle access of a target that has been removed, FUJITA Tomonori
+                         @ [https://www.spinics.net/lists/linux-stgt/msg04616.html]Re: [PATCH] Handle access of a target that has been removed, Lee Duncan
+                              - [https://www.spinics.net/lists/linux-stgt/msg04621.html]Re: [PATCH] Handle access of a target that has been removed, Lee Duncan
+                                   = [https://www.spinics.net/lists/linux-stgt/msg04622.html]Re: [PATCH] Handle access of a target that has been removed, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04585.html][PATCH] Add WRITE_ATOMIC_16 support, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04586.html][PATCH] Add support for WRITE_ATOMIC_16, Ronnie Sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04587.html]Re: [PATCH] Add support for WRITE_ATOMIC_16, ronnie sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04592.html]Re: [PATCH] Add WRITE_ATOMIC_16 support, FUJITA Tomonori
+               o [https://www.spinics.net/lists/linux-stgt/msg04593.html]Re: [PATCH] Add WRITE_ATOMIC_16 support, ronnie sahlberg
+                    # [https://www.spinics.net/lists/linux-stgt/msg04598.html]Re: [PATCH] Add WRITE_ATOMIC_16 support, FUJITA Tomonori
+          + [https://www.spinics.net/lists/linux-stgt/msg04588.html][PATCH] Add WRITE_ATOMIC_16 support, Ronnie Sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04589.html][PATCH] Add support for WRITE_ATOMIC_16, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04590.html][PATCH] Add WRITE_ATOMIC_16 support, Ronnie Sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04591.html][PATCH] Add support for WRITE_ATOMIC_16, Ronnie Sahlberg
+     * [https://www.spinics.net/lists/linux-stgt/msg04581.html][PATCH 1/4] sheepdog: prevent double locking during inode reload, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04584.html][PATCH 2/4] sheepdog: serialize overwrapping request, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04582.html][PATCH 3/4] sheepdog: pass a correct flag to find_vdi_name(), Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04583.html][PATCH 4/4] sheepdog: handle a case of snapshot -> failover, Hitoshi Mitake
+     * [https://www.spinics.net/lists/linux-stgt/msg04575.html][PATCH] Correct the location of checkarch.sh in Makefile, Alberto Murillo
+          + [https://www.spinics.net/lists/linux-stgt/msg04576.html]Re: [PATCH] Correct the location of checkarch.sh in Makefile, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04566.html][PATCH internal-review 0/2] Discovery mode session iser fixes, Sagi Grimberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04565.html][PATCH 2/2] iser: Fix wrong access to the session discovery mode, Sagi Grimberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04567.html][PATCH 1/2] iser: Clear tasks free list when closing the connection, Sagi Grimberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04568.html]Re: [PATCH internal-review 0/2] Discovery mode session iser fixes, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04563.html][PATCH] sheepdog: fix to update data_vdi_id after writing data object, Teruaki Ishizaki
+          + [https://www.spinics.net/lists/linux-stgt/msg04564.html]Re: [PATCH] sheepdog: fix to update data_vdi_id after writing data object, Hitoshi Mitake
+     * [https://www.spinics.net/lists/linux-stgt/msg04560.html][PATCH] Allow setting the IPC socket via environment variable, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04561.html][PATCH] Allow overriding the IPC socket path via TGT_IPC_SOCKET, Ronnie Sahlberg
+     * [https://www.spinics.net/lists/linux-stgt/msg04558.html][PATCH] iser: Fix memory leak of addrinfo struct, Roi Dayan
+          + [https://www.spinics.net/lists/linux-stgt/msg04559.html]Re: [PATCH] iser: Fix memory leak of addrinfo struct, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04552.html][PATCH] sheepdog: fine grained locking in write path, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04553.html]Re: [PATCH] sheepdog: fine grained locking in write path, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04550.html][PATCH] mgmt: Create ipc socket parent dir if does not exists, Roi Dayan
+          + [https://www.spinics.net/lists/linux-stgt/msg04551.html]Re: [PATCH] mgmt: Create ipc socket parent dir if does not exists, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04541.html][PATCH 0/3] Allow running tgtd as a non-root user, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04543.html][PATCH 1/3] tgtd.c: allow oom adjust failures for non-root users, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04544.html][PATCH 2/3] mgmt: change ipc socket address and make it group writeable, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04542.html][PATCH 3/3] mgmt.c: check that the socket is owned by the current user, not root, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04545.html][PATCH 0/3] Allow running tgtd as a non-root user, Ronnie Sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04546.html][PATCH 1/3] tgtd.c: allow oom adjust failures for non-root users, Ronnie Sahlberg
+                    # [https://www.spinics.net/lists/linux-stgt/msg04549.html]Re: [PATCH 1/3] tgtd.c: allow oom adjust failures for non-root users, FUJITA Tomonori
+               o [https://www.spinics.net/lists/linux-stgt/msg04547.html][PATCH 3/3] mgmt.c: check that the connecting user is the same as the user tgtd runs as, Ronnie Sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04548.html][PATCH 2/3] mgmt: change ipc socket address, Ronnie Sahlberg
+     * [https://www.spinics.net/lists/linux-stgt/msg04530.html][PATCH] Fix libs for current systemd linker name, Andy Grover
+          + [https://www.spinics.net/lists/linux-stgt/msg04532.html]Re: [PATCH] Fix libs for current systemd linker name, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04521.html][PATCH] iser: fix tasks leak with all its resources, Roi Dayan
+          + [https://www.spinics.net/lists/linux-stgt/msg04525.html]Re: [PATCH] iser: fix tasks leak with all its resources, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04514.html][PATCH] sheepdog: support for variable object size, Teruaki Ishizaki
+          + [https://www.spinics.net/lists/linux-stgt/msg04515.html]Re: [PATCH] sheepdog: support for variable object size, Hitoshi Mitake
+               o [https://www.spinics.net/lists/linux-stgt/msg04516.html]Re: [PATCH] sheepdog: support for variable object size, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04508.html][PATCH] Report DPO/FUA support to the initiators for SBC devices, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04509.html][PATCH] sbc.c: report DPO/FUA support in modesense datain, Ronnie Sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04511.html]Re: [PATCH] sbc.c: report DPO/FUA support in modesense datain, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04507.html][PATCH] sheepdog: fix data format for sheepdog request and response, Teruaki Ishizaki
+          + [https://www.spinics.net/lists/linux-stgt/msg04512.html]Re: [PATCH] sheepdog: fix data format for sheepdog request and response, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04513.html]Re: [PATCH] sheepdog: fix data format for sheepdog request and response, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04500.html][PATCH] sheepdog: fix to clear create flag when reloading inode, YAMADA Hideki
+          + [https://www.spinics.net/lists/linux-stgt/msg04501.html]Re: [PATCH] sheepdog: fix to clear create flag when reloading inode, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04502.html]Re: [PATCH] sheepdog: fix to clear create flag when reloading inode, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04499.html][PATCH] README: update dead url, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04493.html][PATCH] iser: fix local conn params being reset to default, Roi Dayan
+          + [https://www.spinics.net/lists/linux-stgt/msg04494.html]Re: [PATCH] iser: fix local conn params being reset to default, FUJITA Tomonori
+          + [https://www.spinics.net/lists/linux-stgt/msg04495.html]Re: [PATCH] iser: fix local conn params being reset to default, Or Gerlitz
+               o [https://www.spinics.net/lists/linux-stgt/msg04496.html]RE: [PATCH] iser: fix local conn params being reset to default, Roi Dayan
+               o [https://www.spinics.net/lists/linux-stgt/msg04497.html]RE: [PATCH] iser: fix local conn params being reset to default, Roi Dayan
+     * [https://www.spinics.net/lists/linux-stgt/msg04487.html][PATCH] bs_sheepdog.c: fix a compiler warning due to an unused label, Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04488.html]Re: [PATCH] bs_sheepdog.c: fix a compiler warning due to an unused label, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04484.html][PATCH] sheepdog: optimize reloading of inode, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04485.html]Re: [PATCH] sheepdog: optimize reloading of inode, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04479.html][PATCH 0/3] sheepdog driver update for iSCSI multipath, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04480.html][PATCH 1/3] sheepdog: refresh invalidated inode in update_inode() path, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04481.html][PATCH 2/3] sheepdog: set flag for indicating requests are from tgt, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04482.html][PATCH 3/3] sheepdog: change a method for detecting invalidation of inode, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04483.html]Re: [PATCH 0/3] sheepdog driver update for iSCSI multipath, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04467.html][PATCH] SMC: add a 32 byte volume tag to storage slots, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04468.html][PATCH] SMC: add a new volume_tag parameter to storage slots, Ronnie Sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04474.html]Re: [PATCH] SMC: add a new volume_tag parameter to storage slots, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04465.html][PATCH] SMC fixes, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04466.html][PATCH] SMC: add a smc backend template with an opcode whitelist, Ronnie Sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04473.html]Re: [PATCH] SMC: add a smc backend template with an opcode whitelist, FUJITA Tomonori
+          + [https://www.spinics.net/lists/linux-stgt/msg04471.html]Re: [PATCH] SMC fixes, ronnie sahlberg
+     * [https://www.spinics.net/lists/linux-stgt/msg04448.html][PATCH] Add a DVD jukebox script, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04449.html][PATCH] DOCS: add an example dvd jukebox script, Ronnie Sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04451.html]Re: [PATCH] DOCS: add an example dvd jukebox script, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04446.html][PATCH] Fix for MMC so it works again, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04447.html][PATCH] MMC: add a dedicated backend for MMC so that supported-opcode map works, Ronnie Sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04450.html]Re: [PATCH] MMC: add a dedicated backend for MMC so that supported-opcode map works, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04444.html][PATCH] Fix broken MMC emulation, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04445.html][PATCH] bs_rdwr.c: add missing MMC opcodes to the backing store defs, Ronnie Sahlberg
+     * [https://www.spinics.net/lists/linux-stgt/msg04441.html][PATCH] sheepdog: protocol update for revivng backward compatibility, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04442.html]Re: [PATCH] sheepdog: protocol update for revivng backward compatibility, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04439.html][PATCH] sheepdog: support iSCSI multipath, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04440.html]Re: [PATCH] sheepdog: support iSCSI multipath, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04424.html][PATCH] bs_rbd: fix error assignment in if condition, Ruoyu
+          + [https://www.spinics.net/lists/linux-stgt/msg04427.html]Re: [PATCH] bs_rbd: fix error assignment in if condition, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04423.html][PATCH] bs_ssc: remove unused variables, Ruoyu
+          + [https://www.spinics.net/lists/linux-stgt/msg04428.html]Re: [PATCH] bs_ssc: remove unused variables, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04414.html][tgt] [PATCH] Fix shmat() wrong return value test method, Dongliang Ma
+          + [https://www.spinics.net/lists/linux-stgt/msg04415.html][tgt] [PATCH] Fix shmat() wrong return value test method, Dongliang Ma
+     * [https://www.spinics.net/lists/linux-stgt/msg04409.html][PATCH 0/3] various update for sheepdog driver, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04410.html][PATCH 1/3] sheepdog: turn on cache flag of write request, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04411.html][PATCH 2/3] sheepdog: update layout of inode object header, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04412.html][PATCH 3/3] sheepdog: add documentation, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04413.html]Re: [PATCH 0/3] various update for sheepdog driver, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04384.html][PATCH 0/2] iser: configurable bufsize and ipv6 support, Roi Dayan
+          + [https://www.spinics.net/lists/linux-stgt/msg04383.html][PATCH 1/2] iser: make membuf size configurable, Roi Dayan
+          + [https://www.spinics.net/lists/linux-stgt/msg04385.html][PATCH 2/2] iser: add portals support, Roi Dayan
+          + [https://www.spinics.net/lists/linux-stgt/msg04386.html]Re: [PATCH 0/2] iser: configurable bufsize and ipv6 support, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04379.html][PATCH] systemd notification support, FUJITA Tomonori
+          + [https://www.spinics.net/lists/linux-stgt/msg04381.html]Re: [PATCH] systemd notification support, Andy Grover
+               o [https://www.spinics.net/lists/linux-stgt/msg04382.html]Re: [PATCH] systemd notification support, Apollon Oikonomopoulos
+                    # [https://www.spinics.net/lists/linux-stgt/msg04387.html]Re: [PATCH] systemd notification support, FUJITA Tomonori
+          + [https://www.spinics.net/lists/linux-stgt/msg04388.html]Re: [PATCH] systemd notification support, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04372.html][PATCH] added support for bsoflags parameter, Cedric Milesi
+          + [https://www.spinics.net/lists/linux-stgt/msg04374.html]Re: [PATCH] added support for bsoflags parameter, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04371.html][PATCH] Fix tgtd.spec to build on SLES, Roi Dayan
+          + [https://www.spinics.net/lists/linux-stgt/msg04373.html]Re: [PATCH] Fix tgtd.spec to build on SLES, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04368.html][PATCH] Remove unneeded pthread_cond_broadcast, Andy Grover
+          + [https://www.spinics.net/lists/linux-stgt/msg04369.html]Re: [PATCH] Remove unneeded pthread_cond_broadcast, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04365.html][PATCH 1/3] Fix race on thread shutdown causing deadlock, Andy Grover
+          + [https://www.spinics.net/lists/linux-stgt/msg04364.html][PATCH 2/3] Remove startup_lock, Andy Grover
+          + [https://www.spinics.net/lists/linux-stgt/msg04366.html][PATCH 3/3] Replace if()/goto with while(), Andy Grover
+          + [https://www.spinics.net/lists/linux-stgt/msg04367.html]Re: [PATCH 1/3] Fix race on thread shutdown causing deadlock, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04353.html][PATCH] iser: fix a warning about container_of being redefined, Roi Dayan
+          + [https://www.spinics.net/lists/linux-stgt/msg04355.html]Re: [PATCH] iser: fix a warning about container_of being redefined, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04352.html][PATCH] Update debian build to use local docbook-xsl for generating docs, Roi Dayan
+          + [https://www.spinics.net/lists/linux-stgt/msg04354.html]Re: [PATCH] Update debian build to use local docbook-xsl for generating docs, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04345.html][PATCH] Fix segfault if device_type set to pt but bstype not sg or bsg, Andy Grover
+          + [https://www.spinics.net/lists/linux-stgt/msg04346.html]Re: [PATCH] Fix segfault if device_type set to pt but bstype not sg or bsg, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04344.html][PATCH] iscsi: fix segfault at iscsi_scsi_cmd_done(), Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04348.html]Re: [PATCH] iscsi: fix segfault at iscsi_scsi_cmd_done(), FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04343.html][PATCH] iscsi: fix leak of task for delayed management request, Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04347.html]Re: [PATCH] iscsi: fix leak of task for delayed management request, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04341.html][PATCH] tgtd: fix leak of task_in_scsi flag, Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04342.html]Re: [PATCH] tgtd: fix leak of task_in_scsi flag, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04339.html][PATCH v2] Add support for gluster backing store, Dan Lambright
+          + [https://www.spinics.net/lists/linux-stgt/msg04340.html]Re: [PATCH v2] Add support for gluster backing store, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04336.html][PATCH V1] spc: Support NAA IEEE Registered Extended field in VPD page 0x83, Or Gerlitz
+          + [https://www.spinics.net/lists/linux-stgt/msg04337.html]Re: [PATCH V1] spc: Support NAA IEEE Registered Extended field in VPD page 0x83, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04335.html][PATCH] Add support for gluster backing store, Dan Lambright
+          + [https://www.spinics.net/lists/linux-stgt/msg04338.html]Re: [PATCH] Add support for gluster backing store, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04318.html][PATCH] tgtd: let event_need_refresh be a static variable, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04319.html]Re: [PATCH] tgtd: let event_need_refresh be a static variable, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04315.html][PATCH v3] tgtd: refresh ready fds of event loop after event deletion, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04316.html]Re: [PATCH v3] tgtd: refresh ready fds of event loop after event deletion, FUJITA Tomonori
+               o [https://www.spinics.net/lists/linux-stgt/msg04317.html]Re: [PATCH v3] tgtd: refresh ready fds of event loop after event deletion, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04329.html]Re: [PATCH v3] tgtd: refresh ready fds of event loop after event deletion, Or Gerlitz
+               o [https://www.spinics.net/lists/linux-stgt/msg04332.html]Re: [PATCH v3] tgtd: refresh ready fds of event loop after event deletion, Hitoshi Mitake
+     * [https://www.spinics.net/lists/linux-stgt/msg04311.html][PATCH] Fix ReportSupportedOpcode command to set the opcode, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04312.html][PATCH] The first byte in CDB USAGE DATA should be the opcode number and not 0xFF, Ronnie Sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04322.html]Re: [PATCH] The first byte in CDB USAGE DATA should be the opcode number and not 0xFF, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04310.html][PATCH] tgtd: fix internal error of __inaccount_bind(), Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04320.html]Re: [PATCH] tgtd: fix internal error of __inaccount_bind(), FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04308.html][PATCH] iscsi: fix leak of session->initiator_alias, Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04309.html]Re: [PATCH] iscsi: fix leak of session->initiator_alias, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04304.html][PATCH v2] tgtd: refresh ready fds of event loop after event deletion, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04305.html]Re: [PATCH v2] tgtd: refresh ready fds of event loop after event deletion, Hitoshi Mitake
+     * [https://www.spinics.net/lists/linux-stgt/msg04301.html][PATCH] tgtd: let conn_close() transfer state of a connection, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04303.html]Re: [PATCH] tgtd: let conn_close() transfer state of a connection, Hitoshi Mitake
+     * [https://www.spinics.net/lists/linux-stgt/msg04300.html][PATCH] tgtd: refresh ready fds of event loop after event deletion, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04306.html]Re: [PATCH] tgtd: refresh ready fds of event loop after event deletion, Hitoshi Mitake
+     * [https://www.spinics.net/lists/linux-stgt/msg04297.html][PATCH v4 RFC 0/5] tgtd: offload iSCSI PDU send/recv to worker threads, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04294.html][PATCH v4 RFC 3/5] tgtd: add a new option "-T" for specifying a number of threads which send/recv iSCSI PDUs, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04299.html][PATCH v4 RFC 4/5] tgtd: implement a deferred event modification mechanism, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04295.html][PATCH v4 RFC 5/5] tgtd: offload iSCSI PDU send/recv to worker threads, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04296.html][PATCH v4 RFC 1/5] tgtd: add helper functions for checking iostate of iscsi connections, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04298.html][PATCH v4 RFC 2/5] tgtd: decompose iscsi_[rt]x_handler(), Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04302.html]Re: [PATCH v4 RFC 0/5] tgtd: offload iSCSI PDU send/recv to worker threads, Hitoshi Mitake
+     * [https://www.spinics.net/lists/linux-stgt/msg04287.html][PATCH] iser: Fix discovery over iser on non default port, Roi Dayan
+          + [https://www.spinics.net/lists/linux-stgt/msg04288.html]Re: [PATCH] iser: Fix discovery over iser on non default port, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04284.html][PATCH] iser: Add Discovery support, Or Gerlitz
+          + [https://www.spinics.net/lists/linux-stgt/msg04285.html]Re: [PATCH] iser: Add Discovery support, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04265.html][PATCH 1/2] Fix bs_rbd.c slurp_to_semi() not consuming terminating semicolon, Thomas Matysik
+          + [https://www.spinics.net/lists/linux-stgt/msg04266.html][PATCH 2/2] Add "cluster" option to bs_rbd.c to specify cluster name, Thomas Matysik
+               o [https://www.spinics.net/lists/linux-stgt/msg04291.html]Re: [PATCH 2/2] Add "cluster" option to bs_rbd.c to specify cluster name, Dan Mick
+                    # [https://www.spinics.net/lists/linux-stgt/msg04293.html]Re: [PATCH 2/2] Add "cluster" option to bs_rbd.c to specify cluster name, FUJITA Tomonori
+          + [https://www.spinics.net/lists/linux-stgt/msg04270.html]Re: [PATCH 1/2] Fix bs_rbd.c slurp_to_semi() not consuming terminating semicolon, FUJITA Tomonori
+               o [https://www.spinics.net/lists/linux-stgt/msg04289.html]Re: [PATCH 1/2] Fix bs_rbd.c slurp_to_semi() not consuming terminating semicolon, Dan Mick
+          + [https://www.spinics.net/lists/linux-stgt/msg04290.html]Re: [PATCH 1/2] Fix bs_rbd.c slurp_to_semi() not consuming terminating semicolon, Dan Mick
+               o [https://www.spinics.net/lists/linux-stgt/msg04292.html]Re: [PATCH 1/2] Fix bs_rbd.c slurp_to_semi() not consuming terminating semicolon, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04261.html][PATCH 1/2] tgtadm: Correct mode names in the option error message, Zhang Yanfei
+          + [https://www.spinics.net/lists/linux-stgt/msg04262.html][PATCH 2/2] tgtadm: display unsupported operation name explicitly, Zhang Yanfei
+          + [https://www.spinics.net/lists/linux-stgt/msg04263.html]Re: [PATCH 1/2] tgtadm: Correct mode names in the option error message, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04259.html][PATCH] doc/iscsi: typo fix in doc/README.iscsi, Zhang Yanfei
+          + [https://www.spinics.net/lists/linux-stgt/msg04260.html]Re: [PATCH] doc/iscsi: typo fix in doc/README.iscsi, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04251.html][PATCH] bs_sheepdog.c: fix io errors during writing to a snapshot, Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04252.html]Re: [sheepdog] [PATCH] bs_sheepdog.c: fix io errors during writing to a snapshot, Hitoshi Mitake
+               o [https://www.spinics.net/lists/linux-stgt/msg04253.html]Re: [sheepdog] [PATCH] bs_sheepdog.c: fix io errors during writing to a snapshot, FUJITA Tomonori
+                    # [https://www.spinics.net/lists/linux-stgt/msg04258.html]Re: [sheepdog] [PATCH] bs_sheepdog.c: fix io errors during writing to a snapshot, nia dev
+     * [https://www.spinics.net/lists/linux-stgt/msg04245.html][PATCH] bs_sheepdog.c: add missing initialization of request header, Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04246.html]Re: [sheepdog] [PATCH] bs_sheepdog.c: add missing initialization of request header, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04249.html]Re: [PATCH] bs_sheepdog.c: add missing initialization of request header, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04244.html][PATCH] tgtd: fix memory access overrun on array of pthread_t type data, Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04247.html]Re: [PATCH] tgtd: fix memory access overrun on array of pthread_t type data, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04242.html][PATCH] bs_sheepdog.c: add missing initialization of read data length, Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04243.html]Re: [sheepdog] [PATCH] bs_sheepdog.c: add missing initialization of read data length, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04248.html]Re: [PATCH] bs_sheepdog.c: add missing initialization of read data length, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04240.html][PATCH] bs_sheepdog.c: fix a descriptor leak in connect_to_sdog_tcp(), Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04241.html]Re: [PATCH] bs_sheepdog.c: fix a descriptor leak in connect_to_sdog_tcp(), FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04238.html][PATCH] iscsi/conn.c: fix a typo s/sesson/session/, Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04239.html]Re: [PATCH] iscsi/conn.c: fix a typo s/sesson/session/, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04235.html][PATCH] Fix buffer overrun issue of lld name, Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04236.html]Re: [PATCH] Fix buffer overrun issue of lld name, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04233.html][PATCH] util.h: correct range check of str_to_int_gt() and str_to_int_lt(), Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04234.html]Re: [PATCH] util.h: correct range check of str_to_int_gt() and str_to_int_lt(), FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04228.html][PATCH] bs_sheepdog.c: ensure that vdi names and tag names are null-terminated, Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04229.html]Re: [sheepdog] [PATCH] bs_sheepdog.c: ensure that vdi names and tag names are null-terminated, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04232.html]Re: [PATCH] bs_sheepdog.c: ensure that vdi names and tag names are null-terminated, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04227.html][PATCH] tgtd: fix memory leaks at it_nexus_create(), Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04231.html]Re: [PATCH] tgtd: fix memory leaks at it_nexus_create(), FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04226.html][PATCH] tgtd: fix segmentation fault in tgt_device_destroy(), Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04230.html]Re: [PATCH] tgtd: fix segmentation fault in tgt_device_destroy(), FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04224.html][PATCH v2] trivial: support cscope in Makefile and gitignore, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04225.html]Re: [PATCH v2] trivial: support cscope in Makefile and gitignore, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04215.html][PATCH] bs_sheepdog.c: fix up buffer overrun issues with unix domain socket, Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04216.html]Re: [PATCH] bs_sheepdog.c: fix up buffer overrun issues with unix domain socket, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04217.html]Re: [PATCH] bs_sheepdog.c: fix up buffer overrun issues with unix domain socket, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04211.html][PATCH] bs_sheepdog.c: fix length modifier of eprintf in read_write_object(), Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04212.html]Re: [PATCH] bs_sheepdog.c: fix length modifier of eprintf in read_write_object(), FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04210.html][PATCH] bs_sheepdog.c: fix gcc warning at sd_open(), Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04213.html]Re: [PATCH] bs_sheepdog.c: fix gcc warning at sd_open(), FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04202.html][PATCH] use NR_SCSI_OPCODES definition, FUJITA Tomonori
+          + [https://www.spinics.net/lists/linux-stgt/msg04207.html]Re: [PATCH] use NR_SCSI_OPCODES definition, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04199.html][PATCH] Fix REPORT SUPPORTED OPCODES, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04200.html][PATCH] REPORT SUPPORTED OPCODES: Only return opcodes supported by the backend., Ronnie Sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04201.html]Re: [PATCH] REPORT SUPPORTED OPCODES: Only return opcodes supported by the backend., FUJITA Tomonori
+                    # [https://www.spinics.net/lists/linux-stgt/msg04203.html]Re: [PATCH] REPORT SUPPORTED OPCODES: Only return opcodes supported by the backend., ronnie sahlberg
+                         @ [https://www.spinics.net/lists/linux-stgt/msg04204.html]Re: [PATCH] REPORT SUPPORTED OPCODES: Only return opcodes supported by the backend., FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04193.html][PATCH] bs_sheepdog.c: fix an unsafe strncpy() call, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04196.html]Re: [PATCH] bs_sheepdog.c: fix an unsafe strncpy() call, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04191.html][PATCH v3] tgtd: send/recv iSCSI PDUs in worker threads, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04237.html]Re: [PATCH v3] tgtd: send/recv iSCSI PDUs in worker threads, Hitoshi Mitake
+     * [https://www.spinics.net/lists/linux-stgt/msg04184.html][PATCH] Add an array that describes which opcodes are supported by backends, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04185.html][PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., Ronnie Sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04186.html]Re: [PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., FUJITA Tomonori
+                    # [https://www.spinics.net/lists/linux-stgt/msg04195.html]Re: [PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., ronnie sahlberg
+                         @ [https://www.spinics.net/lists/linux-stgt/msg04198.html]Re: [PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04182.html][PATCH RFC v2] tgtd: send/recv iSCSI PDUs in worker threads, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04183.html]Re: [PATCH RFC v2] tgtd: send/recv iSCSI PDUs in worker threads, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04187.html]Re: [PATCH RFC v2] tgtd: send/recv iSCSI PDUs in worker threads, FUJITA Tomonori
+               o [https://www.spinics.net/lists/linux-stgt/msg04188.html]Re: [PATCH RFC v2] tgtd: send/recv iSCSI PDUs in worker threads, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04189.html]Re: [PATCH RFC v2] tgtd: send/recv iSCSI PDUs in worker threads, FUJITA Tomonori
+               o [https://www.spinics.net/lists/linux-stgt/msg04190.html]Re: [PATCH RFC v2] tgtd: send/recv iSCSI PDUs in worker threads, Hitoshi Mitake
+                    # [https://www.spinics.net/lists/linux-stgt/msg04192.html]Re: [PATCH RFC v2] tgtd: send/recv iSCSI PDUs in worker threads, Hitoshi Mitake
+     * [https://www.spinics.net/lists/linux-stgt/msg04169.html][PATCH] tgtadm: add missing outgoing option to the help of unbind operation, Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04172.html]Re: [PATCH] tgtadm: add missing outgoing option to the help of unbind operation, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04165.html][PATCH] Fix AIO backing store not being registered, Roi Dayan
+          + [https://www.spinics.net/lists/linux-stgt/msg04173.html]Re: [PATCH] Fix AIO backing store not being registered, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04164.html][PATCH RFC] tgtd: send/recv iSCSI PDUs in worker threads, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04166.html]Re: [PATCH RFC] tgtd: send/recv iSCSI PDUs in worker threads, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04167.html]Re: [PATCH RFC] tgtd: send/recv iSCSI PDUs in worker threads, FUJITA Tomonori
+               o [https://www.spinics.net/lists/linux-stgt/msg04170.html]Re: [PATCH RFC] tgtd: send/recv iSCSI PDUs in worker threads, Hitoshi Mitake
+                    # [https://www.spinics.net/lists/linux-stgt/msg04174.html]Re: [PATCH RFC] tgtd: send/recv iSCSI PDUs in worker threads, FUJITA Tomonori
+                         @ [https://www.spinics.net/lists/linux-stgt/msg04180.html]Re: [PATCH RFC] tgtd: send/recv iSCSI PDUs in worker threads, Hitoshi Mitake
+                              - [https://www.spinics.net/lists/linux-stgt/msg04181.html]Re: [PATCH RFC] tgtd: send/recv iSCSI PDUs in worker threads, Hitoshi Mitake
+     * [https://www.spinics.net/lists/linux-stgt/msg04158.html][PATCH] bs_sheepdog.c: fix error handling issue in bs_sheepdog_request(), Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04160.html]Re: [PATCH] bs_sheepdog.c: fix error handling issue in bs_sheepdog_request(), FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04156.html][PATCH] bs_sheepdog.c: fix memory leak issues in sd_open(), Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04157.html]Re: [sheepdog] [PATCH] bs_sheepdog.c: fix memory leak issues in sd_open(), Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04161.html]Re: [PATCH] bs_sheepdog.c: fix memory leak issues in sd_open(), FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04153.html][PATCH] bs_sheepdog.c: fix pthread rwlock leak in sd_io(), Ryusuke Konishi
+          + [https://www.spinics.net/lists/linux-stgt/msg04154.html]Re: [sheepdog] [PATCH] bs_sheepdog.c: fix pthread rwlock leak in sd_io(), Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04159.html]Re: [PATCH] bs_sheepdog.c: fix pthread rwlock leak in sd_io(), FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04151.html][PATCH] trivial: support cscope in Makefile and gitignore, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04194.html]Re: [PATCH] trivial: support cscope in Makefile and gitignore, Hitoshi Mitake
+               o [https://www.spinics.net/lists/linux-stgt/msg04197.html]Re: [PATCH] trivial: support cscope in Makefile and gitignore, FUJITA Tomonori
+                    # [https://www.spinics.net/lists/linux-stgt/msg04223.html]Re: [PATCH] trivial: support cscope in Makefile and gitignore, Hitoshi Mitake
+     * [https://www.spinics.net/lists/linux-stgt/msg04150.html][PATCH] tgtd: protect socket for management IPC with lockf(3), Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04152.html]Re: [PATCH] tgtd: protect socket for management IPC with lockf(3), Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04162.html]Re: [PATCH] tgtd: protect socket for management IPC with lockf(3), FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04148.html][PATCH] README.rbd: add documentation for the rbd --bsopts parameters, Dan Mick
+          + [https://www.spinics.net/lists/linux-stgt/msg04149.html]Re: [PATCH] README.rbd: add documentation for the rbd --bsopts parameters, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04146.html][PATCH] bs_rbd.c: accept and parse bsopts, Dan Mick
+          + [https://www.spinics.net/lists/linux-stgt/msg04147.html]Re: [PATCH] bs_rbd.c: accept and parse bsopts, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04143.html][PATCH v2] add --bsopts flag, pass to bs_init(), Dan Mick
+          + [https://www.spinics.net/lists/linux-stgt/msg04144.html][PATCH] Add bsopts flag, Dan Mick
+               o [https://www.spinics.net/lists/linux-stgt/msg04145.html]Re: [PATCH] Add bsopts flag, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04129.html][PATCH v3 0/3] various improvements of bs_sheepdog.c, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04130.html][PATCH v3 2/3] bs_sheepdog.c: fix segmentation fault caused by deleting logical unit, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04131.html][PATCH v3 1/3] bs_sheepdog.c: mock the behavior of QEMU's sheepdog driver in a correct manner, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04132.html][PATCH v3 3/3] bs_sheepdog.c: test connection when new logical unit is created, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04136.html]Re: [sheepdog] [PATCH v3 0/3] various improvements of bs_sheepdog.c, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04138.html]Re: [PATCH v3 0/3] various improvements of bs_sheepdog.c, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04124.html][PATCH v2 0/3] various improvements of bs_sheepdog.c, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04121.html][PATCH v2 2/3] bs_sheepdog.c: fix segmentation fault caused by deleting logical unit, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04122.html][PATCH v2 3/3] bs_sheepdog.c: test connection when new logical unit is created, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04123.html][PATCH v2 1/3] bs_sheepdog.c: mock the behavior of QEMU's sheepdog driver in a correct manner, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04128.html]Re: [sheepdog] [PATCH v2 0/3] various improvements of bs_sheepdog.c, Hitoshi Mitake
+     * [https://www.spinics.net/lists/linux-stgt/msg04117.html][PATCH 0/2] improvemenets of bs_sheepdog.c, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04118.html][PATCH 1/2] bs_sheepdog.c: mock the behavior of QEMU's sheepdog driver in a correct manner, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04119.html][PATCH 2/2] bs_sheepdog.c: fix segmentation fault caused by deleting logical unit, Hitoshi Mitake
+          + [https://www.spinics.net/lists/linux-stgt/msg04120.html]Re: [PATCH 0/2] improvemenets of bs_sheepdog.c, Hitoshi Mitake
+     * [https://www.spinics.net/lists/linux-stgt/msg04112.html][PATCH 0/3] Several fixes for tgt-admin and rbd modifications, Dan Mick
+          + [https://www.spinics.net/lists/linux-stgt/msg04113.html][PATCH 1/3] tgt-admin: avoid zsh-specific syntax in system() call, Dan Mick
+          + [https://www.spinics.net/lists/linux-stgt/msg04114.html][PATCH 2/3] tgt-admin: abort check_device() early if -e returns false, Dan Mick
+          + [https://www.spinics.net/lists/linux-stgt/msg04115.html][PATCH 3/3] tgt-admin: avoid in-use and backing_store existence tests for rbd, Dan Mick
+          + [https://www.spinics.net/lists/linux-stgt/msg04140.html]Re: [PATCH 0/3] Several fixes for tgt-admin and rbd modifications, FUJITA Tomonori
+     * [https://www.spinics.net/lists/linux-stgt/msg04101.html][PATCH] Allow backends to specify which opcodes they support V2, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04102.html][PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., Ronnie Sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04126.html]Re: [PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., ronnie sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04133.html]Re: [PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., Hitoshi Mitake
+               o [https://www.spinics.net/lists/linux-stgt/msg04137.html]Re: [PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., ronnie sahlberg
+               o [https://www.spinics.net/lists/linux-stgt/msg04139.html]Re: [PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., FUJITA Tomonori
+                    # [https://www.spinics.net/lists/linux-stgt/msg04155.html]Re: [PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., ronnie sahlberg
+                         @ [https://www.spinics.net/lists/linux-stgt/msg04168.html]Re: [PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., ronnie sahlberg
+                         @ [https://www.spinics.net/lists/linux-stgt/msg04171.html]Re: [PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., FUJITA Tomonori
+                              - [https://www.spinics.net/lists/linux-stgt/msg04175.html]Re: [PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., ronnie sahlberg
+                                   = [https://www.spinics.net/lists/linux-stgt/msg04176.html]Re: [PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., FUJITA Tomonori
+                                   * [https://www.spinics.net/lists/linux-stgt/msg04177.html]Re: [PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., Dan Mick
+                                   + [https://www.spinics.net/lists/linux-stgt/msg04178.html]Re: [PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., FUJITA Tomonori
+                                   o [https://www.spinics.net/lists/linux-stgt/msg04179.html]Re: [PATCH] Add an array that describes which opcodes are supported by the RDWR and SHEEPDOG backends., Dan Mick
+     * [https://www.spinics.net/lists/linux-stgt/msg04099.html][PATCH] add --bsopts flag, pass to bs_init(), Dan Mick
+          + [https://www.spinics.net/lists/linux-stgt/msg04100.html][PATCH] Add bsopts flag, Dan Mick
+          + [https://www.spinics.net/lists/linux-stgt/msg04134.html]Re: [PATCH] add --bsopts flag, pass to bs_init(), Dan Mick
+               o [https://www.spinics.net/lists/linux-stgt/msg04135.html]Re: [PATCH] add --bsopts flag, pass to bs_init(), Hitoshi Mitake
+               o [https://www.spinics.net/lists/linux-stgt/msg04141.html]Re: [PATCH] add --bsopts flag, pass to bs_init(), FUJITA Tomonori
+                    # [https://www.spinics.net/lists/linux-stgt/msg04142.html]Re: [PATCH] add --bsopts flag, pass to bs_init(), Dan Mick
+     * [https://www.spinics.net/lists/linux-stgt/msg04097.html][PATCH] tgt-admin: avoid in-use and backing_store existence tests for rbd, Dan Mick
+          + [https://www.spinics.net/lists/linux-stgt/msg04107.html]Re: [PATCH] tgt-admin: avoid in-use and backing_store existence tests for rbd, FUJITA Tomonori
+               o [https://www.spinics.net/lists/linux-stgt/msg04109.html]Re: [PATCH] tgt-admin: avoid in-use and backing_store existence tests for rbd, Dan Mick
+                    # [https://www.spinics.net/lists/linux-stgt/msg04116.html]Re: [PATCH] tgt-admin: avoid in-use and backing_store existence tests for rbd, Dan Mick
+     * [https://www.spinics.net/lists/linux-stgt/msg04084.html][PATCH] Allow backends to specify which opcodes they support, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04085.html][PATCH] Add an optional supported-opcode-array to the backingstore template, Ronnie Sahlberg
+          + [https://www.spinics.net/lists/linux-stgt/msg04086.html]Re: [PATCH] Allow backends to specify which opcodes they support, Dan Mick
+               o [https://www.spinics.net/lists/linux-stgt/msg04088.html]Re: [PATCH] Allow backends to specify which opcodes they support, ronnie sahlberg
+                    # [https://www.spinics.net/lists/linux-stgt/msg04093.html]Re: [PATCH] Allow backends to specify which opcodes they support, Dan Mick
+                         @ [https://www.spinics.net/lists/linux-stgt/msg04103.html]Re: [PATCH] Allow backends to specify which opcodes they support, ronnie sahlberg
+                              - [https://www.spinics.net/lists/linux-stgt/msg04104.html]Re: [PATCH] Allow backends to specify which opcodes they support, Dan Mick
+     * [https://www.spinics.net/lists/linux-stgt/msg04078.html][PATCH 0/2] bs_rbd: unlimit images, keep cluster conn per image, Dan Mick
+          + [https://www.spinics.net/lists/linux-stgt/msg04079.html][PATCH 1/2] bs_rbd.c: store active_rbd info in addition to struct, scsi_lu, Dan Mick
+          + [https://www.spinics.net/lists/linux-stgt/msg04080.html][PATCH 2/2] bs_rbd.c: carry cluster connection along with rbd/lu, Dan Mick
+          + [https://www.spinics.net/lists/linux-stgt/msg04089.html]Re: [PATCH 0/2] bs_rbd: unlimit images, keep cluster conn per image, FUJITA Tomonori
+               o [https://www.spinics.net/lists/linux-stgt/msg04092.html]Re: [PATCH 0/2] bs_rbd: unlimit images, keep cluster conn per image, Dan Mick
+          + [https://www.spinics.net/lists/linux-stgt/msg04094.html][PATCH v2 0/2] bs_rbd: unlimit images, keep cluster conn per image, Dan Mick
+               o [https://www.spinics.net/lists/linux-stgt/msg04095.html][PATCH v2 1/2] bs_rbd.c: store active_rbd info in addition to struct scsi_lu, Dan Mick
+               o [https://www.spinics.net/lists/linux-stgt/msg04096.html][PATCH v2 2/2] bs_rbd.c: carry cluster connection along with rbd/lu, Dan Mick
+               o [https://www.spinics.net/lists/linux-stgt/msg04106.html]Re: [PATCH v2 0/2] bs_rbd: unlimit images, keep cluster conn per image, FUJITA Tomonori

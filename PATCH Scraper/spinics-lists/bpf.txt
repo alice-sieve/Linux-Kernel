@@ -1,682 +1,554 @@
-
-References
-
-   1. https://feeds.feedburner.com/packetfilters
-   2. https://www.spinics.net/lists/bpf/maillist.html
-   3. https://www.spinics.net/lists/bpf/thrd2.html
-   4. https://www.spinics.net/lists/bpf/msg05484.html
-   5. https://www.spinics.net/lists/bpf/msg05447.html
-   6. https://www.spinics.net/lists/bpf/msg05448.html
-   7. https://www.spinics.net/lists/bpf/msg05451.html
-   8. https://www.spinics.net/lists/bpf/msg05454.html
-   9. https://www.spinics.net/lists/bpf/msg05461.html
-  10. https://www.spinics.net/lists/bpf/msg05462.html
-  11. https://www.spinics.net/lists/bpf/msg05464.html
-  12. https://www.spinics.net/lists/bpf/msg05465.html
-  13. https://www.spinics.net/lists/bpf/msg05471.html
-  14. https://www.spinics.net/lists/bpf/msg05435.html
-  15. https://www.spinics.net/lists/bpf/msg05444.html
-  16. https://www.spinics.net/lists/bpf/msg05472.html
-  17. https://www.spinics.net/lists/bpf/msg05434.html
-  18. https://www.spinics.net/lists/bpf/msg05476.html
-  19. https://www.spinics.net/lists/bpf/msg05477.html
-  20. https://www.spinics.net/lists/bpf/msg05481.html
-  21. https://www.spinics.net/lists/bpf/msg05483.html
-  22. https://www.spinics.net/lists/bpf/msg05486.html
-  23. https://www.spinics.net/lists/bpf/msg05417.html
-  24. https://www.spinics.net/lists/bpf/msg05418.html
-  25. https://www.spinics.net/lists/bpf/msg05419.html
-  26. https://www.spinics.net/lists/bpf/msg05478.html
-  27. https://www.spinics.net/lists/bpf/msg05479.html
-  28. https://www.spinics.net/lists/bpf/msg05416.html
-  29. https://www.spinics.net/lists/bpf/msg05436.html
-  30. https://www.spinics.net/lists/bpf/msg05439.html
-  31. https://www.spinics.net/lists/bpf/msg05415.html
-  32. https://www.spinics.net/lists/bpf/msg05438.html
-  33. https://www.spinics.net/lists/bpf/msg05410.html
-  34. https://www.spinics.net/lists/bpf/msg05441.html
-  35. https://www.spinics.net/lists/bpf/msg05443.html
-  36. https://www.spinics.net/lists/bpf/msg05403.html
-  37. https://www.spinics.net/lists/bpf/msg05404.html
-  38. https://www.spinics.net/lists/bpf/msg05405.html
-  39. https://www.spinics.net/lists/bpf/msg05431.html
-  40. https://www.spinics.net/lists/bpf/msg05466.html
-  41. https://www.spinics.net/lists/bpf/msg05406.html
-  42. https://www.spinics.net/lists/bpf/msg05412.html
-  43. https://www.spinics.net/lists/bpf/msg05433.html
-  44. https://www.spinics.net/lists/bpf/msg05467.html
-  45. https://www.spinics.net/lists/bpf/msg05473.html
-  46. https://www.spinics.net/lists/bpf/msg05474.html
-  47. https://www.spinics.net/lists/bpf/msg05432.html
-  48. https://www.spinics.net/lists/bpf/msg05407.html
-  49. https://www.spinics.net/lists/bpf/msg05408.html
-  50. https://www.spinics.net/lists/bpf/msg05409.html
-  51. https://www.spinics.net/lists/bpf/msg05381.html
-  52. https://www.spinics.net/lists/bpf/msg05382.html
-  53. https://www.spinics.net/lists/bpf/msg05383.html
-  54. https://www.spinics.net/lists/bpf/msg05384.html
-  55. https://www.spinics.net/lists/bpf/msg05385.html
-  56. https://www.spinics.net/lists/bpf/msg05386.html
-  57. https://www.spinics.net/lists/bpf/msg05387.html
-  58. https://www.spinics.net/lists/bpf/msg05388.html
-  59. https://www.spinics.net/lists/bpf/msg05389.html
-  60. https://www.spinics.net/lists/bpf/msg05475.html
-  61. https://www.spinics.net/lists/bpf/msg05370.html
-  62. https://www.spinics.net/lists/bpf/msg05371.html
-  63. https://www.spinics.net/lists/bpf/msg05375.html
-  64. https://www.spinics.net/lists/bpf/msg05372.html
-  65. https://www.spinics.net/lists/bpf/msg05373.html
-  66. https://www.spinics.net/lists/bpf/msg05374.html
-  67. https://www.spinics.net/lists/bpf/msg05376.html
-  68. https://www.spinics.net/lists/bpf/msg05380.html
-  69. https://www.spinics.net/lists/bpf/msg05398.html
-  70. https://www.spinics.net/lists/bpf/msg05368.html
-  71. https://www.spinics.net/lists/bpf/msg05367.html
-  72. https://www.spinics.net/lists/bpf/msg05365.html
-  73. https://www.spinics.net/lists/bpf/msg05364.html
-  74. https://www.spinics.net/lists/bpf/msg05363.html
-  75. https://www.spinics.net/lists/bpf/msg05362.html
-  76. https://www.spinics.net/lists/bpf/msg05361.html
-  77. https://www.spinics.net/lists/bpf/msg05360.html
-  78. https://www.spinics.net/lists/bpf/msg05359.html
-  79. https://www.spinics.net/lists/bpf/msg05358.html
-  80. https://www.spinics.net/lists/bpf/msg05357.html
-  81. https://www.spinics.net/lists/bpf/msg05356.html
-  82. https://www.spinics.net/lists/bpf/msg05355.html
-  83. https://www.spinics.net/lists/bpf/msg05354.html
-  84. https://www.spinics.net/lists/bpf/msg05353.html
-  85. https://www.spinics.net/lists/bpf/msg05352.html
-  86. https://www.spinics.net/lists/bpf/msg05351.html
-  87. https://www.spinics.net/lists/bpf/msg05350.html
-  88. https://www.spinics.net/lists/bpf/msg05349.html
-  89. https://www.spinics.net/lists/bpf/msg05348.html
-  90. https://www.spinics.net/lists/bpf/msg05347.html
-  91. https://www.spinics.net/lists/bpf/msg05346.html
-  92. https://www.spinics.net/lists/bpf/msg05345.html
-  93. https://www.spinics.net/lists/bpf/msg05344.html
-  94. https://www.spinics.net/lists/bpf/msg05343.html
-  95. https://www.spinics.net/lists/bpf/msg05342.html
-  96. https://www.spinics.net/lists/bpf/msg05341.html
-  97. https://www.spinics.net/lists/bpf/msg05482.html
-  98. https://www.spinics.net/lists/bpf/msg05340.html
-  99. https://www.spinics.net/lists/bpf/msg05339.html
- 100. https://www.spinics.net/lists/bpf/msg05338.html
- 101. https://www.spinics.net/lists/bpf/msg05337.html
- 102. https://www.spinics.net/lists/bpf/msg05336.html
- 103. https://www.spinics.net/lists/bpf/msg05335.html
- 104. https://www.spinics.net/lists/bpf/msg05333.html
- 105. https://www.spinics.net/lists/bpf/msg05334.html
- 106. https://www.spinics.net/lists/bpf/msg05329.html
- 107. https://www.spinics.net/lists/bpf/msg05366.html
- 108. https://www.spinics.net/lists/bpf/msg05397.html
- 109. https://www.spinics.net/lists/bpf/msg05324.html
- 110. https://www.spinics.net/lists/bpf/msg05325.html
- 111. https://www.spinics.net/lists/bpf/msg05327.html
- 112. https://www.spinics.net/lists/bpf/msg05369.html
- 113. https://www.spinics.net/lists/bpf/msg05378.html
- 114. https://www.spinics.net/lists/bpf/msg05377.html
- 115. https://www.spinics.net/lists/bpf/msg05379.html
- 116. https://www.spinics.net/lists/bpf/msg05326.html
- 117. https://www.spinics.net/lists/bpf/msg05328.html
- 118. https://www.spinics.net/lists/bpf/msg05322.html
- 119. https://www.spinics.net/lists/bpf/msg05309.html
- 120. https://www.spinics.net/lists/bpf/msg05311.html
- 121. https://www.spinics.net/lists/bpf/msg05316.html
- 122. https://www.spinics.net/lists/bpf/msg05319.html
- 123. https://www.spinics.net/lists/bpf/msg05308.html
- 124. https://www.spinics.net/lists/bpf/msg05402.html
- 125. https://www.spinics.net/lists/bpf/msg05301.html
- 126. https://www.spinics.net/lists/bpf/msg05302.html
- 127. https://www.spinics.net/lists/bpf/msg05323.html
- 128. https://www.spinics.net/lists/bpf/msg05303.html
- 129. https://www.spinics.net/lists/bpf/msg05304.html
- 130. https://www.spinics.net/lists/bpf/msg05312.html
- 131. https://www.spinics.net/lists/bpf/msg05393.html
- 132. https://www.spinics.net/lists/bpf/msg05291.html
- 133. https://www.spinics.net/lists/bpf/msg05320.html
- 134. https://www.spinics.net/lists/bpf/msg05399.html
- 135. https://www.spinics.net/lists/bpf/msg05289.html
- 136. https://www.spinics.net/lists/bpf/msg05318.html
- 137. https://www.spinics.net/lists/bpf/msg05395.html
- 138. https://www.spinics.net/lists/bpf/msg05445.html
- 139. https://www.spinics.net/lists/bpf/msg05450.html
- 140. https://www.spinics.net/lists/bpf/msg05480.html
- 141. https://www.spinics.net/lists/bpf/msg05286.html
- 142. https://www.spinics.net/lists/bpf/msg05317.html
- 143. https://www.spinics.net/lists/bpf/msg05394.html
- 144. https://www.spinics.net/lists/bpf/msg05252.html
- 145. https://www.spinics.net/lists/bpf/msg05285.html
- 146. https://www.spinics.net/lists/bpf/msg05321.html
- 147. https://www.spinics.net/lists/bpf/msg05242.html
- 148. https://www.spinics.net/lists/bpf/msg05243.html
- 149. https://www.spinics.net/lists/bpf/msg05267.html
- 150. https://www.spinics.net/lists/bpf/msg05244.html
- 151. https://www.spinics.net/lists/bpf/msg05268.html
- 152. https://www.spinics.net/lists/bpf/msg05275.html
- 153. https://www.spinics.net/lists/bpf/msg05305.html
- 154. https://www.spinics.net/lists/bpf/msg05245.html
- 155. https://www.spinics.net/lists/bpf/msg05246.html
- 156. https://www.spinics.net/lists/bpf/msg05266.html
- 157. https://www.spinics.net/lists/bpf/msg05258.html
- 158. https://www.spinics.net/lists/bpf/msg05274.html
- 159. https://www.spinics.net/lists/bpf/msg05288.html
- 160. https://www.spinics.net/lists/bpf/msg05225.html
- 161. https://www.spinics.net/lists/bpf/msg05226.html
- 162. https://www.spinics.net/lists/bpf/msg05227.html
- 163. https://www.spinics.net/lists/bpf/msg05261.html
- 164. https://www.spinics.net/lists/bpf/msg05293.html
- 165. https://www.spinics.net/lists/bpf/msg05224.html
- 166. https://www.spinics.net/lists/bpf/msg05248.html
- 167. https://www.spinics.net/lists/bpf/msg05249.html
- 168. https://www.spinics.net/lists/bpf/msg05287.html
- 169. https://www.spinics.net/lists/bpf/msg05220.html
- 170. https://www.spinics.net/lists/bpf/msg05221.html
- 171. https://www.spinics.net/lists/bpf/msg05222.html
- 172. https://www.spinics.net/lists/bpf/msg05271.html
- 173. https://www.spinics.net/lists/bpf/msg05294.html
- 174. https://www.spinics.net/lists/bpf/msg05298.html
- 175. https://www.spinics.net/lists/bpf/msg05300.html
- 176. https://www.spinics.net/lists/bpf/msg05223.html
- 177. https://www.spinics.net/lists/bpf/msg05272.html
- 178. https://www.spinics.net/lists/bpf/msg05279.html
- 179. https://www.spinics.net/lists/bpf/msg05295.html
- 180. https://www.spinics.net/lists/bpf/msg05299.html
- 181. https://www.spinics.net/lists/bpf/msg05213.html
- 182. https://www.spinics.net/lists/bpf/msg05239.html
- 183. https://www.spinics.net/lists/bpf/msg05247.html
- 184. https://www.spinics.net/lists/bpf/msg05273.html
- 185. https://www.spinics.net/lists/bpf/msg05290.html
- 186. https://www.spinics.net/lists/bpf/msg05297.html
- 187. https://www.spinics.net/lists/bpf/msg05185.html
- 188. https://www.spinics.net/lists/bpf/msg05186.html
- 189. https://www.spinics.net/lists/bpf/msg05187.html
- 190. https://www.spinics.net/lists/bpf/msg05189.html
- 191. https://www.spinics.net/lists/bpf/msg05277.html
- 192. https://www.spinics.net/lists/bpf/msg05175.html
- 193. https://www.spinics.net/lists/bpf/msg05176.html
- 194. https://www.spinics.net/lists/bpf/msg05184.html
- 195. https://www.spinics.net/lists/bpf/msg05190.html
- 196. https://www.spinics.net/lists/bpf/msg05193.html
- 197. https://www.spinics.net/lists/bpf/msg05195.html
- 198. https://www.spinics.net/lists/bpf/msg05196.html
- 199. https://www.spinics.net/lists/bpf/msg05198.html
- 200. https://www.spinics.net/lists/bpf/msg05199.html
- 201. https://www.spinics.net/lists/bpf/msg05200.html
- 202. https://www.spinics.net/lists/bpf/msg05197.html
- 203. https://www.spinics.net/lists/bpf/msg05201.html
- 204. https://www.spinics.net/lists/bpf/msg05170.html
- 205. https://www.spinics.net/lists/bpf/msg05173.html
- 206. https://www.spinics.net/lists/bpf/msg05174.html
- 207. https://www.spinics.net/lists/bpf/msg05171.html
- 208. https://www.spinics.net/lists/bpf/msg05172.html
- 209. https://www.spinics.net/lists/bpf/msg05452.html
- 210. https://www.spinics.net/lists/bpf/msg05453.html
- 211. https://www.spinics.net/lists/bpf/msg05456.html
- 212. https://www.spinics.net/lists/bpf/msg05458.html
- 213. https://www.spinics.net/lists/bpf/msg05463.html
- 214. https://www.spinics.net/lists/bpf/msg05469.html
- 215. https://www.spinics.net/lists/bpf/msg05485.html
- 216. https://www.spinics.net/lists/bpf/msg05459.html
- 217. https://www.spinics.net/lists/bpf/msg05457.html
- 218. https://www.spinics.net/lists/bpf/msg05460.html
- 219. https://www.spinics.net/lists/bpf/msg05470.html
- 220. https://www.spinics.net/lists/bpf/msg05168.html
- 221. https://www.spinics.net/lists/bpf/msg05177.html
- 222. https://www.spinics.net/lists/bpf/msg05188.html
- 223. https://www.spinics.net/lists/bpf/msg05284.html
- 224. https://www.spinics.net/lists/bpf/msg05162.html
- 225. https://www.spinics.net/lists/bpf/msg05163.html
- 226. https://www.spinics.net/lists/bpf/msg05164.html
- 227. https://www.spinics.net/lists/bpf/msg05166.html
- 228. https://www.spinics.net/lists/bpf/msg05255.html
- 229. https://www.spinics.net/lists/bpf/msg05276.html
- 230. https://www.spinics.net/lists/bpf/msg05159.html
- 231. https://www.spinics.net/lists/bpf/msg05210.html
- 232. https://www.spinics.net/lists/bpf/msg05211.html
- 233. https://www.spinics.net/lists/bpf/msg05212.html
- 234. https://www.spinics.net/lists/bpf/msg05215.html
- 235. https://www.spinics.net/lists/bpf/msg05216.html
- 236. https://www.spinics.net/lists/bpf/msg05218.html
- 237. https://www.spinics.net/lists/bpf/msg05217.html
- 238. https://www.spinics.net/lists/bpf/msg05219.html
- 239. https://www.spinics.net/lists/bpf/msg05144.html
- 240. https://www.spinics.net/lists/bpf/msg05147.html
- 241. https://www.spinics.net/lists/bpf/msg05148.html
- 242. https://www.spinics.net/lists/bpf/msg05141.html
- 243. https://www.spinics.net/lists/bpf/msg05142.html
- 244. https://www.spinics.net/lists/bpf/msg05143.html
- 245. https://www.spinics.net/lists/bpf/msg05183.html
- 246. https://www.spinics.net/lists/bpf/msg05131.html
- 247. https://www.spinics.net/lists/bpf/msg05140.html
- 248. https://www.spinics.net/lists/bpf/msg05160.html
- 249. https://www.spinics.net/lists/bpf/msg05126.html
- 250. https://www.spinics.net/lists/bpf/msg05127.html
- 251. https://www.spinics.net/lists/bpf/msg05128.html
- 252. https://www.spinics.net/lists/bpf/msg05129.html
- 253. https://www.spinics.net/lists/bpf/msg05137.html
- 254. https://www.spinics.net/lists/bpf/msg05167.html
- 255. https://www.spinics.net/lists/bpf/msg05179.html
- 256. https://www.spinics.net/lists/bpf/msg05130.html
- 257. https://www.spinics.net/lists/bpf/msg05134.html
- 258. https://www.spinics.net/lists/bpf/msg05138.html
- 259. https://www.spinics.net/lists/bpf/msg05120.html
- 260. https://www.spinics.net/lists/bpf/msg05123.html
- 261. https://www.spinics.net/lists/bpf/msg05278.html
- 262. https://www.spinics.net/lists/bpf/msg05281.html
- 263. https://www.spinics.net/lists/bpf/msg05117.html
- 264. https://www.spinics.net/lists/bpf/msg05280.html
- 265. https://www.spinics.net/lists/bpf/msg05115.html
- 266. https://www.spinics.net/lists/bpf/msg05116.html
- 267. https://www.spinics.net/lists/bpf/msg05103.html
- 268. https://www.spinics.net/lists/bpf/msg05095.html
- 269. https://www.spinics.net/lists/bpf/msg05096.html
- 270. https://www.spinics.net/lists/bpf/msg05097.html
- 271. https://www.spinics.net/lists/bpf/msg05155.html
- 272. https://www.spinics.net/lists/bpf/msg05158.html
- 273. https://www.spinics.net/lists/bpf/msg05191.html
- 274. https://www.spinics.net/lists/bpf/msg05194.html
- 275. https://www.spinics.net/lists/bpf/msg05253.html
- 276. https://www.spinics.net/lists/bpf/msg05254.html
- 277. https://www.spinics.net/lists/bpf/msg05259.html
- 278. https://www.spinics.net/lists/bpf/msg05270.html
- 279. https://www.spinics.net/lists/bpf/msg05390.html
- 280. https://www.spinics.net/lists/bpf/msg05250.html
- 281. https://www.spinics.net/lists/bpf/msg05098.html
- 282. https://www.spinics.net/lists/bpf/msg05099.html
- 283. https://www.spinics.net/lists/bpf/msg05100.html
- 284. https://www.spinics.net/lists/bpf/msg05101.html
- 285. https://www.spinics.net/lists/bpf/msg05153.html
- 286. https://www.spinics.net/lists/bpf/msg05154.html
- 287. https://www.spinics.net/lists/bpf/msg05157.html
- 288. https://www.spinics.net/lists/bpf/msg05192.html
- 289. https://www.spinics.net/lists/bpf/msg05251.html
- 290. https://www.spinics.net/lists/bpf/msg05125.html
- 291. https://www.spinics.net/lists/bpf/msg05133.html
- 292. https://www.spinics.net/lists/bpf/msg05151.html
- 293. https://www.spinics.net/lists/bpf/msg05152.html
- 294. https://www.spinics.net/lists/bpf/msg05156.html
- 295. https://www.spinics.net/lists/bpf/msg05086.html
- 296. https://www.spinics.net/lists/bpf/msg05074.html
- 297. https://www.spinics.net/lists/bpf/msg05208.html
- 298. https://www.spinics.net/lists/bpf/msg05237.html
- 299. https://www.spinics.net/lists/bpf/msg05075.html
- 300. https://www.spinics.net/lists/bpf/msg05206.html
- 301. https://www.spinics.net/lists/bpf/msg05233.html
- 302. https://www.spinics.net/lists/bpf/msg05262.html
- 303. https://www.spinics.net/lists/bpf/msg05076.html
- 304. https://www.spinics.net/lists/bpf/msg05207.html
- 305. https://www.spinics.net/lists/bpf/msg05236.html
- 306. https://www.spinics.net/lists/bpf/msg05269.html
- 307. https://www.spinics.net/lists/bpf/msg05306.html
- 308. https://www.spinics.net/lists/bpf/msg05077.html
- 309. https://www.spinics.net/lists/bpf/msg05263.html
- 310. https://www.spinics.net/lists/bpf/msg05078.html
- 311. https://www.spinics.net/lists/bpf/msg05088.html
- 312. https://www.spinics.net/lists/bpf/msg05256.html
- 313. https://www.spinics.net/lists/bpf/msg05079.html
- 314. https://www.spinics.net/lists/bpf/msg05080.html
- 315. https://www.spinics.net/lists/bpf/msg05265.html
- 316. https://www.spinics.net/lists/bpf/msg05307.html
- 317. https://www.spinics.net/lists/bpf/msg05310.html
- 318. https://www.spinics.net/lists/bpf/msg05081.html
- 319. https://www.spinics.net/lists/bpf/msg05257.html
- 320. https://www.spinics.net/lists/bpf/msg05082.html
- 321. https://www.spinics.net/lists/bpf/msg05264.html
- 322. https://www.spinics.net/lists/bpf/msg05083.html
- 323. https://www.spinics.net/lists/bpf/msg05214.html
- 324. https://www.spinics.net/lists/bpf/msg05240.html
- 325. https://www.spinics.net/lists/bpf/msg05084.html
- 326. https://www.spinics.net/lists/bpf/msg05085.html
- 327. https://www.spinics.net/lists/bpf/msg05209.html
- 328. https://www.spinics.net/lists/bpf/msg05238.html
- 329. https://www.spinics.net/lists/bpf/msg05071.html
- 330. https://www.spinics.net/lists/bpf/msg05119.html
- 331. https://www.spinics.net/lists/bpf/msg05122.html
- 332. https://www.spinics.net/lists/bpf/msg05146.html
- 333. https://www.spinics.net/lists/bpf/msg05205.html
- 334. https://www.spinics.net/lists/bpf/msg05065.html
- 335. https://www.spinics.net/lists/bpf/msg05118.html
- 336. https://www.spinics.net/lists/bpf/msg05121.html
- 337. https://www.spinics.net/lists/bpf/msg05060.html
- 338. https://www.spinics.net/lists/bpf/msg05094.html
- 339. https://www.spinics.net/lists/bpf/msg05102.html
- 340. https://www.spinics.net/lists/bpf/msg05104.html
- 341. https://www.spinics.net/lists/bpf/msg05053.html
- 342. https://www.spinics.net/lists/bpf/msg05064.html
- 343. https://www.spinics.net/lists/bpf/msg05051.html
- 344. https://www.spinics.net/lists/bpf/msg05052.html
- 345. https://www.spinics.net/lists/bpf/msg05056.html
- 346. https://www.spinics.net/lists/bpf/msg05061.html
- 347. https://www.spinics.net/lists/bpf/msg05067.html
- 348. https://www.spinics.net/lists/bpf/msg05050.html
- 349. https://www.spinics.net/lists/bpf/msg05066.html
- 350. https://www.spinics.net/lists/bpf/msg05049.html
- 351. https://www.spinics.net/lists/bpf/msg05054.html
- 352. https://www.spinics.net/lists/bpf/msg05055.html
- 353. https://www.spinics.net/lists/bpf/msg05048.html
- 354. https://www.spinics.net/lists/bpf/msg05057.html
- 355. https://www.spinics.net/lists/bpf/msg05283.html
- 356. https://www.spinics.net/lists/bpf/msg05046.html
- 357. https://www.spinics.net/lists/bpf/msg05040.html
- 358. https://www.spinics.net/lists/bpf/msg05041.html
- 359. https://www.spinics.net/lists/bpf/msg05042.html
- 360. https://www.spinics.net/lists/bpf/msg05043.html
- 361. https://www.spinics.net/lists/bpf/msg05044.html
- 362. https://www.spinics.net/lists/bpf/msg05045.html
- 363. https://www.spinics.net/lists/bpf/msg05063.html
- 364. https://www.spinics.net/lists/bpf/msg05027.html
- 365. https://www.spinics.net/lists/bpf/msg05028.html
- 366. https://www.spinics.net/lists/bpf/msg05029.html
- 367. https://www.spinics.net/lists/bpf/msg05030.html
- 368. https://www.spinics.net/lists/bpf/msg05034.html
- 369. https://www.spinics.net/lists/bpf/msg05038.html
- 370. https://www.spinics.net/lists/bpf/msg05031.html
- 371. https://www.spinics.net/lists/bpf/msg05032.html
- 372. https://www.spinics.net/lists/bpf/msg05036.html
- 373. https://www.spinics.net/lists/bpf/msg05023.html
- 374. https://www.spinics.net/lists/bpf/msg05024.html
- 375. https://www.spinics.net/lists/bpf/msg05069.html
- 376. https://www.spinics.net/lists/bpf/msg05017.html
- 377. https://www.spinics.net/lists/bpf/msg05018.html
- 378. https://www.spinics.net/lists/bpf/msg05025.html
- 379. https://www.spinics.net/lists/bpf/msg05026.html
- 380. https://www.spinics.net/lists/bpf/msg05033.html
- 381. https://www.spinics.net/lists/bpf/msg05019.html
- 382. https://www.spinics.net/lists/bpf/msg05020.html
- 383. https://www.spinics.net/lists/bpf/msg05021.html
- 384. https://www.spinics.net/lists/bpf/msg05022.html
- 385. https://www.spinics.net/lists/bpf/msg05013.html
- 386. https://www.spinics.net/lists/bpf/msg05002.html
- 387. https://www.spinics.net/lists/bpf/msg05003.html
- 388. https://www.spinics.net/lists/bpf/msg05007.html
- 389. https://www.spinics.net/lists/bpf/msg05059.html
- 390. https://www.spinics.net/lists/bpf/msg05093.html
- 391. https://www.spinics.net/lists/bpf/msg05106.html
- 392. https://www.spinics.net/lists/bpf/msg05136.html
- 393. https://www.spinics.net/lists/bpf/msg05440.html
- 394. https://www.spinics.net/lists/bpf/msg05004.html
- 395. https://www.spinics.net/lists/bpf/msg05000.html
- 396. https://www.spinics.net/lists/bpf/msg05001.html
- 397. https://www.spinics.net/lists/bpf/msg05008.html
- 398. https://www.spinics.net/lists/bpf/msg04989.html
- 399. https://www.spinics.net/lists/bpf/msg04990.html
- 400. https://www.spinics.net/lists/bpf/msg04991.html
- 401. https://www.spinics.net/lists/bpf/msg04992.html
- 402. https://www.spinics.net/lists/bpf/msg04993.html
- 403. https://www.spinics.net/lists/bpf/msg05006.html
- 404. https://www.spinics.net/lists/bpf/msg05016.html
- 405. https://www.spinics.net/lists/bpf/msg05149.html
- 406. https://www.spinics.net/lists/bpf/msg05150.html
- 407. https://www.spinics.net/lists/bpf/msg04979.html
- 408. https://www.spinics.net/lists/bpf/msg04981.html
- 409. https://www.spinics.net/lists/bpf/msg04984.html
- 410. https://www.spinics.net/lists/bpf/msg05010.html
- 411. https://www.spinics.net/lists/bpf/msg04970.html
- 412. https://www.spinics.net/lists/bpf/msg04971.html
- 413. https://www.spinics.net/lists/bpf/msg04972.html
- 414. https://www.spinics.net/lists/bpf/msg04973.html
- 415. https://www.spinics.net/lists/bpf/msg04974.html
- 416. https://www.spinics.net/lists/bpf/msg04975.html
- 417. https://www.spinics.net/lists/bpf/msg04976.html
- 418. https://www.spinics.net/lists/bpf/msg04977.html
- 419. https://www.spinics.net/lists/bpf/msg05182.html
- 420. https://www.spinics.net/lists/bpf/msg05235.html
- 421. https://www.spinics.net/lists/bpf/msg05241.html
- 422. https://www.spinics.net/lists/bpf/msg05315.html
- 423. https://www.spinics.net/lists/bpf/msg05332.html
- 424. https://www.spinics.net/lists/bpf/msg05396.html
- 425. https://www.spinics.net/lists/bpf/msg05413.html
- 426. https://www.spinics.net/lists/bpf/msg04978.html
- 427. https://www.spinics.net/lists/bpf/msg05181.html
- 428. https://www.spinics.net/lists/bpf/msg05234.html
- 429. https://www.spinics.net/lists/bpf/msg05314.html
- 430. https://www.spinics.net/lists/bpf/msg05331.html
- 431. https://www.spinics.net/lists/bpf/msg05180.html
- 432. https://www.spinics.net/lists/bpf/msg05232.html
- 433. https://www.spinics.net/lists/bpf/msg05313.html
- 434. https://www.spinics.net/lists/bpf/msg05330.html
- 435. https://www.spinics.net/lists/bpf/msg05400.html
- 436. https://www.spinics.net/lists/bpf/msg05401.html
- 437. https://www.spinics.net/lists/bpf/msg05414.html
- 438. https://www.spinics.net/lists/bpf/msg05437.html
- 439. https://www.spinics.net/lists/bpf/msg05449.html
- 440. https://www.spinics.net/lists/bpf/msg05455.html
- 441. https://www.spinics.net/lists/bpf/msg05468.html
- 442. https://www.spinics.net/lists/bpf/msg05446.html
- 443. https://www.spinics.net/lists/bpf/msg04964.html
- 444. https://www.spinics.net/lists/bpf/msg04982.html
- 445. https://www.spinics.net/lists/bpf/msg05108.html
- 446. https://www.spinics.net/lists/bpf/msg05282.html
- 447. https://www.spinics.net/lists/bpf/msg04954.html
- 448. https://www.spinics.net/lists/bpf/msg04955.html
- 449. https://www.spinics.net/lists/bpf/msg05112.html
- 450. https://www.spinics.net/lists/bpf/msg05231.html
- 451. https://www.spinics.net/lists/bpf/msg04956.html
- 452. https://www.spinics.net/lists/bpf/msg04957.html
- 453. https://www.spinics.net/lists/bpf/msg04958.html
- 454. https://www.spinics.net/lists/bpf/msg04959.html
- 455. https://www.spinics.net/lists/bpf/msg04960.html
- 456. https://www.spinics.net/lists/bpf/msg04952.html
- 457. https://www.spinics.net/lists/bpf/msg04967.html
- 458. https://www.spinics.net/lists/bpf/msg04968.html
- 459. https://www.spinics.net/lists/bpf/msg04985.html
- 460. https://www.spinics.net/lists/bpf/msg04997.html
- 461. https://www.spinics.net/lists/bpf/msg04998.html
- 462. https://www.spinics.net/lists/bpf/msg05009.html
- 463. https://www.spinics.net/lists/bpf/msg05139.html
- 464. https://www.spinics.net/lists/bpf/msg04951.html
- 465. https://www.spinics.net/lists/bpf/msg04980.html
- 466. https://www.spinics.net/lists/bpf/msg04983.html
- 467. https://www.spinics.net/lists/bpf/msg04988.html
- 468. https://www.spinics.net/lists/bpf/msg04994.html
- 469. https://www.spinics.net/lists/bpf/msg04996.html
- 470. https://www.spinics.net/lists/bpf/msg04999.html
- 471. https://www.spinics.net/lists/bpf/msg04950.html
- 472. https://www.spinics.net/lists/bpf/msg04966.html
- 473. https://www.spinics.net/lists/bpf/msg05391.html
- 474. https://www.spinics.net/lists/bpf/msg05392.html
- 475. https://www.spinics.net/lists/bpf/msg04949.html
- 476. https://www.spinics.net/lists/bpf/msg05014.html
- 477. https://www.spinics.net/lists/bpf/msg04947.html
- 478. https://www.spinics.net/lists/bpf/msg04948.html
- 479. https://www.spinics.net/lists/bpf/msg04962.html
- 480. https://www.spinics.net/lists/bpf/msg05089.html
- 481. https://www.spinics.net/lists/bpf/msg04963.html
- 482. https://www.spinics.net/lists/bpf/msg05087.html
- 483. https://www.spinics.net/lists/bpf/msg04965.html
- 484. https://www.spinics.net/lists/bpf/msg05091.html
- 485. https://www.spinics.net/lists/bpf/msg05111.html
- 486. https://www.spinics.net/lists/bpf/msg04941.html
- 487. https://www.spinics.net/lists/bpf/msg04942.html
- 488. https://www.spinics.net/lists/bpf/msg04943.html
- 489. https://www.spinics.net/lists/bpf/msg04944.html
- 490. https://www.spinics.net/lists/bpf/msg04945.html
- 491. https://www.spinics.net/lists/bpf/msg04935.html
- 492. https://www.spinics.net/lists/bpf/msg04936.html
- 493. https://www.spinics.net/lists/bpf/msg04938.html
- 494. https://www.spinics.net/lists/bpf/msg04969.html
- 495. https://www.spinics.net/lists/bpf/msg04931.html
- 496. https://www.spinics.net/lists/bpf/msg04939.html
- 497. https://www.spinics.net/lists/bpf/msg05011.html
- 498. https://www.spinics.net/lists/bpf/msg04930.html
- 499. https://www.spinics.net/lists/bpf/msg04940.html
- 500. https://www.spinics.net/lists/bpf/msg05072.html
- 501. https://www.spinics.net/lists/bpf/msg05105.html
- 502. https://www.spinics.net/lists/bpf/msg05107.html
- 503. https://www.spinics.net/lists/bpf/msg05109.html
- 504. https://www.spinics.net/lists/bpf/msg04928.html
- 505. https://www.spinics.net/lists/bpf/msg04929.html
- 506. https://www.spinics.net/lists/bpf/msg04934.html
- 507. https://www.spinics.net/lists/bpf/msg05012.html
- 508. https://www.spinics.net/lists/bpf/msg04920.html
- 509. https://www.spinics.net/lists/bpf/msg04921.html
- 510. https://www.spinics.net/lists/bpf/msg04932.html
- 511. https://www.spinics.net/lists/bpf/msg04922.html
- 512. https://www.spinics.net/lists/bpf/msg04923.html
- 513. https://www.spinics.net/lists/bpf/msg04924.html
- 514. https://www.spinics.net/lists/bpf/msg04926.html
- 515. https://www.spinics.net/lists/bpf/msg04933.html
- 516. https://www.spinics.net/lists/bpf/msg04911.html
- 517. https://www.spinics.net/lists/bpf/msg04912.html
- 518. https://www.spinics.net/lists/bpf/msg04995.html
- 519. https://www.spinics.net/lists/bpf/msg05132.html
- 520. https://www.spinics.net/lists/bpf/msg04913.html
- 521. https://www.spinics.net/lists/bpf/msg04914.html
- 522. https://www.spinics.net/lists/bpf/msg04915.html
- 523. https://www.spinics.net/lists/bpf/msg04916.html
- 524. https://www.spinics.net/lists/bpf/msg04917.html
- 525. https://www.spinics.net/lists/bpf/msg04906.html
- 526. https://www.spinics.net/lists/bpf/msg04937.html
- 527. https://www.spinics.net/lists/bpf/msg04905.html
- 528. https://www.spinics.net/lists/bpf/msg04904.html
- 529. https://www.spinics.net/lists/bpf/msg04907.html
- 530. https://www.spinics.net/lists/bpf/msg04903.html
- 531. https://www.spinics.net/lists/bpf/msg04925.html
- 532. https://www.spinics.net/lists/bpf/msg04893.html
- 533. https://www.spinics.net/lists/bpf/msg04894.html
- 534. https://www.spinics.net/lists/bpf/msg04895.html
- 535. https://www.spinics.net/lists/bpf/msg04896.html
- 536. https://www.spinics.net/lists/bpf/msg04897.html
- 537. https://www.spinics.net/lists/bpf/msg04889.html
- 538. https://www.spinics.net/lists/bpf/msg04892.html
- 539. https://www.spinics.net/lists/bpf/msg04910.html
- 540. https://www.spinics.net/lists/bpf/msg05114.html
- 541. https://www.spinics.net/lists/bpf/msg04887.html
- 542. https://www.spinics.net/lists/bpf/msg05113.html
- 543. https://www.spinics.net/lists/bpf/msg04874.html
- 544. https://www.spinics.net/lists/bpf/msg04870.html
- 545. https://www.spinics.net/lists/bpf/msg04873.html
- 546. https://www.spinics.net/lists/bpf/msg04918.html
- 547. https://www.spinics.net/lists/bpf/msg04859.html
- 548. https://www.spinics.net/lists/bpf/msg04899.html
- 549. https://www.spinics.net/lists/bpf/msg04853.html
- 550. https://www.spinics.net/lists/bpf/msg04857.html
- 551. https://www.spinics.net/lists/bpf/msg04901.html
- 552. https://www.spinics.net/lists/bpf/msg04851.html
- 553. https://www.spinics.net/lists/bpf/msg04858.html
- 554. https://www.spinics.net/lists/bpf/msg04882.html
- 555. https://www.spinics.net/lists/bpf/msg04885.html
- 556. https://www.spinics.net/lists/bpf/msg04837.html
- 557. https://www.spinics.net/lists/bpf/msg04838.html
- 558. https://www.spinics.net/lists/bpf/msg04839.html
- 559. https://www.spinics.net/lists/bpf/msg04840.html
- 560. https://www.spinics.net/lists/bpf/msg04841.html
- 561. https://www.spinics.net/lists/bpf/msg04842.html
- 562. https://www.spinics.net/lists/bpf/msg04843.html
- 563. https://www.spinics.net/lists/bpf/msg04919.html
- 564. https://www.spinics.net/lists/bpf/msg04927.html
- 565. https://www.spinics.net/lists/bpf/msg04844.html
- 566. https://www.spinics.net/lists/bpf/msg04845.html
- 567. https://www.spinics.net/lists/bpf/msg04856.html
- 568. https://www.spinics.net/lists/bpf/msg04871.html
- 569. https://www.spinics.net/lists/bpf/msg04900.html
- 570. https://www.spinics.net/lists/bpf/msg04831.html
- 571. https://www.spinics.net/lists/bpf/msg04848.html
- 572. https://www.spinics.net/lists/bpf/msg04850.html
- 573. https://www.spinics.net/lists/bpf/msg04854.html
- 574. https://www.spinics.net/lists/bpf/msg04855.html
- 575. https://www.spinics.net/lists/bpf/msg04891.html
- 576. https://www.spinics.net/lists/bpf/msg04829.html
- 577. https://www.spinics.net/lists/bpf/msg04835.html
- 578. https://www.spinics.net/lists/bpf/msg04847.html
- 579. https://www.spinics.net/lists/bpf/msg04883.html
- 580. https://www.spinics.net/lists/bpf/msg04826.html
- 581. https://www.spinics.net/lists/bpf/msg04827.html
- 582. https://www.spinics.net/lists/bpf/msg04836.html
- 583. https://www.spinics.net/lists/bpf/msg04864.html
- 584. https://www.spinics.net/lists/bpf/msg04888.html
- 585. https://www.spinics.net/lists/bpf/msg04823.html
- 586. https://www.spinics.net/lists/bpf/msg04832.html
- 587. https://www.spinics.net/lists/bpf/msg04834.html
- 588. https://www.spinics.net/lists/bpf/msg04872.html
- 589. https://www.spinics.net/lists/bpf/msg04877.html
- 590. https://www.spinics.net/lists/bpf/msg04898.html
- 591. https://www.spinics.net/lists/bpf/msg05068.html
- 592. https://www.spinics.net/lists/bpf/msg04876.html
- 593. https://www.spinics.net/lists/bpf/msg04833.html
- 594. https://www.spinics.net/lists/bpf/msg04820.html
- 595. https://www.spinics.net/lists/bpf/msg04830.html
- 596. https://www.spinics.net/lists/bpf/msg04884.html
- 597. https://www.spinics.net/lists/bpf/msg04886.html
- 598. https://www.spinics.net/lists/bpf/msg04819.html
- 599. https://www.spinics.net/lists/bpf/msg04812.html
- 600. https://www.spinics.net/lists/bpf/msg04821.html
- 601. https://www.spinics.net/lists/bpf/msg04822.html
- 602. https://www.spinics.net/lists/bpf/msg04813.html
- 603. https://www.spinics.net/lists/bpf/msg04814.html
- 604. https://www.spinics.net/lists/bpf/msg04815.html
- 605. https://www.spinics.net/lists/bpf/msg04824.html
- 606. https://www.spinics.net/lists/bpf/msg04825.html
- 607. https://www.spinics.net/lists/bpf/msg04817.html
- 608. https://www.spinics.net/lists/bpf/msg04818.html
- 609. https://www.spinics.net/lists/bpf/msg04809.html
- 610. https://www.spinics.net/lists/bpf/msg04810.html
- 611. https://www.spinics.net/lists/bpf/msg04811.html
- 612. https://www.spinics.net/lists/bpf/msg04828.html
- 613. https://www.spinics.net/lists/bpf/msg04792.html
- 614. https://www.spinics.net/lists/bpf/msg04793.html
- 615. https://www.spinics.net/lists/bpf/msg04794.html
- 616. https://www.spinics.net/lists/bpf/msg04795.html
- 617. https://www.spinics.net/lists/bpf/msg04890.html
- 618. https://www.spinics.net/lists/bpf/msg04909.html
- 619. https://www.spinics.net/lists/bpf/msg04946.html
- 620. https://www.spinics.net/lists/bpf/msg05005.html
- 621. https://www.spinics.net/lists/bpf/msg05015.html
- 622. https://www.spinics.net/lists/bpf/msg04796.html
- 623. https://www.spinics.net/lists/bpf/msg04797.html
- 624. https://www.spinics.net/lists/bpf/msg05035.html
- 625. https://www.spinics.net/lists/bpf/msg05037.html
- 626. https://www.spinics.net/lists/bpf/msg05039.html
- 627. https://www.spinics.net/lists/bpf/msg04798.html
- 628. https://www.spinics.net/lists/bpf/msg04799.html
- 629. https://www.spinics.net/lists/bpf/msg04800.html
- 630. https://www.spinics.net/lists/bpf/msg04801.html
- 631. https://www.spinics.net/lists/bpf/msg04806.html
- 632. https://www.spinics.net/lists/bpf/msg04768.html
- 633. https://www.spinics.net/lists/bpf/msg04769.html
- 634. https://www.spinics.net/lists/bpf/msg04770.html
- 635. https://www.spinics.net/lists/bpf/msg04771.html
- 636. https://www.spinics.net/lists/bpf/msg04772.html
- 637. https://www.spinics.net/lists/bpf/msg04773.html
- 638. https://www.spinics.net/lists/bpf/msg04774.html
- 639. https://www.spinics.net/lists/bpf/msg04791.html
- 640. https://www.spinics.net/lists/bpf/msg04802.html
- 641. https://www.spinics.net/lists/bpf/msg04804.html
- 642. https://www.spinics.net/lists/bpf/msg04775.html
- 643. https://www.spinics.net/lists/bpf/msg04803.html
- 644. https://www.spinics.net/lists/bpf/msg04805.html
- 645. https://www.spinics.net/lists/bpf/msg04807.html
- 646. https://www.spinics.net/lists/bpf/msg04776.html
- 647. https://www.spinics.net/lists/bpf/msg04777.html
- 648. https://www.spinics.net/lists/bpf/msg04778.html
- 649. https://www.spinics.net/lists/bpf/msg04759.html
- 650. https://www.spinics.net/lists/bpf/msg04760.html
- 651. https://www.spinics.net/lists/bpf/msg04761.html
- 652. https://www.spinics.net/lists/bpf/msg04762.html
- 653. https://www.spinics.net/lists/bpf/msg04764.html
- 654. https://www.spinics.net/lists/bpf/msg05070.html
- 655. https://www.spinics.net/lists/bpf/msg04744.html
- 656. https://www.spinics.net/lists/bpf/msg04745.html
- 657. https://www.spinics.net/lists/bpf/msg04748.html
- 658. https://www.spinics.net/lists/bpf/msg04758.html
- 659. https://www.spinics.net/lists/bpf/msg04746.html
- 660. https://www.spinics.net/lists/bpf/msg04747.html
- 661. https://www.spinics.net/lists/bpf/msg04749.html
- 662. https://www.spinics.net/lists/bpf/msg04734.html
- 663. https://www.spinics.net/lists/bpf/msg04780.html
- 664. https://www.spinics.net/lists/bpf/msg05161.html
- 665. https://www.spinics.net/lists/bpf/msg05202.html
- 666. https://www.spinics.net/lists/bpf/msg05203.html
- 667. https://www.spinics.net/lists/bpf/msg05204.html
- 668. https://www.spinics.net/lists/bpf/msg05228.html
- 669. https://www.spinics.net/lists/bpf/msg05229.html
- 670. https://www.spinics.net/lists/
- 671. https://www.spinics.net/lists/linux-samsung-soc/
- 672. https://www.spinics.net/lists/linux-actions/
- 673. https://www.spinics.net/lists/linux-rockchip/
- 674. https://www.spinics.net/lists/linux-snps-arc/
- 675. https://www.spinics.net/lists/linux-usb/
- 676. https://www.spinics.net/lists/vfl/
- 677. https://www.spinics.net/lists/linux-scsi/
- 678. https://yosemitenews.info/
- 679. https://www.spinics.net/lists/
+     * [https://www.spinics.net/lists/bpf/msg05539.html][PATCH bpf v4 00/14] sockmap/tls fixes, Jakub Kicinski
+          + [https://www.spinics.net/lists/bpf/msg05540.html][PATCH bpf v4 01/14] net/tls: don't arm strparser immediately in tls_set_sw_offload(), Jakub Kicinski
+          + [https://www.spinics.net/lists/bpf/msg05541.html][PATCH bpf v4 02/14] net/tls: don't call tls_sk_proto_close for hw record offload, Jakub Kicinski
+          + [https://www.spinics.net/lists/bpf/msg05542.html][PATCH bpf v4 05/14] net/tls: fix transition through disconnect with close, Jakub Kicinski
+          + [https://www.spinics.net/lists/bpf/msg05543.html][PATCH bpf v4 04/14] net/tls: remove sock unlock/lock around strp_done(), Jakub Kicinski
+          + [https://www.spinics.net/lists/bpf/msg05544.html][PATCH bpf v4 07/14] bpf: sockmap, synchronize_rcu before free'ing map, Jakub Kicinski
+          + [https://www.spinics.net/lists/bpf/msg05545.html][PATCH bpf v4 03/14] net/tls: remove close callback sock unlock/lock around TX work flush, Jakub Kicinski
+          + [https://www.spinics.net/lists/bpf/msg05546.html][PATCH bpf v4 06/14] bpf: sockmap, sock_map_delete needs to use xchg, Jakub Kicinski
+          + [https://www.spinics.net/lists/bpf/msg05547.html][PATCH bpf v4 08/14] bpf: sockmap, only create entry if ulp is not already enabled, Jakub Kicinski
+          + [https://www.spinics.net/lists/bpf/msg05548.html][PATCH bpf v4 10/14] selftests/tls: add a test for ULP but no keys, Jakub Kicinski
+          + [https://www.spinics.net/lists/bpf/msg05549.html][PATCH bpf v4 11/14] selftests/tls: test error codes around TLS ULP installation, Jakub Kicinski
+          + [https://www.spinics.net/lists/bpf/msg05550.html][PATCH bpf v4 12/14] selftests/tls: add a bidirectional test, Jakub Kicinski
+          + [https://www.spinics.net/lists/bpf/msg05551.html][PATCH bpf v4 13/14] selftests/tls: close the socket with open record, Jakub Kicinski
+          + [https://www.spinics.net/lists/bpf/msg05552.html][PATCH bpf v4 14/14] selftests/tls: add shutdown tests, Jakub Kicinski
+          + [https://www.spinics.net/lists/bpf/msg05553.html][PATCH bpf v4 09/14] bpf: sockmap/tls, close can race with map free, Jakub Kicinski
+          + [https://www.spinics.net/lists/bpf/msg05554.html]Re: [PATCH bpf v4 00/14] sockmap/tls fixes, Jakub Kicinski
+          + [https://www.spinics.net/lists/bpf/msg05528.html][PATCH 1/2] libbpf: Fix endianness macro usage for some compilers, Arnaldo Carvalho de Melo
+               o [https://www.spinics.net/lists/bpf/msg05532.html]Re: [PATCH 1/2] libbpf: Fix endianness macro usage for some compilers, Y Song
+          + [https://www.spinics.net/lists/bpf/msg05529.html][PATCH 2/2] libbpf: Avoid designated initializers for unnamed union members, Arnaldo Carvalho de Melo
+               o [https://www.spinics.net/lists/bpf/msg05538.html]Re: [PATCH 2/2] libbpf: Avoid designated initializers for unnamed union members, Andrii Nakryiko
+     * [https://www.spinics.net/lists/bpf/msg05525.html][PATCH bpf v3] bpf: fix narrower loads on s390, Ilya Leoshkevich
+     * [https://www.spinics.net/lists/bpf/msg05524.html][PATCH bpf] selftests/bpf: fix sendmsg6_prog on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05531.html]Re: [PATCH bpf] selftests/bpf: fix sendmsg6_prog on s390, Andrey Ignatov
+     * [https://www.spinics.net/lists/bpf/msg05506.html][PATCH v2 bpf] libbpf: fix missing __WORDSIZE definition, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05507.html]Re: [PATCH v2 bpf] libbpf: fix missing __WORDSIZE definition, Andrii Nakryiko
+     * [https://www.spinics.net/lists/bpf/msg05504.html][PATCH bpf] libbpf: fix missing __WORDSIZE definition, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05505.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05508.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Arnaldo Carvalho de Melo
+               o [https://www.spinics.net/lists/bpf/msg05509.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Andrii Nakryiko
+                    # [https://www.spinics.net/lists/bpf/msg05512.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Arnaldo Carvalho de Melo
+                         @ [https://www.spinics.net/lists/bpf/msg05513.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Arnaldo Carvalho de Melo
+                              - [https://www.spinics.net/lists/bpf/msg05520.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Andrii Nakryiko
+                                   = [https://www.spinics.net/lists/bpf/msg05521.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Arnaldo Carvalho de Melo
+                                   * [https://www.spinics.net/lists/bpf/msg05555.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Andrii Nakryiko
+                                   + [https://www.spinics.net/lists/bpf/msg05556.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Arnaldo Carvalho de Melo
+     * [https://www.spinics.net/lists/bpf/msg05502.html][PATCH bpf v2] bpf: fix narrower loads on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05503.html]Re: [PATCH bpf v2] bpf: fix narrower loads on s390, Y Song
+          + [https://www.spinics.net/lists/bpf/msg05515.html]Re: [PATCH bpf v2] bpf: fix narrower loads on s390, Alexei Starovoitov
+          + [https://www.spinics.net/lists/bpf/msg05499.html][PATCH bpf] tools/bpf: fix bpftool build with OUTPUT set, Ilya Leoshkevich
+               o [https://www.spinics.net/lists/bpf/msg05510.html]Re: [PATCH bpf] tools/bpf: fix bpftool build with OUTPUT set, Jakub Kicinski
+                    # [https://www.spinics.net/lists/bpf/msg05526.html]Re: [PATCH bpf] tools/bpf: fix bpftool build with OUTPUT set, Ilya Leoshkevich
+                         @ [https://www.spinics.net/lists/bpf/msg05557.html]Re: [PATCH bpf] tools/bpf: fix bpftool build with OUTPUT set, Jakub Kicinski
+     * [https://www.spinics.net/lists/bpf/msg05496.html]Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive, Michael S. Tsirkin
+          + [https://www.spinics.net/lists/bpf/msg05498.html]Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive, Jason Wang
+               o [https://www.spinics.net/lists/bpf/msg05500.html]Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive, Michael S. Tsirkin
+                    # [https://www.spinics.net/lists/bpf/msg05501.html]Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive, Michael S. Tsirkin
+                         @ [https://www.spinics.net/lists/bpf/msg05522.html]Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive, Jason Wang
+                                   * [https://www.spinics.net/lists/bpf/msg05530.html]Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive, Michael S. Tsirkin
+     * [https://www.spinics.net/lists/bpf/msg05495.html][PATCH bpf] selftests/bpf: fix "valid read map access into a read-only array 1" on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05516.html]Re: [PATCH bpf] selftests/bpf: fix "valid read map access into a read-only array 1" on s390, Alexei Starovoitov
+     * [https://www.spinics.net/lists/bpf/msg05484.html][PATCH bpf] selftests/bpf: fix test_xdp_noinline on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05517.html]Re: [PATCH bpf] selftests/bpf: fix test_xdp_noinline on s390, Alexei Starovoitov
+     * [https://www.spinics.net/lists/bpf/msg05447.html][PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05448.html][PATCH bpf 2/2] selftests/bpf: structure test_{progs,maps,verifier} test runners uniformly, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05451.html]Re: [PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies, Stanislav Fomichev
+               o [https://www.spinics.net/lists/bpf/msg05454.html]Re: [PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies, Andrii Nakryiko
+                    # [https://www.spinics.net/lists/bpf/msg05461.html]Re: [PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies, Stanislav Fomichev
+                         @ [https://www.spinics.net/lists/bpf/msg05462.html]Re: [PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies, Andrii Nakryiko
+                              - [https://www.spinics.net/lists/bpf/msg05464.html]Re: [PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies, Stanislav Fomichev
+                                   = [https://www.spinics.net/lists/bpf/msg05465.html]Re: [PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies, Andrii Nakryiko
+                                   * [https://www.spinics.net/lists/bpf/msg05471.html]Re: [PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies, Alexei Starovoitov
+     * [https://www.spinics.net/lists/bpf/msg05435.html][PATCH bpf] selftests/bpf: fix perf_buffer on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05444.html]Re: [PATCH bpf] selftests/bpf: fix perf_buffer on s390, Andrii Nakryiko
+               o [https://www.spinics.net/lists/bpf/msg05472.html]Re: [PATCH bpf] selftests/bpf: fix perf_buffer on s390, Alexei Starovoitov
+     * [https://www.spinics.net/lists/bpf/msg05434.html][PATCH bpf] bpf: fix narrower loads on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05476.html]Re: [PATCH bpf] bpf: fix narrower loads on s390, Y Song
+               o [https://www.spinics.net/lists/bpf/msg05477.html]Re: [PATCH bpf] bpf: fix narrower loads on s390, Y Song
+                    # [https://www.spinics.net/lists/bpf/msg05481.html]Re: [PATCH bpf] bpf: fix narrower loads on s390, Ilya Leoshkevich
+                         @ [https://www.spinics.net/lists/bpf/msg05483.html]Re: [PATCH bpf] bpf: fix narrower loads on s390, Ilya Leoshkevich
+                              - [https://www.spinics.net/lists/bpf/msg05486.html]Re: [PATCH bpf] bpf: fix narrower loads on s390, Y Song
+                                   = [https://www.spinics.net/lists/bpf/msg05487.html]Re: [PATCH bpf] bpf: fix narrower loads on s390, Ilya Leoshkevich
+                                   * [https://www.spinics.net/lists/bpf/msg05489.html]Re: [PATCH bpf] bpf: fix narrower loads on s390, Y Song
+     * [https://www.spinics.net/lists/bpf/msg05417.html][PATCH 0/2] arm/arm64: Add support for function error injection, Leo Yan
+          + [https://www.spinics.net/lists/bpf/msg05418.html][PATCH 1/2] arm64: Add support for function error injection, Leo Yan
+          + [https://www.spinics.net/lists/bpf/msg05419.html][PATCH 2/2] arm: Add support for function error injection, Leo Yan
+          + [https://www.spinics.net/lists/bpf/msg05478.html]Re: [PATCH 0/2] arm/arm64: Add support for function error injection, Masami Hiramatsu
+               o [https://www.spinics.net/lists/bpf/msg05479.html]Re: [PATCH 0/2] arm/arm64: Add support for function error injection, Leo Yan
+     * [https://www.spinics.net/lists/bpf/msg05416.html][PATCH bpf v2] selftests/bpf: skip nmi test when perf hw events are disabled, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05436.html]Re: [PATCH bpf v2] selftests/bpf: skip nmi test when perf hw events are disabled, Andrii Nakryiko
+               o [https://www.spinics.net/lists/bpf/msg05439.html]Re: [PATCH bpf v2] selftests/bpf: skip nmi test when perf hw events are disabled, Alexei Starovoitov
+     * [https://www.spinics.net/lists/bpf/msg05415.html][PATCH bpf v3] selftests/bpf: fix "alu with different scalars 1" on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05438.html]Re: [PATCH bpf v3] selftests/bpf: fix "alu with different scalars 1" on s390, Alexei Starovoitov
+     * [https://www.spinics.net/lists/bpf/msg05410.html][PATCH bpf] libbpf: fix another GCC8 warning for strncpy, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05441.html]Re: [PATCH bpf] libbpf: fix another GCC8 warning for strncpy, Magnus Karlsson
+               o [https://www.spinics.net/lists/bpf/msg05443.html]Re: [PATCH bpf] libbpf: fix another GCC8 warning for strncpy, Alexei Starovoitov
+     * [https://www.spinics.net/lists/bpf/msg05381.html][bpf PATCH v3 0/8] sockmap/tls fixes, John Fastabend
+          + [https://www.spinics.net/lists/bpf/msg05382.html][bpf PATCH v3 1/8] net/tls: don't arm strparser immediately in tls_set_sw_offload(), John Fastabend
+          + [https://www.spinics.net/lists/bpf/msg05383.html][bpf PATCH v3 2/8] tls: remove close callback sock unlock/lock around TX work flush, John Fastabend
+          + [https://www.spinics.net/lists/bpf/msg05384.html][bpf PATCH v3 3/8] tls: remove sock unlock/lock around strp_done(), John Fastabend
+          + [https://www.spinics.net/lists/bpf/msg05385.html][bpf PATCH v3 4/8] bpf: tls fix transition through disconnect with close, John Fastabend
+          + [https://www.spinics.net/lists/bpf/msg05386.html][bpf PATCH v3 5/8] bpf: sockmap, sock_map_delete needs to use xchg, John Fastabend
+          + [https://www.spinics.net/lists/bpf/msg05387.html][bpf PATCH v3 6/8] bpf: sockmap, synchronize_rcu before free'ing map, John Fastabend
+          + [https://www.spinics.net/lists/bpf/msg05388.html][bpf PATCH v3 7/8] bpf: sockmap, only create entry if ulp is not already enabled, John Fastabend
+          + [https://www.spinics.net/lists/bpf/msg05389.html][bpf PATCH v3 8/8] bpf: sockmap/tls, close can race with map free, John Fastabend
+          + [https://www.spinics.net/lists/bpf/msg05475.html]Re: [bpf PATCH v3 0/8] sockmap/tls fixes, Jakub Kicinski
+     * [https://www.spinics.net/lists/bpf/msg05370.html][PATCH bpf 0/5] bpf: allow wide (u64) aligned loads for some fields of bpf_sock_addr, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg05371.html][PATCH bpf 2/5] bpf: allow wide aligned loads for bpf_sock_addr user_ip6 and msg_src_ip6, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg05375.html][PATCH bpf 1/5] bpf: rename bpf_ctx_wide_store_ok to bpf_ctx_wide_access_ok, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg05372.html][PATCH bpf 3/5] selftests/bpf: rename verifier/wide_store.c to verifier/wide_access.c, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg05373.html][PATCH bpf 4/5] selftests/bpf: add selftests for wide loads, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg05374.html][PATCH bpf 5/5] bpf: sync bpf.h to tools/, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg05376.html]Re: [PATCH bpf 0/5] bpf: allow wide (u64) aligned loads for some fields of bpf_sock_addr, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05380.html]Re: [PATCH bpf 0/5] bpf: allow wide (u64) aligned loads for some fields of bpf_sock_addr, Yonghong Song
+          + [https://www.spinics.net/lists/bpf/msg05398.html]Re: [PATCH bpf 0/5] bpf: allow wide (u64) aligned loads for some fields of bpf_sock_addr, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05368.html][PATCH AUTOSEL 5.2 095/249] bpf: silence warning messages in core, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05367.html][PATCH AUTOSEL 5.2 085/249] selftests/bpf : clean up feature/ when make clean, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05365.html][PATCH AUTOSEL 5.2 124/249] bpf: fix callees pruning callers, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05364.html][PATCH AUTOSEL 5.2 175/249] xsk: Properly terminate assignment in xskq_produce_flush_desc, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05363.html][PATCH AUTOSEL 5.2 207/249] ixgbe: Avoid NULL pointer dereference with VF on non-IPsec hw, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05362.html][PATCH AUTOSEL 5.1 083/219] bpf: silence warning messages in core, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05361.html][PATCH AUTOSEL 5.1 109/219] bpf: fix callees pruning callers, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05360.html][PATCH AUTOSEL 5.1 156/219] bpf: fix BPF_ALU32 | BPF_ARSH on BE arches, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05359.html][PATCH AUTOSEL 5.1 182/219] bpf: fix uapi bpf_prog_info fields alignment, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05358.html][PATCH AUTOSEL 5.1 196/219] libbpf: fix GCC8 warning for strncpy, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05357.html][PATCH AUTOSEL 5.1 198/219] selftests: bpf: fix inlines in test_lwt_seg6local, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05356.html][PATCH AUTOSEL 4.19 062/158] bpf: silence warning messages in core, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05355.html][PATCH AUTOSEL 4.19 135/158] bpf: fix uapi bpf_prog_info fields alignment, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05354.html][PATCH AUTOSEL 4.19 142/158] selftests: bpf: fix inlines in test_lwt_seg6local, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05353.html][PATCH AUTOSEL 4.19 145/158] tools: bpftool: Fix json dump crash on powerpc, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05352.html][PATCH AUTOSEL 4.14 047/105] bpf: silence warning messages in core, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05351.html][PATCH AUTOSEL 4.4 29/53] bpf: silence warning messages in core, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05350.html][PATCH AUTOSEL 4.9 36/73] bpf: silence warning messages in core, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05349.html][PATCH AUTOSEL 4.19 141/158] bpf, libbpf, smatch: Fix potential NULL pointer dereference, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05348.html][PATCH AUTOSEL 4.19 114/158] xsk: Properly terminate assignment in xskq_produce_flush_desc, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05347.html][PATCH AUTOSEL 5.1 218/219] xdp: fix race on generic receive path, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05346.html][PATCH AUTOSEL 5.1 202/219] tools: bpftool: Fix json dump crash on powerpc, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05345.html][PATCH AUTOSEL 5.1 197/219] bpf, libbpf, smatch: Fix potential NULL pointer dereference, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05344.html][PATCH AUTOSEL 5.1 180/219] ixgbe: Avoid NULL pointer dereference with VF on non-IPsec hw, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05343.html][PATCH AUTOSEL 5.1 154/219] xsk: Properly terminate assignment in xskq_produce_flush_desc, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05342.html][PATCH AUTOSEL 5.2 248/249] xdp: fix race on generic receive path, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05341.html][PATCH AUTOSEL 5.2 226/249] selftests: bpf: fix inlines in test_lwt_seg6local, Sasha Levin
+          + [https://www.spinics.net/lists/bpf/msg05482.html]Re: [PATCH AUTOSEL 5.2 226/249] selftests: bpf: fix inlines in test_lwt_seg6local, Jiri Benc
+               o [https://www.spinics.net/lists/bpf/msg05490.html]Re: [PATCH AUTOSEL 5.2 226/249] selftests: bpf: fix inlines in test_lwt_seg6local, Sasha Levin
+                    # [https://www.spinics.net/lists/bpf/msg05494.html]Re: [PATCH AUTOSEL 5.2 226/249] selftests: bpf: fix inlines in test_lwt_seg6local, Jiri Benc
+                         @ [https://www.spinics.net/lists/bpf/msg05511.html]Re: [PATCH AUTOSEL 5.2 226/249] selftests: bpf: fix inlines in test_lwt_seg6local, David Miller
+                              - [https://www.spinics.net/lists/bpf/msg05523.html]Re: [PATCH AUTOSEL 5.2 226/249] selftests: bpf: fix inlines in test_lwt_seg6local, Jiri Benc
+                         @ [https://www.spinics.net/lists/bpf/msg05514.html]Re: [PATCH AUTOSEL 5.2 226/249] selftests: bpf: fix inlines in test_lwt_seg6local, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05340.html][PATCH AUTOSEL 5.2 231/249] tools: bpftool: Fix json dump crash on powerpc, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05339.html][PATCH AUTOSEL 5.2 225/249] bpf, libbpf, smatch: Fix potential NULL pointer dereference, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05338.html][PATCH AUTOSEL 5.2 224/249] libbpf: fix GCC8 warning for strncpy, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05337.html][PATCH AUTOSEL 5.2 209/249] bpf: fix uapi bpf_prog_info fields alignment, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05336.html][PATCH AUTOSEL 5.2 189/249] net/mlx5e: Attach/detach XDP program safely, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05335.html][PATCH AUTOSEL 5.2 177/249] bpf: fix BPF_ALU32 | BPF_ARSH on BE arches, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05333.html][PATCH AUTOSEL 5.2 024/249] selftests/bpf: adjust verifier scale test, Sasha Levin
+          + [https://www.spinics.net/lists/bpf/msg05334.html][PATCH AUTOSEL 5.2 024/249] selftests/bpf: adjust verifier scale test, Sasha Levin
+     * [https://www.spinics.net/lists/bpf/msg05329.html][PATCH bpf] samples/bpf: build with -D__TARGET_ARCH_$(SRCARCH), Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05366.html]Re: [PATCH bpf] samples/bpf: build with -D__TARGET_ARCH_$(SRCARCH), Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05397.html]Re: [PATCH bpf] samples/bpf: build with -D__TARGET_ARCH_$(SRCARCH), Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05324.html][PATCH] mm/gup: Use put_user_page*() instead of put_page*(), Bharath Vedartham
+          + [https://www.spinics.net/lists/bpf/msg05325.html]Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*(), John Hubbard
+               o [https://www.spinics.net/lists/bpf/msg05327.html]Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*(), Bharath Vedartham
+                    # [https://www.spinics.net/lists/bpf/msg05369.html]Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*(), Ira Weiny
+                         @ [https://www.spinics.net/lists/bpf/msg05378.html]Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*(), Bharath Vedartham
+                    # [https://www.spinics.net/lists/bpf/msg05377.html]Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*(), John Hubbard
+                         @ [https://www.spinics.net/lists/bpf/msg05379.html]Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*(), Bharath Vedartham
+          + [https://www.spinics.net/lists/bpf/msg05326.html]Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*(), Jens Axboe
+               o [https://www.spinics.net/lists/bpf/msg05328.html]Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*(), Bharath Vedartham
+     * [https://www.spinics.net/lists/bpf/msg05309.html][PATCH bpf] selftests/bpf: fix test_send_signal_nmi on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05311.html]Re: [PATCH bpf] selftests/bpf: fix test_send_signal_nmi on s390, Andrii Nakryiko
+               o [https://www.spinics.net/lists/bpf/msg05316.html]Re: [PATCH bpf] selftests/bpf: fix test_send_signal_nmi on s390, Y Song
+                    # [https://www.spinics.net/lists/bpf/msg05319.html]Re: [PATCH bpf] selftests/bpf: fix test_send_signal_nmi on s390, Andrii Nakryiko
+     * [https://www.spinics.net/lists/bpf/msg05308.html][PATCH v2 bpf-next] selftests/bpf: remove logic duplication in test_verifier.c, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05402.html]Re: [PATCH v2 bpf-next] selftests/bpf: remove logic duplication in test_verifier.c, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05301.html][PATCH v3 bpf 0/3] fix BTF verification size resolution, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05302.html][PATCH v3 bpf 1/3] bpf: fix BTF verifier size resolution logic, Andrii Nakryiko
+               o [https://www.spinics.net/lists/bpf/msg05323.html]Re: [PATCH v3 bpf 1/3] bpf: fix BTF verifier size resolution logic, Martin Lau
+          + [https://www.spinics.net/lists/bpf/msg05303.html][PATCH v3 bpf 2/3] selftests/bpf: add trickier size resolution tests, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05304.html][PATCH v3 bpf 3/3] selftests/bpf: use typedef'ed arrays as map values, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05312.html]Re: [PATCH v3 bpf 0/3] fix BTF verification size resolution, Yonghong Song
+          + [https://www.spinics.net/lists/bpf/msg05393.html]Re: [PATCH v3 bpf 0/3] fix BTF verification size resolution, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05291.html][PATCH bpf] selftests/bpf: put test_stub.o into $(OUTPUT), Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05320.html]Re: [PATCH bpf] selftests/bpf: put test_stub.o into $(OUTPUT), Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05399.html]Re: [PATCH bpf] selftests/bpf: put test_stub.o into $(OUTPUT), Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05289.html][PATCH bpf] selftests/bpf: make directory prerequisites order-only, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05318.html]Re: [PATCH bpf] selftests/bpf: make directory prerequisites order-only, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05395.html]Re: [PATCH bpf] selftests/bpf: make directory prerequisites order-only, Daniel Borkmann
+               o [https://www.spinics.net/lists/bpf/msg05445.html]Re: [PATCH bpf] selftests/bpf: make directory prerequisites order-only, Alexei Starovoitov
+                    # [https://www.spinics.net/lists/bpf/msg05450.html]Re: [PATCH bpf] selftests/bpf: make directory prerequisites order-only, Andrii Nakryiko
+                    # [https://www.spinics.net/lists/bpf/msg05480.html]Re: [PATCH bpf] selftests/bpf: make directory prerequisites order-only, Ilya Leoshkevich
+     * [https://www.spinics.net/lists/bpf/msg05286.html][PATCH bpf] selftests/bpf: fix attach_probe on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05317.html]Re: [PATCH bpf] selftests/bpf: fix attach_probe on s390, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05394.html]Re: [PATCH bpf] selftests/bpf: fix attach_probe on s390, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05252.html][PATCH][bpf-next] bpf: verifier: avoid fall-through warnings, Gustavo A. R. Silva
+          + [https://www.spinics.net/lists/bpf/msg05285.html]Re: [PATCH][bpf-next] bpf: verifier: avoid fall-through warnings, Daniel Borkmann
+               o [https://www.spinics.net/lists/bpf/msg05321.html]Re: [PATCH][bpf-next] bpf: verifier: avoid fall-through warnings, Gustavo A. R. Silva
+     * [https://www.spinics.net/lists/bpf/msg05242.html][PATCH v4 bpf-next 0/4] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05243.html][PATCH v4 bpf-next 2/4] selftests/bpf: fix s930 -> s390 typo, Ilya Leoshkevich
+               o [https://www.spinics.net/lists/bpf/msg05267.html]Re: [PATCH v4 bpf-next 2/4] selftests/bpf: fix s930 -> s390 typo, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05244.html][PATCH v4 bpf-next 1/4] selftests/bpf: compile progs with -D__TARGET_ARCH_$(SRCARCH), Ilya Leoshkevich
+               o [https://www.spinics.net/lists/bpf/msg05268.html]Re: [PATCH v4 bpf-next 1/4] selftests/bpf: compile progs with -D__TARGET_ARCH_$(SRCARCH), Andrii Nakryiko
+                    # [https://www.spinics.net/lists/bpf/msg05275.html]Re: [PATCH v4 bpf-next 1/4] selftests/bpf: compile progs with -D__TARGET_ARCH_$(SRCARCH), Ilya Leoshkevich
+                         @ [https://www.spinics.net/lists/bpf/msg05305.html]Re: [PATCH v4 bpf-next 1/4] selftests/bpf: compile progs with -D__TARGET_ARCH_$(SRCARCH), Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05245.html][PATCH v4 bpf-next 4/4] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05246.html][PATCH v4 bpf-next 3/4] selftests/bpf: make PT_REGS_* work in userspace, Ilya Leoshkevich
+               o [https://www.spinics.net/lists/bpf/msg05266.html]Re: [PATCH v4 bpf-next 3/4] selftests/bpf: make PT_REGS_* work in userspace, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05258.html]Re: [PATCH v4 bpf-next 0/4] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Stanislav Fomichev
+               o [https://www.spinics.net/lists/bpf/msg05274.html]Re: [PATCH v4 bpf-next 0/4] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Ilya Leoshkevich
+                    # [https://www.spinics.net/lists/bpf/msg05288.html]Re: [PATCH v4 bpf-next 0/4] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05225.html][PATCH 0/2] Fold checksum at the end of bpf_csum_diff and fix, Paolo Pisati
+          + [https://www.spinics.net/lists/bpf/msg05226.html][PATCH 2/2] bpf, selftest: fix checksum value for test #13, Paolo Pisati
+          + [https://www.spinics.net/lists/bpf/msg05227.html][PATCH 1/2] bpf: bpf_csum_diff: fold the checksum before returning the value, Paolo Pisati
+          + [https://www.spinics.net/lists/bpf/msg05261.html]Re: [PATCH 0/2] Fold checksum at the end of bpf_csum_diff and fix, Andrii Nakryiko
+               o [https://www.spinics.net/lists/bpf/msg05293.html]Re: [PATCH 0/2] Fold checksum at the end of bpf_csum_diff and fix, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05224.html][PATCH v3 bpf] selftests/bpf: do not ignore clang failures, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05248.html]Re: [PATCH v3 bpf] selftests/bpf: do not ignore clang failures, Andrii Nakryiko
+               o [https://www.spinics.net/lists/bpf/msg05249.html]Re: [PATCH v3 bpf] selftests/bpf: do not ignore clang failures, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05287.html]Re: [PATCH v3 bpf] selftests/bpf: do not ignore clang failures, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05220.html][PATCH v2 bpf-next 0/3] fix BTF verification size resolution, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05221.html][PATCH v2 bpf-next 3/3] selftests/bpf: use typedef'ed arrays as map values, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05222.html][PATCH v2 bpf-next 1/3] bpf: fix BTF verifier size resolution logic, Andrii Nakryiko
+               o [https://www.spinics.net/lists/bpf/msg05271.html]Re: [PATCH v2 bpf-next 1/3] bpf: fix BTF verifier size resolution logic, Yonghong Song
+                    # [https://www.spinics.net/lists/bpf/msg05294.html]Re: [PATCH v2 bpf-next 1/3] bpf: fix BTF verifier size resolution logic, Andrii Nakryiko
+                         @ [https://www.spinics.net/lists/bpf/msg05298.html]Re: [PATCH v2 bpf-next 1/3] bpf: fix BTF verifier size resolution logic, Yonghong Song
+                              - [https://www.spinics.net/lists/bpf/msg05300.html]Re: [PATCH v2 bpf-next 1/3] bpf: fix BTF verifier size resolution logic, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05223.html][PATCH v2 bpf-next 2/3] selftests/bpf: add trickier size resolution tests, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05272.html]Re: [PATCH v2 bpf-next 0/3] fix BTF verification size resolution, Yonghong Song
+               o [https://www.spinics.net/lists/bpf/msg05279.html]Re: [PATCH v2 bpf-next 0/3] fix BTF verification size resolution, Daniel Borkmann
+                    # [https://www.spinics.net/lists/bpf/msg05295.html]Re: [PATCH v2 bpf-next 0/3] fix BTF verification size resolution, Andrii Nakryiko
+                         @ [https://www.spinics.net/lists/bpf/msg05299.html]Re: [PATCH v2 bpf-next 0/3] fix BTF verification size resolution, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05213.html][PATCH bpf-next] selftests/bpf: remove logic duplication in test_verifier.c, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05239.html]Re: [PATCH bpf-next] selftests/bpf: remove logic duplication in test_verifier.c, Krzesimir Nowak
+               o [https://www.spinics.net/lists/bpf/msg05247.html]Re: [PATCH bpf-next] selftests/bpf: remove logic duplication in test_verifier.c, Andrii Nakryiko
+                    # [https://www.spinics.net/lists/bpf/msg05273.html]Re: [PATCH bpf-next] selftests/bpf: remove logic duplication in test_verifier.c, Krzesimir Nowak
+                         @ [https://www.spinics.net/lists/bpf/msg05290.html]Re: [PATCH bpf-next] selftests/bpf: remove logic duplication in test_verifier.c, Daniel Borkmann
+                              - [https://www.spinics.net/lists/bpf/msg05297.html]Re: [PATCH bpf-next] selftests/bpf: remove logic duplication in test_verifier.c, Andrii Nakryiko
+     * [https://www.spinics.net/lists/bpf/msg05185.html][PATCH bpf-next v9 0/2] bpf: Allow bpf_skb_event_output for more prog types, Allan Zhang
+          + [https://www.spinics.net/lists/bpf/msg05186.html][PATCH bpf-next v9 1/2] bpf: Allow bpf_skb_event_output for a few prog types, Allan Zhang
+          + [https://www.spinics.net/lists/bpf/msg05187.html][PATCH bpf-next v9 2/2] selftests/bpf: Add selftests for bpf_perf_event_output, Allan Zhang
+          + [https://www.spinics.net/lists/bpf/msg05189.html]Re: [PATCH bpf-next v9 0/2] bpf: Allow bpf_skb_event_output for more prog types, Andrii Nakryiko
+                    # [https://www.spinics.net/lists/bpf/msg05277.html]Re: [PATCH bpf-next v9 0/2] bpf: Allow bpf_skb_event_output for more prog types, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05175.html][PATCH V2 0/1] tools/dtrace: initial implementation of DTrace, Kris Van Hees
+          + [https://www.spinics.net/lists/bpf/msg05176.html][PATCH V2 0/1] tools/dtrace: initial implementation of DTrace, Kris Van Hees
+               o [https://www.spinics.net/lists/bpf/msg05184.html]Re: [PATCH V2 1/1 (was 0/1 by accident)] tools/dtrace: initial implementation of DTrace, Kris Van Hees
+                    # [https://www.spinics.net/lists/bpf/msg05190.html]Re: [PATCH V2 1/1 (was 0/1 by accident)] tools/dtrace: initial implementation of DTrace, Daniel Borkmann
+                         @ [https://www.spinics.net/lists/bpf/msg05193.html]Re: [PATCH V2 1/1 (was 0/1 by accident)] tools/dtrace: initial implementation of DTrace, Steven Rostedt
+                         @ [https://www.spinics.net/lists/bpf/msg05195.html]Re: [PATCH V2 1/1 (was 0/1 by accident)] tools/dtrace: initial implementation of DTrace, Jonathan Corbet
+                              - [https://www.spinics.net/lists/bpf/msg05196.html]Re: [PATCH V2 1/1 (was 0/1 by accident)] tools/dtrace: initial implementation of DTrace, Daniel Borkmann
+                                   = [https://www.spinics.net/lists/bpf/msg05198.html]Re: [PATCH V2 1/1 (was 0/1 by accident)] tools/dtrace: initial implementation of DTrace, Kris Van Hees
+                                   * [https://www.spinics.net/lists/bpf/msg05199.html]Re: [PATCH V2 1/1 (was 0/1 by accident)] tools/dtrace: initial implementation of DTrace, Brendan Gregg
+                                   + [https://www.spinics.net/lists/bpf/msg05200.html]Re: [PATCH V2 1/1 (was 0/1 by accident)] tools/dtrace: initial implementation of DTrace, David Miller
+                              - [https://www.spinics.net/lists/bpf/msg05197.html]Re: [PATCH V2 1/1 (was 0/1 by accident)] tools/dtrace: initial implementation of DTrace, Brendan Gregg
+          + [https://www.spinics.net/lists/bpf/msg05201.html]Re: [PATCH V2 0/1] tools/dtrace: initial implementation of DTrace, David Miller
+     * [https://www.spinics.net/lists/bpf/msg05170.html][PATCH RFC 0/4] Add support to directly attach BPF program to ftrace, Joel Fernandes (Google)
+          + [https://www.spinics.net/lists/bpf/msg05173.html][PATCH RFC 1/4] Move bpf_raw_tracepoint functionality into bpf_trace.c, Joel Fernandes (Google)
+          + [https://www.spinics.net/lists/bpf/msg05174.html][PATCH RFC 2/4] trace/bpf: Add support for attach/detach of ftrace events to BPF, Joel Fernandes (Google)
+          + [https://www.spinics.net/lists/bpf/msg05171.html][PATCH RFC 3/4] lib/bpf: Add support for ftrace event attach and detach, Joel Fernandes (Google)
+          + [https://www.spinics.net/lists/bpf/msg05172.html][PATCH RFC 4/4] selftests/bpf: Add test for ftrace-based BPF attach/detach, Joel Fernandes (Google)
+          + [https://www.spinics.net/lists/bpf/msg05452.html]Re: [PATCH RFC 0/4] Add support to directly attach BPF program to ftrace, Alexei Starovoitov
+               o [https://www.spinics.net/lists/bpf/msg05453.html]Re: [PATCH RFC 0/4] Add support to directly attach BPF program to ftrace, Joel Fernandes
+                    # [https://www.spinics.net/lists/bpf/msg05456.html]Re: [PATCH RFC 0/4] Add support to directly attach BPF program to ftrace, Alexei Starovoitov
+                         @ [https://www.spinics.net/lists/bpf/msg05458.html]Re: [PATCH RFC 0/4] Add support to directly attach BPF program to ftrace, Joel Fernandes
+                              - [https://www.spinics.net/lists/bpf/msg05463.html]Re: [PATCH RFC 0/4] Add support to directly attach BPF program to ftrace, Joel Fernandes
+                                   = [https://www.spinics.net/lists/bpf/msg05469.html]Re: [PATCH RFC 0/4] Add support to directly attach BPF program to ftrace, Alexei Starovoitov
+                                   * [https://www.spinics.net/lists/bpf/msg05485.html]Re: [PATCH RFC 0/4] Add support to directly attach BPF program to ftrace, Joel Fernandes
+                                   + [https://www.spinics.net/lists/bpf/msg05488.html]Re: [PATCH RFC 0/4] Add support to directly attach BPF program to ftrace, Alexei Starovoitov
+                                   o [https://www.spinics.net/lists/bpf/msg05492.html]Re: [PATCH RFC 0/4] Add support to directly attach BPF program to ftrace, Joel Fernandes
+                         @ [https://www.spinics.net/lists/bpf/msg05459.html]Re: [PATCH RFC 0/4] Add support to directly attach BPF program to ftrace, Steven Rostedt
+                    # [https://www.spinics.net/lists/bpf/msg05457.html]Re: [PATCH RFC 0/4] Add support to directly attach BPF program to ftrace, Steven Rostedt
+                         @ [https://www.spinics.net/lists/bpf/msg05460.html]Re: [PATCH RFC 0/4] Add support to directly attach BPF program to ftrace, Joel Fernandes
+                         @ [https://www.spinics.net/lists/bpf/msg05470.html]Re: [PATCH RFC 0/4] Add support to directly attach BPF program to ftrace, Alexei Starovoitov
+     * [https://www.spinics.net/lists/bpf/msg05168.html][PATCH v2 bpf] selftests/bpf: fix bpf_target_sparc check, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05177.html]Re: [PATCH v2 bpf] selftests/bpf: fix bpf_target_sparc check, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05188.html]Re: [PATCH v2 bpf] selftests/bpf: fix bpf_target_sparc check, David Miller
+          + [https://www.spinics.net/lists/bpf/msg05284.html]Re: [PATCH v2 bpf] selftests/bpf: fix bpf_target_sparc check, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05162.html][PATCH] MAINTAINERS: update BPF JIT S390 maintainers, Vasily Gorbik
+          + [https://www.spinics.net/lists/bpf/msg05163.html]Re: [PATCH] MAINTAINERS: update BPF JIT S390 maintainers, Christian Borntraeger
+          + [https://www.spinics.net/lists/bpf/msg05164.html]Re: [PATCH] MAINTAINERS: update BPF JIT S390 maintainers, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05166.html]Re: [PATCH] MAINTAINERS: update BPF JIT S390 maintainers, Vasily Gorbik
+               o [https://www.spinics.net/lists/bpf/msg05255.html]Re: [PATCH] MAINTAINERS: update BPF JIT S390 maintainers, David Miller
+                    # [https://www.spinics.net/lists/bpf/msg05276.html]Re: [PATCH] MAINTAINERS: update BPF JIT S390 maintainers, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05159.html][PATCH bpf] bpf: fix BTF verifier size resolution logic, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05210.html]Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic, Yonghong Song
+               o [https://www.spinics.net/lists/bpf/msg05211.html]Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic, Andrii Nakryiko
+                    # [https://www.spinics.net/lists/bpf/msg05212.html]Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic, Yonghong Song
+                         @ [https://www.spinics.net/lists/bpf/msg05215.html]Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic, Andrii Nakryiko
+                              - [https://www.spinics.net/lists/bpf/msg05216.html]Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic, Yonghong Song
+                                   = [https://www.spinics.net/lists/bpf/msg05218.html]Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic, Andrii Nakryiko
+                              - [https://www.spinics.net/lists/bpf/msg05217.html]Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic, Yonghong Song
+                                   = [https://www.spinics.net/lists/bpf/msg05219.html]Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic, Andrii Nakryiko
+     * [https://www.spinics.net/lists/bpf/msg05141.html][PATCH bpf-next v8 0/2] bpf: Allow bpf_skb_event_output for more prog types, Allan Zhang
+          + [https://www.spinics.net/lists/bpf/msg05142.html][PATCH bpf-next v8 1/2] bpf: Allow bpf_skb_event_output for a few prog types, Allan Zhang
+          + [https://www.spinics.net/lists/bpf/msg05143.html][PATCH bpf-next v8 2/2] selftests/bpf: Add selftests for bpf_perf_event_output, Allan Zhang
+          + [https://www.spinics.net/lists/bpf/msg05183.html]Re: [PATCH bpf-next v8 0/2] bpf: Allow bpf_skb_event_output for more prog types, Andrii Nakryiko
+     * [https://www.spinics.net/lists/bpf/msg05131.html][PATCH bpf] selftests/bpf: fix bpf_target_sparc check, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05140.html]Re: [PATCH bpf] selftests/bpf: fix bpf_target_sparc check, Andrii Nakryiko
+               o [https://www.spinics.net/lists/bpf/msg05160.html]Re: [PATCH bpf] selftests/bpf: fix bpf_target_sparc check, Ilya Leoshkevich
+     * [https://www.spinics.net/lists/bpf/msg05126.html][PATCH v3 bpf-next 0/4] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05127.html][PATCH v3 bpf-next 1/4] selftests/bpf: compile progs with -D__TARGET_ARCH_$(ARCH), Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05128.html][PATCH v3 bpf-next 2/4] selftests/bpf: fix s930 -> s390 typo, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05129.html][PATCH v3 bpf-next 3/4] selftests/bpf: make PT_REGS_* work in userspace, Ilya Leoshkevich
+               o [https://www.spinics.net/lists/bpf/msg05137.html]Re: [PATCH v3 bpf-next 3/4] selftests/bpf: make PT_REGS_* work in userspace, Andrii Nakryiko
+                    # [https://www.spinics.net/lists/bpf/msg05167.html]Re: [PATCH v3 bpf-next 3/4] selftests/bpf: make PT_REGS_* work in userspace, Ilya Leoshkevich
+                         @ [https://www.spinics.net/lists/bpf/msg05179.html]Re: [PATCH v3 bpf-next 3/4] selftests/bpf: make PT_REGS_* work in userspace, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05130.html][PATCH v3 bpf-next 4/4] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05134.html]Re: [PATCH v3 bpf-next 0/4] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg05138.html]Re: [PATCH v3 bpf-next 0/4] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Andrii Nakryiko
+     * [https://www.spinics.net/lists/bpf/msg05120.html][PATCH bpf-next] libbpf: fix ptr to u64 conversion warning on 32-bit platforms, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05123.html]Re: [PATCH bpf-next] libbpf: fix ptr to u64 conversion warning on 32-bit platforms, Yonghong Song
+               o [https://www.spinics.net/lists/bpf/msg05278.html]Re: [PATCH bpf-next] libbpf: fix ptr to u64 conversion warning on 32-bit platforms, Matt Hart
+                    # [https://www.spinics.net/lists/bpf/msg05281.html]Re: [PATCH bpf-next] libbpf: fix ptr to u64 conversion warning on 32-bit platforms, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05117.html][PATCH bpf-next] bpf: fix precision bit propagation for BPF_ST instructions, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05280.html]Re: [PATCH bpf-next] bpf: fix precision bit propagation for BPF_ST instructions, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05095.html][bpf PATCH v2 0/6] bpf: sockmap/tls fixes, John Fastabend
+          + [https://www.spinics.net/lists/bpf/msg05096.html][bpf PATCH v2 1/6] tls: remove close callback sock unlock/lock and flush_sync, John Fastabend
+          + [https://www.spinics.net/lists/bpf/msg05097.html][bpf PATCH v2 2/6] bpf: tls fix transition through disconnect with close, John Fastabend
+               o [https://www.spinics.net/lists/bpf/msg05155.html]Re: [bpf PATCH v2 2/6] bpf: tls fix transition through disconnect with close, Jakub Kicinski
+                    # [https://www.spinics.net/lists/bpf/msg05158.html]Re: [bpf PATCH v2 2/6] bpf: tls fix transition through disconnect with close, John Fastabend
+                         @ [https://www.spinics.net/lists/bpf/msg05191.html]Re: [bpf PATCH v2 2/6] bpf: tls fix transition through disconnect with close, Jakub Kicinski
+                              - [https://www.spinics.net/lists/bpf/msg05194.html]Re: [bpf PATCH v2 2/6] bpf: tls fix transition through disconnect with close, Jakub Kicinski
+                                   = [https://www.spinics.net/lists/bpf/msg05253.html]Re: [bpf PATCH v2 2/6] bpf: tls fix transition through disconnect with close, John Fastabend
+                                   * [https://www.spinics.net/lists/bpf/msg05254.html]Re: [bpf PATCH v2 2/6] bpf: tls fix transition through disconnect with close, Jakub Kicinski
+                                   + [https://www.spinics.net/lists/bpf/msg05259.html]Re: [bpf PATCH v2 2/6] bpf: tls fix transition through disconnect with close, John Fastabend
+                                   o [https://www.spinics.net/lists/bpf/msg05270.html]Re: [bpf PATCH v2 2/6] bpf: tls fix transition through disconnect with close, Jakub Kicinski
+                                   # [https://www.spinics.net/lists/bpf/msg05390.html]Re: [bpf PATCH v2 2/6] bpf: tls fix transition through disconnect with close, John Fastabend
+                              - [https://www.spinics.net/lists/bpf/msg05250.html]Re: [bpf PATCH v2 2/6] bpf: tls fix transition through disconnect with close, John Fastabend
+          + [https://www.spinics.net/lists/bpf/msg05098.html][bpf PATCH v2 3/6] bpf: sockmap, sock_map_delete needs to use xchg, John Fastabend
+          + [https://www.spinics.net/lists/bpf/msg05099.html][bpf PATCH v2 4/6] bpf: sockmap, synchronize_rcu before free'ing map, John Fastabend
+          + [https://www.spinics.net/lists/bpf/msg05100.html][bpf PATCH v2 5/6] bpf: sockmap, only create entry if ulp is not already enabled, John Fastabend
+          + [https://www.spinics.net/lists/bpf/msg05101.html][bpf PATCH v2 6/6] bpf: sockmap/tls, close can race with map free, John Fastabend
+               o [https://www.spinics.net/lists/bpf/msg05153.html]Re: [bpf PATCH v2 6/6] bpf: sockmap/tls, close can race with map free, Jakub Kicinski
+               o [https://www.spinics.net/lists/bpf/msg05154.html]Re: [bpf PATCH v2 6/6] bpf: sockmap/tls, close can race with map free, Jakub Kicinski
+                    # [https://www.spinics.net/lists/bpf/msg05157.html]Re: [bpf PATCH v2 6/6] bpf: sockmap/tls, close can race with map free, John Fastabend
+                         @ [https://www.spinics.net/lists/bpf/msg05192.html]Re: [bpf PATCH v2 6/6] bpf: sockmap/tls, close can race with map free, Jakub Kicinski
+                              - [https://www.spinics.net/lists/bpf/msg05251.html]Re: [bpf PATCH v2 6/6] bpf: sockmap/tls, close can race with map free, John Fastabend
+          + [https://www.spinics.net/lists/bpf/msg05125.html]Re: [bpf PATCH v2 0/6] bpf: sockmap/tls fixes, Jakub Kicinski
+               o [https://www.spinics.net/lists/bpf/msg05133.html]Re: [bpf PATCH v2 0/6] bpf: sockmap/tls fixes, John Fastabend
+                    # [https://www.spinics.net/lists/bpf/msg05151.html]Re: [bpf PATCH v2 0/6] bpf: sockmap/tls fixes, Jakub Kicinski
+                         @ [https://www.spinics.net/lists/bpf/msg05152.html]Re: [bpf PATCH v2 0/6] bpf: sockmap/tls fixes, Jakub Kicinski
+                              - [https://www.spinics.net/lists/bpf/msg05156.html]Re: [bpf PATCH v2 0/6] bpf: sockmap/tls fixes, John Fastabend
+     * [https://www.spinics.net/lists/bpf/msg05060.html]Re: [PATCH v3 bpf-next 4/9] libbpf: add kprobe/uprobe attach API, Matt Hart
+          + [https://www.spinics.net/lists/bpf/msg05094.html]Re: [PATCH v3 bpf-next 4/9] libbpf: add kprobe/uprobe attach API, Andrii Nakryiko
+               o [https://www.spinics.net/lists/bpf/msg05102.html]Re: [PATCH v3 bpf-next 4/9] libbpf: add kprobe/uprobe attach API, Matt Hart
+                    # [https://www.spinics.net/lists/bpf/msg05104.html]Re: [PATCH v3 bpf-next 4/9] libbpf: add kprobe/uprobe attach API, Andrii Nakryiko
+     * [https://www.spinics.net/lists/bpf/msg05053.html][PATCH bpf-next] tools: bpftool: add completion for bpftool prog "loadall", Quentin Monnet
+          + [https://www.spinics.net/lists/bpf/msg05064.html]Re: [PATCH bpf-next] tools: bpftool: add completion for bpftool prog "loadall", Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05051.html][PATCH net-next 1/2] bpf: skip sockopt hooks without CONFIG_NET, Arnd Bergmann
+          + [https://www.spinics.net/lists/bpf/msg05052.html][PATCH net-next 2/2] bpf: avoid unused variable warning in tcp_bpf_rtt(), Arnd Bergmann
+               o [https://www.spinics.net/lists/bpf/msg05056.html]Re: [PATCH net-next 2/2] bpf: avoid unused variable warning in tcp_bpf_rtt(), Soheil Hassas Yeganeh
+          + [https://www.spinics.net/lists/bpf/msg05061.html]Re: [PATCH net-next 1/2] bpf: skip sockopt hooks without CONFIG_NET, Yonghong Song
+               o [https://www.spinics.net/lists/bpf/msg05067.html]Re: [PATCH net-next 1/2] bpf: skip sockopt hooks without CONFIG_NET, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05050.html][PATCH] [net-next] net/mlx5e: xsk: dynamically allocate mlx5e_channel_param, Arnd Bergmann
+          + [https://www.spinics.net/lists/bpf/msg05066.html]Re: [PATCH] [net-next] net/mlx5e: xsk: dynamically allocate mlx5e_channel_param, Maxim Mikityanskiy
+     * [https://www.spinics.net/lists/bpf/msg05049.html][PATCH] [RFC] Revert "bpf: Fix ORC unwinding in non-JIT BPF code", Arnd Bergmann
+          + [https://www.spinics.net/lists/bpf/msg05054.html]Re: [PATCH] [RFC] Revert "bpf: Fix ORC unwinding in non-JIT BPF code", Josh Poimboeuf
+               o [https://www.spinics.net/lists/bpf/msg05055.html]Re: [PATCH] [RFC] Revert "bpf: Fix ORC unwinding in non-JIT BPF code", Arnd Bergmann
+     * [https://www.spinics.net/lists/bpf/msg05048.html][PATCH bpf] xdp: fix potential deadlock on socket mutex, Ilya Maximets
+          + [https://www.spinics.net/lists/bpf/msg05057.html]Re: [PATCH bpf] xdp: fix potential deadlock on socket mutex, Jonathan Lemon
+          + [https://www.spinics.net/lists/bpf/msg05283.html]Re: [PATCH bpf] xdp: fix potential deadlock on socket mutex, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05040.html][PATCH v7 bpf-next 0/5] libbpf: add perf buffer abstraction and API, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05041.html][PATCH v7 bpf-next 1/5] libbpf: add perf buffer API, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05042.html][PATCH v7 bpf-next 2/5] libbpf: auto-set PERF_EVENT_ARRAY size to number of CPUs, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05043.html][PATCH v7 bpf-next 3/5] selftests/bpf: test perf buffer API, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05044.html][PATCH v7 bpf-next 5/5] libbpf: add perf_buffer_ prefix to README, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05045.html][PATCH v7 bpf-next 4/5] tools/bpftool: switch map event_pipe to libbpf's perf_buffer, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05063.html]Re: [PATCH v7 bpf-next 0/5] libbpf: add perf buffer abstraction and API, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05027.html][PATCH v6 bpf-next 0/5] libbpf: add perf buffer abstraction and API, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05028.html][PATCH v6 bpf-next 1/5] libbpf: add perf buffer API, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05029.html][PATCH v6 bpf-next 2/5] libbpf: auto-set PERF_EVENT_ARRAY size to number of CPUs, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05030.html][PATCH v6 bpf-next 3/5] selftests/bpf: test perf buffer API, Andrii Nakryiko
+               o [https://www.spinics.net/lists/bpf/msg05034.html]Re: [PATCH v6 bpf-next 3/5] selftests/bpf: test perf buffer API, Yonghong Song
+                    # [https://www.spinics.net/lists/bpf/msg05038.html]Re: [PATCH v6 bpf-next 3/5] selftests/bpf: test perf buffer API, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05031.html][PATCH v6 bpf-next 5/5] libbpf: add perf_buffer_ prefix to README, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05032.html][PATCH v6 bpf-next 4/5] tools/bpftool: switch map event_pipe to libbpf's perf_buffer, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05036.html]Re: [PATCH v6 bpf-next 0/5] libbpf: add perf buffer abstraction and API, Yonghong Song
+     * [https://www.spinics.net/lists/bpf/msg05023.html][PATCH bpf-next] selftests/bpf: fix test_attach_probe map definition, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05024.html]Re: [PATCH bpf-next] selftests/bpf: fix test_attach_probe map definition, Yonghong Song
+          + [https://www.spinics.net/lists/bpf/msg05069.html]Re: [PATCH bpf-next] selftests/bpf: fix test_attach_probe map definition, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg05017.html][PATCH v5 bpf-next 0/5] libbpf: add perf buffer abstraction and API, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05018.html][PATCH v5 bpf-next 1/5] libbpf: add perf buffer API, Andrii Nakryiko
+               o [https://www.spinics.net/lists/bpf/msg05025.html]Re: [PATCH v5 bpf-next 1/5] libbpf: add perf buffer API, Yonghong Song
+                    # [https://www.spinics.net/lists/bpf/msg05026.html]Re: [PATCH v5 bpf-next 1/5] libbpf: add perf buffer API, Andrii Nakryiko
+                         @ [https://www.spinics.net/lists/bpf/msg05033.html]Re: [PATCH v5 bpf-next 1/5] libbpf: add perf buffer API, Yonghong Song
+          + [https://www.spinics.net/lists/bpf/msg05019.html][PATCH v5 bpf-next 2/5] libbpf: auto-set PERF_EVENT_ARRAY size to number of CPUs, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05020.html][PATCH v5 bpf-next 3/5] selftests/bpf: test perf buffer API, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05021.html][PATCH v5 bpf-next 4/5] tools/bpftool: switch map event_pipe to libbpf's perf_buffer, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05022.html][PATCH v5 bpf-next 5/5] libbpf: add perf_buffer_ prefix to README, Andrii Nakryiko
+     * [https://www.spinics.net/lists/bpf/msg05002.html][PATCH bpf-next 0/2] libbpf: add an option to reuse maps when loading a program, Anton Protopopov
+          + [https://www.spinics.net/lists/bpf/msg05003.html][PATCH bpf-next 1/2] bpf, libbpf: add a new API bpf_object__reuse_maps(), Anton Protopopov
+               o [https://www.spinics.net/lists/bpf/msg05007.html]Re: [PATCH bpf-next 1/2] bpf, libbpf: add a new API bpf_object__reuse_maps(), Daniel Borkmann
+                    # [https://www.spinics.net/lists/bpf/msg05059.html]Re: [PATCH bpf-next 1/2] bpf, libbpf: add a new API bpf_object__reuse_maps(), Anton Protopopov
+                    # [https://www.spinics.net/lists/bpf/msg05093.html]Re: [PATCH bpf-next 1/2] bpf, libbpf: add a new API bpf_object__reuse_maps(), Andrii Nakryiko
+                         @ [https://www.spinics.net/lists/bpf/msg05106.html]Re: [PATCH bpf-next 1/2] bpf, libbpf: add a new API bpf_object__reuse_maps(), Anton Protopopov
+                              - [https://www.spinics.net/lists/bpf/msg05136.html]Re: [PATCH bpf-next 1/2] bpf, libbpf: add a new API bpf_object__reuse_maps(), Andrii Nakryiko
+                                   = [https://www.spinics.net/lists/bpf/msg05440.html]Re: [PATCH bpf-next 1/2] bpf, libbpf: add a new API bpf_object__reuse_maps(), Anton Protopopov
+          + [https://www.spinics.net/lists/bpf/msg05004.html][PATCH bpf-next 2/2] bpf, libbpf: add an option to reuse existing maps in bpf_prog_load_xattr, Anton Protopopov
+     * [https://www.spinics.net/lists/bpf/msg05000.html][PATCH bpf-next v2] tools: bpftool: add "prog run" subcommand to test-run programs, Quentin Monnet
+          + [https://www.spinics.net/lists/bpf/msg05001.html]Re: [PATCH bpf-next v2] tools: bpftool: add "prog run" subcommand to test-run programs, Y Song
+          + [https://www.spinics.net/lists/bpf/msg05008.html]Re: [PATCH bpf-next v2] tools: bpftool: add "prog run" subcommand to test-run programs, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg04989.html][PATCH v5 bpf-next 0/4] capture integers in BTF type info for map defs, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg04990.html][PATCH v5 bpf-next 1/4] libbpf: capture value in BTF type info for BTF-defined map defs, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg04991.html][PATCH v5 bpf-next 2/4] selftests/bpf: add __uint and __type macro for BTF-defined maps, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg04992.html][PATCH v5 bpf-next 4/4] selftests/bpf: convert legacy BPF maps to BTF-defined ones, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg04993.html][PATCH v5 bpf-next 3/4] selftests/bpf: convert selftests using BTF-defined maps to new syntax, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg05006.html]Re: [PATCH v5 bpf-next 0/4] capture integers in BTF type info for map defs, Daniel Borkmann
+               o [https://www.spinics.net/lists/bpf/msg05016.html]Re: [PATCH v5 bpf-next 0/4] capture integers in BTF type info for map defs, Andrii Nakryiko
+               o [https://www.spinics.net/lists/bpf/msg05149.html]Re: [PATCH v5 bpf-next 0/4] capture integers in BTF type info for map defs, Edward Cree
+                    # [https://www.spinics.net/lists/bpf/msg05150.html]Re: [PATCH v5 bpf-next 0/4] capture integers in BTF type info for map defs, Andrii Nakryiko
+     * [https://www.spinics.net/lists/bpf/msg04979.html][PATCH bpf-next] Enable zext optimization for more RV64G ALU ops, Luke Nelson
+          + [https://www.spinics.net/lists/bpf/msg04981.html]Re: [PATCH bpf-next] Enable zext optimization for more RV64G ALU ops, Björn Töpel
+          + [https://www.spinics.net/lists/bpf/msg04984.html]Re: [PATCH bpf-next] Enable zext optimization for more RV64G ALU ops, Jiong Wang
+          + [https://www.spinics.net/lists/bpf/msg05010.html]Re: [PATCH bpf-next] Enable zext optimization for more RV64G ALU ops, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg04964.html][PATCH bpf] xdp: fix possible cq entry leak, Ilya Maximets
+          + [https://www.spinics.net/lists/bpf/msg04982.html]Re: [PATCH bpf] xdp: fix possible cq entry leak, Björn Töpel
+               o [https://www.spinics.net/lists/bpf/msg05108.html]Re: [PATCH bpf] xdp: fix possible cq entry leak, William Tu
+          + [https://www.spinics.net/lists/bpf/msg05282.html]Re: [PATCH bpf] xdp: fix possible cq entry leak, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg04954.html][PATCH bpf-next v3 0/6] add need_wakeup flag to the AF_XDP rings, Magnus Karlsson
+          + [https://www.spinics.net/lists/bpf/msg04955.html][PATCH bpf-next v3 1/6] xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup, Magnus Karlsson
+               o [https://www.spinics.net/lists/bpf/msg05112.html]Re: [PATCH bpf-next v3 1/6] xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup, Daniel Borkmann
+                    # [https://www.spinics.net/lists/bpf/msg05231.html]Re: [PATCH bpf-next v3 1/6] xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup, Magnus Karlsson
+          + [https://www.spinics.net/lists/bpf/msg04956.html][PATCH bpf-next v3 2/6] xsk: add support for need_wakeup flag in AF_XDP rings, Magnus Karlsson
+          + [https://www.spinics.net/lists/bpf/msg04957.html][PATCH bpf-next v3 3/6] i40e: add support for AF_XDP need_wakup feature, Magnus Karlsson
+          + [https://www.spinics.net/lists/bpf/msg04958.html][PATCH bpf-next v3 4/6] ixgbe: add support for AF_XDP need_wakup feature, Magnus Karlsson
+          + [https://www.spinics.net/lists/bpf/msg04959.html][PATCH bpf-next v3 5/6] libbpf: add support for need_wakeup flag in AF_XDP part, Magnus Karlsson
+          + [https://www.spinics.net/lists/bpf/msg04960.html][PATCH bpf-next v3 6/6] samples/bpf: add use of need_sleep flag in xdpsock, Magnus Karlsson
+     * [https://www.spinics.net/lists/bpf/msg04952.html][PATCH] tools bpftool: Fix json dump crash on powerpc, Jiri Olsa
+          + [https://www.spinics.net/lists/bpf/msg04967.html]Re: [PATCH] tools bpftool: Fix json dump crash on powerpc, Quentin Monnet
+          + [https://www.spinics.net/lists/bpf/msg04968.html]Re: [PATCH] tools bpftool: Fix json dump crash on powerpc, Jakub Kicinski
+               o [https://www.spinics.net/lists/bpf/msg04985.html][PATCHv2] tools bpftool: Fix json dump crash on powerpc, Jiri Olsa
+                    # [https://www.spinics.net/lists/bpf/msg04997.html]Re: [PATCHv2] tools bpftool: Fix json dump crash on powerpc, Jakub Kicinski
+                         @ [https://www.spinics.net/lists/bpf/msg04998.html]Re: [PATCHv2] tools bpftool: Fix json dump crash on powerpc, Quentin Monnet
+                              - [https://www.spinics.net/lists/bpf/msg05009.html]Re: [PATCHv2] tools bpftool: Fix json dump crash on powerpc, Daniel Borkmann
+                                   = [https://www.spinics.net/lists/bpf/msg05139.html]Re: [PATCHv2] tools bpftool: Fix json dump crash on powerpc, Jiri Olsa
+     * [https://www.spinics.net/lists/bpf/msg04951.html][PATCH bpf-next] tools: bpftool: add "prog run" subcommand to test-run programs, Quentin Monnet
+          + [https://www.spinics.net/lists/bpf/msg04980.html]Re: [PATCH bpf-next] tools: bpftool: add "prog run" subcommand to test-run programs, Y Song
+               o [https://www.spinics.net/lists/bpf/msg04983.html]Re: [PATCH bpf-next] tools: bpftool: add "prog run" subcommand to test-run programs, Quentin Monnet
+                    # [https://www.spinics.net/lists/bpf/msg04988.html]Re: [PATCH bpf-next] tools: bpftool: add "prog run" subcommand to test-run programs, Y Song
+                         @ [https://www.spinics.net/lists/bpf/msg04994.html]Re: [PATCH bpf-next] tools: bpftool: add "prog run" subcommand to test-run programs, Quentin Monnet
+                              - [https://www.spinics.net/lists/bpf/msg04996.html]Re: [PATCH bpf-next] tools: bpftool: add "prog run" subcommand to test-run programs, Y Song
+                                   = [https://www.spinics.net/lists/bpf/msg04999.html]Re: [PATCH bpf-next] tools: bpftool: add "prog run" subcommand to test-run programs, Quentin Monnet
+     * [https://www.spinics.net/lists/bpf/msg04950.html][PATCH v2 bpf-next] selftests/bpf: fix "alu with different scalars 1" on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg04966.html]Re: [PATCH v2 bpf-next] selftests/bpf: fix "alu with different scalars 1" on s390, Y Song
+          + [https://www.spinics.net/lists/bpf/msg05391.html]Re: [PATCH v2 bpf-next] selftests/bpf: fix "alu with different scalars 1" on s390, Alexei Starovoitov
+               o [https://www.spinics.net/lists/bpf/msg05392.html]Re: [PATCH v2 bpf-next] selftests/bpf: fix "alu with different scalars 1" on s390, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg04949.html][PATCH v3 net-next] net: socionext: remove set but not used variable 'pkts', YueHaibing
+          + [https://www.spinics.net/lists/bpf/msg05014.html]Re: [PATCH v3 net-next] net: socionext: remove set but not used variable 'pkts', David Miller
+     * [https://www.spinics.net/lists/bpf/msg04947.html][PATCH 0/1] tools/dtrace: initial implementation of DTrace, Kris Van Hees
+          + [https://www.spinics.net/lists/bpf/msg04948.html][PATCH 1/1] tools/dtrace: initial implementation of DTrace, Kris Van Hees
+               o [https://www.spinics.net/lists/bpf/msg04962.html]Re: [PATCH 1/1] tools/dtrace: initial implementation of DTrace, Peter Zijlstra
+                    # [https://www.spinics.net/lists/bpf/msg05089.html]Re: [PATCH 1/1] tools/dtrace: initial implementation of DTrace, Kris Van Hees
+               o [https://www.spinics.net/lists/bpf/msg04963.html]Re: [PATCH 1/1] tools/dtrace: initial implementation of DTrace, Peter Zijlstra
+                    # [https://www.spinics.net/lists/bpf/msg05087.html]Re: [PATCH 1/1] tools/dtrace: initial implementation of DTrace, Kris Van Hees
+               o [https://www.spinics.net/lists/bpf/msg04965.html]Re: [PATCH 1/1] tools/dtrace: initial implementation of DTrace, Brendan Gregg
+               o [https://www.spinics.net/lists/bpf/msg05091.html]Re: [PATCH 1/1] tools/dtrace: initial implementation of DTrace, Arnaldo Carvalho de Melo
+                    # [https://www.spinics.net/lists/bpf/msg05111.html]Re: [PATCH 1/1] tools/dtrace: initial implementation of DTrace, Kris Van Hees
+     * [https://www.spinics.net/lists/bpf/msg04941.html][PATCH v4 bpf-next 0/4] capture integers in BTF type info for map defs, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg04942.html][PATCH v4 bpf-next 1/4] libbpf: capture value in BTF type info for BTF-defined map defs, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg04943.html][PATCH v4 bpf-next 2/4] selftests/bpf: add __uint and __type macro for BTF-defined maps, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg04944.html][PATCH v4 bpf-next 3/4] selftests/bpf: convert selftests using BTF-defined maps to new syntax, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg04945.html][PATCH v4 bpf-next 4/4] selftests/bpf: convert legacy BPF maps to BTF-defined ones, Andrii Nakryiko
+     * [https://www.spinics.net/lists/bpf/msg04931.html][PATCH bpf-next] selftests/bpf: fix test_align liveliness expectations, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg04939.html]Re: [PATCH bpf-next] selftests/bpf: fix test_align liveliness expectations, Y Song
+          + [https://www.spinics.net/lists/bpf/msg05011.html]Re: [PATCH bpf-next] selftests/bpf: fix test_align liveliness expectations, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg04930.html][PATCH bpf-next] selftests/bpf: make verifier loop tests arch independent, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg04940.html]Re: [PATCH bpf-next] selftests/bpf: make verifier loop tests arch independent, Y Song
+               o [https://www.spinics.net/lists/bpf/msg05072.html]Re: [PATCH bpf-next] selftests/bpf: make verifier loop tests arch independent, Stanislav Fomichev
+                    # [https://www.spinics.net/lists/bpf/msg05105.html]Re: [PATCH bpf-next] selftests/bpf: make verifier loop tests arch independent, Ilya Leoshkevich
+                         @ [https://www.spinics.net/lists/bpf/msg05107.html]Re: [PATCH bpf-next] selftests/bpf: make verifier loop tests arch independent, Stanislav Fomichev
+                              - [https://www.spinics.net/lists/bpf/msg05109.html]Re: [PATCH bpf-next] selftests/bpf: make verifier loop tests arch independent, Ilya Leoshkevich
+     * [https://www.spinics.net/lists/bpf/msg04928.html][PATCH bpf-next] selftests/bpf: add test_tcp_rtt to .gitignore, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg04929.html]Re: [PATCH bpf-next] selftests/bpf: add test_tcp_rtt to .gitignore, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg04934.html]Re: [PATCH bpf-next] selftests/bpf: add test_tcp_rtt to .gitignore, Y Song
+          + [https://www.spinics.net/lists/bpf/msg05012.html]Re: [PATCH bpf-next] selftests/bpf: add test_tcp_rtt to .gitignore, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg04920.html][PATCH v3 bpf-next 0/4] capture integers in BTF type info for map defs, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg04921.html][PATCH v3 bpf-next 2/4] selftests/bpf: add __int and __type macro for BTF-defined maps, Andrii Nakryiko
+               o [https://www.spinics.net/lists/bpf/msg04932.html]Re: [PATCH v3 bpf-next 2/4] selftests/bpf: add __int and __type macro for BTF-defined maps, Yonghong Song
+          + [https://www.spinics.net/lists/bpf/msg04922.html][PATCH v3 bpf-next 1/4] libbpf: capture value in BTF type info for BTF-defined map defs, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg04923.html][PATCH v3 bpf-next 3/4] selftests/bpf: convert selftests using BTF-defined maps to new syntax, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg04924.html][PATCH v3 bpf-next 4/4] selftests/bpf: convert legacy BPF maps to BTF-defined ones, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg04926.html]Re: [PATCH v3 bpf-next 0/4] capture integers in BTF type info for map defs, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg04933.html]Re: [PATCH v3 bpf-next 0/4] capture integers in BTF type info for map defs, Yonghong Song
+     * [https://www.spinics.net/lists/bpf/msg04911.html][PATCH bpf-next RFC v3 0/6] bpf: add BPF_MAP_DUMP command to dump more than one entry per call, Brian Vazquez
+          + [https://www.spinics.net/lists/bpf/msg04912.html][PATCH bpf-next RFC v3 2/6] bpf: add BPF_MAP_DUMP command to dump more than one entry per call, Brian Vazquez
+               o [https://www.spinics.net/lists/bpf/msg04995.html]Re: [PATCH bpf-next RFC v3 2/6] bpf: add BPF_MAP_DUMP command to dump more than one entry per call, Y Song
+                    # [https://www.spinics.net/lists/bpf/msg05132.html]Re: [PATCH bpf-next RFC v3 2/6] bpf: add BPF_MAP_DUMP command to dump more than one entry per call, Brian Vazquez
+          + [https://www.spinics.net/lists/bpf/msg04913.html][PATCH bpf-next RFC v3 4/6] libbpf: support BPF_MAP_DUMP command, Brian Vazquez
+          + [https://www.spinics.net/lists/bpf/msg04914.html][PATCH bpf-next RFC v3 3/6] bpf: keep bpf.h in sync with tools/, Brian Vazquez
+          + [https://www.spinics.net/lists/bpf/msg04915.html][PATCH bpf-next RFC v3 5/6] selftests/bpf: test BPF_MAP_DUMP command on a bpf hashmap, Brian Vazquez
+          + [https://www.spinics.net/lists/bpf/msg04916.html][PATCH bpf-next RFC v3 6/6] selftests/bpf: add test to measure performance of BPF_MAP_DUMP, Brian Vazquez
+          + [https://www.spinics.net/lists/bpf/msg04917.html][PATCH bpf-next RFC v3 1/6] bpf: add bpf_map_value_size and bp_map_copy_value helper functions, Brian Vazquez
+     * [https://www.spinics.net/lists/bpf/msg04906.html][PATCH bpf-next] selftests/bpf: fix "alu with different scalars 1" on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg04937.html]Re: [PATCH bpf-next] selftests/bpf: fix "alu with different scalars 1" on s390, Y Song
+     * [https://www.spinics.net/lists/bpf/msg04893.html][PATCH v2 bpf-next 0/4] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg04894.html][PATCH v2 bpf-next 2/4] selftests/bpf: fix s390 -> s390 typo, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg04895.html][PATCH v2 bpf-next 1/4] selftests/bpf: compile progs with -D__TARGET_ARCH_$(ARCH), Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg04896.html][PATCH v2 bpf-next 3/4] selftests/bpf: make PT_REGS_* work in userspace, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg04897.html][PATCH v2 bpf-next 4/4] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Ilya Leoshkevich
+     * [https://www.spinics.net/lists/bpf/msg04889.html][PATCH bpf v2] xdp: fix race on generic receive path, Ilya Maximets
+          + [https://www.spinics.net/lists/bpf/msg04892.html]Re: [PATCH bpf v2] xdp: fix race on generic receive path, Magnus Karlsson
+               o [https://www.spinics.net/lists/bpf/msg04910.html]Re: [PATCH bpf v2] xdp: fix race on generic receive path, William Tu
+          + [https://www.spinics.net/lists/bpf/msg05114.html]Re: [PATCH bpf v2] xdp: fix race on generic receive path, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg04887.html][PATCH bpf-next] selftests/bpf: fix test_reuseport_array on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg05113.html]Re: [PATCH bpf-next] selftests/bpf: fix test_reuseport_array on s390, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg04870.html][PATCH net-next] net: socionext: remove set but not used variable 'pkts', YueHaibing
+          + [https://www.spinics.net/lists/bpf/msg04873.html]Re: [PATCH net-next] net: socionext: remove set but not used variable 'pkts', Ilias Apalodimas
+          + [https://www.spinics.net/lists/bpf/msg04918.html]Re: [PATCH net-next] net: socionext: remove set but not used variable 'pkts', David Miller
+     * [https://www.spinics.net/lists/bpf/msg04859.html][PATCH bpf-next] selftests: bpf: standardize to static __always_inline, Jiri Benc
+          + [https://www.spinics.net/lists/bpf/msg04899.html]Re: [PATCH bpf-next] selftests: bpf: standardize to static __always_inline, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg04853.html][PATCH bpf v2] selftests: bpf: fix inlines in test_lwt_seg6local, Jiri Benc
+          + [https://www.spinics.net/lists/bpf/msg04857.html]Re: [PATCH bpf v2] selftests: bpf: fix inlines in test_lwt_seg6local, Y Song
+          + [https://www.spinics.net/lists/bpf/msg04901.html]Re: [PATCH bpf v2] selftests: bpf: fix inlines in test_lwt_seg6local, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg04851.html][PATCH] bpf: Replace a seq_printf() call by seq_puts() in btf_enum_seq_show(), Markus Elfring
+          + [https://www.spinics.net/lists/bpf/msg04858.html]Re: [PATCH] bpf: Replace a seq_printf() call by seq_puts() in btf_enum_seq_show(), Yonghong Song
+          + [https://www.spinics.net/lists/bpf/msg04882.html]Re: [PATCH] bpf: Replace a seq_printf() call by seq_puts() in btf_enum_seq_show(), Daniel Borkmann
+               o [https://www.spinics.net/lists/bpf/msg04885.html]Re: [PATCH] bpf: Replace a seq_printf() call by seq_puts() in btf_enum_seq_show(), Greg KH
+     * [https://www.spinics.net/lists/bpf/msg04837.html][PATCH bpf-next v2 0/8] bpf: TCP RTT sock_ops bpf callback, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg04838.html][PATCH bpf-next v2 1/8] bpf: add BPF_CGROUP_SOCK_OPS callback that is executed on every RTT, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg04839.html][PATCH bpf-next v2 2/8] bpf: split shared bpf_tcp_sock and bpf_sock_ops implementation, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg04840.html][PATCH bpf-next v2 3/8] bpf: add dsack_dups/delivered{,_ce} to bpf_tcp_sock, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg04841.html][PATCH bpf-next v2 4/8] bpf: add icsk_retransmits to bpf_tcp_sock, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg04842.html][PATCH bpf-next v2 5/8] bpf/tools: sync bpf.h, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg04843.html][PATCH bpf-next v2 6/8] selftests/bpf: test BPF_SOCK_OPS_RTT_CB, Stanislav Fomichev
+               o [https://www.spinics.net/lists/bpf/msg04919.html]Re: [PATCH bpf-next v2 6/8] selftests/bpf: test BPF_SOCK_OPS_RTT_CB, Andrii Nakryiko
+                    # [https://www.spinics.net/lists/bpf/msg04927.html]Re: [PATCH bpf-next v2 6/8] selftests/bpf: test BPF_SOCK_OPS_RTT_CB, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg04844.html][PATCH bpf-next v2 7/8] samples/bpf: add sample program that periodically dumps TCP stats, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg04845.html][PATCH bpf-next v2 8/8] samples/bpf: fix tcp_bpf.readme detach command, Stanislav Fomichev
+          + [https://www.spinics.net/lists/bpf/msg04856.html]Re: [PATCH bpf-next v2 0/8] bpf: TCP RTT sock_ops bpf callback, Y Song
+               o [https://www.spinics.net/lists/bpf/msg04871.html]Re: [PATCH bpf-next v2 0/8] bpf: TCP RTT sock_ops bpf callback, Lawrence Brakmo
+          + [https://www.spinics.net/lists/bpf/msg04900.html]Re: [PATCH bpf-next v2 0/8] bpf: TCP RTT sock_ops bpf callback, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg04831.html][PATCH bpf-next] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/bpf/msg04848.html]Re: [PATCH bpf-next] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Y Song
+               o [https://www.spinics.net/lists/bpf/msg04850.html]Re: [PATCH bpf-next] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Ilya Leoshkevich
+                    # [https://www.spinics.net/lists/bpf/msg04854.html]Re: [PATCH bpf-next] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Y Song
+          + [https://www.spinics.net/lists/bpf/msg04855.html]Re: [PATCH bpf-next] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Y Song
+          + [https://www.spinics.net/lists/bpf/msg04891.html]Re: [PATCH bpf-next] selftests/bpf: fix compiling loop{1,2,3}.c on s390, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg04829.html][PATCH v2 bpf-next] libbpf: fix GCC8 warning for strncpy, Andrii Nakryiko
+          + [https://www.spinics.net/lists/bpf/msg04835.html]Re: [PATCH v2 bpf-next] libbpf: fix GCC8 warning for strncpy, Y Song
+               o [https://www.spinics.net/lists/bpf/msg04847.html]Re: [PATCH v2 bpf-next] libbpf: fix GCC8 warning for strncpy, Magnus Karlsson
+          + [https://www.spinics.net/lists/bpf/msg04883.html]Re: [PATCH v2 bpf-next] libbpf: fix GCC8 warning for strncpy, Daniel Borkmann
+     * [https://www.spinics.net/lists/bpf/msg04826.html][PATCH bpf] xdp: fix race on generic receive path, Ilya Maximets
+          + [https://www.spinics.net/lists/bpf/msg04827.html]Re: [PATCH bpf] xdp: fix race on generic receive path, Magnus Karlsson
+               o [https://www.spinics.net/lists/bpf/msg04836.html]Re: [PATCH bpf] xdp: fix race on generic receive path, Ilya Maximets
+          + [https://www.spinics.net/lists/bpf/msg04864.html]Re: [PATCH bpf] xdp: fix race on generic receive path, Jakub Kicinski
+               o [https://www.spinics.net/lists/bpf/msg04888.html]Re: [PATCH bpf] xdp: fix race on generic receive path, Ilya Maximets
+     * [https://www.spinics.net/lists/bpf/msg04823.html][PATCH bpf-next] bpf: cgroup: Fix build error without CONFIG_NET, YueHaibing
+          + [https://www.spinics.net/lists/bpf/msg04832.html]Re: [PATCH bpf-next] bpf: cgroup: Fix build error without CONFIG_NET, Stanislav Fomichev
+               o [https://www.spinics.net/lists/bpf/msg04834.html]Re: [PATCH bpf-next] bpf: cgroup: Fix build error without CONFIG_NET, Yonghong Song
+                    # [https://www.spinics.net/lists/bpf/msg04872.html]Re: [PATCH bpf-next] bpf: cgroup: Fix build error without CONFIG_NET, Yuehaibing
+                    # [https://www.spinics.net/lists/bpf/msg04877.html][PATCH v2 bpf-next] bpf: cgroup: Fix build error without CONFIG_NET, YueHaibing
+                         @ [https://www.spinics.net/lists/bpf/msg04898.html]Re: [PATCH v2 bpf-next] bpf: cgroup: Fix build error without CONFIG_NET, Yonghong Song
+                         @ [https://www.spinics.net/lists/bpf/msg05068.html]Re: [PATCH v2 bpf-next] bpf: cgroup: Fix build error without CONFIG_NET, Daniel Borkmann
+               o [https://www.spinics.net/lists/bpf/msg04876.html]Re: [PATCH bpf-next] bpf: cgroup: Fix build error without CONFIG_NET, Yuehaibing
+          + [https://www.spinics.net/lists/bpf/msg04833.html]Re: [PATCH bpf-next] bpf: cgroup: Fix build error without CONFIG_NET, Yonghong Song
+     * [https://www.spinics.net/lists/bpf/msg04820.html][PATCH] bpf, libbpf: Smatch: Fix potential NULL pointer dereference, Leo Yan
+          + [https://www.spinics.net/lists/bpf/msg04830.html]Re: [PATCH] bpf, libbpf: Smatch: Fix potential NULL pointer dereference, Yonghong Song
+          + [https://www.spinics.net/lists/bpf/msg04884.html]Re: [PATCH] bpf, libbpf: Smatch: Fix potential NULL pointer dereference, Daniel Borkmann
+               o [https://www.spinics.net/lists/bpf/msg04886.html]Re: [PATCH] bpf, libbpf: Smatch: Fix potential NULL pointer dereference, Leo Yan
+     * [https://www.spinics.net/lists/bpf/msg04819.html][PATCH bpf-next v2 0/6] add need_wakeup flag to the AF_XDP rings, Magnus Karlsson
+          + [https://www.spinics.net/lists/bpf/msg04812.html][PATCH bpf-next v2 1/6] xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup, Magnus Karlsson
+               o [https://www.spinics.net/lists/bpf/msg04821.html]Re: [PATCH bpf-next v2 1/6] xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup, Maxim Mikityanskiy
+                    # [https://www.spinics.net/lists/bpf/msg04822.html]Re: [PATCH bpf-next v2 1/6] xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup, Magnus Karlsson
+          + [https://www.spinics.net/lists/bpf/msg04813.html][PATCH bpf-next v2 3/6] i40e: add support for AF_XDP need_wakup feature, Magnus Karlsson
+          + [https://www.spinics.net/lists/bpf/msg04814.html][PATCH bpf-next v2 5/6] libbpf: add support for need_wakeup flag in AF_XDP part, Magnus Karlsson
+          + [https://www.spinics.net/lists/bpf/msg04815.html][PATCH bpf-next v2 2/6] xsk: add support for need_wakeup flag in AF_XDP rings, Magnus Karlsson
+               o [https://www.spinics.net/lists/bpf/msg04824.html]Re: [PATCH bpf-next v2 2/6] xsk: add support for need_wakeup flag in AF_XDP rings, Maxim Mikityanskiy

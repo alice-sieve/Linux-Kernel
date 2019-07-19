@@ -1,678 +1,402 @@
-
-References
-
-   1. https://www.spinics.net/lists/linux-numa/maillist.rdf
-   2. https://www.spinics.net/lists/linux-numa/maillist.html
-   3. https://www.spinics.net/lists/linux-numa/thrd2.html
-   4. https://www.spinics.net/lists/linux-numa/msg01179.html
-   5. https://www.spinics.net/lists/linux-numa/msg01180.html
-   6. https://www.spinics.net/lists/linux-numa/msg01178.html
-   7. https://www.spinics.net/lists/linux-numa/msg01177.html
-   8. https://www.spinics.net/lists/linux-numa/msg01175.html
-   9. https://www.spinics.net/lists/linux-numa/msg01176.html
-  10. https://www.spinics.net/lists/linux-numa/msg01173.html
-  11. https://www.spinics.net/lists/linux-numa/msg01170.html
-  12. https://www.spinics.net/lists/linux-numa/msg01171.html
-  13. https://www.spinics.net/lists/linux-numa/msg01174.html
-  14. https://www.spinics.net/lists/linux-numa/msg01169.html
-  15. https://www.spinics.net/lists/linux-numa/msg01172.html
-  16. https://www.spinics.net/lists/linux-numa/msg01166.html
-  17. https://www.spinics.net/lists/linux-numa/msg01167.html
-  18. https://www.spinics.net/lists/linux-numa/msg01168.html
-  19. https://www.spinics.net/lists/linux-numa/msg01165.html
-  20. https://www.spinics.net/lists/linux-numa/msg01164.html
-  21. https://www.spinics.net/lists/linux-numa/msg01163.html
-  22. https://www.spinics.net/lists/linux-numa/msg01162.html
-  23. https://www.spinics.net/lists/linux-numa/msg01159.html
-  24. https://www.spinics.net/lists/linux-numa/msg01160.html
-  25. https://www.spinics.net/lists/linux-numa/msg01161.html
-  26. https://www.spinics.net/lists/linux-numa/msg01154.html
-  27. https://www.spinics.net/lists/linux-numa/msg01155.html
-  28. https://www.spinics.net/lists/linux-numa/msg01156.html
-  29. https://www.spinics.net/lists/linux-numa/msg01157.html
-  30. https://www.spinics.net/lists/linux-numa/msg01158.html
-  31. https://www.spinics.net/lists/linux-numa/msg01150.html
-  32. https://www.spinics.net/lists/linux-numa/msg01149.html
-  33. https://www.spinics.net/lists/linux-numa/msg01152.html
-  34. https://www.spinics.net/lists/linux-numa/msg01153.html
-  35. https://www.spinics.net/lists/linux-numa/msg01148.html
-  36. https://www.spinics.net/lists/linux-numa/msg01151.html
-  37. https://www.spinics.net/lists/linux-numa/msg01147.html
-  38. https://www.spinics.net/lists/linux-numa/msg01139.html
-  39. https://www.spinics.net/lists/linux-numa/msg01140.html
-  40. https://www.spinics.net/lists/linux-numa/msg01141.html
-  41. https://www.spinics.net/lists/linux-numa/msg01145.html
-  42. https://www.spinics.net/lists/linux-numa/msg01142.html
-  43. https://www.spinics.net/lists/linux-numa/msg01143.html
-  44. https://www.spinics.net/lists/linux-numa/msg01144.html
-  45. https://www.spinics.net/lists/linux-numa/msg01146.html
-  46. https://www.spinics.net/lists/linux-numa/msg01134.html
-  47. https://www.spinics.net/lists/linux-numa/msg01135.html
-  48. https://www.spinics.net/lists/linux-numa/msg01136.html
-  49. https://www.spinics.net/lists/linux-numa/msg01137.html
-  50. https://www.spinics.net/lists/linux-numa/msg01138.html
-  51. https://www.spinics.net/lists/linux-numa/msg01130.html
-  52. https://www.spinics.net/lists/linux-numa/msg01131.html
-  53. https://www.spinics.net/lists/linux-numa/msg01132.html
-  54. https://www.spinics.net/lists/linux-numa/msg01133.html
-  55. https://www.spinics.net/lists/linux-numa/msg01128.html
-  56. https://www.spinics.net/lists/linux-numa/msg01129.html
-  57. https://www.spinics.net/lists/linux-numa/msg01127.html
-  58. https://www.spinics.net/lists/linux-numa/msg01126.html
-  59. https://www.spinics.net/lists/linux-numa/msg01124.html
-  60. https://www.spinics.net/lists/linux-numa/msg01125.html
-  61. https://www.spinics.net/lists/linux-numa/msg01123.html
-  62. https://www.spinics.net/lists/linux-numa/msg01121.html
-  63. https://www.spinics.net/lists/linux-numa/msg01122.html
-  64. https://www.spinics.net/lists/linux-numa/msg01119.html
-  65. https://www.spinics.net/lists/linux-numa/msg01120.html
-  66. https://www.spinics.net/lists/linux-numa/msg01116.html
-  67. https://www.spinics.net/lists/linux-numa/msg01115.html
-  68. https://www.spinics.net/lists/linux-numa/msg01117.html
-  69. https://www.spinics.net/lists/linux-numa/msg01118.html
-  70. https://www.spinics.net/lists/linux-numa/msg01114.html
-  71. https://www.spinics.net/lists/linux-numa/msg01111.html
-  72. https://www.spinics.net/lists/linux-numa/msg01112.html
-  73. https://www.spinics.net/lists/linux-numa/msg01113.html
-  74. https://www.spinics.net/lists/linux-numa/msg01102.html
-  75. https://www.spinics.net/lists/linux-numa/msg01103.html
-  76. https://www.spinics.net/lists/linux-numa/msg01104.html
-  77. https://www.spinics.net/lists/linux-numa/msg01105.html
-  78. https://www.spinics.net/lists/linux-numa/msg01097.html
-  79. https://www.spinics.net/lists/linux-numa/msg01098.html
-  80. https://www.spinics.net/lists/linux-numa/msg01099.html
-  81. https://www.spinics.net/lists/linux-numa/msg01100.html
-  82. https://www.spinics.net/lists/linux-numa/msg01101.html
-  83. https://www.spinics.net/lists/linux-numa/msg01106.html
-  84. https://www.spinics.net/lists/linux-numa/msg01107.html
-  85. https://www.spinics.net/lists/linux-numa/msg01108.html
-  86. https://www.spinics.net/lists/linux-numa/msg01109.html
-  87. https://www.spinics.net/lists/linux-numa/msg01110.html
-  88. https://www.spinics.net/lists/linux-numa/msg01096.html
-  89. https://www.spinics.net/lists/linux-numa/msg01094.html
-  90. https://www.spinics.net/lists/linux-numa/msg01095.html
-  91. https://www.spinics.net/lists/linux-numa/msg01088.html
-  92. https://www.spinics.net/lists/linux-numa/msg01089.html
-  93. https://www.spinics.net/lists/linux-numa/msg01090.html
-  94. https://www.spinics.net/lists/linux-numa/msg01091.html
-  95. https://www.spinics.net/lists/linux-numa/msg01092.html
-  96. https://www.spinics.net/lists/linux-numa/msg01093.html
-  97. https://www.spinics.net/lists/linux-numa/msg01086.html
-  98. https://www.spinics.net/lists/linux-numa/msg01087.html
-  99. https://www.spinics.net/lists/linux-numa/msg01085.html
- 100. https://www.spinics.net/lists/linux-numa/msg01079.html
- 101. https://www.spinics.net/lists/linux-numa/msg01080.html
- 102. https://www.spinics.net/lists/linux-numa/msg01082.html
- 103. https://www.spinics.net/lists/linux-numa/msg01083.html
- 104. https://www.spinics.net/lists/linux-numa/msg01084.html
- 105. https://www.spinics.net/lists/linux-numa/msg01078.html
- 106. https://www.spinics.net/lists/linux-numa/msg01081.html
- 107. https://www.spinics.net/lists/linux-numa/msg01076.html
- 108. https://www.spinics.net/lists/linux-numa/msg01077.html
- 109. https://www.spinics.net/lists/linux-numa/msg01075.html
- 110. https://www.spinics.net/lists/linux-numa/msg01065.html
- 111. https://www.spinics.net/lists/linux-numa/msg01066.html
- 112. https://www.spinics.net/lists/linux-numa/msg01067.html
- 113. https://www.spinics.net/lists/linux-numa/msg01068.html
- 114. https://www.spinics.net/lists/linux-numa/msg01069.html
- 115. https://www.spinics.net/lists/linux-numa/msg01070.html
- 116. https://www.spinics.net/lists/linux-numa/msg01071.html
- 117. https://www.spinics.net/lists/linux-numa/msg01072.html
- 118. https://www.spinics.net/lists/linux-numa/msg01073.html
- 119. https://www.spinics.net/lists/linux-numa/msg01074.html
- 120. https://www.spinics.net/lists/linux-numa/msg01064.html
- 121. https://www.spinics.net/lists/linux-numa/msg01062.html
- 122. https://www.spinics.net/lists/linux-numa/msg01059.html
- 123. https://www.spinics.net/lists/linux-numa/msg01060.html
- 124. https://www.spinics.net/lists/linux-numa/msg01061.html
- 125. https://www.spinics.net/lists/linux-numa/msg01063.html
- 126. https://www.spinics.net/lists/linux-numa/msg01058.html
- 127. https://www.spinics.net/lists/linux-numa/msg01057.html
- 128. https://www.spinics.net/lists/linux-numa/msg01055.html
- 129. https://www.spinics.net/lists/linux-numa/msg01056.html
- 130. https://www.spinics.net/lists/linux-numa/msg01054.html
- 131. https://www.spinics.net/lists/linux-numa/msg01048.html
- 132. https://www.spinics.net/lists/linux-numa/msg01049.html
- 133. https://www.spinics.net/lists/linux-numa/msg01050.html
- 134. https://www.spinics.net/lists/linux-numa/msg01051.html
- 135. https://www.spinics.net/lists/linux-numa/msg01052.html
- 136. https://www.spinics.net/lists/linux-numa/msg01053.html
- 137. https://www.spinics.net/lists/linux-numa/msg01043.html
- 138. https://www.spinics.net/lists/linux-numa/msg01044.html
- 139. https://www.spinics.net/lists/linux-numa/msg01045.html
- 140. https://www.spinics.net/lists/linux-numa/msg01046.html
- 141. https://www.spinics.net/lists/linux-numa/msg01047.html
- 142. https://www.spinics.net/lists/linux-numa/msg01037.html
- 143. https://www.spinics.net/lists/linux-numa/msg01038.html
- 144. https://www.spinics.net/lists/linux-numa/msg01039.html
- 145. https://www.spinics.net/lists/linux-numa/msg01041.html
- 146. https://www.spinics.net/lists/linux-numa/msg01040.html
- 147. https://www.spinics.net/lists/linux-numa/msg01042.html
- 148. https://www.spinics.net/lists/linux-numa/msg01034.html
- 149. https://www.spinics.net/lists/linux-numa/msg01035.html
- 150. https://www.spinics.net/lists/linux-numa/msg01036.html
- 151. https://www.spinics.net/lists/linux-numa/msg01032.html
- 152. https://www.spinics.net/lists/linux-numa/msg01033.html
- 153. https://www.spinics.net/lists/linux-numa/msg01030.html
- 154. https://www.spinics.net/lists/linux-numa/msg01031.html
- 155. https://www.spinics.net/lists/linux-numa/msg01026.html
- 156. https://www.spinics.net/lists/linux-numa/msg01027.html
- 157. https://www.spinics.net/lists/linux-numa/msg01028.html
- 158. https://www.spinics.net/lists/linux-numa/msg01029.html
- 159. https://www.spinics.net/lists/linux-numa/msg01025.html
- 160. https://www.spinics.net/lists/linux-numa/msg01022.html
- 161. https://www.spinics.net/lists/linux-numa/msg01023.html
- 162. https://www.spinics.net/lists/linux-numa/msg01024.html
- 163. https://www.spinics.net/lists/linux-numa/msg01021.html
- 164. https://www.spinics.net/lists/linux-numa/msg01020.html
- 165. https://www.spinics.net/lists/linux-numa/msg01019.html
- 166. https://www.spinics.net/lists/linux-numa/msg01016.html
- 167. https://www.spinics.net/lists/linux-numa/msg01017.html
- 168. https://www.spinics.net/lists/linux-numa/msg01018.html
- 169. https://www.spinics.net/lists/linux-numa/msg01010.html
- 170. https://www.spinics.net/lists/linux-numa/msg01011.html
- 171. https://www.spinics.net/lists/linux-numa/msg01012.html
- 172. https://www.spinics.net/lists/linux-numa/msg01013.html
- 173. https://www.spinics.net/lists/linux-numa/msg01014.html
- 174. https://www.spinics.net/lists/linux-numa/msg01015.html
- 175. https://www.spinics.net/lists/linux-numa/msg00982.html
- 176. https://www.spinics.net/lists/linux-numa/msg00983.html
- 177. https://www.spinics.net/lists/linux-numa/msg00984.html
- 178. https://www.spinics.net/lists/linux-numa/msg00985.html
- 179. https://www.spinics.net/lists/linux-numa/msg00986.html
- 180. https://www.spinics.net/lists/linux-numa/msg00987.html
- 181. https://www.spinics.net/lists/linux-numa/msg00989.html
- 182. https://www.spinics.net/lists/linux-numa/msg00988.html
- 183. https://www.spinics.net/lists/linux-numa/msg00990.html
- 184. https://www.spinics.net/lists/linux-numa/msg00991.html
- 185. https://www.spinics.net/lists/linux-numa/msg00992.html
- 186. https://www.spinics.net/lists/linux-numa/msg00993.html
- 187. https://www.spinics.net/lists/linux-numa/msg00994.html
- 188. https://www.spinics.net/lists/linux-numa/msg00995.html
- 189. https://www.spinics.net/lists/linux-numa/msg00996.html
- 190. https://www.spinics.net/lists/linux-numa/msg00997.html
- 191. https://www.spinics.net/lists/linux-numa/msg00998.html
- 192. https://www.spinics.net/lists/linux-numa/msg00999.html
- 193. https://www.spinics.net/lists/linux-numa/msg01001.html
- 194. https://www.spinics.net/lists/linux-numa/msg01002.html
- 195. https://www.spinics.net/lists/linux-numa/msg01003.html
- 196. https://www.spinics.net/lists/linux-numa/msg01006.html
- 197. https://www.spinics.net/lists/linux-numa/msg01007.html
- 198. https://www.spinics.net/lists/linux-numa/msg01008.html
- 199. https://www.spinics.net/lists/linux-numa/msg01009.html
- 200. https://www.spinics.net/lists/linux-numa/msg00981.html
- 201. https://www.spinics.net/lists/linux-numa/msg01000.html
- 202. https://www.spinics.net/lists/linux-numa/msg01004.html
- 203. https://www.spinics.net/lists/linux-numa/msg01005.html
- 204. https://www.spinics.net/lists/linux-numa/msg00976.html
- 205. https://www.spinics.net/lists/linux-numa/msg00977.html
- 206. https://www.spinics.net/lists/linux-numa/msg00978.html
- 207. https://www.spinics.net/lists/linux-numa/msg00980.html
- 208. https://www.spinics.net/lists/linux-numa/msg00979.html
- 209. https://www.spinics.net/lists/linux-numa/msg00963.html
- 210. https://www.spinics.net/lists/linux-numa/msg00964.html
- 211. https://www.spinics.net/lists/linux-numa/msg00965.html
- 212. https://www.spinics.net/lists/linux-numa/msg00966.html
- 213. https://www.spinics.net/lists/linux-numa/msg00967.html
- 214. https://www.spinics.net/lists/linux-numa/msg00968.html
- 215. https://www.spinics.net/lists/linux-numa/msg00970.html
- 216. https://www.spinics.net/lists/linux-numa/msg00969.html
- 217. https://www.spinics.net/lists/linux-numa/msg00971.html
- 218. https://www.spinics.net/lists/linux-numa/msg00973.html
- 219. https://www.spinics.net/lists/linux-numa/msg00974.html
- 220. https://www.spinics.net/lists/linux-numa/msg00975.html
- 221. https://www.spinics.net/lists/linux-numa/msg00972.html
- 222. https://www.spinics.net/lists/linux-numa/msg00962.html
- 223. https://www.spinics.net/lists/linux-numa/msg00961.html
- 224. https://www.spinics.net/lists/linux-numa/msg00952.html
- 225. https://www.spinics.net/lists/linux-numa/msg00953.html
- 226. https://www.spinics.net/lists/linux-numa/msg00954.html
- 227. https://www.spinics.net/lists/linux-numa/msg00955.html
- 228. https://www.spinics.net/lists/linux-numa/msg00956.html
- 229. https://www.spinics.net/lists/linux-numa/msg00957.html
- 230. https://www.spinics.net/lists/linux-numa/msg00958.html
- 231. https://www.spinics.net/lists/linux-numa/msg00959.html
- 232. https://www.spinics.net/lists/linux-numa/msg00947.html
- 233. https://www.spinics.net/lists/linux-numa/msg00941.html
- 234. https://www.spinics.net/lists/linux-numa/msg00942.html
- 235. https://www.spinics.net/lists/linux-numa/msg00949.html
- 236. https://www.spinics.net/lists/linux-numa/msg00950.html
- 237. https://www.spinics.net/lists/linux-numa/msg00943.html
- 238. https://www.spinics.net/lists/linux-numa/msg00944.html
- 239. https://www.spinics.net/lists/linux-numa/msg00948.html
- 240. https://www.spinics.net/lists/linux-numa/msg00945.html
- 241. https://www.spinics.net/lists/linux-numa/msg00946.html
- 242. https://www.spinics.net/lists/linux-numa/msg00960.html
- 243. https://www.spinics.net/lists/linux-numa/msg00940.html
- 244. https://www.spinics.net/lists/linux-numa/msg00937.html
- 245. https://www.spinics.net/lists/linux-numa/msg00939.html
- 246. https://www.spinics.net/lists/linux-numa/msg00936.html
- 247. https://www.spinics.net/lists/linux-numa/msg00938.html
- 248. https://www.spinics.net/lists/linux-numa/msg00951.html
- 249. https://www.spinics.net/lists/linux-numa/msg00933.html
- 250. https://www.spinics.net/lists/linux-numa/msg00934.html
- 251. https://www.spinics.net/lists/linux-numa/msg00935.html
- 252. https://www.spinics.net/lists/linux-numa/msg00932.html
- 253. https://www.spinics.net/lists/linux-numa/msg00931.html
- 254. https://www.spinics.net/lists/linux-numa/msg00930.html
- 255. https://www.spinics.net/lists/linux-numa/msg00929.html
- 256. https://www.spinics.net/lists/linux-numa/msg00928.html
- 257. https://www.spinics.net/lists/linux-numa/msg00926.html
- 258. https://www.spinics.net/lists/linux-numa/msg00927.html
- 259. https://www.spinics.net/lists/linux-numa/msg00923.html
- 260. https://www.spinics.net/lists/linux-numa/msg00924.html
- 261. https://www.spinics.net/lists/linux-numa/msg00925.html
- 262. https://www.spinics.net/lists/linux-numa/msg00921.html
- 263. https://www.spinics.net/lists/linux-numa/msg00922.html
- 264. https://www.spinics.net/lists/linux-numa/msg00920.html
- 265. https://www.spinics.net/lists/linux-numa/msg00919.html
- 266. https://www.spinics.net/lists/linux-numa/msg00917.html
- 267. https://www.spinics.net/lists/linux-numa/msg00918.html
- 268. https://www.spinics.net/lists/linux-numa/msg00916.html
- 269. https://www.spinics.net/lists/linux-numa/msg00912.html
- 270. https://www.spinics.net/lists/linux-numa/msg00913.html
- 271. https://www.spinics.net/lists/linux-numa/msg00914.html
- 272. https://www.spinics.net/lists/linux-numa/msg00915.html
- 273. https://www.spinics.net/lists/linux-numa/msg00911.html
- 274. https://www.spinics.net/lists/linux-numa/msg00907.html
- 275. https://www.spinics.net/lists/linux-numa/msg00900.html
- 276. https://www.spinics.net/lists/linux-numa/msg00901.html
- 277. https://www.spinics.net/lists/linux-numa/msg00902.html
- 278. https://www.spinics.net/lists/linux-numa/msg00903.html
- 279. https://www.spinics.net/lists/linux-numa/msg00904.html
- 280. https://www.spinics.net/lists/linux-numa/msg00905.html
- 281. https://www.spinics.net/lists/linux-numa/msg00906.html
- 282. https://www.spinics.net/lists/linux-numa/msg00910.html
- 283. https://www.spinics.net/lists/linux-numa/msg00899.html
- 284. https://www.spinics.net/lists/linux-numa/msg00908.html
- 285. https://www.spinics.net/lists/linux-numa/msg00898.html
- 286. https://www.spinics.net/lists/linux-numa/msg00893.html
- 287. https://www.spinics.net/lists/linux-numa/msg00896.html
- 288. https://www.spinics.net/lists/linux-numa/msg00892.html
- 289. https://www.spinics.net/lists/linux-numa/msg00894.html
- 290. https://www.spinics.net/lists/linux-numa/msg00895.html
- 291. https://www.spinics.net/lists/linux-numa/msg00897.html
- 292. https://www.spinics.net/lists/linux-numa/msg00882.html
- 293. https://www.spinics.net/lists/linux-numa/msg00883.html
- 294. https://www.spinics.net/lists/linux-numa/msg00885.html
- 295. https://www.spinics.net/lists/linux-numa/msg00887.html
- 296. https://www.spinics.net/lists/linux-numa/msg00890.html
- 297. https://www.spinics.net/lists/linux-numa/msg00891.html
- 298. https://www.spinics.net/lists/linux-numa/msg00878.html
- 299. https://www.spinics.net/lists/linux-numa/msg00879.html
- 300. https://www.spinics.net/lists/linux-numa/msg00880.html
- 301. https://www.spinics.net/lists/linux-numa/msg00881.html
- 302. https://www.spinics.net/lists/linux-numa/msg00888.html
- 303. https://www.spinics.net/lists/linux-numa/msg00889.html
- 304. https://www.spinics.net/lists/linux-numa/msg00875.html
- 305. https://www.spinics.net/lists/linux-numa/msg00876.html
- 306. https://www.spinics.net/lists/linux-numa/msg00877.html
- 307. https://www.spinics.net/lists/linux-numa/msg00884.html
- 308. https://www.spinics.net/lists/linux-numa/msg00886.html
- 309. https://www.spinics.net/lists/linux-numa/msg00873.html
- 310. https://www.spinics.net/lists/linux-numa/msg00874.html
- 311. https://www.spinics.net/lists/linux-numa/msg00871.html
- 312. https://www.spinics.net/lists/linux-numa/msg00872.html
- 313. https://www.spinics.net/lists/linux-numa/msg00870.html
- 314. https://www.spinics.net/lists/linux-numa/msg00869.html
- 315. https://www.spinics.net/lists/linux-numa/msg00868.html
- 316. https://www.spinics.net/lists/linux-numa/msg00867.html
- 317. https://www.spinics.net/lists/linux-numa/msg00866.html
- 318. https://www.spinics.net/lists/linux-numa/msg00855.html
- 319. https://www.spinics.net/lists/linux-numa/msg00856.html
- 320. https://www.spinics.net/lists/linux-numa/msg00857.html
- 321. https://www.spinics.net/lists/linux-numa/msg00858.html
- 322. https://www.spinics.net/lists/linux-numa/msg00859.html
- 323. https://www.spinics.net/lists/linux-numa/msg00860.html
- 324. https://www.spinics.net/lists/linux-numa/msg00861.html
- 325. https://www.spinics.net/lists/linux-numa/msg00862.html
- 326. https://www.spinics.net/lists/linux-numa/msg00863.html
- 327. https://www.spinics.net/lists/linux-numa/msg00864.html
- 328. https://www.spinics.net/lists/linux-numa/msg00865.html
- 329. https://www.spinics.net/lists/linux-numa/msg00854.html
- 330. https://www.spinics.net/lists/linux-numa/msg00850.html
- 331. https://www.spinics.net/lists/linux-numa/msg00851.html
- 332. https://www.spinics.net/lists/linux-numa/msg00852.html
- 333. https://www.spinics.net/lists/linux-numa/msg00853.html
- 334. https://www.spinics.net/lists/linux-numa/msg00846.html
- 335. https://www.spinics.net/lists/linux-numa/msg00847.html
- 336. https://www.spinics.net/lists/linux-numa/msg00848.html
- 337. https://www.spinics.net/lists/linux-numa/msg00849.html
- 338. https://www.spinics.net/lists/linux-numa/msg00831.html
- 339. https://www.spinics.net/lists/linux-numa/msg00829.html
- 340. https://www.spinics.net/lists/linux-numa/msg00826.html
- 341. https://www.spinics.net/lists/linux-numa/msg00827.html
- 342. https://www.spinics.net/lists/linux-numa/msg00828.html
- 343. https://www.spinics.net/lists/linux-numa/msg00830.html
- 344. https://www.spinics.net/lists/linux-numa/msg00832.html
- 345. https://www.spinics.net/lists/linux-numa/msg00835.html
- 346. https://www.spinics.net/lists/linux-numa/msg00814.html
- 347. https://www.spinics.net/lists/linux-numa/msg00815.html
- 348. https://www.spinics.net/lists/linux-numa/msg00816.html
- 349. https://www.spinics.net/lists/linux-numa/msg00817.html
- 350. https://www.spinics.net/lists/linux-numa/msg00818.html
- 351. https://www.spinics.net/lists/linux-numa/msg00819.html
- 352. https://www.spinics.net/lists/linux-numa/msg00820.html
- 353. https://www.spinics.net/lists/linux-numa/msg00821.html
- 354. https://www.spinics.net/lists/linux-numa/msg00822.html
- 355. https://www.spinics.net/lists/linux-numa/msg00823.html
- 356. https://www.spinics.net/lists/linux-numa/msg00824.html
- 357. https://www.spinics.net/lists/linux-numa/msg00825.html
- 358. https://www.spinics.net/lists/linux-numa/msg00834.html
- 359. https://www.spinics.net/lists/linux-numa/msg00803.html
- 360. https://www.spinics.net/lists/linux-numa/msg00804.html
- 361. https://www.spinics.net/lists/linux-numa/msg00805.html
- 362. https://www.spinics.net/lists/linux-numa/msg00806.html
- 363. https://www.spinics.net/lists/linux-numa/msg00807.html
- 364. https://www.spinics.net/lists/linux-numa/msg00808.html
- 365. https://www.spinics.net/lists/linux-numa/msg00809.html
- 366. https://www.spinics.net/lists/linux-numa/msg00810.html
- 367. https://www.spinics.net/lists/linux-numa/msg00811.html
- 368. https://www.spinics.net/lists/linux-numa/msg00833.html
- 369. https://www.spinics.net/lists/linux-numa/msg00836.html
- 370. https://www.spinics.net/lists/linux-numa/msg00837.html
- 371. https://www.spinics.net/lists/linux-numa/msg00839.html
- 372. https://www.spinics.net/lists/linux-numa/msg00838.html
- 373. https://www.spinics.net/lists/linux-numa/msg00842.html
- 374. https://www.spinics.net/lists/linux-numa/msg00845.html
- 375. https://www.spinics.net/lists/linux-numa/msg00840.html
- 376. https://www.spinics.net/lists/linux-numa/msg00841.html
- 377. https://www.spinics.net/lists/linux-numa/msg00843.html
- 378. https://www.spinics.net/lists/linux-numa/msg00844.html
- 379. https://www.spinics.net/lists/linux-numa/msg00788.html
- 380. https://www.spinics.net/lists/linux-numa/msg00789.html
- 381. https://www.spinics.net/lists/linux-numa/msg00790.html
- 382. https://www.spinics.net/lists/linux-numa/msg00791.html
- 383. https://www.spinics.net/lists/linux-numa/msg00792.html
- 384. https://www.spinics.net/lists/linux-numa/msg00793.html
- 385. https://www.spinics.net/lists/linux-numa/msg00794.html
- 386. https://www.spinics.net/lists/linux-numa/msg00795.html
- 387. https://www.spinics.net/lists/linux-numa/msg00796.html
- 388. https://www.spinics.net/lists/linux-numa/msg00797.html
- 389. https://www.spinics.net/lists/linux-numa/msg00798.html
- 390. https://www.spinics.net/lists/linux-numa/msg00799.html
- 391. https://www.spinics.net/lists/linux-numa/msg00800.html
- 392. https://www.spinics.net/lists/linux-numa/msg00801.html
- 393. https://www.spinics.net/lists/linux-numa/msg00802.html
- 394. https://www.spinics.net/lists/linux-numa/msg00812.html
- 395. https://www.spinics.net/lists/linux-numa/msg00813.html
- 396. https://www.spinics.net/lists/linux-numa/msg00787.html
- 397. https://www.spinics.net/lists/linux-numa/msg00781.html
- 398. https://www.spinics.net/lists/linux-numa/msg00782.html
- 399. https://www.spinics.net/lists/linux-numa/msg00783.html
- 400. https://www.spinics.net/lists/linux-numa/msg00785.html
- 401. https://www.spinics.net/lists/linux-numa/msg00786.html
- 402. https://www.spinics.net/lists/linux-numa/msg00768.html
- 403. https://www.spinics.net/lists/linux-numa/msg00769.html
- 404. https://www.spinics.net/lists/linux-numa/msg00770.html
- 405. https://www.spinics.net/lists/linux-numa/msg00771.html
- 406. https://www.spinics.net/lists/linux-numa/msg00772.html
- 407. https://www.spinics.net/lists/linux-numa/msg00773.html
- 408. https://www.spinics.net/lists/linux-numa/msg00774.html
- 409. https://www.spinics.net/lists/linux-numa/msg00775.html
- 410. https://www.spinics.net/lists/linux-numa/msg00776.html
- 411. https://www.spinics.net/lists/linux-numa/msg00777.html
- 412. https://www.spinics.net/lists/linux-numa/msg00778.html
- 413. https://www.spinics.net/lists/linux-numa/msg00780.html
- 414. https://www.spinics.net/lists/linux-numa/msg00784.html
- 415. https://www.spinics.net/lists/linux-numa/msg00779.html
- 416. https://www.spinics.net/lists/linux-numa/msg00764.html
- 417. https://www.spinics.net/lists/linux-numa/msg00765.html
- 418. https://www.spinics.net/lists/linux-numa/msg00766.html
- 419. https://www.spinics.net/lists/linux-numa/msg00767.html
- 420. https://www.spinics.net/lists/linux-numa/msg00763.html
- 421. https://www.spinics.net/lists/linux-numa/msg00761.html
- 422. https://www.spinics.net/lists/linux-numa/msg00762.html
- 423. https://www.spinics.net/lists/linux-numa/msg00760.html
- 424. https://www.spinics.net/lists/linux-numa/msg00758.html
- 425. https://www.spinics.net/lists/linux-numa/msg00757.html
- 426. https://www.spinics.net/lists/linux-numa/msg00756.html
- 427. https://www.spinics.net/lists/linux-numa/msg00755.html
- 428. https://www.spinics.net/lists/linux-numa/msg00754.html
- 429. https://www.spinics.net/lists/linux-numa/msg00753.html
- 430. https://www.spinics.net/lists/linux-numa/msg00759.html
- 431. https://www.spinics.net/lists/linux-numa/msg00752.html
- 432. https://www.spinics.net/lists/linux-numa/msg00750.html
- 433. https://www.spinics.net/lists/linux-numa/msg00751.html
- 434. https://www.spinics.net/lists/linux-numa/msg00748.html
- 435. https://www.spinics.net/lists/linux-numa/msg00749.html
- 436. https://www.spinics.net/lists/linux-numa/msg00744.html
- 437. https://www.spinics.net/lists/linux-numa/msg00745.html
- 438. https://www.spinics.net/lists/linux-numa/msg00746.html
- 439. https://www.spinics.net/lists/linux-numa/msg00747.html
- 440. https://www.spinics.net/lists/linux-numa/msg00742.html
- 441. https://www.spinics.net/lists/linux-numa/msg00743.html
- 442. https://www.spinics.net/lists/linux-numa/msg00739.html
- 443. https://www.spinics.net/lists/linux-numa/msg00740.html
- 444. https://www.spinics.net/lists/linux-numa/msg00741.html
- 445. https://www.spinics.net/lists/linux-numa/msg00736.html
- 446. https://www.spinics.net/lists/linux-numa/msg00735.html
- 447. https://www.spinics.net/lists/linux-numa/msg00738.html
- 448. https://www.spinics.net/lists/linux-numa/msg00737.html
- 449. https://www.spinics.net/lists/linux-numa/msg00727.html
- 450. https://www.spinics.net/lists/linux-numa/msg00726.html
- 451. https://www.spinics.net/lists/linux-numa/msg00725.html
- 452. https://www.spinics.net/lists/linux-numa/msg00713.html
- 453. https://www.spinics.net/lists/linux-numa/msg00714.html
- 454. https://www.spinics.net/lists/linux-numa/msg00715.html
- 455. https://www.spinics.net/lists/linux-numa/msg00716.html
- 456. https://www.spinics.net/lists/linux-numa/msg00728.html
- 457. https://www.spinics.net/lists/linux-numa/msg00729.html
- 458. https://www.spinics.net/lists/linux-numa/msg00730.html
- 459. https://www.spinics.net/lists/linux-numa/msg00731.html
- 460. https://www.spinics.net/lists/linux-numa/msg00732.html
- 461. https://www.spinics.net/lists/linux-numa/msg00733.html
- 462. https://www.spinics.net/lists/linux-numa/msg00734.html
- 463. https://www.spinics.net/lists/linux-numa/msg00717.html
- 464. https://www.spinics.net/lists/linux-numa/msg00718.html
- 465. https://www.spinics.net/lists/linux-numa/msg00719.html
- 466. https://www.spinics.net/lists/linux-numa/msg00720.html
- 467. https://www.spinics.net/lists/linux-numa/msg00682.html
- 468. https://www.spinics.net/lists/linux-numa/msg00683.html
- 469. https://www.spinics.net/lists/linux-numa/msg00693.html
- 470. https://www.spinics.net/lists/linux-numa/msg00695.html
- 471. https://www.spinics.net/lists/linux-numa/msg00706.html
- 472. https://www.spinics.net/lists/linux-numa/msg00704.html
- 473. https://www.spinics.net/lists/linux-numa/msg00684.html
- 474. https://www.spinics.net/lists/linux-numa/msg00694.html
- 475. https://www.spinics.net/lists/linux-numa/msg00702.html
- 476. https://www.spinics.net/lists/linux-numa/msg00711.html
- 477. https://www.spinics.net/lists/linux-numa/msg00710.html
- 478. https://www.spinics.net/lists/linux-numa/msg00712.html
- 479. https://www.spinics.net/lists/linux-numa/msg00685.html
- 480. https://www.spinics.net/lists/linux-numa/msg00705.html
- 481. https://www.spinics.net/lists/linux-numa/msg00686.html
- 482. https://www.spinics.net/lists/linux-numa/msg00703.html
- 483. https://www.spinics.net/lists/linux-numa/msg00687.html
- 484. https://www.spinics.net/lists/linux-numa/msg00701.html
- 485. https://www.spinics.net/lists/linux-numa/msg00688.html
- 486. https://www.spinics.net/lists/linux-numa/msg00721.html
- 487. https://www.spinics.net/lists/linux-numa/msg00722.html
- 488. https://www.spinics.net/lists/linux-numa/msg00723.html
- 489. https://www.spinics.net/lists/linux-numa/msg00724.html
- 490. https://www.spinics.net/lists/linux-numa/msg00689.html
- 491. https://www.spinics.net/lists/linux-numa/msg00690.html
- 492. https://www.spinics.net/lists/linux-numa/msg00691.html
- 493. https://www.spinics.net/lists/linux-numa/msg00692.html
- 494. https://www.spinics.net/lists/linux-numa/msg00700.html
- 495. https://www.spinics.net/lists/linux-numa/msg00707.html
- 496. https://www.spinics.net/lists/linux-numa/msg00681.html
- 497. https://www.spinics.net/lists/linux-numa/msg00677.html
- 498. https://www.spinics.net/lists/linux-numa/msg00678.html
- 499. https://www.spinics.net/lists/linux-numa/msg00679.html
- 500. https://www.spinics.net/lists/linux-numa/msg00680.html
- 501. https://www.spinics.net/lists/linux-numa/msg00696.html
- 502. https://www.spinics.net/lists/linux-numa/msg00697.html
- 503. https://www.spinics.net/lists/linux-numa/msg00698.html
- 504. https://www.spinics.net/lists/linux-numa/msg00699.html
- 505. https://www.spinics.net/lists/linux-numa/msg00708.html
- 506. https://www.spinics.net/lists/linux-numa/msg00709.html
- 507. https://www.spinics.net/lists/linux-numa/msg00674.html
- 508. https://www.spinics.net/lists/linux-numa/msg00675.html
- 509. https://www.spinics.net/lists/linux-numa/msg00662.html
- 510. https://www.spinics.net/lists/linux-numa/msg00663.html
- 511. https://www.spinics.net/lists/linux-numa/msg00669.html
- 512. https://www.spinics.net/lists/linux-numa/msg00672.html
- 513. https://www.spinics.net/lists/linux-numa/msg00664.html
- 514. https://www.spinics.net/lists/linux-numa/msg00665.html
- 515. https://www.spinics.net/lists/linux-numa/msg00670.html
- 516. https://www.spinics.net/lists/linux-numa/msg00673.html
- 517. https://www.spinics.net/lists/linux-numa/msg00666.html
- 518. https://www.spinics.net/lists/linux-numa/msg00671.html
- 519. https://www.spinics.net/lists/linux-numa/msg00667.html
- 520. https://www.spinics.net/lists/linux-numa/msg00668.html
- 521. https://www.spinics.net/lists/linux-numa/msg00660.html
- 522. https://www.spinics.net/lists/linux-numa/msg00661.html
- 523. https://www.spinics.net/lists/linux-numa/msg00639.html
- 524. https://www.spinics.net/lists/linux-numa/msg00640.html
- 525. https://www.spinics.net/lists/linux-numa/msg00657.html
- 526. https://www.spinics.net/lists/linux-numa/msg00658.html
- 527. https://www.spinics.net/lists/linux-numa/msg00659.html
- 528. https://www.spinics.net/lists/linux-numa/msg00641.html
- 529. https://www.spinics.net/lists/linux-numa/msg00648.html
- 530. https://www.spinics.net/lists/linux-numa/msg00642.html
- 531. https://www.spinics.net/lists/linux-numa/msg00649.html
- 532. https://www.spinics.net/lists/linux-numa/msg00653.html
- 533. https://www.spinics.net/lists/linux-numa/msg00654.html
- 534. https://www.spinics.net/lists/linux-numa/msg00643.html
- 535. https://www.spinics.net/lists/linux-numa/msg00650.html
- 536. https://www.spinics.net/lists/linux-numa/msg00644.html
- 537. https://www.spinics.net/lists/linux-numa/msg00651.html
- 538. https://www.spinics.net/lists/linux-numa/msg00652.html
- 539. https://www.spinics.net/lists/linux-numa/msg00645.html
- 540. https://www.spinics.net/lists/linux-numa/msg00646.html
- 541. https://www.spinics.net/lists/linux-numa/msg00647.html
- 542. https://www.spinics.net/lists/linux-numa/msg00655.html
- 543. https://www.spinics.net/lists/linux-numa/msg00656.html
- 544. https://www.spinics.net/lists/linux-numa/msg00638.html
- 545. https://www.spinics.net/lists/linux-numa/msg00635.html
- 546. https://www.spinics.net/lists/linux-numa/msg00636.html
- 547. https://www.spinics.net/lists/linux-numa/msg00637.html
- 548. https://www.spinics.net/lists/linux-numa/msg00631.html
- 549. https://www.spinics.net/lists/linux-numa/msg00632.html
- 550. https://www.spinics.net/lists/linux-numa/msg00633.html
- 551. https://www.spinics.net/lists/linux-numa/msg00634.html
- 552. https://www.spinics.net/lists/linux-numa/msg00627.html
- 553. https://www.spinics.net/lists/linux-numa/msg00628.html
- 554. https://www.spinics.net/lists/linux-numa/msg00629.html
- 555. https://www.spinics.net/lists/linux-numa/msg00630.html
- 556. https://www.spinics.net/lists/linux-numa/msg00626.html
- 557. https://www.spinics.net/lists/linux-numa/msg00624.html
- 558. https://www.spinics.net/lists/linux-numa/msg00625.html
- 559. https://www.spinics.net/lists/linux-numa/msg00593.html
- 560. https://www.spinics.net/lists/linux-numa/msg00594.html
- 561. https://www.spinics.net/lists/linux-numa/msg00595.html
- 562. https://www.spinics.net/lists/linux-numa/msg00611.html
- 563. https://www.spinics.net/lists/linux-numa/msg00596.html
- 564. https://www.spinics.net/lists/linux-numa/msg00608.html
- 565. https://www.spinics.net/lists/linux-numa/msg00597.html
- 566. https://www.spinics.net/lists/linux-numa/msg00613.html
- 567. https://www.spinics.net/lists/linux-numa/msg00614.html
- 568. https://www.spinics.net/lists/linux-numa/msg00598.html
- 569. https://www.spinics.net/lists/linux-numa/msg00609.html
- 570. https://www.spinics.net/lists/linux-numa/msg00610.html
- 571. https://www.spinics.net/lists/linux-numa/msg00621.html
- 572. https://www.spinics.net/lists/linux-numa/msg00622.html
- 573. https://www.spinics.net/lists/linux-numa/msg00623.html
- 574. https://www.spinics.net/lists/linux-numa/msg00599.html
- 575. https://www.spinics.net/lists/linux-numa/msg00612.html
- 576. https://www.spinics.net/lists/linux-numa/msg00615.html
- 577. https://www.spinics.net/lists/linux-numa/msg00617.html
- 578. https://www.spinics.net/lists/linux-numa/msg00616.html
- 579. https://www.spinics.net/lists/linux-numa/msg00618.html
- 580. https://www.spinics.net/lists/linux-numa/msg00619.html
- 581. https://www.spinics.net/lists/linux-numa/msg00620.html
- 582. https://www.spinics.net/lists/linux-numa/msg00600.html
- 583. https://www.spinics.net/lists/linux-numa/msg00601.html
- 584. https://www.spinics.net/lists/linux-numa/msg00602.html
- 585. https://www.spinics.net/lists/linux-numa/msg00604.html
- 586. https://www.spinics.net/lists/linux-numa/msg00607.html
- 587. https://www.spinics.net/lists/linux-numa/msg00603.html
- 588. https://www.spinics.net/lists/linux-numa/msg00605.html
- 589. https://www.spinics.net/lists/linux-numa/msg00606.html
- 590. https://www.spinics.net/lists/linux-numa/msg00560.html
- 591. https://www.spinics.net/lists/linux-numa/msg00561.html
- 592. https://www.spinics.net/lists/linux-numa/msg00562.html
- 593. https://www.spinics.net/lists/linux-numa/msg00574.html
- 594. https://www.spinics.net/lists/linux-numa/msg00583.html
- 595. https://www.spinics.net/lists/linux-numa/msg00587.html
- 596. https://www.spinics.net/lists/linux-numa/msg00563.html
- 597. https://www.spinics.net/lists/linux-numa/msg00581.html
- 598. https://www.spinics.net/lists/linux-numa/msg00564.html
- 599. https://www.spinics.net/lists/linux-numa/msg00582.html
- 600. https://www.spinics.net/lists/linux-numa/msg00589.html
- 601. https://www.spinics.net/lists/linux-numa/msg00592.html
- 602. https://www.spinics.net/lists/linux-numa/msg00565.html
- 603. https://www.spinics.net/lists/linux-numa/msg00566.html
- 604. https://www.spinics.net/lists/linux-numa/msg00575.html
- 605. https://www.spinics.net/lists/linux-numa/msg00567.html
- 606. https://www.spinics.net/lists/linux-numa/msg00584.html
- 607. https://www.spinics.net/lists/linux-numa/msg00568.html
- 608. https://www.spinics.net/lists/linux-numa/msg00569.html
- 609. https://www.spinics.net/lists/linux-numa/msg00570.html
- 610. https://www.spinics.net/lists/linux-numa/msg00585.html
- 611. https://www.spinics.net/lists/linux-numa/msg00571.html
- 612. https://www.spinics.net/lists/linux-numa/msg00576.html
- 613. https://www.spinics.net/lists/linux-numa/msg00578.html
- 614. https://www.spinics.net/lists/linux-numa/msg00579.html
- 615. https://www.spinics.net/lists/linux-numa/msg00580.html
- 616. https://www.spinics.net/lists/linux-numa/msg00586.html
- 617. https://www.spinics.net/lists/linux-numa/msg00588.html
- 618. https://www.spinics.net/lists/linux-numa/msg00590.html
- 619. https://www.spinics.net/lists/linux-numa/msg00591.html
- 620. https://www.spinics.net/lists/linux-numa/msg00577.html
- 621. https://www.spinics.net/lists/linux-numa/msg00533.html
- 622. https://www.spinics.net/lists/linux-numa/msg00534.html
- 623. https://www.spinics.net/lists/linux-numa/msg00535.html
- 624. https://www.spinics.net/lists/linux-numa/msg00536.html
- 625. https://www.spinics.net/lists/linux-numa/msg00545.html
- 626. https://www.spinics.net/lists/linux-numa/msg00547.html
- 627. https://www.spinics.net/lists/linux-numa/msg00556.html
- 628. https://www.spinics.net/lists/linux-numa/msg00537.html
- 629. https://www.spinics.net/lists/linux-numa/msg00546.html
- 630. https://www.spinics.net/lists/linux-numa/msg00551.html
- 631. https://www.spinics.net/lists/linux-numa/msg00549.html
- 632. https://www.spinics.net/lists/linux-numa/msg00552.html
- 633. https://www.spinics.net/lists/linux-numa/msg00555.html
- 634. https://www.spinics.net/lists/linux-numa/msg00573.html
- 635. https://www.spinics.net/lists/linux-numa/msg00554.html
- 636. https://www.spinics.net/lists/linux-numa/msg00550.html
- 637. https://www.spinics.net/lists/linux-numa/msg00553.html
- 638. https://www.spinics.net/lists/linux-numa/msg00557.html
- 639. https://www.spinics.net/lists/linux-numa/msg00558.html
- 640. https://www.spinics.net/lists/linux-numa/msg00559.html
- 641. https://www.spinics.net/lists/linux-numa/msg00572.html
- 642. https://www.spinics.net/lists/linux-numa/msg00538.html
- 643. https://www.spinics.net/lists/linux-numa/msg00539.html
- 644. https://www.spinics.net/lists/linux-numa/msg00540.html
- 645. https://www.spinics.net/lists/linux-numa/msg00544.html
- 646. https://www.spinics.net/lists/linux-numa/msg00548.html
- 647. https://www.spinics.net/lists/linux-numa/msg00541.html
- 648. https://www.spinics.net/lists/linux-numa/msg00542.html
- 649. https://www.spinics.net/lists/linux-numa/msg00543.html
- 650. https://www.spinics.net/lists/linux-numa/msg00676.html
- 651. https://www.spinics.net/lists/linux-numa/msg00532.html
- 652. https://www.spinics.net/lists/linux-numa/msg00513.html
- 653. https://www.spinics.net/lists/linux-numa/msg00514.html
- 654. https://www.spinics.net/lists/linux-numa/msg00529.html
- 655. https://www.spinics.net/lists/linux-numa/msg00530.html
- 656. https://www.spinics.net/lists/linux-numa/msg00531.html
- 657. https://www.spinics.net/lists/linux-numa/msg00515.html
- 658. https://www.spinics.net/lists/linux-numa/msg00516.html
- 659. https://www.spinics.net/lists/linux-numa/msg00517.html
- 660. https://www.spinics.net/lists/linux-numa/msg00518.html
- 661. https://www.spinics.net/lists/linux-numa/msg00528.html
- 662. https://www.spinics.net/lists/linux-numa/msg00519.html
- 663. https://www.spinics.net/lists/linux-numa/msg00520.html
- 664. https://www.spinics.net/lists/linux-numa/msg00526.html
- 665. https://www.spinics.net/lists/linux-numa/msg00521.html
- 666. https://www.spinics.net/lists/linux-numa/msg00527.html
- 667. https://www.spinics.net/lists/linux-numa/msg00522.html
- 668. https://www.spinics.net/lists/linux-numa/msg00523.html
- 669. https://www.spinics.net/lists/linux-numa/msg00524.html
- 670. https://www.spinics.net/lists/
- 671. https://www.spinics.net/lists/linux-usb/
- 672. http://www.ske-art.com/z/biglist.php
- 673. https://www.spinics.net/lists/linux-scsi/
- 674. https://yosemitenews.info/
- 675. https://www.spinics.net/lists/
+     * [https://www.spinics.net/lists/linux-numa/msg01175.html][PATCH] numastat: fix bad column calculation in show_process_info, Petr Oros
+          + [https://www.spinics.net/lists/linux-numa/msg01176.html]Re: [PATCH] numastat: fix bad column calculation in show_process_info, Andi Kleen
+     * [https://www.spinics.net/lists/linux-numa/msg01169.html][PATCH] Segment fault when numa nodes not sequential or contiguous, Seeteena Thoufeek
+          + [https://www.spinics.net/lists/linux-numa/msg01172.html][PATCH] Segment fault when numa nodes not sequential or contiguous, Seeteena Thoufeek
+     * [https://www.spinics.net/lists/linux-numa/msg01164.html][PATCH 1/1] numastat: fix memory overwrite with -p <pid>, Sam Bobroff
+     * [https://www.spinics.net/lists/linux-numa/msg01163.html][PATCH] include sys/sysmacros.h for major/minor, Mike Frysinger
+     * [https://www.spinics.net/lists/linux-numa/msg01162.html][PATCH] fix building as PIEs on x86, Mike Frysinger
+     * [https://www.spinics.net/lists/linux-numa/msg01148.html][PATCH] libnuma: supress warnings for non-existing node, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg01151.html]Re: [PATCH] libnuma: supress warnings for non-existing node, Filipe Brandenburger
+     * [https://www.spinics.net/lists/linux-numa/msg01147.html][PATCH] Subject: [PATCH] /sys not mounted on non sequential cpus list, Thierry Fauck
+     * [https://www.spinics.net/lists/linux-numa/msg01139.html][PATCH] openvswitch: make for_each_node loops work with sparse numa systems, Chris J Arges
+          + [https://www.spinics.net/lists/linux-numa/msg01140.html]Re: [PATCH] openvswitch: make for_each_node loops work with sparse numa systems, Nishanth Aravamudan
+               o [https://www.spinics.net/lists/linux-numa/msg01141.html]Re: [PATCH] openvswitch: make for_each_node loops work with sparse numa systems, Chris J Arges
+                    # [https://www.spinics.net/lists/linux-numa/msg01145.html]Re: [PATCH] openvswitch: make for_each_node loops work with sparse numa systems, Nishanth Aravamudan
+               o [https://www.spinics.net/lists/linux-numa/msg01142.html][PATCH v2] openvswitch: allocate nr_node_ids flow_stats instead of num_possible_nodes, Chris J Arges
+                    # [https://www.spinics.net/lists/linux-numa/msg01143.html]Re: [PATCH v2] openvswitch: allocate nr_node_ids flow_stats instead of num_possible_nodes, Pravin Shelar
+                    # [https://www.spinics.net/lists/linux-numa/msg01144.html]Re: [PATCH v2] openvswitch: allocate nr_node_ids flow_stats instead of num_possible_nodes, Nishanth Aravamudan
+                    # [https://www.spinics.net/lists/linux-numa/msg01146.html]Re: [PATCH v2] openvswitch: allocate nr_node_ids flow_stats instead of num_possible_nodes, David Miller
+     * [https://www.spinics.net/lists/linux-numa/msg01134.html][PATCH] libnuma: disable caching of node cpusmasks, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg01135.html]Re: [PATCH] libnuma: disable caching of node cpusmasks, Andi Kleen
+               o [https://www.spinics.net/lists/linux-numa/msg01136.html]Re: [PATCH] libnuma: disable caching of node cpusmasks, Petr Holasek
+                    # [https://www.spinics.net/lists/linux-numa/msg01137.html]Re: [PATCH] libnuma: disable caching of node cpusmasks, Andi Kleen
+                         @ [https://www.spinics.net/lists/linux-numa/msg01138.html][PATCH] libnuma: don't cache node cpumasks older than 1 second, Petr Holasek
+     * [https://www.spinics.net/lists/linux-numa/msg01130.html][PATCH] fix numactl test, Rick "Zero_Chaos" Farina
+          + [https://www.spinics.net/lists/linux-numa/msg01131.html]Re: [PATCH] fix numactl test, Filipe Brandenburger
+               o [https://www.spinics.net/lists/linux-numa/msg01132.html]Re: [PATCH] fix numactl test, Rick "Zero_Chaos" Farina
+                    # [https://www.spinics.net/lists/linux-numa/msg01133.html]Re: [PATCH] fix numactl test, Filipe Brandenburger
+     * [https://www.spinics.net/lists/linux-numa/msg01124.html][PATCH] Fix a SEGV due to uninitialised mask, Daniel J Blueman
+          + [https://www.spinics.net/lists/linux-numa/msg01125.html]Re: [PATCH] Fix a SEGV due to uninitialised mask, Filipe Brandenburger
+     * [https://www.spinics.net/lists/linux-numa/msg01121.html][PATCH] libnuma: add check for return value of numa_node_to_cpus, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg01122.html]Re: [PATCH] libnuma: add check for return value of numa_node_to_cpus, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg01116.html][PATCH] libnuma_node_not_sequential libnuma.so function numa_node_of_cpu() doesn't use previously created list of valid nodes but use the entire array indexed with the maximum number of nodes available on the system. Fix is to check node is valid before calling numa_node_to_cpus_v2_int() which check that the cpu belongs to that node. ., Thierry FAUCK - IBM LTC
+     * [https://www.spinics.net/lists/linux-numa/msg01078.html][PATCH] build-sys: prevent warning about .depend when running make, Filipe Brandenburger
+          + [https://www.spinics.net/lists/linux-numa/msg01081.html]Re: [PATCH] build-sys: prevent warning about .depend when running make, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg01076.html][PATCH] Fix numactl --show preferred node for case MPOL_BIND, Bill Gray
+          + [https://www.spinics.net/lists/linux-numa/msg01077.html]Re: [PATCH] Fix numactl --show preferred node for case MPOL_BIND, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg01058.html][PATCH] x86/mm/numa: fix becoming single node on numa machine with 32-bit kernel., Lans Zhang
+     * [https://www.spinics.net/lists/linux-numa/msg01057.html][PATCH] numactl: checks for numa when showing hardware, Elena Ufimtseva
+     * [https://www.spinics.net/lists/linux-numa/msg01043.html][PATCH 0/2] follow-up patches for new --all option, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg01044.html][PATCH 1/2] libnuma: new function numa_run_on_node_mask_all added to library manpage, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg01045.html][PATCH 2/2] libnuma: added regression test for new --all option, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg01046.html]Re: [PATCH 0/2] follow-up patches for new --all option, Andi Kleen
+          + [https://www.spinics.net/lists/linux-numa/msg01047.html]Re: [PATCH 0/2] follow-up patches for new --all option, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg01037.html][PATCH 0/2] New numactl option for overriding of policy settings cpuset awareness, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg01038.html][PATCH 1/2] numactl: new option --all/-a was added for policy settings, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg01039.html][PATCH 2/2] libnuma: new function numa_run_on_node_mask_all was added to libnuma, Petr Holasek
+               o [https://www.spinics.net/lists/linux-numa/msg01041.html]Re: [PATCH 2/2] libnuma: new function numa_run_on_node_mask_all was added to libnuma, Andi Kleen
+          + [https://www.spinics.net/lists/linux-numa/msg01040.html]Re: [PATCH 0/2] New numactl option for overriding of policy settings cpuset awareness, Cliff Wickman
+               o [https://www.spinics.net/lists/linux-numa/msg01042.html]Re: [PATCH 0/2] New numactl option for overriding of policy settings cpuset awareness, Petr Holasek
+     * [https://www.spinics.net/lists/linux-numa/msg01034.html][PATCH] numactl: new --allphyscpubind/-A option, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg01035.html]Re: [PATCH] numactl: new --allphyscpubind/-A option, Andi Kleen
+               o [https://www.spinics.net/lists/linux-numa/msg01036.html]Re: [PATCH] numactl: new --allphyscpubind/-A option, Andi Kleen
+     * [https://www.spinics.net/lists/linux-numa/msg01032.html][PATCH] numactl: man page and --help output fixes, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg01033.html]Re: [PATCH] numactl: man page and --help output fixes, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg01030.html][PATCH] Bring numastat up to revision 20130723, Bill Gray
+          + [https://www.spinics.net/lists/linux-numa/msg01031.html]Re: [PATCH] Bring numastat up to revision 20130723, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg01025.html][PATCH] Fix segfault in read_distance_table when no NUMA, Ian Wienand
+     * [https://www.spinics.net/lists/linux-numa/msg01021.html][PATCH] libnuma: prototype for numa_bitmask_weight(), Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg01016.html][PATCH] Custom interleaved allocation, Vasileios Karakasis
+          + [https://www.spinics.net/lists/linux-numa/msg01017.html]Re: [PATCH] Custom interleaved allocation, Andi Kleen
+               o [https://www.spinics.net/lists/linux-numa/msg01018.html]Re: [PATCH] Custom interleaved allocation, Vasileios Karakasis
+     * [https://www.spinics.net/lists/linux-numa/msg00982.html][PATCH] Do not use cpu_to_node() to find an offlined cpu's node., Tang Chen
+          + [https://www.spinics.net/lists/linux-numa/msg00983.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., David Rientjes
+               o [https://www.spinics.net/lists/linux-numa/msg00984.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., Wen Congyang
+                    # [https://www.spinics.net/lists/linux-numa/msg00985.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., Tang Chen
+                         @ [https://www.spinics.net/lists/linux-numa/msg00986.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., David Rientjes
+                              - [https://www.spinics.net/lists/linux-numa/msg00987.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., Wen Congyang
+                                   = [https://www.spinics.net/lists/linux-numa/msg00989.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., David Rientjes
+          + [https://www.spinics.net/lists/linux-numa/msg00988.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., Peter Zijlstra
+               o [https://www.spinics.net/lists/linux-numa/msg00990.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., David Rientjes
+                    # [https://www.spinics.net/lists/linux-numa/msg00991.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., Peter Zijlstra
+                         @ [https://www.spinics.net/lists/linux-numa/msg00992.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., David Rientjes
+                              - [https://www.spinics.net/lists/linux-numa/msg00993.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., Wen Congyang
+                                   = [https://www.spinics.net/lists/linux-numa/msg00994.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., Wen Congyang
+                              - [https://www.spinics.net/lists/linux-numa/msg00995.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., Peter Zijlstra
+                                   = [https://www.spinics.net/lists/linux-numa/msg00996.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., Wen Congyang
+                                   * [https://www.spinics.net/lists/linux-numa/msg00997.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., Peter Zijlstra
+                                   + [https://www.spinics.net/lists/linux-numa/msg00998.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., Wen Congyang
+                                   o [https://www.spinics.net/lists/linux-numa/msg00999.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., Peter Zijlstra
+                                   = [https://www.spinics.net/lists/linux-numa/msg01001.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., David Rientjes
+                                   * [https://www.spinics.net/lists/linux-numa/msg01002.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., Andrew Morton
+                                   + [https://www.spinics.net/lists/linux-numa/msg01003.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., David Rientjes
+                                   o [https://www.spinics.net/lists/linux-numa/msg01006.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., David Rientjes
+                                   # [https://www.spinics.net/lists/linux-numa/msg01007.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., Tang Chen
+                                   @ [https://www.spinics.net/lists/linux-numa/msg01008.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., David Rientjes
+                                   - [https://www.spinics.net/lists/linux-numa/msg01009.html]Re: [PATCH] Do not use cpu_to_node() to find an offlined cpu's node., Peter Zijlstra
+     * [https://www.spinics.net/lists/linux-numa/msg00981.html][PATCH] Rewrite numastat to also show per-node process stats, Bill Gray
+          + [https://www.spinics.net/lists/linux-numa/msg01000.html]Re: [PATCH] Rewrite numastat to also show per-node process stats, Cliff Wickman
+               o [https://www.spinics.net/lists/linux-numa/msg01004.html]Re: [PATCH] Rewrite numastat to also show per-node process stats, Andi Kleen
+                    # [https://www.spinics.net/lists/linux-numa/msg01005.html]Re: [PATCH] Rewrite numastat to also show per-node process stats, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg00976.html][PATCH v2 0/2] Update sched_domains_numa_masks when new cpus are onlined., Tang Chen
+          + [https://www.spinics.net/lists/linux-numa/msg00977.html][PATCH v2 1/2] Ensure sched_domains_numa_levels safe in other functions., Tang Chen
+          + [https://www.spinics.net/lists/linux-numa/msg00978.html][PATCH v2 2/2] Update sched_domains_numa_masks when new cpus are onlined., Tang Chen
+               o [https://www.spinics.net/lists/linux-numa/msg00980.html]Re: [PATCH v2 2/2] Update sched_domains_numa_masks when new cpus are onlined., Peter Zijlstra
+          + [https://www.spinics.net/lists/linux-numa/msg00979.html]Re: [PATCH v2 0/2] Update sched_domains_numa_masks when new cpus are onlined., Peter Zijlstra
+     * [https://www.spinics.net/lists/linux-numa/msg00963.html][PATCH] Update sched_domains_numa_masks when new cpus are onlined., Tang Chen
+          + [https://www.spinics.net/lists/linux-numa/msg00964.html]Re: [PATCH] Update sched_domains_numa_masks when new cpus are onlined., Tang Chen
+          + [https://www.spinics.net/lists/linux-numa/msg00965.html]Re: [PATCH] Update sched_domains_numa_masks when new cpus are onlined., Peter Zijlstra
+               o [https://www.spinics.net/lists/linux-numa/msg00966.html]Re: [PATCH] Update sched_domains_numa_masks when new cpus are onlined., Srivatsa S. Bhat
+                    # [https://www.spinics.net/lists/linux-numa/msg00967.html]Re: [PATCH] Update sched_domains_numa_masks when new cpus are onlined., Peter Zijlstra
+                         @ [https://www.spinics.net/lists/linux-numa/msg00968.html]Re: [PATCH] Update sched_domains_numa_masks when new cpus are onlined., Srivatsa S. Bhat
+                    # [https://www.spinics.net/lists/linux-numa/msg00970.html]Re: [PATCH] Update sched_domains_numa_masks when new cpus are onlined., Tang Chen
+               o [https://www.spinics.net/lists/linux-numa/msg00969.html]Re: [PATCH] Update sched_domains_numa_masks when new cpus are onlined., Tang Chen
+                    # [https://www.spinics.net/lists/linux-numa/msg00971.html]Re: [PATCH] Update sched_domains_numa_masks when new cpus are onlined., Peter Zijlstra
+                         @ [https://www.spinics.net/lists/linux-numa/msg00973.html]Re: [PATCH] Update sched_domains_numa_masks when new cpus are onlined., Tang Chen
+                              - [https://www.spinics.net/lists/linux-numa/msg00974.html]Re: [PATCH] Update sched_domains_numa_masks when new cpus are onlined., Peter Zijlstra
+                                   = [https://www.spinics.net/lists/linux-numa/msg00975.html]Re: [PATCH] Update sched_domains_numa_masks when new cpus are onlined., Tang Chen
+                    # [https://www.spinics.net/lists/linux-numa/msg00972.html]Re: [PATCH] Update sched_domains_numa_masks when new cpus are onlined., Peter Zijlstra
+     * [https://www.spinics.net/lists/linux-numa/msg00962.html][PATCH] numactl: Show distance info even for machines without 0th node., Petr Holasek
+     * [https://www.spinics.net/lists/linux-numa/msg00952.html][PATCH v2 0/7] couple of numactl-2.0.8-rc4 bugfixes and new interface, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00953.html][PATCH v2 1/7] libnuma: Fix calculation of maxconfiguredcpu, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00954.html][PATCH v2 2/7] libnuma: do not recalculate maxconfiguredcpu, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00955.html][PATCH v2 3/7] libnuma: numa_num_possible_cpus symbol is exported from the library, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00956.html][RFC PATCH v2 4/7] libnuma: introduced _all versions of numa_parse_{cpu,node}string(), Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00957.html][PATCH v2 5/7] libnuma: numa_parse_cpustring and similar should take a const char* parameter, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00958.html][PATCH v2 6/7] libnuma: removed unused bufferlen variable, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00959.html][PATCH v2 7/7] libnuma: no warnings when there are holes in numbering of nodes, Petr Holasek
+     * [https://www.spinics.net/lists/linux-numa/msg00947.html][PATCH 0/7] couple of numactl-2.0.8-rc4 bugfixes and interface, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00941.html][PATCH 2/7] libnuma: do not recalculate maxconfiguredcpu, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00942.html][RFC PATCH 4/7] libnuma: introduced _all versions of numa_parse_{cpu,node}string(), Petr Holasek
+               o [https://www.spinics.net/lists/linux-numa/msg00949.html]Re: [RFC PATCH 4/7] libnuma: introduced _all versions of numa_parse_{cpu,node}string(), Andi Kleen
+                    # [https://www.spinics.net/lists/linux-numa/msg00950.html]Re: [RFC PATCH 4/7] libnuma: introduced _all versions of numa_parse_{cpu,node}string(), Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00943.html][PATCH 1/7] libnuma: Fix calculation of maxconfiguredcpu, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00944.html][PATCH 6/7] libnuma: removed unused bufferlen variable, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00948.html][PATCH 3/7] libnuma: numa_num_possible_cpus symbol is exported from the library, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00945.html][PATCH 5/7] libnuma: numa_parse_cpustring and similar should take a const char* parameter, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00946.html][PATCH 7/7] libnuma: no warnings when there are holes in numbering of nodes, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00960.html]Re: [PATCH 0/7] couple of numactl-2.0.8-rc4 bugfixes and interface, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg00931.html][PATCH] numa_emulation fix, Andrea Arcangeli
+          + [https://www.spinics.net/lists/linux-numa/msg00930.html][PATCH] numa_emulation: fix cpumask_of_node(), Andrea Arcangeli
+     * [https://www.spinics.net/lists/linux-numa/msg00926.html][PATCH] numademo: msize check for ptrchase test, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00927.html]Re: [PATCH] numademo: msize check for ptrchase test, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg00920.html][PATCH] Makefile: install all available man pages, Petr Holasek
+     * [https://www.spinics.net/lists/linux-numa/msg00919.html][PATCH] libnuma: more verbose warning, Petr Holasek
+     * [https://www.spinics.net/lists/linux-numa/msg00907.html][PATCH 1/8] Add support for a "same" numamask to numactl, Andi Kleen
+          + [https://www.spinics.net/lists/linux-numa/msg00900.html][PATCH 2/8] Use constructors for numa_init/exit, Andi Kleen
+          + [https://www.spinics.net/lists/linux-numa/msg00901.html][PATCH 4/8] Run full test suite before exiting, Andi Kleen
+          + [https://www.spinics.net/lists/linux-numa/msg00902.html][PATCH 3/8] Use glibc syscall if possible, Andi Kleen
+          + [https://www.spinics.net/lists/linux-numa/msg00903.html][PATCH 6/8] Clean regression test temp files, Andi Kleen
+          + [https://www.spinics.net/lists/linux-numa/msg00904.html][PATCH 8/8] Disable transparent huge pages in test suite, Andi Kleen
+          + [https://www.spinics.net/lists/linux-numa/msg00905.html][PATCH 7/8] memhog: add option to disable transparent huge pages, Andi Kleen
+          + [https://www.spinics.net/lists/linux-numa/msg00906.html][PATCH 5/8] Add IO affinity support to libnuma, Andi Kleen
+     * [https://www.spinics.net/lists/linux-numa/msg00898.html][PATCH] libnuma: preventing sigbus on touch beyond region, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg00893.html][PATCH] libnuma: checking of sucessfull allocations in numademo, Petr Holasek
+          + [https://www.spinics.net/lists/linux-numa/msg00896.html]Re: [PATCH] libnuma: checking of sucessfull allocations in numademo, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg00871.html][PATCH] manpages, Anton Arapov
+          + [https://www.spinics.net/lists/linux-numa/msg00872.html]Re: [PATCH] manpages, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg00870.html][PATCH] libnuma: parsing cpu and node strings, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg00869.html][PATCH] libnuma: numa_get_run_node_mask manpage, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg00868.html][PATCH] libnuma: test/checkaffinity, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg00867.html][PATCH] libnuma: numa_get_run_node_mask and numa_run_on_node_mask, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg00831.html]RESEND: [PATCH/RFC 1/5] numa - migration cache - core implementation, Lee Schermerhorn
+     * [https://www.spinics.net/lists/linux-numa/msg00829.html][PATCH/RFC 1/5] numa - migration cache - core implementation, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00826.html][PATCH/RFC 3/5] numa - migration cache - add move_to_swap, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00827.html][PATCH/RFC 4/5] numa - migration cache - use for lazy migration, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00828.html][PATCH/RFC 5/5] numa - migration cache - add statistics, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00830.html][PATCH/RFC 2/5] numa - migration cache - add mm checks for migration cache, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00832.html]Re: [PATCH/RFC 1/5] numa - migration cache - core implementation, KOSAKI Motohiro
+               o [https://www.spinics.net/lists/linux-numa/msg00835.html]Re: [PATCH/RFC 1/5] numa - migration cache - core implementation, KOSAKI Motohiro
+     * [https://www.spinics.net/lists/linux-numa/msg00814.html][PATCH/RFC 0/11] numa - Automatic-migration, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00815.html][PATCH/RFC 1/11] numa - Automatic-migration - preparation, cleanup, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00816.html][PATCH/RFC 2/11] numa - Automatic-migration - per cpuset automigration control, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00817.html][PATCH/RFC 3/11] numa - Automatic-migration - check notify migrate pending, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00818.html][PATCH/RFC 4/11] numa - Automatic-migration - ia64 check notify migrate pending, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00819.html][PATCH/RFC 5/11] numa - Automatic-migration - x86_64 check notify migrate pending, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00820.html][PATCH/RFC 6/11] numa - Automatic-migration - hook to scheduler inter-node migration, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00821.html][PATCH/RFC 7/11] numa - Automatic-migration - add internode migration delay, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00822.html][PATCH/RFC 8/11] numa - Automatic-migration - per cpuset max mapcount control, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00823.html][PATCH/RFC 9/11] numa - Automatic-migration - hook to migrate on fault, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00824.html][PATCH/RFC 10/11] numa - Automatic-migration - per proc automigrate kick control, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00825.html][PATCH/RFC 11/11] numa - Automatic-migration - add statistics, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00834.html]Re: [PATCH/RFC 0/11] numa - Automatic-migration, KOSAKI Motohiro
+     * [https://www.spinics.net/lists/linux-numa/msg00803.html][PATCH/RFC 0/8] numa - Migrate-on-Fault, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00804.html][PATCH/RFC 1/8] numa - Migrate-on-Fault - add Kconfig option, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00805.html][PATCH/RFC 2/8] numa - Migrate-on-Fault - add cpuset control, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00806.html][PATCH/RFC 3/8] numa - Migrate-on-Fault - check for misplaced page, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00807.html][PATCH/RFC 4/8] numa - Migrate-on-Fault - migrate misplaced pages, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00808.html][PATCH/RFC 5/8] numa - Migrate-on-Fault - migrate misplaced anon pages, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00809.html][PATCH/RFC 6/8] numa - Migrate-on-Fault - add mbind() MPOL_MF_LAZY flag, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00810.html][PATCH/RFC 7/8] numa - Migrate-on-Fault - mbind() NOOP policy, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00811.html][PATCH/RFC 8/8] numa - Migrate-on-Fault - add statistics, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00833.html]Re: [PATCH/RFC 0/8] numa - Migrate-on-Fault, KOSAKI Motohiro
+               o [https://www.spinics.net/lists/linux-numa/msg00836.html]Re: [PATCH/RFC 0/8] numa - Migrate-on-Fault, Christoph Lameter
+                    # [https://www.spinics.net/lists/linux-numa/msg00837.html]Re: [PATCH/RFC 0/8] numa - Migrate-on-Fault, Andi Kleen
+                         @ [https://www.spinics.net/lists/linux-numa/msg00839.html]Re: [PATCH/RFC 0/8] numa - Migrate-on-Fault, Andrea Arcangeli
+                    # [https://www.spinics.net/lists/linux-numa/msg00838.html]Re: [PATCH/RFC 0/8] numa - Migrate-on-Fault, Andrea Arcangeli
+                         @ [https://www.spinics.net/lists/linux-numa/msg00842.html]Re: [PATCH/RFC 0/8] numa - Migrate-on-Fault, Lee Schermerhorn
+                              - [https://www.spinics.net/lists/linux-numa/msg00845.html]Re: [PATCH/RFC 0/8] numa - Migrate-on-Fault, Andrea Arcangeli
+                    # [https://www.spinics.net/lists/linux-numa/msg00840.html]Re: [PATCH/RFC 0/8] numa - Migrate-on-Fault, KOSAKI Motohiro
+                         @ [https://www.spinics.net/lists/linux-numa/msg00841.html]Re: [PATCH/RFC 0/8] numa - Migrate-on-Fault, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00843.html]Re: [PATCH/RFC 0/8] numa - Migrate-on-Fault, Avi Kivity
+               o [https://www.spinics.net/lists/linux-numa/msg00844.html]Re: [PATCH/RFC 0/8] numa - Migrate-on-Fault, Lee Schermerhorn
+     * [https://www.spinics.net/lists/linux-numa/msg00788.html][PATCH/RFC 0/14] Shared Policy Overview, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00789.html][PATCH/RFC 1/14] Shared Policy: Miscellaneous Cleanup, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00790.html][PATCH/RFC 2/14] Shared Policy: move shared policy to inode/mapping, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00791.html][PATCH/RFC 3/14] Shared Policy: allocate shared policies as needed, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00792.html][PATCH/RFC 4/14] Shared Policy: let vma policy ops handle sub-vma policies, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00793.html][PATCH/RFC 5/14] Shared Policy: fix show_numa_maps(), Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00794.html][PATCH/RFC 6/14] Shared Policy: Factor alloc_page_pol routine, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00795.html][PATCH/RFC 7/14] Shared Policy: use shared policy for page cache allocations, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00796.html][PATCH/RFC 8/14] Shared Policy: use alloc_page_pol for swap and shmempages, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00797.html][PATCH/RFC 9/14] Shared Policy: per cpuset huge file policy control, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00798.html][PATCH/RFC 10/14] Shared Policy: Add hugepage shmem policy vm_ops, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00799.html][PATCH/RFC 11/14] Shared Policy: fix migration of private mappings, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00800.html][PATCH/RFC 12/14] Shared Policy: mapped file policy persistence model, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00801.html][PATCH/RFC 13/14] Shared Policy: per cpuset mapped file policy control, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00802.html][PATCH/RFC 14/14] Shared Policy: add generic file set/get policy vm ops, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00812.html]Re: [PATCH/RFC 0/14] Shared Policy Overview, Andi Kleen
+               o [https://www.spinics.net/lists/linux-numa/msg00813.html]Re: [PATCH/RFC 0/14] Shared Policy Overview, Lee Schermerhorn
+     * [https://www.spinics.net/lists/linux-numa/msg00763.html][PATCH] libnuma: numa_node_to_cpus() warning, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg00761.html][PATCH] libnuma:, Cliff Wickman
+          + [https://www.spinics.net/lists/linux-numa/msg00762.html][PATCH] libnuma:, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg00760.html][PATCH] libnuma: maintain numa_num_thread_nodes() and numa_num_thread_cpus(), Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg00758.html][PATCH 5 of 5] numactl --hardware should handle sparse node numbering, Tim Pepper
+     * [https://www.spinics.net/lists/linux-numa/msg00757.html][PATCH 4 of 5] Clarify comment for numa_all_nodes_ptr extern, Tim Pepper
+     * [https://www.spinics.net/lists/linux-numa/msg00756.html][PATCH 3 of 5] Fix numa_num_configured_nodes() to match man page description, Tim Pepper
+     * [https://www.spinics.net/lists/linux-numa/msg00755.html][PATCH 2 of 5] Use numa_max_node() not numa_num_configured_nodes() where appropriate, Tim Pepper
+     * [https://www.spinics.net/lists/linux-numa/msg00754.html][PATCH 1 of 5] Correct numa_max_node() use of broken numa_num_configured_nodes(), Tim Pepper
+     * [https://www.spinics.net/lists/linux-numa/msg00753.html][PATCH 0 of 5] RFC: Handling of sparse, memoryless, and cpuless nodes, Tim Pepper
+          + [https://www.spinics.net/lists/linux-numa/msg00759.html]Re: [PATCH 0 of 5] RFC: Handling of sparse, memoryless, and cpuless nodes, Cliff Wickman
+     * [https://www.spinics.net/lists/linux-numa/msg00736.html][PATCH] libnuma: enumerate CPUs correctly, Jan Beulich
+     * [https://www.spinics.net/lists/linux-numa/msg00735.html][PATCH] libnuma: fix memory corruption, Jan Beulich
+          + [https://www.spinics.net/lists/linux-numa/msg00738.html]Re: [PATCH] libnuma: fix memory corruption, Andi Kleen
+          + [https://www.spinics.net/lists/linux-numa/msg00737.html][PATCH] libnuma: fix memory corruption, Jan Beulich
+     * [https://www.spinics.net/lists/linux-numa/msg00727.html][PATCH] Fix CPUless nodes numactl --hardware output, Thomas Renninger
+     * [https://www.spinics.net/lists/linux-numa/msg00725.html][PATCH] add numa_random() stub for non-NUMA build, Lee Schermerhorn
+     * [https://www.spinics.net/lists/linux-numa/msg00713.html][PATCH 0/7] numa: incremental fixes to generic per cpu numa_*_id() series, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00714.html][PATCH 1/7] numa-add-generic-percpu-var-numa_node_id-implementation-fix1, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00715.html][PATCH 2/7] numa-add-generic-percpu-var-numa_node_id-implementation-fix2, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00716.html][PATCH 3/7] numa-x86_64-use-generic-percpu-var-numa_node_id-implementation-fix1, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00728.html]Re: [PATCH 3/7] numa-x86_64-use-generic-percpu-var-numa_node_id-implementation-fix1, Andrew Morton
+                    # [https://www.spinics.net/lists/linux-numa/msg00729.html]Re: [PATCH 3/7] numa-x86_64-use-generic-percpu-var-numa_node_id-implementation-fix1, Lee Schermerhorn
+                         @ [https://www.spinics.net/lists/linux-numa/msg00730.html]Re: [PATCH 3/7] numa-x86_64-use-generic-percpu-var-numa_node_id-implementation-fix1, Valdis . Kletnieks
+                              - [https://www.spinics.net/lists/linux-numa/msg00731.html]Re: [PATCH 3/7] numa-x86_64-use-generic-percpu-var-numa_node_id-implementation-fix1, Lee Schermerhorn
+                                   = [https://www.spinics.net/lists/linux-numa/msg00732.html]Re: [PATCH 3/7] numa-x86_64-use-generic-percpu-var-numa_node_id-implementation-fix1, Andrew Morton
+                                   * [https://www.spinics.net/lists/linux-numa/msg00733.html]Re: [PATCH 3/7] numa-x86_64-use-generic-percpu-var-numa_node_id-implementation-fix1, Lee Schermerhorn
+                                   = [https://www.spinics.net/lists/linux-numa/msg00734.html]Re: [PATCH 3/7] numa-x86_64-use-generic-percpu-var-numa_node_id-implementation-fix1, Valdis . Kletnieks
+          + [https://www.spinics.net/lists/linux-numa/msg00717.html][PATCH 4/7] numa-x86_64-use-generic-percpu-var-numa_node_id-implementation-fix2, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00718.html][PATCH 5/7] numa-introduce-numa_mem_id-effective-local-memory-node-id-fix2, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00719.html][PATCH 6/7] numa-introduce-numa_mem_id-effective-local-memory-node-id-fix3, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00720.html][PATCH 7/7] numa-update-documentation-vm-numa-add-memoryless-node-info-fix1, Lee Schermerhorn
+     * [https://www.spinics.net/lists/linux-numa/msg00682.html][PATCH 0/8] Numa: Use Generic Per-cpu Variables for numa_*_id(), Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00683.html][PATCH 1/8] numa: add generic percpu var numa_node_id() implementation, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00693.html]Re: [PATCH 1/8] numa: add generic percpu var numa_node_id() implementation, Christoph Lameter
+               o [https://www.spinics.net/lists/linux-numa/msg00695.html]Re: [PATCH 1/8] numa: add generic percpu var numa_node_id() implementation, Andrew Morton
+                    # [https://www.spinics.net/lists/linux-numa/msg00706.html]Re: [PATCH 1/8] numa: add generic percpu var numa_node_id() implementation, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00704.html]Re: [PATCH 1/8] numa: add generic percpu var numa_node_id() implementation, KAMEZAWA Hiroyuki
+          + [https://www.spinics.net/lists/linux-numa/msg00684.html][PATCH 2/8] numa: x86_64: use generic percpu var numa_node_id() implementation, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00694.html]Re: [PATCH 2/8] numa: x86_64: use generic percpu var numa_node_id() implementation, Christoph Lameter
+                    # [https://www.spinics.net/lists/linux-numa/msg00702.html]Re: [PATCH 2/8] numa: x86_64: use generic percpu var numa_node_id() implementation, Tejun Heo
+                         @ [https://www.spinics.net/lists/linux-numa/msg00711.html]Re: [PATCH 2/8] numa: x86_64: use generic percpu var numa_node_id() implementation, Lee Schermerhorn
+                              - [https://www.spinics.net/lists/linux-numa/msg00710.html]Re: [PATCH 2/8] numa: x86_64: use generic percpu var numa_node_id() implementation, Tejun Heo
+                                   = [https://www.spinics.net/lists/linux-numa/msg00712.html]Re: [PATCH 2/8] numa: x86_64: use generic percpu var numa_node_id() implementation, Christoph Lameter
+          + [https://www.spinics.net/lists/linux-numa/msg00685.html][PATCH 3/8] numa: ia64: use generic percpu var numa_node_id() implementation, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00705.html]Re: [PATCH 3/8] numa: ia64: use generic percpu var numa_node_id() implementation, KAMEZAWA Hiroyuki
+          + [https://www.spinics.net/lists/linux-numa/msg00686.html][PATCH 4/8] numa: Introduce numa_mem_id()- effective local memory node id, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00703.html]Re: [PATCH 4/8] numa: Introduce numa_mem_id()- effective local memory node id, Tejun Heo
+          + [https://www.spinics.net/lists/linux-numa/msg00687.html][PATCH 5/8] numa: ia64: support numa_mem_id() for memoryless nodes, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00701.html]Re: [PATCH 5/8] numa: ia64: support numa_mem_id() for memoryless nodes, Tejun Heo
+          + [https://www.spinics.net/lists/linux-numa/msg00688.html][PATCH 6/8] numa: slab: use numa_mem_id() for slab local memory node, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00721.html]Re: [PATCH 6/8] numa: slab: use numa_mem_id() for slab local memory node, Andrew Morton
+                    # [https://www.spinics.net/lists/linux-numa/msg00722.html]Re: [PATCH 6/8] numa: slab: use numa_mem_id() for slab local memory node, Lee Schermerhorn
+                         @ [https://www.spinics.net/lists/linux-numa/msg00723.html]Re: [PATCH 6/8] numa: slab: use numa_mem_id() for slab local memory node, Valdis . Kletnieks
+                              - [https://www.spinics.net/lists/linux-numa/msg00724.html]Re: [PATCH 6/8] numa: slab: use numa_mem_id() for slab local memory node, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00689.html][PATCH 7/8] numa: in-kernel profiling: use cpu_to_mem() for per cpu allocations, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00690.html][PATCH 8/8] numa: update Documentation/vm/numa, add memoryless node info, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00691.html]Re: [PATCH 8/8] numa: update Documentation/vm/numa, add memoryless node info, Randy Dunlap
+               o [https://www.spinics.net/lists/linux-numa/msg00692.html]Re: [PATCH 8/8] numa: update Documentation/vm/numa, add memoryless node info, KAMEZAWA Hiroyuki
+          + [https://www.spinics.net/lists/linux-numa/msg00700.html]Re: [PATCH 0/8] Numa: Use Generic Per-cpu Variables for numa_*_id(), Tejun Heo
+               o [https://www.spinics.net/lists/linux-numa/msg00707.html]Re: [PATCH 0/8] Numa: Use Generic Per-cpu Variables for numa_*_id(), Lee Schermerhorn
+     * [https://www.spinics.net/lists/linux-numa/msg00681.html][PATCH] Fix libnuma numa_num_{task vs thread}_{cpu|node}s() naming discrepancy, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00675.html][PATCH] x86: more strict check when cpu hot-plugged, Chen Gong
+     * [https://www.spinics.net/lists/linux-numa/msg00662.html][PATCH 0/6] Mempolicy: additional cleanups, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00663.html][PATCH 1/6] Mempolicy: Don't call mpol_set_nodemask() when no_context, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00669.html]Re: [PATCH 1/6] Mempolicy: Don't call mpol_set_nodemask() when no_context, Christoph Lameter
+                    # [https://www.spinics.net/lists/linux-numa/msg00672.html]Re: [PATCH 1/6] Mempolicy: Don't call mpol_set_nodemask() when no_context, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00664.html][PATCH 2/6] Mempolicy: Lose unnecessary loop variable in mpol_parse_str(), Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00665.html][PATCH 3/6] Mempolicy: rename policy_types and cleanup initialization, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00670.html]Re: [PATCH 3/6] Mempolicy: rename policy_types and cleanup initialization, Christoph Lameter
+                    # [https://www.spinics.net/lists/linux-numa/msg00673.html]Re: [PATCH 3/6] Mempolicy: rename policy_types and cleanup initialization, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00666.html][PATCH 4/6] Mempolicy: factor mpol_shared_policy_init() return paths, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00671.html]Re: [PATCH 4/6] Mempolicy: factor mpol_shared_policy_init() return paths, Christoph Lameter
+          + [https://www.spinics.net/lists/linux-numa/msg00667.html][BUGFIX][PATCH 5/6] Mempolicy: fix get_mempolicy() for relative and static nodes, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00668.html][PATCH 6/6] Mempolicy: document cpuset interaction with tmpfs mpol mount option, Lee Schermerhorn
+     * [https://www.spinics.net/lists/linux-numa/msg00639.html][PATCH/RFC 0/8] Numa: Use Generic Per-cpu Variables for numa_*_id(), Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00640.html][PATCH/RFC 1/8] numa: prep: move generic percpu interface definitions to percpu-defs.h, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00657.html]Re: [PATCH/RFC 1/8] numa: prep: move generic percpu interface definitions to percpu-defs.h, Tejun Heo
+                    # [https://www.spinics.net/lists/linux-numa/msg00658.html]Re: [PATCH/RFC 1/8] numa: prep: move generic percpu interface definitions to percpu-defs.h, Lee Schermerhorn
+                         @ [https://www.spinics.net/lists/linux-numa/msg00659.html]Re: [PATCH/RFC 1/8] numa: prep: move generic percpu interface definitions to percpu-defs.h, Tejun Heo
+          + [https://www.spinics.net/lists/linux-numa/msg00641.html][PATCH/RFC 2/8] numa: add generic percpu var implementation of numa_node_id(), Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00648.html]Re: [PATCH/RFC 2/8] numa: add generic percpu var implementation of numa_node_id(), Christoph Lameter
+          + [https://www.spinics.net/lists/linux-numa/msg00642.html][PATCH/RFC 3/8] numa: x86_64: use generic percpu var for numa_node_id() implementation, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00649.html]Re: [PATCH/RFC 3/8] numa: x86_64: use generic percpu var for numa_node_id() implementation, Christoph Lameter
+                    # [https://www.spinics.net/lists/linux-numa/msg00653.html]Re: [PATCH/RFC 3/8] numa: x86_64: use generic percpu var for numa_node_id() implementation, Lee Schermerhorn
+                         @ [https://www.spinics.net/lists/linux-numa/msg00654.html]Re: [PATCH/RFC 3/8] numa: x86_64: use generic percpu var for numa_node_id() implementation, Christoph Lameter
+          + [https://www.spinics.net/lists/linux-numa/msg00643.html][PATCH/RFC 4/8] numa: ia64: use generic percpu var numa_node_id() implementation, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00650.html]Re: [PATCH/RFC 4/8] numa: ia64: use generic percpu var numa_node_id() implementation, Christoph Lameter
+          + [https://www.spinics.net/lists/linux-numa/msg00644.html][PATCH/RFC 5/8] numa: Introduce numa_mem_id()- effective local memory node id, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00651.html]Re: [PATCH/RFC 5/8] numa: Introduce numa_mem_id()- effective local memory node id, Christoph Lameter
+                    # [https://www.spinics.net/lists/linux-numa/msg00652.html]Re: [PATCH/RFC 5/8] numa: Introduce numa_mem_id()- effective local memory node id, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00645.html][PATCH/RFC 6/8] numa: ia64: support numa_mem_id() for memoryless nodes, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00646.html][PATCH/RFC 7/8] numa: slab: use numa_mem_id() for slab local memory node, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00647.html][PATCH/RFC 8/8] numa: in-kernel profiling -- support memoryless nodes, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00655.html]Re: [PATCH/RFC 0/8] Numa: Use Generic Per-cpu Variables for numa_*_id(), KAMEZAWA Hiroyuki
+               o [https://www.spinics.net/lists/linux-numa/msg00656.html]Re: [PATCH/RFC 0/8] Numa: Use Generic Per-cpu Variables for numa_*_id(), Lee Schermerhorn
+     * [https://www.spinics.net/lists/linux-numa/msg00626.html][PATCH] Fix make clean for tests in numactl-2.0.4-rc1, Andi Kleen
+     * [https://www.spinics.net/lists/linux-numa/msg00593.html][PATCH 0/12] hugetlb: V10 numa control of persistent huge pages alloc/free, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00594.html][PATCH 2/12] hugetlb: rework hstate_next_node_* functions, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00595.html][PATCH 3/12] hugetlb: add nodemask arg to huge page alloc, free and surplus adjust fcns, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00611.html]Re: [PATCH 3/12] hugetlb: add nodemask arg to huge page alloc, free and surplus adjust fcns, David Rientjes
+          + [https://www.spinics.net/lists/linux-numa/msg00596.html][PATCH 4/12] hugetlb: factor init_nodemask_of_node, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00608.html]Re: [PATCH 4/12] hugetlb: factor init_nodemask_of_node, David Rientjes
+          + [https://www.spinics.net/lists/linux-numa/msg00597.html][PATCH 5/12] hugetlb: derive huge pages nodes allowed from task mempolicy, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00598.html][PATCH 6/12] hugetlb: add generic definition of NUMA_NO_NODE, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00609.html]Re: [PATCH 6/12] hugetlb: add generic definition of NUMA_NO_NODE, Christoph Lameter
+                    # [https://www.spinics.net/lists/linux-numa/msg00610.html]Re: [PATCH 6/12] hugetlb: add generic definition of NUMA_NO_NODE, David Rientjes
+          + [https://www.spinics.net/lists/linux-numa/msg00599.html][PATCH 7/12] hugetlb: add per node hstate attributes, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00612.html]Re: [PATCH 7/12] hugetlb: add per node hstate attributes, David Rientjes
+                    # [https://www.spinics.net/lists/linux-numa/msg00615.html]Re: [PATCH 7/12] hugetlb: add per node hstate attributes, Lee Schermerhorn
+                         @ [https://www.spinics.net/lists/linux-numa/msg00617.html]Re: [PATCH 7/12] hugetlb: add per node hstate attributes, David Rientjes
+                    # [https://www.spinics.net/lists/linux-numa/msg00616.html]Re: [PATCH 7/12] hugetlb: add per node hstate attributes, Lee Schermerhorn
+                         @ [https://www.spinics.net/lists/linux-numa/msg00618.html]Re: [PATCH 7/12] hugetlb: add per node hstate attributes, David Rientjes
+                              - [https://www.spinics.net/lists/linux-numa/msg00619.html]Re: [PATCH 7/12] hugetlb: add per node hstate attributes, Lee Schermerhorn
+                                   = [https://www.spinics.net/lists/linux-numa/msg00620.html]Re: [PATCH 7/12] hugetlb: add per node hstate attributes, David Rientjes
+          + [https://www.spinics.net/lists/linux-numa/msg00600.html][PATCH 8/12] hugetlb: update hugetlb documentation for NUMA controls., Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00601.html][PATCH 9/12] hugetlb: use only nodes with memory for huge pages, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00602.html][PATCH 11/12] hugetlb: handle memory hot-plug events, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00604.html][PATCH 10/12] mm: clear node in N_HIGH_MEMORY and stop kswapd when all memory is offlined, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00607.html]Re: [PATCH 10/12] mm: clear node in N_HIGH_MEMORY and stop kswapd when all memory is offlined, David Rientjes
+          + [https://www.spinics.net/lists/linux-numa/msg00603.html][PATCH 12/12] hugetlb: offload per node attribute registrations, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00605.html][PATCH 1/12] nodemask: make NODEMASK_ALLOC more general, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00606.html]Re: [PATCH 1/12] nodemask: make NODEMASK_ALLOC more general, David Rientjes
+     * [https://www.spinics.net/lists/linux-numa/msg00560.html][PATCH 0/11] hugetlb: V9 numa control of persistent huge pages alloc/free, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00561.html][PATCH 1/11] hugetlb: rework hstate_next_node_* functions, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00562.html][PATCH 2/11] hugetlb: add nodemask arg to huge page alloc, free and surplus adjust fcns, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00574.html]Re: [PATCH 2/11] hugetlb: add nodemask arg to huge page alloc, free and surplus adjust fcns, David Rientjes
+               o [https://www.spinics.net/lists/linux-numa/msg00583.html]Re: [PATCH 2/11] hugetlb: add nodemask arg to huge page alloc, free and surplus adjust fcns, David Rientjes
+                    # [https://www.spinics.net/lists/linux-numa/msg00587.html]Re: [PATCH 2/11] hugetlb: add nodemask arg to huge page alloc, free and surplus adjust fcns, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00563.html][PATCH 3/11] hugetlb: factor init_nodemask_of_node, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00581.html]Re: [PATCH 3/11] hugetlb: factor init_nodemask_of_node, David Rientjes
+          + [https://www.spinics.net/lists/linux-numa/msg00564.html][PATCH 4/11] hugetlb: derive huge pages nodes allowed from task mempolicy, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00582.html]Re: [PATCH 4/11] hugetlb: derive huge pages nodes allowed from task mempolicy, David Rientjes
+                    # [https://www.spinics.net/lists/linux-numa/msg00589.html]Re: [PATCH 4/11] hugetlb: derive huge pages nodes allowed from task mempolicy, Lee Schermerhorn
+                         @ [https://www.spinics.net/lists/linux-numa/msg00592.html]Re: [PATCH 4/11] hugetlb: derive huge pages nodes allowed from task mempolicy, David Rientjes
+          + [https://www.spinics.net/lists/linux-numa/msg00565.html][PATCH 5/11] hugetlb: accomodate reworked NODEMASK_ALLOC, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00566.html][PATCH 6/11] hugetlb: add generic definition of NUMA_NO_NODE, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00575.html]Re: [PATCH 6/11] hugetlb: add generic definition of NUMA_NO_NODE, David Rientjes
+          + [https://www.spinics.net/lists/linux-numa/msg00567.html][PATCH 7/11] hugetlb: add per node hstate attributes, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00584.html]Re: [PATCH 7/11] hugetlb: add per node hstate attributes, David Rientjes
+          + [https://www.spinics.net/lists/linux-numa/msg00568.html][PATCH 8/11] hugetlb: update hugetlb documentation for NUMA controls., Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00569.html][PATCH 9/11] hugetlb: use only nodes with memory for huge pages, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00570.html][PATCH 10/11] hugetlb: handle memory hot-plug events, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00585.html]Re: [PATCH 10/11] hugetlb: handle memory hot-plug events, David Rientjes
+          + [https://www.spinics.net/lists/linux-numa/msg00571.html][PATCH 11/11] hugetlb: offload per node attribute registrations, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00576.html]Re: [PATCH 11/11] hugetlb: offload per node attribute registrations, Andi Kleen
+                    # [https://www.spinics.net/lists/linux-numa/msg00578.html]Re: [PATCH 11/11] hugetlb: offload per node attribute registrations, Lee Schermerhorn
+                         @ [https://www.spinics.net/lists/linux-numa/msg00579.html]Re: [PATCH 11/11] hugetlb: offload per node attribute registrations, Andi Kleen
+                              - [https://www.spinics.net/lists/linux-numa/msg00580.html]Re: [PATCH 11/11] hugetlb: offload per node attribute registrations, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00577.html]Re: [PATCH 0/11] hugetlb: V9 numa control of persistent huge pages alloc/free, Andi Kleen
+     * [https://www.spinics.net/lists/linux-numa/msg00533.html][PATCH 0/10] hugetlb: V8 numa control of persistent huge pages alloc/free, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00534.html][PATCH 1/10] hugetlb: rework hstate_next_node_* functions, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00535.html][PATCH 2/10] hugetlb: add nodemask arg to huge page alloc, free and surplus adjust fcns, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00536.html][PATCH 3/10] hugetlb: factor init_nodemask_of_node, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00545.html]Re: [PATCH 3/10] hugetlb: factor init_nodemask_of_node, Mel Gorman
+                    # [https://www.spinics.net/lists/linux-numa/msg00547.html]Re: [PATCH 3/10] hugetlb: factor init_nodemask_of_node, Lee Schermerhorn
+                         @ [https://www.spinics.net/lists/linux-numa/msg00556.html]Re: [PATCH 3/10] hugetlb: factor init_nodemask_of_node, Andrew Morton
+          + [https://www.spinics.net/lists/linux-numa/msg00537.html][PATCH 4/10] hugetlb: derive huge pages nodes allowed from task mempolicy, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00546.html]Re: [PATCH 4/10] hugetlb: derive huge pages nodes allowed from task mempolicy, Mel Gorman
+                    # [https://www.spinics.net/lists/linux-numa/msg00551.html]Re: [PATCH 4/10] hugetlb: derive huge pages nodes allowed from task mempolicy, David Rientjes
+               o [https://www.spinics.net/lists/linux-numa/msg00550.html]Re: [PATCH 4/10] hugetlb: derive huge pages nodes allowed from task mempolicy, David Rientjes
+                    # [https://www.spinics.net/lists/linux-numa/msg00553.html]Re: [PATCH 4/10] hugetlb: derive huge pages nodes allowed from task mempolicy, Christoph Lameter
+                    # [https://www.spinics.net/lists/linux-numa/msg00557.html]Re: [PATCH 4/10] hugetlb: derive huge pages nodes allowed from task mempolicy, Lee Schermerhorn
+                         @ [https://www.spinics.net/lists/linux-numa/msg00558.html]Re: [PATCH 4/10] hugetlb: derive huge pages nodes allowed from task mempolicy, David Rientjes
+                              - [https://www.spinics.net/lists/linux-numa/msg00559.html]Re: [PATCH 4/10] hugetlb: derive huge pages nodes allowed from task mempolicy, Lee Schermerhorn
+                                   = [https://www.spinics.net/lists/linux-numa/msg00572.html]Re: [PATCH 4/10] hugetlb: derive huge pages nodes allowed from task mempolicy, David Rientjes
+          + [https://www.spinics.net/lists/linux-numa/msg00538.html][PATCH 5/10] hugetlb: add generic definition of NUMA_NO_NODE, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00539.html][PATCH 6/10] hugetlb: add per node hstate attributes, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00540.html][PATCH 7/10] hugetlb: update hugetlb documentation for NUMA controls., Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00544.html]Re: [PATCH 7/10] hugetlb: update hugetlb documentation for NUMA controls., Randy Dunlap
+                    # [https://www.spinics.net/lists/linux-numa/msg00548.html]Re: [PATCH 7/10] hugetlb: update hugetlb documentation for NUMA controls., Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00541.html][PATCH 8/10] hugetlb: use only nodes with memory for huge pages, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00542.html][PATCH 9/10] hugetlb: handle memory hot-plug events, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00543.html][PATCH 10/10] hugetlb: offload per node attribute registrations, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00676.html][APPLIED] [PATCH 0/10] hugetlb: V8 numa control of persistent huge pages alloc/free, Andy Whitcroft
+     * [https://www.spinics.net/lists/linux-numa/msg00513.html][PATCH 0/11] hugetlb: V7 constrain allocation/free based on task mempolicy, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00514.html][PATCH 1/11] hugetlb: rework hstate_next_node_* functions, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00529.html]Re: [PATCH 1/11] hugetlb: rework hstate_next_node_* functions, David Rientjes
+                    # [https://www.spinics.net/lists/linux-numa/msg00530.html]Re: [PATCH 1/11] hugetlb: rework hstate_next_node_* functions, Lee Schermerhorn
+                         @ [https://www.spinics.net/lists/linux-numa/msg00531.html]Re: [PATCH 1/11] hugetlb: rework hstate_next_node_* functions, David Rientjes
+          + [https://www.spinics.net/lists/linux-numa/msg00515.html][PATCH 2/11] hugetlb: add nodemask arg to huge page alloc, free and surplus adjust fcns, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00516.html][PATCH 3/11] hugetlb: introduce alloc_nodemask_of_node, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00517.html][PATCH 4/11] hugetlb: derive huge pages nodes allowed from task mempolicy, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00518.html][PATCH 5/11] hugetlb: add generic definition of NUMA_NO_NODE, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00528.html]Re: [PATCH 5/11] hugetlb: add generic definition of NUMA_NO_NODE, Mel Gorman
+          + [https://www.spinics.net/lists/linux-numa/msg00519.html][PATCH 6/11] hugetlb: add per node hstate attributes, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00520.html][PATCH 7/11] hugetlb: update hugetlb documentation for mempolicy based management., Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00526.html]Re: [PATCH 7/11] hugetlb: update hugetlb documentation for mempolicy based management., Mel Gorman
+          + [https://www.spinics.net/lists/linux-numa/msg00521.html][PATCH 8/11] hugetlb: Optionally use mempolicy for persistent huge page allocation, Lee Schermerhorn
+               o [https://www.spinics.net/lists/linux-numa/msg00527.html]Re: [PATCH 8/11] hugetlb: Optionally use mempolicy for persistent huge page allocation, Mel Gorman
+          + [https://www.spinics.net/lists/linux-numa/msg00522.html][PATCH 9/11] hugetlb: use only nodes with memory for huge pages, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00523.html][PATCH 10/11] hugetlb: handle memory hot-plug events, Lee Schermerhorn
+          + [https://www.spinics.net/lists/linux-numa/msg00524.html][PATCH 11/11] hugetlb: offload per node attribute registrations, Lee Schermerhorn

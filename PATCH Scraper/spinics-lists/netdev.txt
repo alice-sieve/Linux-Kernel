@@ -1,687 +1,561 @@
-
-References
-
-   1. https://feedproxy.google.com/LinuxNetdev
-   2. https://www.spinics.net/lists/netdev/maillist.html
-   3. https://www.spinics.net/lists/netdev/thrd2.html
-   4. https://www.spinics.net/lists/netdev/msg586480.html
-   5. https://www.spinics.net/lists/netdev/msg586479.html
-   6. https://www.spinics.net/lists/netdev/msg586478.html
-   7. https://www.spinics.net/lists/netdev/msg586477.html
-   8. https://www.spinics.net/lists/netdev/msg586476.html
-   9. https://www.spinics.net/lists/netdev/msg586475.html
-  10. https://www.spinics.net/lists/netdev/msg586474.html
-  11. https://www.spinics.net/lists/netdev/msg586473.html
-  12. https://www.spinics.net/lists/netdev/msg586471.html
-  13. https://www.spinics.net/lists/netdev/msg586467.html
-  14. https://www.spinics.net/lists/netdev/msg586468.html
-  15. https://www.spinics.net/lists/netdev/msg586469.html
-  16. https://www.spinics.net/lists/netdev/msg586464.html
-  17. https://www.spinics.net/lists/netdev/msg586454.html
-  18. https://www.spinics.net/lists/netdev/msg586463.html
-  19. https://www.spinics.net/lists/netdev/msg586453.html
-  20. https://www.spinics.net/lists/netdev/msg586452.html
-  21. https://www.spinics.net/lists/netdev/msg586442.html
-  22. https://www.spinics.net/lists/netdev/msg586443.html
-  23. https://www.spinics.net/lists/netdev/msg586444.html
-  24. https://www.spinics.net/lists/netdev/msg586445.html
-  25. https://www.spinics.net/lists/netdev/msg586446.html
-  26. https://www.spinics.net/lists/netdev/msg586447.html
-  27. https://www.spinics.net/lists/netdev/msg586441.html
-  28. https://www.spinics.net/lists/netdev/msg586449.html
-  29. https://www.spinics.net/lists/netdev/msg586459.html
-  30. https://www.spinics.net/lists/netdev/msg586436.html
-  31. https://www.spinics.net/lists/netdev/msg586437.html
-  32. https://www.spinics.net/lists/netdev/msg586448.html
-  33. https://www.spinics.net/lists/netdev/msg586462.html
-  34. https://www.spinics.net/lists/netdev/msg586402.html
-  35. https://www.spinics.net/lists/netdev/msg586400.html
-  36. https://www.spinics.net/lists/netdev/msg586401.html
-  37. https://www.spinics.net/lists/netdev/msg586392.html
-  38. https://www.spinics.net/lists/netdev/msg586404.html
-  39. https://www.spinics.net/lists/netdev/msg586431.html
-  40. https://www.spinics.net/lists/netdev/msg586455.html
-  41. https://www.spinics.net/lists/netdev/msg586390.html
-  42. https://www.spinics.net/lists/netdev/msg586385.html
-  43. https://www.spinics.net/lists/netdev/msg586387.html
-  44. https://www.spinics.net/lists/netdev/msg586384.html
-  45. https://www.spinics.net/lists/netdev/msg586380.html
-  46. https://www.spinics.net/lists/netdev/msg586381.html
-  47. https://www.spinics.net/lists/netdev/msg586378.html
-  48. https://www.spinics.net/lists/netdev/msg586410.html
-  49. https://www.spinics.net/lists/netdev/msg586374.html
-  50. https://www.spinics.net/lists/netdev/msg586375.html
-  51. https://www.spinics.net/lists/netdev/msg586373.html
-  52. https://www.spinics.net/lists/netdev/msg586355.html
-  53. https://www.spinics.net/lists/netdev/msg586356.html
-  54. https://www.spinics.net/lists/netdev/msg586357.html
-  55. https://www.spinics.net/lists/netdev/msg586353.html
-  56. https://www.spinics.net/lists/netdev/msg586386.html
-  57. https://www.spinics.net/lists/netdev/msg586397.html
-  58. https://www.spinics.net/lists/netdev/msg586352.html
-  59. https://www.spinics.net/lists/netdev/msg586395.html
-  60. https://www.spinics.net/lists/netdev/msg586344.html
-  61. https://www.spinics.net/lists/netdev/msg586440.html
-  62. https://www.spinics.net/lists/netdev/msg586340.html
-  63. https://www.spinics.net/lists/netdev/msg586346.html
-  64. https://www.spinics.net/lists/netdev/msg586334.html
-  65. https://www.spinics.net/lists/netdev/msg586335.html
-  66. https://www.spinics.net/lists/netdev/msg586336.html
-  67. https://www.spinics.net/lists/netdev/msg586341.html
-  68. https://www.spinics.net/lists/netdev/msg586337.html
-  69. https://www.spinics.net/lists/netdev/msg586398.html
-  70. https://www.spinics.net/lists/netdev/msg586338.html
-  71. https://www.spinics.net/lists/netdev/msg586339.html
-  72. https://www.spinics.net/lists/netdev/msg586432.html
-  73. https://www.spinics.net/lists/netdev/msg586399.html
-  74. https://www.spinics.net/lists/netdev/msg586333.html
-  75. https://www.spinics.net/lists/netdev/msg586330.html
-  76. https://www.spinics.net/lists/netdev/msg586329.html
-  77. https://www.spinics.net/lists/netdev/msg586328.html
-  78. https://www.spinics.net/lists/netdev/msg586434.html
-  79. https://www.spinics.net/lists/netdev/msg586326.html
-  80. https://www.spinics.net/lists/netdev/msg586324.html
-  81. https://www.spinics.net/lists/netdev/msg586407.html
-  82. https://www.spinics.net/lists/netdev/msg586409.html
-  83. https://www.spinics.net/lists/netdev/msg586322.html
-  84. https://www.spinics.net/lists/netdev/msg586320.html
-  85. https://www.spinics.net/lists/netdev/msg586323.html
-  86. https://www.spinics.net/lists/netdev/msg586354.html
-  87. https://www.spinics.net/lists/netdev/msg586311.html
-  88. https://www.spinics.net/lists/netdev/msg586317.html
-  89. https://www.spinics.net/lists/netdev/msg586321.html
-  90. https://www.spinics.net/lists/netdev/msg586303.html
-  91. https://www.spinics.net/lists/netdev/msg586304.html
-  92. https://www.spinics.net/lists/netdev/msg586305.html
-  93. https://www.spinics.net/lists/netdev/msg586370.html
-  94. https://www.spinics.net/lists/netdev/msg586306.html
-  95. https://www.spinics.net/lists/netdev/msg586307.html
-  96. https://www.spinics.net/lists/netdev/msg586342.html
-  97. https://www.spinics.net/lists/netdev/msg586372.html
-  98. https://www.spinics.net/lists/netdev/msg586371.html
-  99. https://www.spinics.net/lists/netdev/msg586308.html
- 100. https://www.spinics.net/lists/netdev/msg586309.html
- 101. https://www.spinics.net/lists/netdev/msg586289.html
- 102. https://www.spinics.net/lists/netdev/msg586291.html
- 103. https://www.spinics.net/lists/netdev/msg586298.html
- 104. https://www.spinics.net/lists/netdev/msg586300.html
- 105. https://www.spinics.net/lists/netdev/msg586302.html
- 106. https://www.spinics.net/lists/netdev/msg586310.html
- 107. https://www.spinics.net/lists/netdev/msg586312.html
- 108. https://www.spinics.net/lists/netdev/msg586292.html
- 109. https://www.spinics.net/lists/netdev/msg586299.html
- 110. https://www.spinics.net/lists/netdev/msg586313.html
- 111. https://www.spinics.net/lists/netdev/msg586293.html
- 112. https://www.spinics.net/lists/netdev/msg586294.html
- 113. https://www.spinics.net/lists/netdev/msg586277.html
- 114. https://www.spinics.net/lists/netdev/msg586275.html
- 115. https://www.spinics.net/lists/netdev/msg586316.html
- 116. https://www.spinics.net/lists/netdev/msg586379.html
- 117. https://www.spinics.net/lists/netdev/msg586261.html
- 118. https://www.spinics.net/lists/netdev/msg586263.html
- 119. https://www.spinics.net/lists/netdev/msg586264.html
- 120. https://www.spinics.net/lists/netdev/msg586265.html
- 121. https://www.spinics.net/lists/netdev/msg586266.html
- 122. https://www.spinics.net/lists/netdev/msg586267.html
- 123. https://www.spinics.net/lists/netdev/msg586268.html
- 124. https://www.spinics.net/lists/netdev/msg586269.html
- 125. https://www.spinics.net/lists/netdev/msg586271.html
- 126. https://www.spinics.net/lists/netdev/msg586253.html
- 127. https://www.spinics.net/lists/netdev/msg586254.html
- 128. https://www.spinics.net/lists/netdev/msg586255.html
- 129. https://www.spinics.net/lists/netdev/msg586256.html
- 130. https://www.spinics.net/lists/netdev/msg586301.html
- 131. https://www.spinics.net/lists/netdev/msg586251.html
- 132. https://www.spinics.net/lists/netdev/msg586290.html
- 133. https://www.spinics.net/lists/netdev/msg586450.html
- 134. https://www.spinics.net/lists/netdev/msg586242.html
- 135. https://www.spinics.net/lists/netdev/msg586237.html
- 136. https://www.spinics.net/lists/netdev/msg586270.html
- 137. https://www.spinics.net/lists/netdev/msg586218.html
- 138. https://www.spinics.net/lists/netdev/msg586224.html
- 139. https://www.spinics.net/lists/netdev/msg586225.html
- 140. https://www.spinics.net/lists/netdev/msg586230.html
- 141. https://www.spinics.net/lists/netdev/msg586238.html
- 142. https://www.spinics.net/lists/netdev/msg586331.html
- 143. https://www.spinics.net/lists/netdev/msg586215.html
- 144. https://www.spinics.net/lists/netdev/msg586216.html
- 145. https://www.spinics.net/lists/netdev/msg586217.html
- 146. https://www.spinics.net/lists/netdev/msg586220.html
- 147. https://www.spinics.net/lists/netdev/msg586221.html
- 148. https://www.spinics.net/lists/netdev/msg586219.html
- 149. https://www.spinics.net/lists/netdev/msg586222.html
- 150. https://www.spinics.net/lists/netdev/msg586250.html
- 151. https://www.spinics.net/lists/netdev/msg586286.html
- 152. https://www.spinics.net/lists/netdev/msg586212.html
- 153. https://www.spinics.net/lists/netdev/msg586243.html
- 154. https://www.spinics.net/lists/netdev/msg586382.html
- 155. https://www.spinics.net/lists/netdev/msg586403.html
- 156. https://www.spinics.net/lists/netdev/msg586106.html
- 157. https://www.spinics.net/lists/netdev/msg586091.html
- 158. https://www.spinics.net/lists/netdev/msg586092.html
- 159. https://www.spinics.net/lists/netdev/msg586093.html
- 160. https://www.spinics.net/lists/netdev/msg586095.html
- 161. https://www.spinics.net/lists/netdev/msg586097.html
- 162. https://www.spinics.net/lists/netdev/msg586098.html
- 163. https://www.spinics.net/lists/netdev/msg586099.html
- 164. https://www.spinics.net/lists/netdev/msg586101.html
- 165. https://www.spinics.net/lists/netdev/msg586102.html
- 166. https://www.spinics.net/lists/netdev/msg586103.html
- 167. https://www.spinics.net/lists/netdev/msg586104.html
- 168. https://www.spinics.net/lists/netdev/msg586105.html
- 169. https://www.spinics.net/lists/netdev/msg586107.html
- 170. https://www.spinics.net/lists/netdev/msg586108.html
- 171. https://www.spinics.net/lists/netdev/msg586109.html
- 172. https://www.spinics.net/lists/netdev/msg586110.html
- 173. https://www.spinics.net/lists/netdev/msg586111.html
- 174. https://www.spinics.net/lists/netdev/msg586112.html
- 175. https://www.spinics.net/lists/netdev/msg586113.html
- 176. https://www.spinics.net/lists/netdev/msg586114.html
- 177. https://www.spinics.net/lists/netdev/msg586115.html
- 178. https://www.spinics.net/lists/netdev/msg586116.html
- 179. https://www.spinics.net/lists/netdev/msg586088.html
- 180. https://www.spinics.net/lists/netdev/msg586060.html
- 181. https://www.spinics.net/lists/netdev/msg586065.html
- 182. https://www.spinics.net/lists/netdev/msg586252.html
- 183. https://www.spinics.net/lists/netdev/msg586325.html
- 184. https://www.spinics.net/lists/netdev/msg586422.html
- 185. https://www.spinics.net/lists/netdev/msg586066.html
- 186. https://www.spinics.net/lists/netdev/msg586080.html
- 187. https://www.spinics.net/lists/netdev/msg586278.html
- 188. https://www.spinics.net/lists/netdev/msg586425.html
- 189. https://www.spinics.net/lists/netdev/msg586081.html
- 190. https://www.spinics.net/lists/netdev/msg586421.html
- 191. https://www.spinics.net/lists/netdev/msg586082.html
- 192. https://www.spinics.net/lists/netdev/msg586423.html
- 193. https://www.spinics.net/lists/netdev/msg586084.html
- 194. https://www.spinics.net/lists/netdev/msg586418.html
- 195. https://www.spinics.net/lists/netdev/msg586456.html
- 196. https://www.spinics.net/lists/netdev/msg586085.html
- 197. https://www.spinics.net/lists/netdev/msg586419.html
- 198. https://www.spinics.net/lists/netdev/msg586087.html
- 199. https://www.spinics.net/lists/netdev/msg586420.html
- 200. https://www.spinics.net/lists/netdev/msg586424.html
- 201. https://www.spinics.net/lists/netdev/msg586429.html
- 202. https://www.spinics.net/lists/netdev/msg586466.html
- 203. https://www.spinics.net/lists/netdev/msg586426.html
- 204. https://www.spinics.net/lists/netdev/msg586054.html
- 205. https://www.spinics.net/lists/netdev/msg586052.html
- 206. https://www.spinics.net/lists/netdev/msg586055.html
- 207. https://www.spinics.net/lists/netdev/msg586056.html
- 208. https://www.spinics.net/lists/netdev/msg586057.html
- 209. https://www.spinics.net/lists/netdev/msg586064.html
- 210. https://www.spinics.net/lists/netdev/msg586061.html
- 211. https://www.spinics.net/lists/netdev/msg586062.html
- 212. https://www.spinics.net/lists/netdev/msg586067.html
- 213. https://www.spinics.net/lists/netdev/msg586068.html
- 214. https://www.spinics.net/lists/netdev/msg586069.html
- 215. https://www.spinics.net/lists/netdev/msg586070.html
- 216. https://www.spinics.net/lists/netdev/msg586071.html
- 217. https://www.spinics.net/lists/netdev/msg586072.html
- 218. https://www.spinics.net/lists/netdev/msg586073.html
- 219. https://www.spinics.net/lists/netdev/msg586074.html
- 220. https://www.spinics.net/lists/netdev/msg586076.html
- 221. https://www.spinics.net/lists/netdev/msg586077.html
- 222. https://www.spinics.net/lists/netdev/msg586075.html
- 223. https://www.spinics.net/lists/netdev/msg586078.html
- 224. https://www.spinics.net/lists/netdev/msg586079.html
- 225. https://www.spinics.net/lists/netdev/msg586083.html
- 226. https://www.spinics.net/lists/netdev/msg586086.html
- 227. https://www.spinics.net/lists/netdev/msg586089.html
- 228. https://www.spinics.net/lists/netdev/msg586090.html
- 229. https://www.spinics.net/lists/netdev/msg586094.html
- 230. https://www.spinics.net/lists/netdev/msg586096.html
- 231. https://www.spinics.net/lists/netdev/msg586100.html
- 232. https://www.spinics.net/lists/netdev/msg586125.html
- 233. https://www.spinics.net/lists/netdev/msg585821.html
- 234. https://www.spinics.net/lists/netdev/msg585820.html
- 235. https://www.spinics.net/lists/netdev/msg586021.html
- 236. https://www.spinics.net/lists/netdev/msg586022.html
- 237. https://www.spinics.net/lists/netdev/msg586023.html
- 238. https://www.spinics.net/lists/netdev/msg586024.html
- 239. https://www.spinics.net/lists/netdev/msg586025.html
- 240. https://www.spinics.net/lists/netdev/msg586026.html
- 241. https://www.spinics.net/lists/netdev/msg586027.html
- 242. https://www.spinics.net/lists/netdev/msg586028.html
- 243. https://www.spinics.net/lists/netdev/msg586029.html
- 244. https://www.spinics.net/lists/netdev/msg586030.html
- 245. https://www.spinics.net/lists/netdev/msg586031.html
- 246. https://www.spinics.net/lists/netdev/msg586032.html
- 247. https://www.spinics.net/lists/netdev/msg586033.html
- 248. https://www.spinics.net/lists/netdev/msg586034.html
- 249. https://www.spinics.net/lists/netdev/msg586035.html
- 250. https://www.spinics.net/lists/netdev/msg586036.html
- 251. https://www.spinics.net/lists/netdev/msg586037.html
- 252. https://www.spinics.net/lists/netdev/msg586038.html
- 253. https://www.spinics.net/lists/netdev/msg586039.html
- 254. https://www.spinics.net/lists/netdev/msg586040.html
- 255. https://www.spinics.net/lists/netdev/msg586041.html
- 256. https://www.spinics.net/lists/netdev/msg586042.html
- 257. https://www.spinics.net/lists/netdev/msg586043.html
- 258. https://www.spinics.net/lists/netdev/msg586044.html
- 259. https://www.spinics.net/lists/netdev/msg586045.html
- 260. https://www.spinics.net/lists/netdev/msg586046.html
- 261. https://www.spinics.net/lists/netdev/msg586047.html
- 262. https://www.spinics.net/lists/netdev/msg586048.html
- 263. https://www.spinics.net/lists/netdev/msg586049.html
- 264. https://www.spinics.net/lists/netdev/msg586050.html
- 265. https://www.spinics.net/lists/netdev/msg586051.html
- 266. https://www.spinics.net/lists/netdev/msg586063.html
- 267. https://www.spinics.net/lists/netdev/msg586053.html
- 268. https://www.spinics.net/lists/netdev/msg586058.html
- 269. https://www.spinics.net/lists/netdev/msg586059.html
- 270. https://www.spinics.net/lists/netdev/msg586117.html
- 271. https://www.spinics.net/lists/netdev/msg586118.html
- 272. https://www.spinics.net/lists/netdev/msg586119.html
- 273. https://www.spinics.net/lists/netdev/msg586122.html
- 274. https://www.spinics.net/lists/netdev/msg586120.html
- 275. https://www.spinics.net/lists/netdev/msg586121.html
- 276. https://www.spinics.net/lists/netdev/msg586123.html
- 277. https://www.spinics.net/lists/netdev/msg586124.html
- 278. https://www.spinics.net/lists/netdev/msg586127.html
- 279. https://www.spinics.net/lists/netdev/msg586132.html
- 280. https://www.spinics.net/lists/netdev/msg585810.html
- 281. https://www.spinics.net/lists/netdev/msg585811.html
- 282. https://www.spinics.net/lists/netdev/msg585812.html
- 283. https://www.spinics.net/lists/netdev/msg585813.html
- 284. https://www.spinics.net/lists/netdev/msg585814.html
- 285. https://www.spinics.net/lists/netdev/msg585817.html
- 286. https://www.spinics.net/lists/netdev/msg585818.html
- 287. https://www.spinics.net/lists/netdev/msg585822.html
- 288. https://www.spinics.net/lists/netdev/msg586143.html
- 289. https://www.spinics.net/lists/netdev/msg585975.html
- 290. https://www.spinics.net/lists/netdev/msg585976.html
- 291. https://www.spinics.net/lists/netdev/msg585977.html
- 292. https://www.spinics.net/lists/netdev/msg585978.html
- 293. https://www.spinics.net/lists/netdev/msg585979.html
- 294. https://www.spinics.net/lists/netdev/msg585980.html
- 295. https://www.spinics.net/lists/netdev/msg585981.html
- 296. https://www.spinics.net/lists/netdev/msg585982.html
- 297. https://www.spinics.net/lists/netdev/msg585984.html
- 298. https://www.spinics.net/lists/netdev/msg585985.html
- 299. https://www.spinics.net/lists/netdev/msg585989.html
- 300. https://www.spinics.net/lists/netdev/msg585990.html
- 301. https://www.spinics.net/lists/netdev/msg585991.html
- 302. https://www.spinics.net/lists/netdev/msg585992.html
- 303. https://www.spinics.net/lists/netdev/msg585993.html
- 304. https://www.spinics.net/lists/netdev/msg585994.html
- 305. https://www.spinics.net/lists/netdev/msg585995.html
- 306. https://www.spinics.net/lists/netdev/msg585996.html
- 307. https://www.spinics.net/lists/netdev/msg585997.html
- 308. https://www.spinics.net/lists/netdev/msg585998.html
- 309. https://www.spinics.net/lists/netdev/msg585999.html
- 310. https://www.spinics.net/lists/netdev/msg586000.html
- 311. https://www.spinics.net/lists/netdev/msg586001.html
- 312. https://www.spinics.net/lists/netdev/msg586002.html
- 313. https://www.spinics.net/lists/netdev/msg586003.html
- 314. https://www.spinics.net/lists/netdev/msg586004.html
- 315. https://www.spinics.net/lists/netdev/msg586005.html
- 316. https://www.spinics.net/lists/netdev/msg586006.html
- 317. https://www.spinics.net/lists/netdev/msg586007.html
- 318. https://www.spinics.net/lists/netdev/msg586008.html
- 319. https://www.spinics.net/lists/netdev/msg586009.html
- 320. https://www.spinics.net/lists/netdev/msg586010.html
- 321. https://www.spinics.net/lists/netdev/msg586011.html
- 322. https://www.spinics.net/lists/netdev/msg586012.html
- 323. https://www.spinics.net/lists/netdev/msg586013.html
- 324. https://www.spinics.net/lists/netdev/msg586014.html
- 325. https://www.spinics.net/lists/netdev/msg586015.html
- 326. https://www.spinics.net/lists/netdev/msg586016.html
- 327. https://www.spinics.net/lists/netdev/msg586017.html
- 328. https://www.spinics.net/lists/netdev/msg586018.html
- 329. https://www.spinics.net/lists/netdev/msg586019.html
- 330. https://www.spinics.net/lists/netdev/msg586020.html
- 331. https://www.spinics.net/lists/netdev/msg586126.html
- 332. https://www.spinics.net/lists/netdev/msg586128.html
- 333. https://www.spinics.net/lists/netdev/msg586133.html
- 334. https://www.spinics.net/lists/netdev/msg586129.html
- 335. https://www.spinics.net/lists/netdev/msg586130.html
- 336. https://www.spinics.net/lists/netdev/msg586131.html
- 337. https://www.spinics.net/lists/netdev/msg586134.html
- 338. https://www.spinics.net/lists/netdev/msg586135.html
- 339. https://www.spinics.net/lists/netdev/msg586136.html
- 340. https://www.spinics.net/lists/netdev/msg586137.html
- 341. https://www.spinics.net/lists/netdev/msg586138.html
- 342. https://www.spinics.net/lists/netdev/msg586139.html
- 343. https://www.spinics.net/lists/netdev/msg586140.html
- 344. https://www.spinics.net/lists/netdev/msg586141.html
- 345. https://www.spinics.net/lists/netdev/msg586142.html
- 346. https://www.spinics.net/lists/netdev/msg586150.html
- 347. https://www.spinics.net/lists/netdev/msg586152.html
- 348. https://www.spinics.net/lists/netdev/msg586154.html
- 349. https://www.spinics.net/lists/netdev/msg586155.html
- 350. https://www.spinics.net/lists/netdev/msg586157.html
- 351. https://www.spinics.net/lists/netdev/msg585803.html
- 352. https://www.spinics.net/lists/netdev/msg585804.html
- 353. https://www.spinics.net/lists/netdev/msg585805.html
- 354. https://www.spinics.net/lists/netdev/msg585806.html
- 355. https://www.spinics.net/lists/netdev/msg585808.html
- 356. https://www.spinics.net/lists/netdev/msg585809.html
- 357. https://www.spinics.net/lists/netdev/msg585823.html
- 358. https://www.spinics.net/lists/netdev/msg585824.html
- 359. https://www.spinics.net/lists/netdev/msg585825.html
- 360. https://www.spinics.net/lists/netdev/msg585826.html
- 361. https://www.spinics.net/lists/netdev/msg585827.html
- 362. https://www.spinics.net/lists/netdev/msg585828.html
- 363. https://www.spinics.net/lists/netdev/msg585829.html
- 364. https://www.spinics.net/lists/netdev/msg585830.html
- 365. https://www.spinics.net/lists/netdev/msg585831.html
- 366. https://www.spinics.net/lists/netdev/msg586171.html
- 367. https://www.spinics.net/lists/netdev/msg585907.html
- 368. https://www.spinics.net/lists/netdev/msg585908.html
- 369. https://www.spinics.net/lists/netdev/msg585909.html
- 370. https://www.spinics.net/lists/netdev/msg585910.html
- 371. https://www.spinics.net/lists/netdev/msg585911.html
- 372. https://www.spinics.net/lists/netdev/msg585912.html
- 373. https://www.spinics.net/lists/netdev/msg585913.html
- 374. https://www.spinics.net/lists/netdev/msg585914.html
- 375. https://www.spinics.net/lists/netdev/msg585915.html
- 376. https://www.spinics.net/lists/netdev/msg585916.html
- 377. https://www.spinics.net/lists/netdev/msg585917.html
- 378. https://www.spinics.net/lists/netdev/msg585918.html
- 379. https://www.spinics.net/lists/netdev/msg585921.html
- 380. https://www.spinics.net/lists/netdev/msg585922.html
- 381. https://www.spinics.net/lists/netdev/msg585923.html
- 382. https://www.spinics.net/lists/netdev/msg585924.html
- 383. https://www.spinics.net/lists/netdev/msg585925.html
- 384. https://www.spinics.net/lists/netdev/msg585926.html
- 385. https://www.spinics.net/lists/netdev/msg585927.html
- 386. https://www.spinics.net/lists/netdev/msg585928.html
- 387. https://www.spinics.net/lists/netdev/msg585929.html
- 388. https://www.spinics.net/lists/netdev/msg585930.html
- 389. https://www.spinics.net/lists/netdev/msg585931.html
- 390. https://www.spinics.net/lists/netdev/msg585932.html
- 391. https://www.spinics.net/lists/netdev/msg585933.html
- 392. https://www.spinics.net/lists/netdev/msg585934.html
- 393. https://www.spinics.net/lists/netdev/msg585935.html
- 394. https://www.spinics.net/lists/netdev/msg585936.html
- 395. https://www.spinics.net/lists/netdev/msg585937.html
- 396. https://www.spinics.net/lists/netdev/msg585938.html
- 397. https://www.spinics.net/lists/netdev/msg585939.html
- 398. https://www.spinics.net/lists/netdev/msg585940.html
- 399. https://www.spinics.net/lists/netdev/msg585941.html
- 400. https://www.spinics.net/lists/netdev/msg585947.html
- 401. https://www.spinics.net/lists/netdev/msg585942.html
- 402. https://www.spinics.net/lists/netdev/msg585943.html
- 403. https://www.spinics.net/lists/netdev/msg585944.html
- 404. https://www.spinics.net/lists/netdev/msg585945.html
- 405. https://www.spinics.net/lists/netdev/msg585946.html
- 406. https://www.spinics.net/lists/netdev/msg585948.html
- 407. https://www.spinics.net/lists/netdev/msg585949.html
- 408. https://www.spinics.net/lists/netdev/msg585950.html
- 409. https://www.spinics.net/lists/netdev/msg585951.html
- 410. https://www.spinics.net/lists/netdev/msg585952.html
- 411. https://www.spinics.net/lists/netdev/msg585953.html
- 412. https://www.spinics.net/lists/netdev/msg585954.html
- 413. https://www.spinics.net/lists/netdev/msg585955.html
- 414. https://www.spinics.net/lists/netdev/msg585956.html
- 415. https://www.spinics.net/lists/netdev/msg585957.html
- 416. https://www.spinics.net/lists/netdev/msg585958.html
- 417. https://www.spinics.net/lists/netdev/msg585959.html
- 418. https://www.spinics.net/lists/netdev/msg585960.html
- 419. https://www.spinics.net/lists/netdev/msg585961.html
- 420. https://www.spinics.net/lists/netdev/msg585962.html
- 421. https://www.spinics.net/lists/netdev/msg585963.html
- 422. https://www.spinics.net/lists/netdev/msg585964.html
- 423. https://www.spinics.net/lists/netdev/msg585965.html
- 424. https://www.spinics.net/lists/netdev/msg585966.html
- 425. https://www.spinics.net/lists/netdev/msg585967.html
- 426. https://www.spinics.net/lists/netdev/msg585968.html
- 427. https://www.spinics.net/lists/netdev/msg585969.html
- 428. https://www.spinics.net/lists/netdev/msg585970.html
- 429. https://www.spinics.net/lists/netdev/msg585971.html
- 430. https://www.spinics.net/lists/netdev/msg585972.html
- 431. https://www.spinics.net/lists/netdev/msg585973.html
- 432. https://www.spinics.net/lists/netdev/msg585983.html
- 433. https://www.spinics.net/lists/netdev/msg585974.html
- 434. https://www.spinics.net/lists/netdev/msg585986.html
- 435. https://www.spinics.net/lists/netdev/msg585987.html
- 436. https://www.spinics.net/lists/netdev/msg585988.html
- 437. https://www.spinics.net/lists/netdev/msg586144.html
- 438. https://www.spinics.net/lists/netdev/msg586145.html
- 439. https://www.spinics.net/lists/netdev/msg586146.html
- 440. https://www.spinics.net/lists/netdev/msg586147.html
- 441. https://www.spinics.net/lists/netdev/msg586148.html
- 442. https://www.spinics.net/lists/netdev/msg586149.html
- 443. https://www.spinics.net/lists/netdev/msg586151.html
- 444. https://www.spinics.net/lists/netdev/msg586153.html
- 445. https://www.spinics.net/lists/netdev/msg586156.html
- 446. https://www.spinics.net/lists/netdev/msg586158.html
- 447. https://www.spinics.net/lists/netdev/msg586159.html
- 448. https://www.spinics.net/lists/netdev/msg586160.html
- 449. https://www.spinics.net/lists/netdev/msg586161.html
- 450. https://www.spinics.net/lists/netdev/msg586162.html
- 451. https://www.spinics.net/lists/netdev/msg586163.html
- 452. https://www.spinics.net/lists/netdev/msg586164.html
- 453. https://www.spinics.net/lists/netdev/msg586165.html
- 454. https://www.spinics.net/lists/netdev/msg586166.html
- 455. https://www.spinics.net/lists/netdev/msg586167.html
- 456. https://www.spinics.net/lists/netdev/msg586168.html
- 457. https://www.spinics.net/lists/netdev/msg586169.html
- 458. https://www.spinics.net/lists/netdev/msg586170.html
- 459. https://www.spinics.net/lists/netdev/msg586178.html
- 460. https://www.spinics.net/lists/netdev/msg586179.html
- 461. https://www.spinics.net/lists/netdev/msg585789.html
- 462. https://www.spinics.net/lists/netdev/msg585790.html
- 463. https://www.spinics.net/lists/netdev/msg585791.html
- 464. https://www.spinics.net/lists/netdev/msg585792.html
- 465. https://www.spinics.net/lists/netdev/msg585793.html
- 466. https://www.spinics.net/lists/netdev/msg585794.html
- 467. https://www.spinics.net/lists/netdev/msg585796.html
- 468. https://www.spinics.net/lists/netdev/msg585797.html
- 469. https://www.spinics.net/lists/netdev/msg585798.html
- 470. https://www.spinics.net/lists/netdev/msg585799.html
- 471. https://www.spinics.net/lists/netdev/msg585800.html
- 472. https://www.spinics.net/lists/netdev/msg585801.html
- 473. https://www.spinics.net/lists/netdev/msg585802.html
- 474. https://www.spinics.net/lists/netdev/msg585807.html
- 475. https://www.spinics.net/lists/netdev/msg585815.html
- 476. https://www.spinics.net/lists/netdev/msg585819.html
- 477. https://www.spinics.net/lists/netdev/msg585832.html
- 478. https://www.spinics.net/lists/netdev/msg585833.html
- 479. https://www.spinics.net/lists/netdev/msg585835.html
- 480. https://www.spinics.net/lists/netdev/msg585836.html
- 481. https://www.spinics.net/lists/netdev/msg585837.html
- 482. https://www.spinics.net/lists/netdev/msg585838.html
- 483. https://www.spinics.net/lists/netdev/msg585839.html
- 484. https://www.spinics.net/lists/netdev/msg585840.html
- 485. https://www.spinics.net/lists/netdev/msg585841.html
- 486. https://www.spinics.net/lists/netdev/msg585842.html
- 487. https://www.spinics.net/lists/netdev/msg585843.html
- 488. https://www.spinics.net/lists/netdev/msg585844.html
- 489. https://www.spinics.net/lists/netdev/msg585845.html
- 490. https://www.spinics.net/lists/netdev/msg585846.html
- 491. https://www.spinics.net/lists/netdev/msg585847.html
- 492. https://www.spinics.net/lists/netdev/msg585848.html
- 493. https://www.spinics.net/lists/netdev/msg585849.html
- 494. https://www.spinics.net/lists/netdev/msg585850.html
- 495. https://www.spinics.net/lists/netdev/msg585851.html
- 496. https://www.spinics.net/lists/netdev/msg585852.html
- 497. https://www.spinics.net/lists/netdev/msg585853.html
- 498. https://www.spinics.net/lists/netdev/msg585854.html
- 499. https://www.spinics.net/lists/netdev/msg585855.html
- 500. https://www.spinics.net/lists/netdev/msg585856.html
- 501. https://www.spinics.net/lists/netdev/msg585859.html
- 502. https://www.spinics.net/lists/netdev/msg585857.html
- 503. https://www.spinics.net/lists/netdev/msg585858.html
- 504. https://www.spinics.net/lists/netdev/msg585860.html
- 505. https://www.spinics.net/lists/netdev/msg585861.html
- 506. https://www.spinics.net/lists/netdev/msg585862.html
- 507. https://www.spinics.net/lists/netdev/msg585863.html
- 508. https://www.spinics.net/lists/netdev/msg585864.html
- 509. https://www.spinics.net/lists/netdev/msg585869.html
- 510. https://www.spinics.net/lists/netdev/msg585865.html
- 511. https://www.spinics.net/lists/netdev/msg585866.html
- 512. https://www.spinics.net/lists/netdev/msg585867.html
- 513. https://www.spinics.net/lists/netdev/msg585868.html
- 514. https://www.spinics.net/lists/netdev/msg585870.html
- 515. https://www.spinics.net/lists/netdev/msg585871.html
- 516. https://www.spinics.net/lists/netdev/msg585872.html
- 517. https://www.spinics.net/lists/netdev/msg585873.html
- 518. https://www.spinics.net/lists/netdev/msg585874.html
- 519. https://www.spinics.net/lists/netdev/msg585875.html
- 520. https://www.spinics.net/lists/netdev/msg585876.html
- 521. https://www.spinics.net/lists/netdev/msg585877.html
- 522. https://www.spinics.net/lists/netdev/msg585878.html
- 523. https://www.spinics.net/lists/netdev/msg585879.html
- 524. https://www.spinics.net/lists/netdev/msg585880.html
- 525. https://www.spinics.net/lists/netdev/msg585881.html
- 526. https://www.spinics.net/lists/netdev/msg585894.html
- 527. https://www.spinics.net/lists/netdev/msg585895.html
- 528. https://www.spinics.net/lists/netdev/msg585882.html
- 529. https://www.spinics.net/lists/netdev/msg585883.html
- 530. https://www.spinics.net/lists/netdev/msg585884.html
- 531. https://www.spinics.net/lists/netdev/msg585885.html
- 532. https://www.spinics.net/lists/netdev/msg585886.html
- 533. https://www.spinics.net/lists/netdev/msg585887.html
- 534. https://www.spinics.net/lists/netdev/msg585888.html
- 535. https://www.spinics.net/lists/netdev/msg585889.html
- 536. https://www.spinics.net/lists/netdev/msg585890.html
- 537. https://www.spinics.net/lists/netdev/msg585891.html
- 538. https://www.spinics.net/lists/netdev/msg585892.html
- 539. https://www.spinics.net/lists/netdev/msg585893.html
- 540. https://www.spinics.net/lists/netdev/msg585896.html
- 541. https://www.spinics.net/lists/netdev/msg585898.html
- 542. https://www.spinics.net/lists/netdev/msg585899.html
- 543. https://www.spinics.net/lists/netdev/msg585900.html
- 544. https://www.spinics.net/lists/netdev/msg585901.html
- 545. https://www.spinics.net/lists/netdev/msg585902.html
- 546. https://www.spinics.net/lists/netdev/msg585903.html
- 547. https://www.spinics.net/lists/netdev/msg585904.html
- 548. https://www.spinics.net/lists/netdev/msg585919.html
- 549. https://www.spinics.net/lists/netdev/msg585905.html
- 550. https://www.spinics.net/lists/netdev/msg585920.html
- 551. https://www.spinics.net/lists/netdev/msg586172.html
- 552. https://www.spinics.net/lists/netdev/msg586173.html
- 553. https://www.spinics.net/lists/netdev/msg586174.html
- 554. https://www.spinics.net/lists/netdev/msg586175.html
- 555. https://www.spinics.net/lists/netdev/msg586176.html
- 556. https://www.spinics.net/lists/netdev/msg586180.html
- 557. https://www.spinics.net/lists/netdev/msg586181.html
- 558. https://www.spinics.net/lists/netdev/msg586182.html
- 559. https://www.spinics.net/lists/netdev/msg586183.html
- 560. https://www.spinics.net/lists/netdev/msg586184.html
- 561. https://www.spinics.net/lists/netdev/msg586185.html
- 562. https://www.spinics.net/lists/netdev/msg586186.html
- 563. https://www.spinics.net/lists/netdev/msg586188.html
- 564. https://www.spinics.net/lists/netdev/msg586189.html
- 565. https://www.spinics.net/lists/netdev/msg586190.html
- 566. https://www.spinics.net/lists/netdev/msg586191.html
- 567. https://www.spinics.net/lists/netdev/msg586192.html
- 568. https://www.spinics.net/lists/netdev/msg586193.html
- 569. https://www.spinics.net/lists/netdev/msg586194.html
- 570. https://www.spinics.net/lists/netdev/msg586199.html
- 571. https://www.spinics.net/lists/netdev/msg586200.html
- 572. https://www.spinics.net/lists/netdev/msg586201.html
- 573. https://www.spinics.net/lists/netdev/msg586195.html
- 574. https://www.spinics.net/lists/netdev/msg586196.html
- 575. https://www.spinics.net/lists/netdev/msg586197.html
- 576. https://www.spinics.net/lists/netdev/msg586198.html
- 577. https://www.spinics.net/lists/netdev/msg586202.html
- 578. https://www.spinics.net/lists/netdev/msg586203.html
- 579. https://www.spinics.net/lists/netdev/msg586204.html
- 580. https://www.spinics.net/lists/netdev/msg586205.html
- 581. https://www.spinics.net/lists/netdev/msg586206.html
- 582. https://www.spinics.net/lists/netdev/msg586207.html
- 583. https://www.spinics.net/lists/netdev/msg586208.html
- 584. https://www.spinics.net/lists/netdev/msg586209.html
- 585. https://www.spinics.net/lists/netdev/msg586210.html
- 586. https://www.spinics.net/lists/netdev/msg586211.html
- 587. https://www.spinics.net/lists/netdev/msg585783.html
- 588. https://www.spinics.net/lists/netdev/msg585760.html
- 589. https://www.spinics.net/lists/netdev/msg586187.html
- 590. https://www.spinics.net/lists/netdev/msg586285.html
- 591. https://www.spinics.net/lists/netdev/msg585753.html
- 592. https://www.spinics.net/lists/netdev/msg585755.html
- 593. https://www.spinics.net/lists/netdev/msg585756.html
- 594. https://www.spinics.net/lists/netdev/msg585758.html
- 595. https://www.spinics.net/lists/netdev/msg585763.html
- 596. https://www.spinics.net/lists/netdev/msg585782.html
- 597. https://www.spinics.net/lists/netdev/msg585744.html
- 598. https://www.spinics.net/lists/netdev/msg585761.html
- 599. https://www.spinics.net/lists/netdev/msg585781.html
- 600. https://www.spinics.net/lists/netdev/msg585780.html
- 601. https://www.spinics.net/lists/netdev/msg586245.html
- 602. https://www.spinics.net/lists/netdev/msg585741.html
- 603. https://www.spinics.net/lists/netdev/msg585740.html
- 604. https://www.spinics.net/lists/netdev/msg586235.html
- 605. https://www.spinics.net/lists/netdev/msg585739.html
- 606. https://www.spinics.net/lists/netdev/msg586232.html
- 607. https://www.spinics.net/lists/netdev/msg585738.html
- 608. https://www.spinics.net/lists/netdev/msg585757.html
- 609. https://www.spinics.net/lists/netdev/msg585759.html
- 610. https://www.spinics.net/lists/netdev/msg585737.html
- 611. https://www.spinics.net/lists/netdev/msg586234.html
- 612. https://www.spinics.net/lists/netdev/msg585736.html
- 613. https://www.spinics.net/lists/netdev/msg586233.html
- 614. https://www.spinics.net/lists/netdev/msg585731.html
- 615. https://www.spinics.net/lists/netdev/msg586214.html
- 616. https://www.spinics.net/lists/netdev/msg586236.html
- 617. https://www.spinics.net/lists/netdev/msg585723.html
- 618. https://www.spinics.net/lists/netdev/msg585732.html
- 619. https://www.spinics.net/lists/netdev/msg585745.html
- 620. https://www.spinics.net/lists/netdev/msg586213.html
- 621. https://www.spinics.net/lists/netdev/msg586246.html
- 622. https://www.spinics.net/lists/netdev/msg586239.html
- 623. https://www.spinics.net/lists/netdev/msg586247.html
- 624. https://www.spinics.net/lists/netdev/msg585734.html
- 625. https://www.spinics.net/lists/netdev/msg585746.html
- 626. https://www.spinics.net/lists/netdev/msg585717.html
- 627. https://www.spinics.net/lists/netdev/msg585727.html
- 628. https://www.spinics.net/lists/netdev/msg585715.html
- 629. https://www.spinics.net/lists/netdev/msg585714.html
- 630. https://www.spinics.net/lists/netdev/msg585743.html
- 631. https://www.spinics.net/lists/netdev/msg585750.html
- 632. https://www.spinics.net/lists/netdev/msg585710.html
- 633. https://www.spinics.net/lists/netdev/msg585725.html
- 634. https://www.spinics.net/lists/netdev/msg585706.html
- 635. https://www.spinics.net/lists/netdev/msg585724.html
- 636. https://www.spinics.net/lists/netdev/msg585704.html
- 637. https://www.spinics.net/lists/netdev/msg585730.html
- 638. https://www.spinics.net/lists/netdev/msg585703.html
- 639. https://www.spinics.net/lists/netdev/msg585711.html
- 640. https://www.spinics.net/lists/netdev/msg585726.html
- 641. https://www.spinics.net/lists/netdev/msg585729.html
- 642. https://www.spinics.net/lists/netdev/msg585683.html
- 643. https://www.spinics.net/lists/netdev/msg585684.html
- 644. https://www.spinics.net/lists/netdev/msg585686.html
- 645. https://www.spinics.net/lists/netdev/msg585677.html
- 646. https://www.spinics.net/lists/netdev/msg585676.html
- 647. https://www.spinics.net/lists/netdev/msg585680.html
- 648. https://www.spinics.net/lists/netdev/msg586259.html
- 649. https://www.spinics.net/lists/netdev/msg585673.html
- 650. https://www.spinics.net/lists/netdev/msg585695.html
- 651. https://www.spinics.net/lists/netdev/msg585668.html
- 652. https://www.spinics.net/lists/netdev/msg585694.html
- 653. https://www.spinics.net/lists/netdev/msg585669.html
- 654. https://www.spinics.net/lists/netdev/msg585667.html
- 655. https://www.spinics.net/lists/netdev/msg586260.html
- 656. https://www.spinics.net/lists/netdev/msg585656.html
- 657. https://www.spinics.net/lists/netdev/msg585657.html
- 658. https://www.spinics.net/lists/netdev/msg585693.html
- 659. https://www.spinics.net/lists/netdev/msg585692.html
- 660. https://www.spinics.net/lists/netdev/msg585655.html
- 661. https://www.spinics.net/lists/netdev/msg585649.html
- 662. https://www.spinics.net/lists/netdev/msg585663.html
- 663. https://www.spinics.net/lists/netdev/msg585632.html
- 664. https://www.spinics.net/lists/netdev/msg585633.html
- 665. https://www.spinics.net/lists/netdev/msg585691.html
- 666. https://www.spinics.net/lists/netdev/msg585628.html
- 667. https://www.spinics.net/lists/netdev/msg585687.html
- 668. https://www.spinics.net/lists/netdev/msg585689.html
- 669. https://www.spinics.net/lists/netdev/msg585700.html
- 670. https://www.spinics.net/lists/
- 671. https://www.spinics.net/lists/kernel/
- 672. https://www.spinics.net/lists/netfilter/
- 673. https://www.spinics.net/lists/bpf/
- 674. https://www.spinics.net/lists/linux-wireless/
- 675. https://www.spinics.net/lists/openconnect/
- 676. https://www.spinics.net/lists/xdp-newbies/
- 677. http://www.kernelnewbies.org/faq/
- 678. http://www.tux.org/lkml/
- 679. https://www.spinics.net/lists/ietf-ann/
- 680. https://www.spinics.net/lists/security/
- 681. https://www.spinics.net/lists/hostap/
- 682. https://www.spinics.net/lists/bugtraq/
- 683. https://www.spinics.net/lists/squid/
- 684. https://www.spinics.net/lists/
+     * [https://www.spinics.net/lists/netdev/msg586999.html][PATCH net] tcp: be more careful in tcp_fragment(), Eric Dumazet
+     * [https://www.spinics.net/lists/netdev/msg586987.html][PATCH net] hv_netvsc: Fix extra rcu_read_unlock in netvsc_recv_callback(), Haiyang Zhang
+     * [https://www.spinics.net/lists/netdev/msg586986.html][PATCH bpf v4 00/14] sockmap/tls fixes, Jakub Kicinski
+          + [https://www.spinics.net/lists/netdev/msg586984.html][PATCH bpf v4 01/14] net/tls: don't arm strparser immediately in tls_set_sw_offload(), Jakub Kicinski
+          + [https://www.spinics.net/lists/netdev/msg586972.html][PATCH bpf v4 04/14] net/tls: remove sock unlock/lock around strp_done(), Jakub Kicinski
+          + [https://www.spinics.net/lists/netdev/msg586973.html][PATCH bpf v4 02/14] net/tls: don't call tls_sk_proto_close for hw record offload, Jakub Kicinski
+          + [https://www.spinics.net/lists/netdev/msg586974.html][PATCH bpf v4 05/14] net/tls: fix transition through disconnect with close, Jakub Kicinski
+          + [https://www.spinics.net/lists/netdev/msg586975.html][PATCH bpf v4 07/14] bpf: sockmap, synchronize_rcu before free'ing map, Jakub Kicinski
+          + [https://www.spinics.net/lists/netdev/msg586976.html][PATCH bpf v4 08/14] bpf: sockmap, only create entry if ulp is not already enabled, Jakub Kicinski
+          + [https://www.spinics.net/lists/netdev/msg586985.html][PATCH bpf v4 03/14] net/tls: remove close callback sock unlock/lock around TX work flush, Jakub Kicinski
+          + [https://www.spinics.net/lists/netdev/msg586977.html][PATCH bpf v4 09/14] bpf: sockmap/tls, close can race with map free, Jakub Kicinski
+          + [https://www.spinics.net/lists/netdev/msg586978.html][PATCH bpf v4 10/14] selftests/tls: add a test for ULP but no keys, Jakub Kicinski
+          + [https://www.spinics.net/lists/netdev/msg586979.html][PATCH bpf v4 11/14] selftests/tls: test error codes around TLS ULP installation, Jakub Kicinski
+          + [https://www.spinics.net/lists/netdev/msg586980.html][PATCH bpf v4 12/14] selftests/tls: add a bidirectional test, Jakub Kicinski
+          + [https://www.spinics.net/lists/netdev/msg586981.html][PATCH bpf v4 13/14] selftests/tls: close the socket with open record, Jakub Kicinski
+          + [https://www.spinics.net/lists/netdev/msg586982.html][PATCH bpf v4 14/14] selftests/tls: add shutdown tests, Jakub Kicinski
+          + [https://www.spinics.net/lists/netdev/msg586983.html][PATCH bpf v4 06/14] bpf: sockmap, sock_map_delete needs to use xchg, Jakub Kicinski
+          + [https://www.spinics.net/lists/netdev/msg586988.html]Re: [PATCH bpf v4 00/14] sockmap/tls fixes, Jakub Kicinski
+     * [https://www.spinics.net/lists/netdev/msg586957.html][PATCH 10/14] netfilter: nf_tables: Support auto-loading for inet nat, Pablo Neira Ayuso
+          + [https://www.spinics.net/lists/netdev/msg586958.html][PATCH 11/14] netfilter: synproxy: fix rst sequence number mismatch, Pablo Neira Ayuso
+          + [https://www.spinics.net/lists/netdev/msg586959.html][PATCH 12/14] netfilter: nft_meta: skip EAGAIN if nft_meta_bridge is not a module, Pablo Neira Ayuso
+          + [https://www.spinics.net/lists/netdev/msg586960.html][PATCH 13/14] netfilter: bridge: NF_CONNTRACK_BRIDGE does not depend on NF_TABLES_BRIDGE, Pablo Neira Ayuso
+          + [https://www.spinics.net/lists/netdev/msg586961.html][PATCH 14/14] netfilter: bridge: make NF_TABLES_BRIDGE tristate, Pablo Neira Ayuso
+     * [https://www.spinics.net/lists/netdev/msg586936.html][PATCH nf,v5 0/4] flow_offload fixes, Pablo Neira Ayuso
+          + [https://www.spinics.net/lists/netdev/msg586937.html][PATCH nf,v5 1/4] net: openvswitch: rename flow_stats to sw_flow_stats, Pablo Neira Ayuso
+          + [https://www.spinics.net/lists/netdev/msg586938.html][PATCH nf,v5 2/4] net: flow_offload: remove netns parameter from flow_block_cb_alloc(), Pablo Neira Ayuso
+          + [https://www.spinics.net/lists/netdev/msg586939.html][PATCH nf,v5 4/4] net: flow_offload: add flow_block structure and use it, Pablo Neira Ayuso
+          + [https://www.spinics.net/lists/netdev/msg586940.html][PATCH nf,v5 3/4] net: flow_offload: rename tc_setup_cb_t to flow_setup_cb_t, Pablo Neira Ayuso
+     * [https://www.spinics.net/lists/netdev/msg586929.html][PATCH net] net: mvpp2: Don't check for 3 consecutive Idle frames for 10G links, Maxime Chevallier
+          + [https://www.spinics.net/lists/netdev/msg586927.html][PATCH 2/2] libbpf: Avoid designated initializers for unnamed union members, Arnaldo Carvalho de Melo
+               o [https://www.spinics.net/lists/netdev/msg586971.html]Re: [PATCH 2/2] libbpf: Avoid designated initializers for unnamed union members, Andrii Nakryiko
+          + [https://www.spinics.net/lists/netdev/msg586928.html][PATCH 1/2] libbpf: Fix endianness macro usage for some compilers, Arnaldo Carvalho de Melo
+               o [https://www.spinics.net/lists/netdev/msg586943.html]Re: [PATCH 1/2] libbpf: Fix endianness macro usage for some compilers, Y Song
+                    # [https://www.spinics.net/lists/netdev/msg586996.html]Re: [PATCH 1/2] libbpf: Fix endianness macro usage for some compilers, Arnaldo Carvalho de Melo
+     * [https://www.spinics.net/lists/netdev/msg586908.html][PATCH 1/3] macb: bindings doc: update sifive fu540-c000 binding, Yash Shah
+          + [https://www.spinics.net/lists/netdev/msg586909.html][PATCH 2/3] macb: Update compatibility string for SiFive FU540-C000, Yash Shah
+               o [https://www.spinics.net/lists/netdev/msg586914.html]Re: [PATCH 2/3] macb: Update compatibility string for SiFive FU540-C000, Nicolas.Ferre
+          + [https://www.spinics.net/lists/netdev/msg586910.html][PATCH 3/3] riscv: dts: Add DT node for SiFive FU540 Ethernet controller driver, Yash Shah
+               o [https://www.spinics.net/lists/netdev/msg586911.html]Re: [PATCH 3/3] riscv: dts: Add DT node for SiFive FU540 Ethernet controller driver, Sagar Kadam
+                    # [https://www.spinics.net/lists/netdev/msg586922.html]Re: [PATCH 3/3] riscv: dts: Add DT node for SiFive FU540 Ethernet controller driver, Andrew Lunn
+          + [https://www.spinics.net/lists/netdev/msg586913.html]Re: [PATCH 1/3] macb: bindings doc: update sifive fu540-c000 binding, Nicolas.Ferre
+     * [https://www.spinics.net/lists/netdev/msg586892.html][PATCH bpf v3] bpf: fix narrower loads on s390, Ilya Leoshkevich
+     * [https://www.spinics.net/lists/netdev/msg586891.html][PATCH] ax88179_178a: Merge memcpy + le32_to_cpus to get_unaligned_le32, Chuhong Yuan
+     * [https://www.spinics.net/lists/netdev/msg586890.html][PATCH bpf] selftests/bpf: fix sendmsg6_prog on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/netdev/msg586942.html]Re: [PATCH bpf] selftests/bpf: fix sendmsg6_prog on s390, Andrey Ignatov
+     * [https://www.spinics.net/lists/netdev/msg586883.html][PATCH] usbnet: smsc75xx: Merge memcpy + le32_to_cpus to get_unaligned_le32, Chuhong Yuan
+     * [https://www.spinics.net/lists/netdev/msg586875.html][PATCH] net: lan78xx: Merge memcpy + lexx_to_cpus to get_unaligned_lexx, Chuhong Yuan
+          + [https://www.spinics.net/lists/netdev/msg586945.html]RE: [PATCH] net: lan78xx: Merge memcpy + lexx_to_cpus to get_unaligned_lexx, Woojung.Huh
+     * [https://www.spinics.net/lists/netdev/msg586870.html][PATCH] net-ipv6-ndisc: add support for RFC7710 RA Captive Portal Identifier, Maciej Żenczykowski
+     * [https://www.spinics.net/lists/netdev/msg586865.html][PATCH AUTOSEL 5.2 143/171] rds: Accept peer connection reject messages due to incompatible version, Sasha Levin
+     * [https://www.spinics.net/lists/netdev/msg586864.html][PATCH AUTOSEL 5.2 150/171] net/mlx5e: IPoIB, Add error path in mlx5_rdma_setup_rn, Sasha Levin
+     * [https://www.spinics.net/lists/netdev/msg586863.html][PATCH AUTOSEL 5.2 155/171] net/mlx5: E-Switch, Fix default encap mode, Sasha Levin
+     * [https://www.spinics.net/lists/netdev/msg586862.html][PATCH AUTOSEL 5.1 121/141] net/mlx5e: IPoIB, Add error path in mlx5_rdma_setup_rn, Sasha Levin
+     * [https://www.spinics.net/lists/netdev/msg586860.html][PATCH AUTOSEL 5.1 137/141] cxgb4: reduce kernel stack usage in cudbg_collect_mem_region(), Sasha Levin
+     * [https://www.spinics.net/lists/netdev/msg586857.html][PATCH AUTOSEL 4.19 098/101] cxgb4: reduce kernel stack usage in cudbg_collect_mem_region(), Sasha Levin
+     * [https://www.spinics.net/lists/netdev/msg586856.html][PATCH AUTOSEL 5.1 114/141] rds: Accept peer connection reject messages due to incompatible version, Sasha Levin
+     * [https://www.spinics.net/lists/netdev/msg586855.html][PATCH AUTOSEL 5.2 167/171] cxgb4: reduce kernel stack usage in cudbg_collect_mem_region(), Sasha Levin
+     * [https://www.spinics.net/lists/netdev/msg586850.html][PATCH] qca8k: enable port flow control, xiaofeis
+          + [https://www.spinics.net/lists/netdev/msg586859.html]Re: [PATCH] qca8k: enable port flow control, Vinod Koul
+          + [https://www.spinics.net/lists/netdev/msg586894.html]Re: [PATCH] qca8k: enable port flow control, Niklas Cassel
+               o [https://www.spinics.net/lists/netdev/msg586920.html]Re: [PATCH] qca8k: enable port flow control, Andrew Lunn
+          + [https://www.spinics.net/lists/netdev/msg586919.html]Re: [PATCH] qca8k: enable port flow control, Andrew Lunn
+     * [https://www.spinics.net/lists/netdev/msg586845.html][PATCH net] tcp: fix tcp_set_congestion_control() use from bpf hook, Eric Dumazet
+          + [https://www.spinics.net/lists/netdev/msg586848.html]Re: [PATCH net] tcp: fix tcp_set_congestion_control() use from bpf hook, Neal Cardwell
+          + [https://www.spinics.net/lists/netdev/msg586849.html]Re: [PATCH net] tcp: fix tcp_set_congestion_control() use from bpf hook, Lawrence Brakmo
+          + [https://www.spinics.net/lists/netdev/msg586853.html]Re: [PATCH net] tcp: fix tcp_set_congestion_control() use from bpf hook, David Miller
+     * [https://www.spinics.net/lists/netdev/msg586838.html][PATCH] sch_gred: kzalloc needs null check, Navid Emamdoost
+          + [https://www.spinics.net/lists/netdev/msg586839.html]Re: [PATCH] sch_gred: kzalloc needs null check, Eric Dumazet
+     * [https://www.spinics.net/lists/netdev/msg586806.html][PATCH] ath10k: Use ARRAY_SIZE, Vasyl Gomonovych
+     * [https://www.spinics.net/lists/netdev/msg586805.html][PATCH v1] dt-bindings: fec: explicitly mark deprecated properties, Sven Van Asbroeck
+     * [https://www.spinics.net/lists/netdev/msg586799.html][PATCH iproute2 net-next v5 1/5] etf: Add skip_sock_check, Vedang Patel
+          + [https://www.spinics.net/lists/netdev/msg586800.html][PATCH iproute2 net-next v5 2/5] taprio: Add support for setting flags, Vedang Patel
+          + [https://www.spinics.net/lists/netdev/msg586801.html][PATCH iproute2 net-next v5 4/5] tc: etf: Add documentation for skip_sock_check., Vedang Patel
+          + [https://www.spinics.net/lists/netdev/msg586802.html][PATCH iproute2 net-next v5 5/5] tc: taprio: Update documentation, Vedang Patel
+          + [https://www.spinics.net/lists/netdev/msg586803.html][PATCH iproute2 net-next v5 3/5] taprio: add support for setting txtime_delay., Vedang Patel
+          + [https://www.spinics.net/lists/netdev/msg586823.html]Re: [PATCH iproute2 net-next v5 1/5] etf: Add skip_sock_check, David Ahern
+          + [https://www.spinics.net/lists/netdev/msg586866.html]Re: [PATCH iproute2 net-next v5 1/5] etf: Add skip_sock_check, Stephen Hemminger
+     * [https://www.spinics.net/lists/netdev/msg586794.html][PATCH V36 23/29] bpf: Restrict bpf when kernel lockdown is in confidentiality mode, Matthew Garrett
+          + [https://www.spinics.net/lists/netdev/msg586814.html]Re: [PATCH V36 23/29] bpf: Restrict bpf when kernel lockdown is in confidentiality mode, Kees Cook
+     * [https://www.spinics.net/lists/netdev/msg586764.html][PATCH net,v4 0/4] flow_offload fixes, Pablo Neira Ayuso
+          + [https://www.spinics.net/lists/netdev/msg586763.html][PATCH net,v4 3/4] net: flow_offload: rename tc_setup_cb_t to flow_setup_cb_t, Pablo Neira Ayuso
+          + [https://www.spinics.net/lists/netdev/msg586765.html][PATCH net,v4 1/4] net: openvswitch: rename flow_stats to sw_flow_stats, Pablo Neira Ayuso
+               o [https://www.spinics.net/lists/netdev/msg586878.html]Re: [PATCH net,v4 1/4] net: openvswitch: rename flow_stats to sw_flow_stats, Jiri Pirko
+          + [https://www.spinics.net/lists/netdev/msg586766.html][PATCH net,v4 2/4] net: flow_offload: remove netns parameter from flow_block_cb_alloc(), Pablo Neira Ayuso
+          + [https://www.spinics.net/lists/netdev/msg586767.html][PATCH net,v4 4/4] net: flow_offload: add flow_block structure and use it, Pablo Neira Ayuso
+               o [https://www.spinics.net/lists/netdev/msg586879.html]Re: [PATCH net,v4 4/4] net: flow_offload: add flow_block structure and use it, Jiri Pirko
+          + [https://www.spinics.net/lists/netdev/msg586792.html]Re: [PATCH net,v4 0/4] flow_offload fixes, David Miller
+               o [https://www.spinics.net/lists/netdev/msg586807.html]Re: [PATCH net,v4 0/4] flow_offload fixes, David Miller
+     * [https://www.spinics.net/lists/netdev/msg586757.html][PATCH v2 bpf] libbpf: fix missing __WORDSIZE definition, Andrii Nakryiko
+          + [https://www.spinics.net/lists/netdev/msg586758.html]Re: [PATCH v2 bpf] libbpf: fix missing __WORDSIZE definition, Andrii Nakryiko
+     * [https://www.spinics.net/lists/netdev/msg586755.html][PATCH bpf] libbpf: fix missing __WORDSIZE definition, Andrii Nakryiko
+          + [https://www.spinics.net/lists/netdev/msg586753.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Andrii Nakryiko
+          + [https://www.spinics.net/lists/netdev/msg586762.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Arnaldo Carvalho de Melo
+               o [https://www.spinics.net/lists/netdev/msg586768.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Andrii Nakryiko
+                    # [https://www.spinics.net/lists/netdev/msg586780.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Arnaldo Carvalho de Melo
+                         @ [https://www.spinics.net/lists/netdev/msg586789.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Arnaldo Carvalho de Melo
+                              - [https://www.spinics.net/lists/netdev/msg586816.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Andrii Nakryiko
+                                   = [https://www.spinics.net/lists/netdev/msg586837.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Arnaldo Carvalho de Melo
+                                   * [https://www.spinics.net/lists/netdev/msg586992.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Andrii Nakryiko
+                                   + [https://www.spinics.net/lists/netdev/msg586993.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Arnaldo Carvalho de Melo
+                                   o [https://www.spinics.net/lists/netdev/msg586995.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Andrii Nakryiko
+                                   # [https://www.spinics.net/lists/netdev/msg586997.html]Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition, Arnaldo Carvalho de Melo
+     * [https://www.spinics.net/lists/netdev/msg586739.html][PATCH] openvswitch: Fix a possible memory leak on dst_cache, Haishuang Yan
+          + [https://www.spinics.net/lists/netdev/msg586786.html]Re: [PATCH] openvswitch: Fix a possible memory leak on dst_cache, David Miller
+          + [https://www.spinics.net/lists/netdev/msg586821.html]Re: [PATCH] openvswitch: Fix a possible memory leak on dst_cache, Gregory Rose
+               o [https://www.spinics.net/lists/netdev/msg586841.html]Re: [PATCH] openvswitch: Fix a possible memory leak on dst_cache, Haishuang Yan
+     * [https://www.spinics.net/lists/netdev/msg586734.html][PATCH bpf v2] bpf: fix narrower loads on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/netdev/msg586737.html]Re: [PATCH bpf v2] bpf: fix narrower loads on s390, Y Song
+          + [https://www.spinics.net/lists/netdev/msg586808.html]Re: [PATCH bpf v2] bpf: fix narrower loads on s390, Alexei Starovoitov
+     * [https://www.spinics.net/lists/netdev/msg586729.html][PATCH] MAINTAINERS: update netsec driver, Ilias Apalodimas
+          + [https://www.spinics.net/lists/netdev/msg586732.html]Re: [PATCH] MAINTAINERS: update netsec driver, Jassi Brar
+               o [https://www.spinics.net/lists/netdev/msg586738.html]Re: [PATCH] MAINTAINERS: update netsec driver, Ard Biesheuvel
+          + [https://www.spinics.net/lists/netdev/msg586785.html]Re: [PATCH] MAINTAINERS: update netsec driver, David Miller
+     * [https://www.spinics.net/lists/netdev/msg586728.html][PATCH] net: fec: generate warning when using deprecated phy reset, Sven Van Asbroeck
+          + [https://www.spinics.net/lists/netdev/msg586743.html]Re: [PATCH] net: fec: generate warning when using deprecated phy reset, Lucas Stach
+               o [https://www.spinics.net/lists/netdev/msg586744.html]Re: [PATCH] net: fec: generate warning when using deprecated phy reset, Fabio Estevam
+                    # [https://www.spinics.net/lists/netdev/msg586751.html]Re: [PATCH] net: fec: generate warning when using deprecated phy reset, Sven Van Asbroeck
+                         @ [https://www.spinics.net/lists/netdev/msg586793.html]Re: [PATCH] net: fec: generate warning when using deprecated phy reset, Andrew Lunn
+                              - [https://www.spinics.net/lists/netdev/msg586798.html]Re: [PATCH] net: fec: generate warning when using deprecated phy reset, Sven Van Asbroeck
+                                   = [https://www.spinics.net/lists/netdev/msg586804.html]Re: [PATCH] net: fec: generate warning when using deprecated phy reset, Andrew Lunn
+          + [https://www.spinics.net/lists/netdev/msg586784.html]Re: [PATCH] net: fec: generate warning when using deprecated phy reset, David Miller
+               o [https://www.spinics.net/lists/netdev/msg586790.html]Re: [PATCH] net: fec: generate warning when using deprecated phy reset, Sven Van Asbroeck
+     * [https://www.spinics.net/lists/netdev/msg586725.html][PATCH bpf] tools/bpf: fix bpftool build with OUTPUT set, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/netdev/msg586776.html]Re: [PATCH bpf] tools/bpf: fix bpftool build with OUTPUT set, Jakub Kicinski
+               o [https://www.spinics.net/lists/netdev/msg586918.html]Re: [PATCH bpf] tools/bpf: fix bpftool build with OUTPUT set, Ilya Leoshkevich
+                    # [https://www.spinics.net/lists/netdev/msg586994.html]Re: [PATCH bpf] tools/bpf: fix bpftool build with OUTPUT set, Jakub Kicinski
+     * [https://www.spinics.net/lists/netdev/msg586719.html]Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive, Michael S. Tsirkin
+          + [https://www.spinics.net/lists/netdev/msg586721.html]Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive, Jason Wang
+               o [https://www.spinics.net/lists/netdev/msg586730.html]Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive, Michael S. Tsirkin
+                    # [https://www.spinics.net/lists/netdev/msg586731.html]Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive, Michael S. Tsirkin
+                         @ [https://www.spinics.net/lists/netdev/msg586846.html]Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive, Jason Wang
+                                   * [https://www.spinics.net/lists/netdev/msg586935.html]Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive, Michael S. Tsirkin
+     * [https://www.spinics.net/lists/netdev/msg586707.html][PATCH] Signed-off-by: Peter Kosyh <p.kosyh@xxxxxxxxx>, Peter Kosyh
+          + [https://www.spinics.net/lists/netdev/msg586722.html]Re: [PATCH] Signed-off-by: Peter Kosyh <p.kosyh@xxxxxxxxx>, David Ahern
+               o [https://www.spinics.net/lists/netdev/msg586774.html]Re: [PATCH] Signed-off-by: Peter Kosyh <p.kosyh@xxxxxxxxx>, David Miller
+               o [https://www.spinics.net/lists/netdev/msg586881.html][PATCH v2] vrf: make sure skb->data contains ip header to make routing, Peter Kosyh
+                    # [https://www.spinics.net/lists/netdev/msg587003.html]Re: [PATCH v2] vrf: make sure skb->data contains ip header to make routing, David Ahern
+          + [https://www.spinics.net/lists/netdev/msg586709.html][PATCH] Signed-off-by: Peter Kosyh <p.kosyh@xxxxxxxxx>, Peter Kosyh
+     * [https://www.spinics.net/lists/netdev/msg586703.html][PATCH bpf] selftests/bpf: fix "valid read map access into a read-only array 1" on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/netdev/msg586809.html]Re: [PATCH bpf] selftests/bpf: fix "valid read map access into a read-only array 1" on s390, Alexei Starovoitov
+     * [https://www.spinics.net/lists/netdev/msg586694.html][PATCH 2/3] liquidio: Replace vmalloc + memset with vzalloc, Chuhong Yuan
+          + [https://www.spinics.net/lists/netdev/msg586779.html]Re: [PATCH 2/3] liquidio: Replace vmalloc + memset with vzalloc, David Miller
+     * [https://www.spinics.net/lists/netdev/msg586683.html][PATCH] connector: remove redundant input callback from cn_dev, Vasily Averin
+     * [https://www.spinics.net/lists/netdev/msg586674.html][PATCH] net: dsa: sja1105: Release lock in error case, Hariprasad Kelam
+          + [https://www.spinics.net/lists/netdev/msg586684.html]Re: [PATCH] net: dsa: sja1105: Release lock in error case, Yuehaibing
+     * [https://www.spinics.net/lists/netdev/msg586673.html][PATCH] udp: Fix typo in net/ipv4/udp.c, Su Yanjun
+          + [https://www.spinics.net/lists/netdev/msg586777.html]Re: [PATCH] udp: Fix typo in net/ipv4/udp.c, David Miller
+     * [https://www.spinics.net/lists/netdev/msg586672.html][PATCH] udp: Fix typo in udpv4/p.c, Su Yanjun
+     * [https://www.spinics.net/lists/netdev/msg586669.html][PATCH] cxgb4: Prefer pcie_capability_read_word(), Frederick Lawler
+          + [https://www.spinics.net/lists/netdev/msg586670.html][PATCH] igc: Prefer pcie_capability_read_word(), Frederick Lawler
+          + [https://www.spinics.net/lists/netdev/msg586671.html][PATCH] qed: Prefer pcie_capability_read_word(), Frederick Lawler
+               o [https://www.spinics.net/lists/netdev/msg586699.html]RE: [EXT] [PATCH] qed: Prefer pcie_capability_read_word(), Michal Kalderon
+          + [https://www.spinics.net/lists/netdev/msg586720.html]Re: [PATCH] cxgb4: Prefer pcie_capability_read_word(), Bjorn Helgaas
+     * [https://www.spinics.net/lists/netdev/msg586668.html][PATCH net] be2net: Synchronize be_update_queues with dev_watchdog, Benjamin Poirier
+          + [https://www.spinics.net/lists/netdev/msg586752.html]Re: [PATCH net] be2net: Synchronize be_update_queues with dev_watchdog, Florian Fainelli
+               o [https://www.spinics.net/lists/netdev/msg586867.html]Re: [PATCH net] be2net: Synchronize be_update_queues with dev_watchdog, Benjamin Poirier
+     * [https://www.spinics.net/lists/netdev/msg586665.html][PATCH iproute2] json: fix backslash escape typo in jsonw_puts, Ivan Delalande
+          + [https://www.spinics.net/lists/netdev/msg586991.html]Re: [PATCH iproute2] json: fix backslash escape typo in jsonw_puts, Stephen Hemminger
+     * [https://www.spinics.net/lists/netdev/msg586652.html][PATCH net] ipv6: rt6_check should return NULL if 'from' is NULL, David Ahern
+          + [https://www.spinics.net/lists/netdev/msg586659.html]Re: [PATCH net] ipv6: rt6_check should return NULL if 'from' is NULL, David Miller
+     * [https://www.spinics.net/lists/netdev/msg586651.html][PATCH] net: bcmgenet: use promisc for unsupported filters, justinpopo6
+          + [https://www.spinics.net/lists/netdev/msg586681.html]Re: [PATCH] net: bcmgenet: use promisc for unsupported filters, Florian Fainelli
+               o [https://www.spinics.net/lists/netdev/msg586775.html]Re: [PATCH] net: bcmgenet: use promisc for unsupported filters, David Miller
+          + [https://www.spinics.net/lists/netdev/msg586834.html]Re: [PATCH] net: bcmgenet: use promisc for unsupported filters, Doug Berger
+     * [https://www.spinics.net/lists/netdev/msg586637.html][PATCH net] ipv6: Unlink sibling route in case of failure, Ido Schimmel
+          + [https://www.spinics.net/lists/netdev/msg586726.html]Re: [PATCH net] ipv6: Unlink sibling route in case of failure, David Ahern
+               o [https://www.spinics.net/lists/netdev/msg586783.html]Re: [PATCH net] ipv6: Unlink sibling route in case of failure, David Miller
+     * [https://www.spinics.net/lists/netdev/msg586633.html][PATCH net 0/2] mlxsw: Two fixes, Ido Schimmel
+          + [https://www.spinics.net/lists/netdev/msg586634.html][PATCH net 2/2] mlxsw: spectrum: Do not process learned records with a dummy FID, Ido Schimmel
+          + [https://www.spinics.net/lists/netdev/msg586635.html][PATCH net 1/2] mlxsw: spectrum_dcb: Configure DSCP map as the last rule is removed, Ido Schimmel
+          + [https://www.spinics.net/lists/netdev/msg586655.html]Re: [PATCH net 0/2] mlxsw: Two fixes, David Miller
+     * [https://www.spinics.net/lists/netdev/msg586631.html][PATCHv2] net: ag71xx: Add missing header, Rosen Penev
+          + [https://www.spinics.net/lists/netdev/msg586654.html]Re: [PATCHv2] net: ag71xx: Add missing header, David Miller
+     * [https://www.spinics.net/lists/netdev/msg586627.html][PATCH net,v3 1/4] net: openvswitch: rename flow_stats to sw_flow_stats, Pablo Neira Ayuso
+          + [https://www.spinics.net/lists/netdev/msg586628.html][PATCH net,v3 2/4] net: flow_offload: remove netns parameter from flow_block_cb_alloc(), Pablo Neira Ayuso
+          + [https://www.spinics.net/lists/netdev/msg586629.html][PATCH net,v3 3/4] net: flow_offload: rename tc_setup_cb_t to flow_setup_cb_t, Pablo Neira Ayuso
+          + [https://www.spinics.net/lists/netdev/msg586630.html][PATCH net,v3 4/4] net: flow_offload: add flow_block structure and use it, Pablo Neira Ayuso
+          + [https://www.spinics.net/lists/netdev/msg586653.html]Re: [PATCH net,v3 1/4] net: openvswitch: rename flow_stats to sw_flow_stats, David Miller
+     * [https://www.spinics.net/lists/netdev/msg586609.html][PATCH net-next v2 0/2] Fix batched event generation for skbedit action, Roman Mashak
+          + [https://www.spinics.net/lists/netdev/msg586610.html][PATCH net-next v2 1/2] net sched: update skbedit action for batched events operations, Roman Mashak
+          + [https://www.spinics.net/lists/netdev/msg586611.html][PATCH net-next v2 2/2] tc-testing: updated skbedit action tests with batch create/delete, Roman Mashak
+     * [https://www.spinics.net/lists/netdev/msg586594.html][PATCH iproute2-rc v1 0/7] Statistics counter support, Leon Romanovsky
+          + [https://www.spinics.net/lists/netdev/msg586592.html][PATCH iproute2-rc v1 7/7] rdma: Document counter statistic, Leon Romanovsky
+          + [https://www.spinics.net/lists/netdev/msg586593.html][PATCH iproute2-rc v1 5/7] rdma: Add stat manual mode support, Leon Romanovsky
+          + [https://www.spinics.net/lists/netdev/msg586595.html][PATCH iproute2-rc v1 2/7] rdma: Add get per-port counter mode support, Leon Romanovsky
+          + [https://www.spinics.net/lists/netdev/msg586596.html][PATCH iproute2-rc v1 1/7] rdma: Add "stat qp show" support, Leon Romanovsky
+          + [https://www.spinics.net/lists/netdev/msg586597.html][PATCH iproute2-rc v1 3/7] rdma: Add rdma statistic counter per-port auto mode support, Leon Romanovsky
+          + [https://www.spinics.net/lists/netdev/msg586598.html][PATCH iproute2-rc v1 4/7] rdma: Make get_port_from_argv() returns valid port in strict port mode, Leon Romanovsky
+          + [https://www.spinics.net/lists/netdev/msg586599.html][PATCH iproute2-rc v1 6/7] rdma: Add default counter show support, Leon Romanovsky
+          + [https://www.spinics.net/lists/netdev/msg586990.html]Re: [PATCH iproute2-rc v1 0/7] Statistics counter support, Stephen Hemminger
+     * [https://www.spinics.net/lists/netdev/msg586589.html][PATCH] net: dsa: sja1105: Add missing spin_unlock, YueHaibing
+          + [https://www.spinics.net/lists/netdev/msg586615.html]Re: [PATCH] net: dsa: sja1105: Add missing spin_unlock, Vladimir Oltean
+     * [https://www.spinics.net/lists/netdev/msg586581.html][PATCH v4 13/15] docs: ABI: testing: make the files compatible with ReST output, Mauro Carvalho Chehab
+          + [https://www.spinics.net/lists/netdev/msg586605.html]Re: [PATCH v4 13/15] docs: ABI: testing: make the files compatible with ReST output, Jonathan Cameron
+     * [https://www.spinics.net/lists/netdev/msg586580.html][PATCH bpf] selftests/bpf: fix test_xdp_noinline on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/netdev/msg586810.html]Re: [PATCH bpf] selftests/bpf: fix test_xdp_noinline on s390, Alexei Starovoitov
+     * [https://www.spinics.net/lists/netdev/msg586578.html][PATCH] net: ag71xx: fix return value check in ag71xx_probe(), Wei Yongjun
+          + [https://www.spinics.net/lists/netdev/msg586689.html]Re: [PATCH] net: ag71xx: fix return value check in ag71xx_probe(), Oleksij Rempel
+          + [https://www.spinics.net/lists/netdev/msg586824.html]Re: [PATCH] net: ag71xx: fix return value check in ag71xx_probe(), David Miller
+          + [https://www.spinics.net/lists/netdev/msg586836.html][PATCH v2] ag71xx: fix return value check in ag71xx_probe(), Wei Yongjun
+               o [https://www.spinics.net/lists/netdev/msg586852.html]Re: [PATCH v2] ag71xx: fix return value check in ag71xx_probe(), David Miller
+     * [https://www.spinics.net/lists/netdev/msg586577.html][PATCH] net: ethernet: fix error return code in ag71xx_probe(), Wei Yongjun
+          + [https://www.spinics.net/lists/netdev/msg586691.html]Re: [PATCH] net: ethernet: fix error return code in ag71xx_probe(), Oleksij Rempel
+          + [https://www.spinics.net/lists/netdev/msg586835.html][PATCH v2] ag71xx: fix error return code in ag71xx_probe(), Wei Yongjun
+               o [https://www.spinics.net/lists/netdev/msg586851.html]Re: [PATCH v2] ag71xx: fix error return code in ag71xx_probe(), David Miller
+     * [https://www.spinics.net/lists/netdev/msg586571.html][PATCH v4 0/5] vsock/virtio: optimizations to increase the throughput, Stefano Garzarella
+          + [https://www.spinics.net/lists/netdev/msg586572.html][PATCH v4 2/5] vsock/virtio: reduce credit update messages, Stefano Garzarella
+          + [https://www.spinics.net/lists/netdev/msg586573.html][PATCH v4 3/5] vsock/virtio: fix locking in virtio_transport_inc_tx_pkt(), Stefano Garzarella
+               o [https://www.spinics.net/lists/netdev/msg586600.html]Re: [PATCH v4 3/5] vsock/virtio: fix locking in virtio_transport_inc_tx_pkt(), Michael S. Tsirkin
+                    # [https://www.spinics.net/lists/netdev/msg586692.html]Re: [PATCH v4 3/5] vsock/virtio: fix locking in virtio_transport_inc_tx_pkt(), Stefano Garzarella
+          + [https://www.spinics.net/lists/netdev/msg586574.html][PATCH v4 4/5] vhost/vsock: split packets to send using multiple buffers, Stefano Garzarella
+               o [https://www.spinics.net/lists/netdev/msg586601.html]Re: [PATCH v4 4/5] vhost/vsock: split packets to send using multiple buffers, Michael S. Tsirkin
+                    # [https://www.spinics.net/lists/netdev/msg586696.html]Re: [PATCH v4 4/5] vhost/vsock: split packets to send using multiple buffers, Stefano Garzarella
+                         @ [https://www.spinics.net/lists/netdev/msg586698.html]Re: [PATCH v4 4/5] vhost/vsock: split packets to send using multiple buffers, Michael S. Tsirkin
+                              - [https://www.spinics.net/lists/netdev/msg586706.html]Re: [PATCH v4 4/5] vhost/vsock: split packets to send using multiple buffers, Stefano Garzarella
+                                   = [https://www.spinics.net/lists/netdev/msg586713.html]Re: [PATCH v4 4/5] vhost/vsock: split packets to send using multiple buffers, Michael S. Tsirkin
+                                   * [https://www.spinics.net/lists/netdev/msg586880.html]Re: [PATCH v4 4/5] vhost/vsock: split packets to send using multiple buffers, Stefano Garzarella
+                                   + [https://www.spinics.net/lists/netdev/msg586882.html]Re: [PATCH v4 4/5] vhost/vsock: split packets to send using multiple buffers, Jason Wang
+                                   o [https://www.spinics.net/lists/netdev/msg586886.html]Re: [PATCH v4 4/5] vhost/vsock: split packets to send using multiple buffers, Stefano Garzarella
+                                   # [https://www.spinics.net/lists/netdev/msg586889.html]Re: [PATCH v4 4/5] vhost/vsock: split packets to send using multiple buffers, Jason Wang
+                                   @ [https://www.spinics.net/lists/netdev/msg586893.html]Re: [PATCH v4 4/5] vhost/vsock: split packets to send using multiple buffers, Stefano Garzarella
+          + [https://www.spinics.net/lists/netdev/msg586575.html][PATCH v4 5/5] vsock/virtio: change the maximum packet size allowed, Stefano Garzarella
+               o [https://www.spinics.net/lists/netdev/msg586602.html]Re: [PATCH v4 5/5] vsock/virtio: change the maximum packet size allowed, Michael S. Tsirkin
+                    # [https://www.spinics.net/lists/netdev/msg586697.html]Re: [PATCH v4 5/5] vsock/virtio: change the maximum packet size allowed, Stefano Garzarella
+                         @ [https://www.spinics.net/lists/netdev/msg586716.html]Re: [PATCH v4 5/5] vsock/virtio: change the maximum packet size allowed, Michael S. Tsirkin
+                              - [https://www.spinics.net/lists/netdev/msg586884.html]Re: [PATCH v4 5/5] vsock/virtio: change the maximum packet size allowed, Stefano Garzarella
+          + [https://www.spinics.net/lists/netdev/msg586576.html][PATCH v4 1/5] vsock/virtio: limit the memory used per-socket, Stefano Garzarella
+     * [https://www.spinics.net/lists/netdev/msg586567.html][PATCH v3 15/20] docs: ABI: testing: make the files compatible with ReST output, Mauro Carvalho Chehab
+     * [https://www.spinics.net/lists/netdev/msg586566.html][PATCH] net: ethernet: mediatek: Add MT7628/88 SoC support, Stefan Roese
+          + [https://www.spinics.net/lists/netdev/msg586582.html]Re: [PATCH] net: ethernet: mediatek: Add MT7628/88 SoC support, Daniel Golle
+               o [https://www.spinics.net/lists/netdev/msg586861.html]Re: [PATCH] net: ethernet: mediatek: Add MT7628/88 SoC support, Stefan Roese
+          + [https://www.spinics.net/lists/netdev/msg586584.html]Re: [PATCH] net: ethernet: mediatek: Add MT7628/88 SoC support, René van Dorst
+          + [https://www.spinics.net/lists/netdev/msg586832.html]Re: [PATCH] net: ethernet: mediatek: Add MT7628/88 SoC support, David Miller
+          + [https://www.spinics.net/lists/netdev/msg586869.html]Re: [PATCH] net: ethernet: mediatek: Add MT7628/88 SoC support, kbuild test robot
+     * [https://www.spinics.net/lists/netdev/msg586558.html][PATCH V3 00/15] Packed virtqueue support for vhost, Jason Wang
+          + [https://www.spinics.net/lists/netdev/msg586549.html][PATCH V3 09/15] vhost: do not export vhost_add_used_n() and vhost_add_used_and_signal_n(), Jason Wang
+          + [https://www.spinics.net/lists/netdev/msg586550.html][PATCH V3 11/15] vhost: do not use vring_used_elem, Jason Wang
+          + [https://www.spinics.net/lists/netdev/msg586551.html][PATCH V3 10/15] vhost: hide used ring layout from device, Jason Wang
+          + [https://www.spinics.net/lists/netdev/msg586552.html][PATCH V3 12/15] vhost: vhost_put_user() can accept metadata type, Jason Wang
+          + [https://www.spinics.net/lists/netdev/msg586553.html][PATCH V3 14/15] vhost: event suppression for packed ring, Jason Wang
+          + [https://www.spinics.net/lists/netdev/msg586554.html][PATCH V3 13/15] vhost: packed ring support, Jason Wang
+          + [https://www.spinics.net/lists/netdev/msg586555.html][PATCH V3 15/15] vhost: enable packed virtqueues, Jason Wang
+          + [https://www.spinics.net/lists/netdev/msg586556.html][PATCH V3 08/15] vhost_net: switch to use shadow used ring API for RX, Jason Wang
+          + [https://www.spinics.net/lists/netdev/msg586557.html][PATCH V3 01/15] vhost: simplify meta data pointer accessing, Jason Wang
+          + [https://www.spinics.net/lists/netdev/msg586559.html][PATCH V3 02/15] vhost: remove the unnecessary parameter of vhost_vq_avail_empty(), Jason Wang
+          + [https://www.spinics.net/lists/netdev/msg586560.html][PATCH V3 03/15] vhost: remove unnecessary parameter of vhost_enable_notify()/vhost_disable_notify, Jason Wang
+          + [https://www.spinics.net/lists/netdev/msg586561.html][PATCH V3 04/15] vhost-net: don't use vhost_add_used_n() for zerocopy, Jason Wang
+          + [https://www.spinics.net/lists/netdev/msg586562.html][PATCH V3 05/15] vhost: introduce helpers to manipulate shadow used ring, Jason Wang
+          + [https://www.spinics.net/lists/netdev/msg586563.html][PATCH V3 07/15] vhost_net: calculate last used length once for mergeable buffer, Jason Wang
+          + [https://www.spinics.net/lists/netdev/msg586564.html][PATCH V3 06/15] vhost_net: switch TX to use shadow used ring API, Jason Wang
+          + [https://www.spinics.net/lists/netdev/msg586565.html]Re: [PATCH V3 00/15] Packed virtqueue support for vhost, Michael S. Tsirkin
+               o [https://www.spinics.net/lists/netdev/msg586579.html]Re: [PATCH V3 00/15] Packed virtqueue support for vhost, Jason Wang
+                    # [https://www.spinics.net/lists/netdev/msg586591.html]Re: [PATCH V3 00/15] Packed virtqueue support for vhost, Michael S. Tsirkin
+     * [https://www.spinics.net/lists/netdev/msg586545.html][PATCH v2] net/mlx5: Replace kfree with kvfree, Chuhong Yuan
+          + [https://www.spinics.net/lists/netdev/msg586773.html]Re: [PATCH v2] net/mlx5: Replace kfree with kvfree, Saeed Mahameed
+               o [https://www.spinics.net/lists/netdev/msg586788.html]Re: [PATCH v2] net/mlx5: Replace kfree with kvfree, David Miller
+     * [https://www.spinics.net/lists/netdev/msg586541.html][PATCH] usb: qmi_wwan: add D-Link DWM-222 A2 device ID, Rogan Dawes
+          + [https://www.spinics.net/lists/netdev/msg586831.html]Re: [PATCH] usb: qmi_wwan: add D-Link DWM-222 A2 device ID, David Miller
+     * [https://www.spinics.net/lists/netdev/msg586528.html][PATCH] net/mlx5: Replace kfree with kvfree, Chuhong Yuan
+          + [https://www.spinics.net/lists/netdev/msg586532.html]Re: [PATCH] net/mlx5: Replace kfree with kvfree, Eric Dumazet
+     * [https://www.spinics.net/lists/netdev/msg586524.html][PATCH v2 1/3] Bluetooth: btintel: Add firmware lock function, Kai-Heng Feng
+          + [https://www.spinics.net/lists/netdev/msg586525.html][PATCH v2 2/3] Bluetooth: btusb: Load firmware exclusively for Intel BT, Kai-Heng Feng
+          + [https://www.spinics.net/lists/netdev/msg586526.html][PATCH v2 3/3] iwlwifi: Load firmware exclusively for Intel WiFi, Kai-Heng Feng
+          + [https://www.spinics.net/lists/netdev/msg586586.html]Re: [PATCH v2 1/3] Bluetooth: btintel: Add firmware lock function, Marcel Holtmann
+               o [https://www.spinics.net/lists/netdev/msg586588.html]Re: [PATCH v2 1/3] Bluetooth: btintel: Add firmware lock function, Kai-Heng Feng
+     * [https://www.spinics.net/lists/netdev/msg586523.html][PATCH net] bnxt_en: Fix VNIC accounting when enabling aRFS on 57500 chips., Michael Chan
+          + [https://www.spinics.net/lists/netdev/msg586830.html]Re: [PATCH net] bnxt_en: Fix VNIC accounting when enabling aRFS on 57500 chips., David Miller
+     * [https://www.spinics.net/lists/netdev/msg586519.html][PATCH] net: dsa: sja1105: Fix missing unlock on error in sk_buff(), Wei Yongjun
+          + [https://www.spinics.net/lists/netdev/msg586614.html]Re: [PATCH] net: dsa: sja1105: Fix missing unlock on error in sk_buff(), Vladimir Oltean
+          + [https://www.spinics.net/lists/netdev/msg586741.html]Re: [PATCH] net: dsa: sja1105: Fix missing unlock on error in sk_buff(), Vivien Didelot
+          + [https://www.spinics.net/lists/netdev/msg586754.html]Re: [PATCH] net: dsa: sja1105: Fix missing unlock on error in sk_buff(), Florian Fainelli
+          + [https://www.spinics.net/lists/netdev/msg586829.html]Re: [PATCH] net: dsa: sja1105: Fix missing unlock on error in sk_buff(), David Miller
+     * [https://www.spinics.net/lists/netdev/msg586510.html][PATCH] gve: replace kfree with kvfree, Chuhong Yuan
+          + [https://www.spinics.net/lists/netdev/msg586828.html]Re: [PATCH] gve: replace kfree with kvfree, David Miller
+               o [https://www.spinics.net/lists/netdev/msg586989.html]Re: [PATCH] gve: replace kfree with kvfree, Catherine Sullivan
+     * [https://www.spinics.net/lists/netdev/msg586480.html][PATCH net v3 7/7] net/rds: Initialize ic->i_fastreg_wrs upon allocation, Gerd Rausch
+          + [https://www.spinics.net/lists/netdev/msg586502.html]Re: [PATCH net v3 7/7] net/rds: Initialize ic->i_fastreg_wrs upon allocation, santosh . shilimkar
+     * [https://www.spinics.net/lists/netdev/msg586479.html][PATCH net v3 6/7] net/rds: Keep track of and wait for FRWR segments in use upon shutdown, Gerd Rausch
+          + [https://www.spinics.net/lists/netdev/msg586503.html]Re: [PATCH net v3 6/7] net/rds: Keep track of and wait for FRWR segments in use upon shutdown, santosh . shilimkar
+     * [https://www.spinics.net/lists/netdev/msg586478.html][PATCH net v3 5/7] net/rds: Set fr_state only to FRMR_IS_FREE if IB_WR_LOCAL_INV had been successful, Gerd Rausch
+          + [https://www.spinics.net/lists/netdev/msg586501.html]Re: [PATCH net v3 5/7] net/rds: Set fr_state only to FRMR_IS_FREE if IB_WR_LOCAL_INV had been successful, santosh . shilimkar
+     * [https://www.spinics.net/lists/netdev/msg586477.html][PATCH net v3 4/7] net/rds: Fix NULL/ERR_PTR inconsistency, Gerd Rausch
+          + [https://www.spinics.net/lists/netdev/msg586500.html]Re: [PATCH net v3 4/7] net/rds: Fix NULL/ERR_PTR inconsistency, santosh . shilimkar
+     * [https://www.spinics.net/lists/netdev/msg586476.html][PATCH net v3 3/7] net/rds: Wait for the FRMR_IS_FREE (or FRMR_IS_STALE) transition after posting IB_WR_LOCAL_INV, Gerd Rausch
+          + [https://www.spinics.net/lists/netdev/msg586499.html]Re: [PATCH net v3 3/7] net/rds: Wait for the FRMR_IS_FREE (or FRMR_IS_STALE) transition after posting IB_WR_LOCAL_INV, santosh . shilimkar
+     * [https://www.spinics.net/lists/netdev/msg586475.html][PATCH net v3 2/7] net/rds: Get rid of "wait_clean_list_grace" and add locking, Gerd Rausch
+          + [https://www.spinics.net/lists/netdev/msg586497.html]Re: [PATCH net v3 2/7] net/rds: Get rid of "wait_clean_list_grace" and add locking, santosh . shilimkar
+     * [https://www.spinics.net/lists/netdev/msg586474.html][PATCH net v3 1/7] net/rds: Give fr_state a chance to transition to FRMR_IS_FREE, Gerd Rausch
+          + [https://www.spinics.net/lists/netdev/msg586496.html]Re: [PATCH net v3 1/7] net/rds: Give fr_state a chance to transition to FRMR_IS_FREE, santosh . shilimkar
+     * [https://www.spinics.net/lists/netdev/msg586473.html][PATCH net v3 0/7] net/rds: RDMA fixes, Gerd Rausch
+          + [https://www.spinics.net/lists/netdev/msg586625.html]Re: [PATCH net v3 0/7] net/rds: RDMA fixes, David Miller
+     * [https://www.spinics.net/lists/netdev/msg586471.html][PATCH net] bonding: Force slave speed check after link state recovery for 802.3ad, Thomas Falcon
+     * [https://www.spinics.net/lists/netdev/msg586467.html][PATCH 1/3] cifs: Add support for root file systems, Paulo Alcantara (SUSE)
+          + [https://www.spinics.net/lists/netdev/msg586468.html][PATCH 2/3] init: Support mounting root file systems over SMB, Paulo Alcantara (SUSE)
+          + [https://www.spinics.net/lists/netdev/msg586469.html][PATCH 3/3] ipconfig: Handle CONFIG_CIFS_ROOT option, Paulo Alcantara (SUSE)
+     * [https://www.spinics.net/lists/netdev/msg586442.html][PATCH iproute2 net-next v4 1/6] Update kernel headers, Vedang Patel
+          + [https://www.spinics.net/lists/netdev/msg586443.html][PATCH iproute2 net-next v4 2/6] etf: Add skip_sock_check, Vedang Patel
+          + [https://www.spinics.net/lists/netdev/msg586444.html][PATCH iproute2 net-next v4 4/6] taprio: add support for setting txtime_delay., Vedang Patel
+          + [https://www.spinics.net/lists/netdev/msg586445.html][PATCH iproute2 net-next v4 5/6] tc: etf: Add documentation for skip-skb-check., Vedang Patel
+               o [https://www.spinics.net/lists/netdev/msg586760.html]Re: [PATCH iproute2 net-next v4 5/6] tc: etf: Add documentation for skip-skb-check., David Ahern
+                    # [https://www.spinics.net/lists/netdev/msg586796.html]Re: [PATCH iproute2 net-next v4 5/6] tc: etf: Add documentation for skip-skb-check., Patel, Vedang
+          + [https://www.spinics.net/lists/netdev/msg586446.html][PATCH iproute2 net-next v4 6/6] tc: taprio: Update documentation, Vedang Patel
+          + [https://www.spinics.net/lists/netdev/msg586447.html][PATCH iproute2 net-next v4 3/6] taprio: Add support for setting flags, Vedang Patel
+          + [https://www.spinics.net/lists/netdev/msg586759.html]Re: [PATCH iproute2 net-next v4 1/6] Update kernel headers, David Ahern
+               o [https://www.spinics.net/lists/netdev/msg586795.html]Re: [PATCH iproute2 net-next v4 1/6] Update kernel headers, Patel, Vedang
+     * [https://www.spinics.net/lists/netdev/msg586441.html][PATCH net-next v1] fix: taprio: Change type of txtime-delay parameter to u32, Vedang Patel
+          + [https://www.spinics.net/lists/netdev/msg586449.html]Re: [PATCH net-next v1] fix: taprio: Change type of txtime-delay parameter to u32, Patel, Vedang
+          + [https://www.spinics.net/lists/netdev/msg586459.html]Re: [PATCH net-next v1] fix: taprio: Change type of txtime-delay parameter to u32, David Miller
+               o [https://www.spinics.net/lists/netdev/msg586607.html]Re: [PATCH net-next v1] fix: taprio: Change type of txtime-delay parameter to u32, Patel, Vedang
+     * [https://www.spinics.net/lists/netdev/msg586436.html][PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies, Andrii Nakryiko
+          + [https://www.spinics.net/lists/netdev/msg586437.html][PATCH bpf 2/2] selftests/bpf: structure test_{progs,maps,verifier} test runners uniformly, Andrii Nakryiko
+          + [https://www.spinics.net/lists/netdev/msg586448.html]Re: [PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies, Stanislav Fomichev
+               o [https://www.spinics.net/lists/netdev/msg586462.html]Re: [PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies, Andrii Nakryiko
+                    # [https://www.spinics.net/lists/netdev/msg586485.html]Re: [PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies, Stanislav Fomichev
+                         @ [https://www.spinics.net/lists/netdev/msg586488.html]Re: [PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies, Andrii Nakryiko
+                              - [https://www.spinics.net/lists/netdev/msg586493.html]Re: [PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies, Stanislav Fomichev
+                                   = [https://www.spinics.net/lists/netdev/msg586494.html]Re: [PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies, Andrii Nakryiko
+                                   * [https://www.spinics.net/lists/netdev/msg586508.html]Re: [PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies, Alexei Starovoitov
+     * [https://www.spinics.net/lists/netdev/msg586402.html][PATCH 0/2] mmc: core: Fix Marvell WiFi reset by adding SDIO API to replug card, Douglas Anderson
+          + [https://www.spinics.net/lists/netdev/msg586400.html][PATCH 2/2] mwifiex: Make use of the new sdio_trigger_replug() API to reset, Douglas Anderson
+          + [https://www.spinics.net/lists/netdev/msg586401.html][PATCH 1/2] mmc: core: Add sdio_trigger_replug() API, Douglas Anderson
+     * [https://www.spinics.net/lists/netdev/msg586392.html][PATCH net v2] skbuff: fix compilation warnings in skb_dump(), Qian Cai
+          + [https://www.spinics.net/lists/netdev/msg586404.html]Re: [PATCH net v2] skbuff: fix compilation warnings in skb_dump(), Nathan Chancellor
+               o [https://www.spinics.net/lists/netdev/msg586431.html]Re: [PATCH net v2] skbuff: fix compilation warnings in skb_dump(), Willem de Bruijn
+          + [https://www.spinics.net/lists/netdev/msg586455.html]Re: [PATCH net v2] skbuff: fix compilation warnings in skb_dump(), David Miller
+     * [https://www.spinics.net/lists/netdev/msg586385.html][PATCH] skbuff: fix compilation warnings in skb_dump(), Qian Cai
+          + [https://www.spinics.net/lists/netdev/msg586387.html]Re: [PATCH] skbuff: fix compilation warnings in skb_dump(), Willem de Bruijn
+               o [https://www.spinics.net/lists/netdev/msg586513.html]Re: [PATCH] skbuff: fix compilation warnings in skb_dump(), Joe Perches
+     * [https://www.spinics.net/lists/netdev/msg586384.html][PATCH v2] libertas_tf: Use correct channel range in lbtf_geo_init, YueHaibing
+     * [https://www.spinics.net/lists/netdev/msg586380.html][PATCH] libertas_tf: Use correct channel range in lbtf_geo_init, YueHaibing
+          + [https://www.spinics.net/lists/netdev/msg586381.html]Re: [PATCH] libertas_tf: Use correct channel range in lbtf_geo_init, Yuehaibing
+          + [https://www.spinics.net/lists/netdev/msg586895.html]Re: [PATCH] libertas_tf: Use correct channel range in lbtf_geo_init, kbuild test robot
+     * [https://www.spinics.net/lists/netdev/msg586378.html][PATCH bpf] selftests/bpf: fix perf_buffer on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/netdev/msg586410.html]Re: [PATCH bpf] selftests/bpf: fix perf_buffer on s390, Andrii Nakryiko
+               o [https://www.spinics.net/lists/netdev/msg586509.html]Re: [PATCH bpf] selftests/bpf: fix perf_buffer on s390, Alexei Starovoitov
+     * [https://www.spinics.net/lists/netdev/msg586374.html][PATCH 00/14] pending doc patches for 5.3-rc, Mauro Carvalho Chehab
+          + [https://www.spinics.net/lists/netdev/msg586375.html][PATCH 13/14] docs: remove extra conf.py files, Mauro Carvalho Chehab
+     * [https://www.spinics.net/lists/netdev/msg586373.html][PATCH bpf] bpf: fix narrower loads on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/netdev/msg586517.html]Re: [PATCH bpf] bpf: fix narrower loads on s390, Y Song
+               o [https://www.spinics.net/lists/netdev/msg586518.html]Re: [PATCH bpf] bpf: fix narrower loads on s390, Y Song
+                    # [https://www.spinics.net/lists/netdev/msg586540.html]Re: [PATCH bpf] bpf: fix narrower loads on s390, Ilya Leoshkevich
+                         @ [https://www.spinics.net/lists/netdev/msg586547.html]Re: [PATCH bpf] bpf: fix narrower loads on s390, Ilya Leoshkevich
+                              - [https://www.spinics.net/lists/netdev/msg586606.html]Re: [PATCH bpf] bpf: fix narrower loads on s390, Y Song
+                                   = [https://www.spinics.net/lists/netdev/msg586639.html]Re: [PATCH bpf] bpf: fix narrower loads on s390, Ilya Leoshkevich
+                                   * [https://www.spinics.net/lists/netdev/msg586657.html]Re: [PATCH bpf] bpf: fix narrower loads on s390, Y Song
+     * [https://www.spinics.net/lists/netdev/msg586355.html][PATCH 0/2] arm/arm64: Add support for function error injection, Leo Yan
+          + [https://www.spinics.net/lists/netdev/msg586356.html][PATCH 1/2] arm64: Add support for function error injection, Leo Yan
+          + [https://www.spinics.net/lists/netdev/msg586357.html][PATCH 2/2] arm: Add support for function error injection, Leo Yan
+          + [https://www.spinics.net/lists/netdev/msg586527.html]Re: [PATCH 0/2] arm/arm64: Add support for function error injection, Masami Hiramatsu
+               o [https://www.spinics.net/lists/netdev/msg586530.html]Re: [PATCH 0/2] arm/arm64: Add support for function error injection, Leo Yan
+     * [https://www.spinics.net/lists/netdev/msg586353.html][PATCH bpf v2] selftests/bpf: skip nmi test when perf hw events are disabled, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/netdev/msg586386.html]Re: [PATCH bpf v2] selftests/bpf: skip nmi test when perf hw events are disabled, Andrii Nakryiko
+               o [https://www.spinics.net/lists/netdev/msg586397.html]Re: [PATCH bpf v2] selftests/bpf: skip nmi test when perf hw events are disabled, Alexei Starovoitov
+     * [https://www.spinics.net/lists/netdev/msg586352.html][PATCH bpf v3] selftests/bpf: fix "alu with different scalars 1" on s390, Ilya Leoshkevich
+          + [https://www.spinics.net/lists/netdev/msg586395.html]Re: [PATCH bpf v3] selftests/bpf: fix "alu with different scalars 1" on s390, Alexei Starovoitov
+     * [https://www.spinics.net/lists/netdev/msg586344.html][PATCH net] be2net: Signal that the device cannot transmit during reconfiguration, Benjamin Poirier
+          + [https://www.spinics.net/lists/netdev/msg586440.html]Re: [PATCH net] be2net: Signal that the device cannot transmit during reconfiguration, David Miller
+          + [https://www.spinics.net/lists/netdev/msg586516.html]Re: [PATCH net] be2net: Signal that the device cannot transmit during reconfiguration, Firo Yang
+               o [https://www.spinics.net/lists/netdev/msg586531.html]Re: [PATCH net] be2net: Signal that the device cannot transmit during reconfiguration, Benjamin Poirier
+                    # [https://www.spinics.net/lists/netdev/msg586539.html]Re: [PATCH net] be2net: Signal that the device cannot transmit during reconfiguration, Firo Yang
+                         @ [https://www.spinics.net/lists/netdev/msg586542.html]Re: [PATCH net] be2net: Signal that the device cannot transmit during reconfiguration, Benjamin Poirier
+                              - [https://www.spinics.net/lists/netdev/msg586548.html]Re: [PATCH net] be2net: Signal that the device cannot transmit during reconfiguration, Firo Yang
+     * [https://www.spinics.net/lists/netdev/msg586334.html][RFC PATCH 0/5] PTP: add support for Intel's TGPIO controller, Felipe Balbi
+          + [https://www.spinics.net/lists/netdev/msg586335.html][RFC PATCH 2/5] PTP: add a callback for counting timestamp events, Felipe Balbi
+          + [https://www.spinics.net/lists/netdev/msg586336.html][RFC PATCH 1/5] x86: tsc: add tsc to art helpers, Felipe Balbi
+               o [https://www.spinics.net/lists/netdev/msg586341.html]Re: [RFC PATCH 1/5] x86: tsc: add tsc to art helpers, Thomas Gleixner
+          + [https://www.spinics.net/lists/netdev/msg586337.html][RFC PATCH 4/5] PTP: Add flag for non-periodic output, Felipe Balbi
+               o [https://www.spinics.net/lists/netdev/msg586398.html]Re: [RFC PATCH 4/5] PTP: Add flag for non-periodic output, Richard Cochran
+                    # [https://www.spinics.net/lists/netdev/msg586521.html]Re: [RFC PATCH 4/5] PTP: Add flag for non-periodic output, Felipe Balbi
+                         @ [https://www.spinics.net/lists/netdev/msg586612.html]Re: [RFC PATCH 4/5] PTP: Add flag for non-periodic output, Richard Cochran
+                              - [https://www.spinics.net/lists/netdev/msg586702.html]Re: [RFC PATCH 4/5] PTP: Add flag for non-periodic output, Felipe Balbi
+                                   = [https://www.spinics.net/lists/netdev/msg586740.html]Re: [RFC PATCH 4/5] PTP: Add flag for non-periodic output, Richard Cochran
+          + [https://www.spinics.net/lists/netdev/msg586338.html][RFC PATCH 3/5] PTP: implement PTP_EVENT_COUNT_TSTAMP ioctl, Felipe Balbi
+          + [https://www.spinics.net/lists/netdev/msg586339.html][RFC PATCH 5/5] PTP: Add support for Intel PMC Timed GPIO Controller, Felipe Balbi
+               o [https://www.spinics.net/lists/netdev/msg586432.html]Re: [RFC PATCH 5/5] PTP: Add support for Intel PMC Timed GPIO Controller, Shannon Nelson
+                    # [https://www.spinics.net/lists/netdev/msg586520.html]Re: [RFC PATCH 5/5] PTP: Add support for Intel PMC Timed GPIO Controller, Felipe Balbi
+          + [https://www.spinics.net/lists/netdev/msg586399.html]Re: [RFC PATCH 0/5] PTP: add support for Intel's TGPIO controller, Richard Cochran
+               o [https://www.spinics.net/lists/netdev/msg586522.html]Re: [RFC PATCH 0/5] PTP: add support for Intel's TGPIO controller, Felipe Balbi
+                    # [https://www.spinics.net/lists/netdev/msg586608.html]Re: [RFC PATCH 0/5] PTP: add support for Intel's TGPIO controller, Richard Cochran
+                         @ [https://www.spinics.net/lists/netdev/msg586701.html]Re: [RFC PATCH 0/5] PTP: add support for Intel's TGPIO controller, Felipe Balbi
+          + [https://www.spinics.net/lists/netdev/msg586797.html]Re: [RFC PATCH 0/5] PTP: add support for Intel's TGPIO controller, Andrew Lunn
+               o [https://www.spinics.net/lists/netdev/msg586874.html]Re: [RFC PATCH 0/5] PTP: add support for Intel's TGPIO controller, Felipe Balbi
+                    # [https://www.spinics.net/lists/netdev/msg586921.html]Re: [RFC PATCH 0/5] PTP: add support for Intel's TGPIO controller, Andrew Lunn
+     * [https://www.spinics.net/lists/netdev/msg586333.html][PATCH] net/sched: Make NET_ACT_CT depends on NF_NAT, YueHaibing
+          + [https://www.spinics.net/lists/netdev/msg586623.html]Re: [PATCH] net/sched: Make NET_ACT_CT depends on NF_NAT, David Miller
+     * [https://www.spinics.net/lists/netdev/msg586330.html][PATCH] net: ethernet: mediatek: mtk_eth_soc: Add of_node_put() before goto, Nishka Dasgupta
+     * [https://www.spinics.net/lists/netdev/msg586329.html][PATCH] net: ethernet: mscc: ocelot_board: Add of_node_put() before return, Nishka Dasgupta
+     * [https://www.spinics.net/lists/netdev/msg586328.html][PATCH] net: ethernet: ti: cpsw: Add of_node_put() before return and break, Nishka Dasgupta
+          + [https://www.spinics.net/lists/netdev/msg586434.html]Re: [PATCH] net: ethernet: ti: cpsw: Add of_node_put() before return and break, David Miller
+     * [https://www.spinics.net/lists/netdev/msg586326.html][PATCH] rculist: Add build check for single optional list argument, Joel Fernandes (Google)
+     * [https://www.spinics.net/lists/netdev/msg586324.html][PATCH bpf] libbpf: fix another GCC8 warning for strncpy, Andrii Nakryiko
+          + [https://www.spinics.net/lists/netdev/msg586407.html]Re: [PATCH bpf] libbpf: fix another GCC8 warning for strncpy, Magnus Karlsson
+               o [https://www.spinics.net/lists/netdev/msg586409.html]Re: [PATCH bpf] libbpf: fix another GCC8 warning for strncpy, Alexei Starovoitov
+     * [https://www.spinics.net/lists/netdev/msg586322.html][PATCH] qlge: Move drivers/net/ethernet/qlogic/qlge/ to drivers/staging/qlge/, Benjamin Poirier
+          + [https://www.spinics.net/lists/netdev/msg586622.html]Re: [PATCH] qlge: Move drivers/net/ethernet/qlogic/qlge/ to drivers/staging/qlge/, David Miller
+               o [https://www.spinics.net/lists/netdev/msg586660.html]Re: [PATCH] qlge: Move drivers/net/ethernet/qlogic/qlge/ to drivers/staging/qlge/, Benjamin Poirier
+     * [https://www.spinics.net/lists/netdev/msg586320.html][PATCH] net: sctp: fix warning "NULL check before some freeing functions is not needed", Hariprasad Kelam
+          + [https://www.spinics.net/lists/netdev/msg586323.html]Re: [PATCH] net: sctp: fix warning "NULL check before some freeing functions is not needed", Marcelo Ricardo Leitner
+          + [https://www.spinics.net/lists/netdev/msg586354.html]Re: [PATCH] net: sctp: fix warning "NULL check before some freeing functions is not needed", Neil Horman
+          + [https://www.spinics.net/lists/netdev/msg586620.html]Re: [PATCH] net: sctp: fix warning "NULL check before some freeing functions is not needed", David Miller
+     * [https://www.spinics.net/lists/netdev/msg586311.html][PATCH net-next v2 0/7] net/rds: RDMA fixes, Gerd Rausch
+          + [https://www.spinics.net/lists/netdev/msg586317.html]Re: [PATCH net-next v2 0/7] net/rds: RDMA fixes, David Miller
+               o [https://www.spinics.net/lists/netdev/msg586321.html]Re: [PATCH net-next v2 0/7] net/rds: RDMA fixes, Gerd Rausch
+     * [https://www.spinics.net/lists/netdev/msg586289.html][PATCH iproute2 net-next v3 1/5] etf: Add skip_sock_check, Vedang Patel
+          + [https://www.spinics.net/lists/netdev/msg586291.html][PATCH iproute2 net-next v3 2/5] taprio: Add support for setting flags, Vedang Patel
+               o [https://www.spinics.net/lists/netdev/msg586298.html]Re: [PATCH iproute2 net-next v3 2/5] taprio: Add support for setting flags, Stephen Hemminger
+                    # [https://www.spinics.net/lists/netdev/msg586300.html]Re: [PATCH iproute2 net-next v3 2/5] taprio: Add support for setting flags, Jakub Kicinski
+                         @ [https://www.spinics.net/lists/netdev/msg586302.html]Re: [PATCH iproute2 net-next v3 2/5] taprio: Add support for setting flags, Stephen Hemminger
+                              - [https://www.spinics.net/lists/netdev/msg586310.html]Re: [PATCH iproute2 net-next v3 2/5] taprio: Add support for setting flags, Jakub Kicinski
+                    # [https://www.spinics.net/lists/netdev/msg586312.html]Re: [PATCH iproute2 net-next v3 2/5] taprio: Add support for setting flags, Patel, Vedang
+          + [https://www.spinics.net/lists/netdev/msg586292.html][PATCH iproute2 net-next v3 3/5] taprio: add support for setting txtime_delay., Vedang Patel
+               o [https://www.spinics.net/lists/netdev/msg586299.html]Re: [PATCH iproute2 net-next v3 3/5] taprio: add support for setting txtime_delay., Stephen Hemminger
+                    # [https://www.spinics.net/lists/netdev/msg586313.html]Re: [PATCH iproute2 net-next v3 3/5] taprio: add support for setting txtime_delay., Patel, Vedang
+          + [https://www.spinics.net/lists/netdev/msg586293.html][PATCH iproute2 net-next v3 4/5] tc: etf: Add documentation for skip-skb-check., Vedang Patel
+          + [https://www.spinics.net/lists/netdev/msg586294.html][PATCH iproute2 net-next v3 5/5] tc: taprio: Update documentation, Vedang Patel
+     * [https://www.spinics.net/lists/netdev/msg586277.html][PATCH] bnx2x: Prevent load reordering in tx completion processing, Brian King
+          + [https://www.spinics.net/lists/netdev/msg586619.html]Re: [PATCH] bnx2x: Prevent load reordering in tx completion processing, David Miller
+          + [https://www.spinics.net/lists/netdev/msg586708.html]RE: [EXT] [PATCH] bnx2x: Prevent load reordering in tx completion processing, Manish Chopra
+               o [https://www.spinics.net/lists/netdev/msg586771.html]Re: [EXT] [PATCH] bnx2x: Prevent load reordering in tx completion processing, Brian King
+          + [https://www.spinics.net/lists/netdev/msg586827.html]Re: [PATCH] bnx2x: Prevent load reordering in tx completion processing, David Miller
+     * [https://www.spinics.net/lists/netdev/msg586275.html][PATCH v1] net: fec: optionally reset PHY via a reset-controller, Sven Van Asbroeck
+          + [https://www.spinics.net/lists/netdev/msg586316.html]RE: [EXT] [PATCH v1] net: fec: optionally reset PHY via a reset-controller, Andy Duan
+               o [https://www.spinics.net/lists/netdev/msg586379.html]Re: [EXT] [PATCH v1] net: fec: optionally reset PHY via a reset-controller, Sven Van Asbroeck
+                    # [https://www.spinics.net/lists/netdev/msg586506.html]RE: [EXT] [PATCH v1] net: fec: optionally reset PHY via a reset-controller, Andy Duan
+                         @ [https://www.spinics.net/lists/netdev/msg586583.html]Re: [EXT] [PATCH v1] net: fec: optionally reset PHY via a reset-controller, Sven Van Asbroeck
+                              - [https://www.spinics.net/lists/netdev/msg586666.html]RE: [EXT] [PATCH v1] net: fec: optionally reset PHY via a reset-controller, Andy Duan
+     * [https://www.spinics.net/lists/netdev/msg586261.html][bpf PATCH v3 0/8] sockmap/tls fixes, John Fastabend
+          + [https://www.spinics.net/lists/netdev/msg586263.html][bpf PATCH v3 1/8] net/tls: don't arm strparser immediately in tls_set_sw_offload(), John Fastabend
+          + [https://www.spinics.net/lists/netdev/msg586264.html][bpf PATCH v3 2/8] tls: remove close callback sock unlock/lock around TX work flush, John Fastabend
+          + [https://www.spinics.net/lists/netdev/msg586265.html][bpf PATCH v3 3/8] tls: remove sock unlock/lock around strp_done(), John Fastabend
+          + [https://www.spinics.net/lists/netdev/msg586266.html][bpf PATCH v3 5/8] bpf: sockmap, sock_map_delete needs to use xchg, John Fastabend
+          + [https://www.spinics.net/lists/netdev/msg586267.html][bpf PATCH v3 4/8] bpf: tls fix transition through disconnect with close, John Fastabend
+          + [https://www.spinics.net/lists/netdev/msg586268.html][bpf PATCH v3 6/8] bpf: sockmap, synchronize_rcu before free'ing map, John Fastabend
+          + [https://www.spinics.net/lists/netdev/msg586269.html][bpf PATCH v3 7/8] bpf: sockmap, only create entry if ulp is not already enabled, John Fastabend
+          + [https://www.spinics.net/lists/netdev/msg586271.html][bpf PATCH v3 8/8] bpf: sockmap/tls, close can race with map free, John Fastabend
+          + [https://www.spinics.net/lists/netdev/msg586515.html]Re: [bpf PATCH v3 0/8] sockmap/tls fixes, Jakub Kicinski
+     * [https://www.spinics.net/lists/netdev/msg586251.html][PATCH V35 23/29] bpf: Restrict bpf when kernel lockdown is in confidentiality mode, Matthew Garrett
+          + [https://www.spinics.net/lists/netdev/msg586290.html]Re: [PATCH V35 23/29] bpf: Restrict bpf when kernel lockdown is in confidentiality mode, Daniel Borkmann
+               o [https://www.spinics.net/lists/netdev/msg586450.html]Re: [PATCH V35 23/29] bpf: Restrict bpf when kernel lockdown is in confidentiality mode, Matthew Garrett
+     * [https://www.spinics.net/lists/netdev/msg586242.html][PATCH] can: flexcan: free error skb if enqueueing failed, Martin Hundebøll
+     * [https://www.spinics.net/lists/netdev/msg586237.html][PATCH iproute2 v2] utils: don't match empty strings as prefixes, Matteo Croce
+          + [https://www.spinics.net/lists/netdev/msg586270.html]Re: [PATCH iproute2 v2] utils: don't match empty strings as prefixes, Stephen Hemminger
+     * [https://www.spinics.net/lists/netdev/msg586215.html][PATCH bpf 0/5] bpf: allow wide (u64) aligned loads for some fields of bpf_sock_addr, Stanislav Fomichev
+          + [https://www.spinics.net/lists/netdev/msg586216.html][PATCH bpf 1/5] bpf: rename bpf_ctx_wide_store_ok to bpf_ctx_wide_access_ok, Stanislav Fomichev
+          + [https://www.spinics.net/lists/netdev/msg586217.html][PATCH bpf 2/5] bpf: allow wide aligned loads for bpf_sock_addr user_ip6 and msg_src_ip6, Stanislav Fomichev
+          + [https://www.spinics.net/lists/netdev/msg586220.html][PATCH bpf 3/5] selftests/bpf: rename verifier/wide_store.c to verifier/wide_access.c, Stanislav Fomichev
+          + [https://www.spinics.net/lists/netdev/msg586221.html][PATCH bpf 4/5] selftests/bpf: add selftests for wide loads, Stanislav Fomichev
+          + [https://www.spinics.net/lists/netdev/msg586219.html][PATCH bpf 5/5] bpf: sync bpf.h to tools/, Stanislav Fomichev
+          + [https://www.spinics.net/lists/netdev/msg586222.html]Re: [PATCH bpf 0/5] bpf: allow wide (u64) aligned loads for some fields of bpf_sock_addr, Andrii Nakryiko
+          + [https://www.spinics.net/lists/netdev/msg586250.html]Re: [PATCH bpf 0/5] bpf: allow wide (u64) aligned loads for some fields of bpf_sock_addr, Yonghong Song
+          + [https://www.spinics.net/lists/netdev/msg586286.html]Re: [PATCH bpf 0/5] bpf: allow wide (u64) aligned loads for some fields of bpf_sock_addr, Daniel Borkmann
+     * [https://www.spinics.net/lists/netdev/msg586106.html][PATCH net] ipvs: Improve robustness to the ipvs sysctl, hujunwei
+     * [https://www.spinics.net/lists/netdev/msg586091.html][PATCH AUTOSEL 4.4 01/53] ath10k: Do not send probe response template for mesh, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586092.html][PATCH AUTOSEL 4.4 02/53] ath9k: Check for errors when reading SREV register, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586093.html][PATCH AUTOSEL 4.4 03/53] ath6kl: add some bounds checking, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586095.html][PATCH AUTOSEL 4.4 05/53] batman-adv: fix for leaked TVLV handler., Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586097.html][PATCH AUTOSEL 4.4 10/53] net: stmmac: dwmac1000: Clear unused address entries, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586098.html][PATCH AUTOSEL 4.4 15/53] e1000e: start network tx queue only when link is up, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586099.html][PATCH AUTOSEL 4.4 17/53] net: phy: Check against net_device being NULL, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586101.html][PATCH AUTOSEL 4.4 33/53] vhost_net: disable zerocopy by default, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586102.html][PATCH AUTOSEL 4.4 41/53] mt7601u: do not schedule rx_tasklet when the device has been disconnected, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586103.html][PATCH AUTOSEL 4.4 51/53] Bluetooth: 6lowpan: search for destination address in all peers, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586104.html][PATCH AUTOSEL 4.4 52/53] Bluetooth: Check state in l2cap_disconnect_rsp, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586105.html][PATCH AUTOSEL 4.4 53/53] Bluetooth: validate BLE connection interval updates, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586107.html][PATCH AUTOSEL 4.4 47/53] ixgbe: Check DDM existence in transceiver before access, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586108.html][PATCH AUTOSEL 4.4 44/53] ath10k: fix PCIE device wake up failed, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586109.html][PATCH AUTOSEL 4.4 43/53] mt7601u: fix possible memory leak when the device is disconnected, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586110.html][PATCH AUTOSEL 4.4 29/53] bpf: silence warning messages in core, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586111.html][PATCH AUTOSEL 4.4 23/53] net: axienet: Fix race condition causing TX hang, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586112.html][PATCH AUTOSEL 4.4 14/53] xfrm: Fix xfrm sel prefix length validation, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586113.html][PATCH AUTOSEL 4.4 13/53] af_key: fix leaks in key_pol_get_resp and dump_sp., Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586114.html][PATCH AUTOSEL 4.4 22/53] net: fec: Do not use netdev messages too early, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586115.html][PATCH AUTOSEL 4.4 04/53] ath: DFS JP domain W56 fixed pulse type 3 RADAR detection, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586116.html][PATCH AUTOSEL 4.4 31/53] xfrm: fix sa selector validation, Sasha Levin
+     * [https://www.spinics.net/lists/netdev/msg586088.html][PATCH 0/9] Harden list_for_each_entry_rcu() and family, Joel Fernandes (Google)
+          + [https://www.spinics.net/lists/netdev/msg586060.html][PATCH 1/9] rcu/update: Remove useless check for debug_locks (v1), Joel Fernandes (Google)
+          + [https://www.spinics.net/lists/netdev/msg586065.html][PATCH 7/9] x86/pci: Pass lockdep condition to pcm_mmcfg_list iterator (v1), Joel Fernandes (Google)
+               o [https://www.spinics.net/lists/netdev/msg586252.html]Re: [PATCH 7/9] x86/pci: Pass lockdep condition to pcm_mmcfg_list iterator (v1), Bjorn Helgaas
+                    # [https://www.spinics.net/lists/netdev/msg586325.html]Re: [PATCH 7/9] x86/pci: Pass lockdep condition to pcm_mmcfg_list iterator (v1), Joel Fernandes
+                         @ [https://www.spinics.net/lists/netdev/msg586422.html]Re: [PATCH 7/9] x86/pci: Pass lockdep condition to pcm_mmcfg_list iterator (v1), Paul E. McKenney
+          + [https://www.spinics.net/lists/netdev/msg586066.html][PATCH 9/9] doc: Update documentation about list_for_each_entry_rcu (v1), Joel Fernandes (Google)
+          + [https://www.spinics.net/lists/netdev/msg586080.html][PATCH 8/9] acpi: Use built-in RCU list checking for acpi_ioremaps list (v1), Joel Fernandes (Google)
+               o [https://www.spinics.net/lists/netdev/msg586278.html]Re: [PATCH 8/9] acpi: Use built-in RCU list checking for acpi_ioremaps list (v1), Rafael J. Wysocki
+               o [https://www.spinics.net/lists/netdev/msg586425.html]Re: [PATCH 8/9] acpi: Use built-in RCU list checking for acpi_ioremaps list (v1), Paul E. McKenney
+          + [https://www.spinics.net/lists/netdev/msg586081.html][PATCH 5/9] driver/core: Convert to use built-in RCU list checking (v1), Joel Fernandes (Google)
+               o [https://www.spinics.net/lists/netdev/msg586421.html]Re: [PATCH 5/9] driver/core: Convert to use built-in RCU list checking (v1), Paul E. McKenney
+          + [https://www.spinics.net/lists/netdev/msg586082.html][PATCH 6/9] workqueue: Convert for_each_wq to use built-in list check (v2), Joel Fernandes (Google)
+               o [https://www.spinics.net/lists/netdev/msg586423.html]Re: [PATCH 6/9] workqueue: Convert for_each_wq to use built-in list check (v2), Paul E. McKenney
+          + [https://www.spinics.net/lists/netdev/msg586084.html][PATCH 4/9] ipv4: add lockdep condition to fix for_each_entry (v1), Joel Fernandes (Google)
+               o [https://www.spinics.net/lists/netdev/msg586418.html]Re: [PATCH 4/9] ipv4: add lockdep condition to fix for_each_entry (v1), Paul E. McKenney
+                    # [https://www.spinics.net/lists/netdev/msg586456.html]Re: [PATCH 4/9] ipv4: add lockdep condition to fix for_each_entry (v1), David Miller
+          + [https://www.spinics.net/lists/netdev/msg586085.html][PATCH 3/9] rcu/sync: Remove custom check for reader-section (v2), Joel Fernandes (Google)
+               o [https://www.spinics.net/lists/netdev/msg586419.html]Re: [PATCH 3/9] rcu/sync: Remove custom check for reader-section (v2), Paul E. McKenney
+          + [https://www.spinics.net/lists/netdev/msg586087.html][PATCH 2/9] rcu: Add support for consolidated-RCU reader checking (v3), Joel Fernandes (Google)
+               o [https://www.spinics.net/lists/netdev/msg586420.html]Re: [PATCH 2/9] rcu: Add support for consolidated-RCU reader checking (v3), Paul E. McKenney
+                    # [https://www.spinics.net/lists/netdev/msg586424.html]Re: [PATCH 2/9] rcu: Add support for consolidated-RCU reader checking (v3), Joel Fernandes
+                         @ [https://www.spinics.net/lists/netdev/msg586429.html]Re: [PATCH 2/9] rcu: Add support for consolidated-RCU reader checking (v3), Paul E. McKenney
+                              - [https://www.spinics.net/lists/netdev/msg586466.html]Re: [PATCH 2/9] rcu: Add support for consolidated-RCU reader checking (v3), Joel Fernandes
+                                   = [https://www.spinics.net/lists/netdev/msg586492.html]Re: [PATCH 2/9] rcu: Add support for consolidated-RCU reader checking (v3), Paul E. McKenney
+          + [https://www.spinics.net/lists/netdev/msg586426.html]Re: [PATCH 0/9] Harden list_for_each_entry_rcu() and family, Paul E. McKenney
+     * [https://www.spinics.net/lists/netdev/msg586054.html][PATCH AUTOSEL 4.9 01/73] ath10k: Do not send probe response template for mesh, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586052.html][PATCH AUTOSEL 4.9 39/73] xfrm: fix sa selector validation, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586055.html][PATCH AUTOSEL 4.9 02/73] ath9k: Check for errors when reading SREV register, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586056.html][PATCH AUTOSEL 4.9 04/73] ath: DFS JP domain W56 fixed pulse type 3 RADAR detection, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586057.html][PATCH AUTOSEL 4.9 05/73] batman-adv: fix for leaked TVLV handler., Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586064.html][PATCH AUTOSEL 4.9 17/73] Revert "e1000e: fix cyclic resets at link up with active tx", Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586061.html][PATCH AUTOSEL 4.9 28/73] net: fec: Do not use netdev messages too early, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586062.html][PATCH AUTOSEL 4.9 29/73] net: axienet: Fix race condition causing TX hang, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586067.html][PATCH AUTOSEL 4.9 51/73] mt7601u: do not schedule rx_tasklet when the device has been disconnected, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586068.html][PATCH AUTOSEL 4.9 65/73] iwlwifi: mvm: Drop large non sta frames, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586069.html][PATCH AUTOSEL 4.9 70/73] Bluetooth: Check state in l2cap_disconnect_rsp, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586070.html][PATCH AUTOSEL 4.9 72/73] gtp: fix Illegal context switch in RCU read-side critical section., Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586071.html][PATCH AUTOSEL 4.9 73/73] gtp: fix use-after-free in gtp_newlink(), Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586072.html][PATCH AUTOSEL 4.9 71/73] Bluetooth: validate BLE connection interval updates, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586073.html][PATCH AUTOSEL 4.9 69/73] Bluetooth: 6lowpan: search for destination address in all peers, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586074.html][PATCH AUTOSEL 4.9 60/73] ixgbe: Check DDM existence in transceiver before access, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586076.html][PATCH AUTOSEL 4.9 66/73] net: usb: asix: init MAC address buffers, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586077.html][PATCH AUTOSEL 4.9 53/73] mt7601u: fix possible memory leak when the device is disconnected, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586075.html][PATCH AUTOSEL 4.9 54/73] ath10k: fix PCIE device wake up failed, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586078.html][PATCH AUTOSEL 4.9 44/73] ipsec: select crypto ciphers for xfrm_algo, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586079.html][PATCH AUTOSEL 4.9 21/73] net: phy: Check against net_device being NULL, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586083.html][PATCH AUTOSEL 4.9 18/73] e1000e: start network tx queue only when link is up, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586086.html][PATCH AUTOSEL 4.9 16/73] xfrm: Fix xfrm sel prefix length validation, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586089.html][PATCH AUTOSEL 4.9 12/73] net: stmmac: dwmac4/5: Clear unused address entries, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586090.html][PATCH AUTOSEL 4.9 11/73] net: stmmac: dwmac1000: Clear unused address entries, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586094.html][PATCH AUTOSEL 4.9 41/73] vhost_net: disable zerocopy by default, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586096.html][PATCH AUTOSEL 4.9 36/73] bpf: silence warning messages in core, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586100.html][PATCH AUTOSEL 4.9 15/73] af_key: fix leaks in key_pol_get_resp and dump_sp., Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586125.html][PATCH AUTOSEL 4.9 03/73] ath6kl: add some bounds checking, Sasha Levin
+     * [https://www.spinics.net/lists/netdev/msg585821.html][PATCH AUTOSEL 4.14 001/105] wil6210: fix potential out-of-bounds read, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg585820.html][PATCH AUTOSEL 4.14 002/105] ath10k: Do not send probe response template for mesh, Sasha Levin
+          + [https://www.spinics.net/lists/netdev/msg586021.html][PATCH AUTOSEL 4.14 001/105] wil6210: fix potential out-of-bounds read, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586022.html][PATCH AUTOSEL 4.14 004/105] ath6kl: add some bounds checking, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586023.html][PATCH AUTOSEL 4.14 006/105] ath: DFS JP domain W56 fixed pulse type 3 RADAR detection, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586024.html][PATCH AUTOSEL 4.14 007/105] batman-adv: fix for leaked TVLV handler., Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586025.html][PATCH AUTOSEL 4.14 014/105] net: stmmac: dwmac1000: Clear unused address entries, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586026.html][PATCH AUTOSEL 4.14 016/105] qed: Set the doorbell address correctly, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586027.html][PATCH AUTOSEL 4.14 022/105] Revert "e1000e: fix cyclic resets at link up with active tx", Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586028.html][PATCH AUTOSEL 4.14 023/105] e1000e: start network tx queue only when link is up, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586029.html][PATCH AUTOSEL 4.14 026/105] net: phy: Check against net_device being NULL, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586030.html][PATCH AUTOSEL 4.14 038/105] net: sfp: add mutex to prevent concurrent state checks, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586031.html][PATCH AUTOSEL 4.14 039/105] ipset: Fix memory accounting for hash types on resize, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586032.html][PATCH AUTOSEL 4.14 047/105] bpf: silence warning messages in core, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586033.html][PATCH AUTOSEL 4.14 051/105] xfrm: fix sa selector validation, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586034.html][PATCH AUTOSEL 4.14 056/105] vhost_net: disable zerocopy by default, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586035.html][PATCH AUTOSEL 4.14 059/105] ipsec: select crypto ciphers for xfrm_algo, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586036.html][PATCH AUTOSEL 4.14 072/105] mt7601u: do not schedule rx_tasklet when the device has been disconnected, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586037.html][PATCH AUTOSEL 4.14 074/105] mt7601u: fix possible memory leak when the device is disconnected, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586038.html][PATCH AUTOSEL 4.14 077/105] ath10k: fix PCIE device wake up failed, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586039.html][PATCH AUTOSEL 4.14 083/105] ixgbe: Check DDM existence in transceiver before access, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586040.html][PATCH AUTOSEL 4.14 089/105] net: hns3: fix a -Wformat-nonliteral compile warning, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586041.html][PATCH AUTOSEL 4.14 090/105] net: hns3: add some error checking in hclge_tm module, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586042.html][PATCH AUTOSEL 4.14 091/105] ath10k: destroy sdio workqueue while remove sdio module, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586043.html][PATCH AUTOSEL 4.14 092/105] iwlwifi: mvm: Drop large non sta frames, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586044.html][PATCH AUTOSEL 4.14 098/105] Bluetooth: Check state in l2cap_disconnect_rsp, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586045.html][PATCH AUTOSEL 4.14 103/105] gtp: fix use-after-free in gtp_encap_destroy(), Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586046.html][PATCH AUTOSEL 4.14 105/105] net: mvmdio: defer probe of orion-mdio if a clock is not ready, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586047.html][PATCH AUTOSEL 4.14 102/105] gtp: fix Illegal context switch in RCU read-side critical section., Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586048.html][PATCH AUTOSEL 4.14 099/105] gtp: add missing gtp_encap_disable_sock() in gtp_encap_enable(), Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586049.html][PATCH AUTOSEL 4.14 100/105] Bluetooth: validate BLE connection interval updates, Sasha Levin
+               o [https://www.spinics.net/lists/netdev/msg586050.html][PATCH AUTOSEL 4.14 076/105] ath10k: add missing error handling, Sasha Levin

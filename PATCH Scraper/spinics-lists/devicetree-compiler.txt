@@ -1,680 +1,557 @@
-
-References
-
-   1. https://feeds.feedburner.com/DeviceTreeCompiler
-   2. https://www.spinics.net/lists/devicetree-compiler/maillist.html
-   3. https://www.spinics.net/lists/devicetree-compiler/thrd2.html
-   4. https://www.spinics.net/lists/devicetree-compiler/msg02744.html
-   5. https://www.spinics.net/lists/devicetree-compiler/msg02747.html
-   6. https://www.spinics.net/lists/devicetree-compiler/msg02739.html
-   7. https://www.spinics.net/lists/devicetree-compiler/msg02741.html
-   8. https://www.spinics.net/lists/devicetree-compiler/msg02742.html
-   9. https://www.spinics.net/lists/devicetree-compiler/msg02738.html
-  10. https://www.spinics.net/lists/devicetree-compiler/msg02740.html
-  11. https://www.spinics.net/lists/devicetree-compiler/msg02743.html
-  12. https://www.spinics.net/lists/devicetree-compiler/msg02745.html
-  13. https://www.spinics.net/lists/devicetree-compiler/msg02746.html
-  14. https://www.spinics.net/lists/devicetree-compiler/msg02735.html
-  15. https://www.spinics.net/lists/devicetree-compiler/msg02736.html
-  16. https://www.spinics.net/lists/devicetree-compiler/msg02725.html
-  17. https://www.spinics.net/lists/devicetree-compiler/msg02732.html
-  18. https://www.spinics.net/lists/devicetree-compiler/msg02726.html
-  19. https://www.spinics.net/lists/devicetree-compiler/msg02727.html
-  20. https://www.spinics.net/lists/devicetree-compiler/msg02728.html
-  21. https://www.spinics.net/lists/devicetree-compiler/msg02729.html
-  22. https://www.spinics.net/lists/devicetree-compiler/msg02730.html
-  23. https://www.spinics.net/lists/devicetree-compiler/msg02731.html
-  24. https://www.spinics.net/lists/devicetree-compiler/msg02734.html
-  25. https://www.spinics.net/lists/devicetree-compiler/msg02733.html
-  26. https://www.spinics.net/lists/devicetree-compiler/msg02721.html
-  27. https://www.spinics.net/lists/devicetree-compiler/msg02722.html
-  28. https://www.spinics.net/lists/devicetree-compiler/msg02723.html
-  29. https://www.spinics.net/lists/devicetree-compiler/msg02724.html
-  30. https://www.spinics.net/lists/devicetree-compiler/msg02711.html
-  31. https://www.spinics.net/lists/devicetree-compiler/msg02715.html
-  32. https://www.spinics.net/lists/devicetree-compiler/msg02710.html
-  33. https://www.spinics.net/lists/devicetree-compiler/msg02714.html
-  34. https://www.spinics.net/lists/devicetree-compiler/msg02709.html
-  35. https://www.spinics.net/lists/devicetree-compiler/msg02719.html
-  36. https://www.spinics.net/lists/devicetree-compiler/msg02720.html
-  37. https://www.spinics.net/lists/devicetree-compiler/msg02704.html
-  38. https://www.spinics.net/lists/devicetree-compiler/msg02707.html
-  39. https://www.spinics.net/lists/devicetree-compiler/msg02708.html
-  40. https://www.spinics.net/lists/devicetree-compiler/msg02705.html
-  41. https://www.spinics.net/lists/devicetree-compiler/msg02706.html
-  42. https://www.spinics.net/lists/devicetree-compiler/msg02695.html
-  43. https://www.spinics.net/lists/devicetree-compiler/msg02696.html
-  44. https://www.spinics.net/lists/devicetree-compiler/msg02697.html
-  45. https://www.spinics.net/lists/devicetree-compiler/msg02699.html
-  46. https://www.spinics.net/lists/devicetree-compiler/msg02701.html
-  47. https://www.spinics.net/lists/devicetree-compiler/msg02702.html
-  48. https://www.spinics.net/lists/devicetree-compiler/msg02703.html
-  49. https://www.spinics.net/lists/devicetree-compiler/msg02698.html
-  50. https://www.spinics.net/lists/devicetree-compiler/msg02691.html
-  51. https://www.spinics.net/lists/devicetree-compiler/msg02692.html
-  52. https://www.spinics.net/lists/devicetree-compiler/msg02693.html
-  53. https://www.spinics.net/lists/devicetree-compiler/msg02685.html
-  54. https://www.spinics.net/lists/devicetree-compiler/msg02686.html
-  55. https://www.spinics.net/lists/devicetree-compiler/msg02687.html
-  56. https://www.spinics.net/lists/devicetree-compiler/msg02689.html
-  57. https://www.spinics.net/lists/devicetree-compiler/msg02694.html
-  58. https://www.spinics.net/lists/devicetree-compiler/msg02688.html
-  59. https://www.spinics.net/lists/devicetree-compiler/msg02690.html
-  60. https://www.spinics.net/lists/devicetree-compiler/msg02684.html
-  61. https://www.spinics.net/lists/devicetree-compiler/msg02700.html
-  62. https://www.spinics.net/lists/devicetree-compiler/msg02712.html
-  63. https://www.spinics.net/lists/devicetree-compiler/msg02683.html
-  64. https://www.spinics.net/lists/devicetree-compiler/msg02678.html
-  65. https://www.spinics.net/lists/devicetree-compiler/msg02679.html
-  66. https://www.spinics.net/lists/devicetree-compiler/msg02680.html
-  67. https://www.spinics.net/lists/devicetree-compiler/msg02681.html
-  68. https://www.spinics.net/lists/devicetree-compiler/msg02658.html
-  69. https://www.spinics.net/lists/devicetree-compiler/msg02659.html
-  70. https://www.spinics.net/lists/devicetree-compiler/msg02660.html
-  71. https://www.spinics.net/lists/devicetree-compiler/msg02661.html
-  72. https://www.spinics.net/lists/devicetree-compiler/msg02662.html
-  73. https://www.spinics.net/lists/devicetree-compiler/msg02649.html
-  74. https://www.spinics.net/lists/devicetree-compiler/msg02650.html
-  75. https://www.spinics.net/lists/devicetree-compiler/msg02651.html
-  76. https://www.spinics.net/lists/devicetree-compiler/msg02663.html
-  77. https://www.spinics.net/lists/devicetree-compiler/msg02668.html
-  78. https://www.spinics.net/lists/devicetree-compiler/msg02646.html
-  79. https://www.spinics.net/lists/devicetree-compiler/msg02647.html
-  80. https://www.spinics.net/lists/devicetree-compiler/msg02643.html
-  81. https://www.spinics.net/lists/devicetree-compiler/msg02644.html
-  82. https://www.spinics.net/lists/devicetree-compiler/msg02645.html
-  83. https://www.spinics.net/lists/devicetree-compiler/msg02653.html
-  84. https://www.spinics.net/lists/devicetree-compiler/msg02657.html
-  85. https://www.spinics.net/lists/devicetree-compiler/msg02631.html
-  86. https://www.spinics.net/lists/devicetree-compiler/msg02632.html
-  87. https://www.spinics.net/lists/devicetree-compiler/msg02634.html
-  88. https://www.spinics.net/lists/devicetree-compiler/msg02635.html
-  89. https://www.spinics.net/lists/devicetree-compiler/msg02636.html
-  90. https://www.spinics.net/lists/devicetree-compiler/msg02637.html
-  91. https://www.spinics.net/lists/devicetree-compiler/msg02641.html
-  92. https://www.spinics.net/lists/devicetree-compiler/msg02652.html
-  93. https://www.spinics.net/lists/devicetree-compiler/msg02665.html
-  94. https://www.spinics.net/lists/devicetree-compiler/msg02673.html
-  95. https://www.spinics.net/lists/devicetree-compiler/msg02675.html
-  96. https://www.spinics.net/lists/devicetree-compiler/msg02677.html
-  97. https://www.spinics.net/lists/devicetree-compiler/msg02682.html
-  98. https://www.spinics.net/lists/devicetree-compiler/msg02664.html
-  99. https://www.spinics.net/lists/devicetree-compiler/msg02667.html
- 100. https://www.spinics.net/lists/devicetree-compiler/msg02633.html
- 101. https://www.spinics.net/lists/devicetree-compiler/msg02638.html
- 102. https://www.spinics.net/lists/devicetree-compiler/msg02639.html
- 103. https://www.spinics.net/lists/devicetree-compiler/msg02640.html
- 104. https://www.spinics.net/lists/devicetree-compiler/msg02642.html
- 105. https://www.spinics.net/lists/devicetree-compiler/msg02666.html
- 106. https://www.spinics.net/lists/devicetree-compiler/msg02669.html
- 107. https://www.spinics.net/lists/devicetree-compiler/msg02670.html
- 108. https://www.spinics.net/lists/devicetree-compiler/msg02671.html
- 109. https://www.spinics.net/lists/devicetree-compiler/msg02672.html
- 110. https://www.spinics.net/lists/devicetree-compiler/msg02674.html
- 111. https://www.spinics.net/lists/devicetree-compiler/msg02676.html
- 112. https://www.spinics.net/lists/devicetree-compiler/msg02630.html
- 113. https://www.spinics.net/lists/devicetree-compiler/msg02628.html
- 114. https://www.spinics.net/lists/devicetree-compiler/msg02629.html
- 115. https://www.spinics.net/lists/devicetree-compiler/msg02625.html
- 116. https://www.spinics.net/lists/devicetree-compiler/msg02626.html
- 117. https://www.spinics.net/lists/devicetree-compiler/msg02623.html
- 118. https://www.spinics.net/lists/devicetree-compiler/msg02624.html
- 119. https://www.spinics.net/lists/devicetree-compiler/msg02627.html
- 120. https://www.spinics.net/lists/devicetree-compiler/msg02648.html
- 121. https://www.spinics.net/lists/devicetree-compiler/msg02621.html
- 122. https://www.spinics.net/lists/devicetree-compiler/msg02610.html
- 123. https://www.spinics.net/lists/devicetree-compiler/msg02612.html
- 124. https://www.spinics.net/lists/devicetree-compiler/msg02613.html
- 125. https://www.spinics.net/lists/devicetree-compiler/msg02614.html
- 126. https://www.spinics.net/lists/devicetree-compiler/msg02615.html
- 127. https://www.spinics.net/lists/devicetree-compiler/msg02616.html
- 128. https://www.spinics.net/lists/devicetree-compiler/msg02603.html
- 129. https://www.spinics.net/lists/devicetree-compiler/msg02599.html
- 130. https://www.spinics.net/lists/devicetree-compiler/msg02608.html
- 131. https://www.spinics.net/lists/devicetree-compiler/msg02600.html
- 132. https://www.spinics.net/lists/devicetree-compiler/msg02606.html
- 133. https://www.spinics.net/lists/devicetree-compiler/msg02601.html
- 134. https://www.spinics.net/lists/devicetree-compiler/msg02609.html
- 135. https://www.spinics.net/lists/devicetree-compiler/msg02602.html
- 136. https://www.spinics.net/lists/devicetree-compiler/msg02605.html
- 137. https://www.spinics.net/lists/devicetree-compiler/msg02607.html
- 138. https://www.spinics.net/lists/devicetree-compiler/msg02586.html
- 139. https://www.spinics.net/lists/devicetree-compiler/msg02587.html
- 140. https://www.spinics.net/lists/devicetree-compiler/msg02588.html
- 141. https://www.spinics.net/lists/devicetree-compiler/msg02583.html
- 142. https://www.spinics.net/lists/devicetree-compiler/msg02584.html
- 143. https://www.spinics.net/lists/devicetree-compiler/msg02590.html
- 144. https://www.spinics.net/lists/devicetree-compiler/msg02593.html
- 145. https://www.spinics.net/lists/devicetree-compiler/msg02594.html
- 146. https://www.spinics.net/lists/devicetree-compiler/msg02596.html
- 147. https://www.spinics.net/lists/devicetree-compiler/msg02617.html
- 148. https://www.spinics.net/lists/devicetree-compiler/msg02618.html
- 149. https://www.spinics.net/lists/devicetree-compiler/msg02622.html
- 150. https://www.spinics.net/lists/devicetree-compiler/msg02585.html
- 151. https://www.spinics.net/lists/devicetree-compiler/msg02591.html
- 152. https://www.spinics.net/lists/devicetree-compiler/msg02595.html
- 153. https://www.spinics.net/lists/devicetree-compiler/msg02589.html
- 154. https://www.spinics.net/lists/devicetree-compiler/msg02592.html
- 155. https://www.spinics.net/lists/devicetree-compiler/msg02575.html
- 156. https://www.spinics.net/lists/devicetree-compiler/msg02576.html
- 157. https://www.spinics.net/lists/devicetree-compiler/msg02578.html
- 158. https://www.spinics.net/lists/devicetree-compiler/msg02577.html
- 159. https://www.spinics.net/lists/devicetree-compiler/msg02574.html
- 160. https://www.spinics.net/lists/devicetree-compiler/msg02619.html
- 161. https://www.spinics.net/lists/devicetree-compiler/msg02620.html
- 162. https://www.spinics.net/lists/devicetree-compiler/msg02572.html
- 163. https://www.spinics.net/lists/devicetree-compiler/msg02568.html
- 164. https://www.spinics.net/lists/devicetree-compiler/msg02570.html
- 165. https://www.spinics.net/lists/devicetree-compiler/msg02567.html
- 166. https://www.spinics.net/lists/devicetree-compiler/msg02569.html
- 167. https://www.spinics.net/lists/devicetree-compiler/msg02563.html
- 168. https://www.spinics.net/lists/devicetree-compiler/msg02564.html
- 169. https://www.spinics.net/lists/devicetree-compiler/msg02560.html
- 170. https://www.spinics.net/lists/devicetree-compiler/msg02561.html
- 171. https://www.spinics.net/lists/devicetree-compiler/msg02565.html
- 172. https://www.spinics.net/lists/devicetree-compiler/msg02566.html
- 173. https://www.spinics.net/lists/devicetree-compiler/msg02571.html
- 174. https://www.spinics.net/lists/devicetree-compiler/msg02573.html
- 175. https://www.spinics.net/lists/devicetree-compiler/msg02579.html
- 176. https://www.spinics.net/lists/devicetree-compiler/msg02580.html
- 177. https://www.spinics.net/lists/devicetree-compiler/msg02581.html
- 178. https://www.spinics.net/lists/devicetree-compiler/msg02582.html
- 179. https://www.spinics.net/lists/devicetree-compiler/msg02553.html
- 180. https://www.spinics.net/lists/devicetree-compiler/msg02554.html
- 181. https://www.spinics.net/lists/devicetree-compiler/msg02555.html
- 182. https://www.spinics.net/lists/devicetree-compiler/msg02556.html
- 183. https://www.spinics.net/lists/devicetree-compiler/msg02557.html
- 184. https://www.spinics.net/lists/devicetree-compiler/msg02558.html
- 185. https://www.spinics.net/lists/devicetree-compiler/msg02540.html
- 186. https://www.spinics.net/lists/devicetree-compiler/msg02541.html
- 187. https://www.spinics.net/lists/devicetree-compiler/msg02532.html
- 188. https://www.spinics.net/lists/devicetree-compiler/msg02533.html
- 189. https://www.spinics.net/lists/devicetree-compiler/msg02534.html
- 190. https://www.spinics.net/lists/devicetree-compiler/msg02538.html
- 191. https://www.spinics.net/lists/devicetree-compiler/msg02525.html
- 192. https://www.spinics.net/lists/devicetree-compiler/msg02526.html
- 193. https://www.spinics.net/lists/devicetree-compiler/msg02527.html
- 194. https://www.spinics.net/lists/devicetree-compiler/msg02529.html
- 195. https://www.spinics.net/lists/devicetree-compiler/msg02518.html
- 196. https://www.spinics.net/lists/devicetree-compiler/msg02519.html
- 197. https://www.spinics.net/lists/devicetree-compiler/msg02528.html
- 198. https://www.spinics.net/lists/devicetree-compiler/msg02520.html
- 199. https://www.spinics.net/lists/devicetree-compiler/msg02511.html
- 200. https://www.spinics.net/lists/devicetree-compiler/msg02512.html
- 201. https://www.spinics.net/lists/devicetree-compiler/msg02516.html
- 202. https://www.spinics.net/lists/devicetree-compiler/msg02513.html
- 203. https://www.spinics.net/lists/devicetree-compiler/msg02514.html
- 204. https://www.spinics.net/lists/devicetree-compiler/msg02517.html
- 205. https://www.spinics.net/lists/devicetree-compiler/msg02522.html
- 206. https://www.spinics.net/lists/devicetree-compiler/msg02524.html
- 207. https://www.spinics.net/lists/devicetree-compiler/msg02515.html
- 208. https://www.spinics.net/lists/devicetree-compiler/msg02503.html
- 209. https://www.spinics.net/lists/devicetree-compiler/msg02504.html
- 210. https://www.spinics.net/lists/devicetree-compiler/msg02562.html
- 211. https://www.spinics.net/lists/devicetree-compiler/msg02506.html
- 212. https://www.spinics.net/lists/devicetree-compiler/msg02508.html
- 213. https://www.spinics.net/lists/devicetree-compiler/msg02510.html
- 214. https://www.spinics.net/lists/devicetree-compiler/msg02521.html
- 215. https://www.spinics.net/lists/devicetree-compiler/msg02500.html
- 216. https://www.spinics.net/lists/devicetree-compiler/msg02501.html
- 217. https://www.spinics.net/lists/devicetree-compiler/msg02502.html
- 218. https://www.spinics.net/lists/devicetree-compiler/msg02505.html
- 219. https://www.spinics.net/lists/devicetree-compiler/msg02507.html
- 220. https://www.spinics.net/lists/devicetree-compiler/msg02499.html
- 221. https://www.spinics.net/lists/devicetree-compiler/msg02523.html
- 222. https://www.spinics.net/lists/devicetree-compiler/msg02535.html
- 223. https://www.spinics.net/lists/devicetree-compiler/msg02536.html
- 224. https://www.spinics.net/lists/devicetree-compiler/msg02537.html
- 225. https://www.spinics.net/lists/devicetree-compiler/msg02539.html
- 226. https://www.spinics.net/lists/devicetree-compiler/msg02542.html
- 227. https://www.spinics.net/lists/devicetree-compiler/msg02545.html
- 228. https://www.spinics.net/lists/devicetree-compiler/msg02546.html
- 229. https://www.spinics.net/lists/devicetree-compiler/msg02550.html
- 230. https://www.spinics.net/lists/devicetree-compiler/msg02547.html
- 231. https://www.spinics.net/lists/devicetree-compiler/msg02549.html
- 232. https://www.spinics.net/lists/devicetree-compiler/msg02552.html
- 233. https://www.spinics.net/lists/devicetree-compiler/msg02543.html
- 234. https://www.spinics.net/lists/devicetree-compiler/msg02713.html
- 235. https://www.spinics.net/lists/devicetree-compiler/msg02716.html
- 236. https://www.spinics.net/lists/devicetree-compiler/msg02717.html
- 237. https://www.spinics.net/lists/devicetree-compiler/msg02718.html
- 238. https://www.spinics.net/lists/devicetree-compiler/msg02496.html
- 239. https://www.spinics.net/lists/devicetree-compiler/msg02498.html
- 240. https://www.spinics.net/lists/devicetree-compiler/msg02489.html
- 241. https://www.spinics.net/lists/devicetree-compiler/msg02492.html
- 242. https://www.spinics.net/lists/devicetree-compiler/msg02488.html
- 243. https://www.spinics.net/lists/devicetree-compiler/msg02491.html
- 244. https://www.spinics.net/lists/devicetree-compiler/msg02486.html
- 245. https://www.spinics.net/lists/devicetree-compiler/msg02487.html
- 246. https://www.spinics.net/lists/devicetree-compiler/msg02490.html
- 247. https://www.spinics.net/lists/devicetree-compiler/msg02483.html
- 248. https://www.spinics.net/lists/devicetree-compiler/msg02484.html
- 249. https://www.spinics.net/lists/devicetree-compiler/msg02493.html
- 250. https://www.spinics.net/lists/devicetree-compiler/msg02485.html
- 251. https://www.spinics.net/lists/devicetree-compiler/msg02494.html
- 252. https://www.spinics.net/lists/devicetree-compiler/msg02495.html
- 253. https://www.spinics.net/lists/devicetree-compiler/msg02497.html
- 254. https://www.spinics.net/lists/devicetree-compiler/msg02480.html
- 255. https://www.spinics.net/lists/devicetree-compiler/msg02481.html
- 256. https://www.spinics.net/lists/devicetree-compiler/msg02482.html
- 257. https://www.spinics.net/lists/devicetree-compiler/msg02477.html
- 258. https://www.spinics.net/lists/devicetree-compiler/msg02478.html
- 259. https://www.spinics.net/lists/devicetree-compiler/msg02476.html
- 260. https://www.spinics.net/lists/devicetree-compiler/msg02548.html
- 261. https://www.spinics.net/lists/devicetree-compiler/msg02551.html
- 262. https://www.spinics.net/lists/devicetree-compiler/msg02472.html
- 263. https://www.spinics.net/lists/devicetree-compiler/msg02473.html
- 264. https://www.spinics.net/lists/devicetree-compiler/msg02474.html
- 265. https://www.spinics.net/lists/devicetree-compiler/msg02475.html
- 266. https://www.spinics.net/lists/devicetree-compiler/msg02479.html
- 267. https://www.spinics.net/lists/devicetree-compiler/msg02465.html
- 268. https://www.spinics.net/lists/devicetree-compiler/msg02470.html
- 269. https://www.spinics.net/lists/devicetree-compiler/msg02464.html
- 270. https://www.spinics.net/lists/devicetree-compiler/msg02466.html
- 271. https://www.spinics.net/lists/devicetree-compiler/msg02467.html
- 272. https://www.spinics.net/lists/devicetree-compiler/msg02468.html
- 273. https://www.spinics.net/lists/devicetree-compiler/msg02469.html
- 274. https://www.spinics.net/lists/devicetree-compiler/msg02471.html
- 275. https://www.spinics.net/lists/devicetree-compiler/msg02463.html
- 276. https://www.spinics.net/lists/devicetree-compiler/msg02737.html
- 277. https://www.spinics.net/lists/devicetree-compiler/msg02461.html
- 278. https://www.spinics.net/lists/devicetree-compiler/msg02460.html
- 279. https://www.spinics.net/lists/devicetree-compiler/msg02462.html
- 280. https://www.spinics.net/lists/devicetree-compiler/msg02457.html
- 281. https://www.spinics.net/lists/devicetree-compiler/msg02438.html
- 282. https://www.spinics.net/lists/devicetree-compiler/msg02439.html
- 283. https://www.spinics.net/lists/devicetree-compiler/msg02428.html
- 284. https://www.spinics.net/lists/devicetree-compiler/msg02429.html
- 285. https://www.spinics.net/lists/devicetree-compiler/msg02433.html
- 286. https://www.spinics.net/lists/devicetree-compiler/msg02434.html
- 287. https://www.spinics.net/lists/devicetree-compiler/msg02418.html
- 288. https://www.spinics.net/lists/devicetree-compiler/msg02419.html
- 289. https://www.spinics.net/lists/devicetree-compiler/msg02420.html
- 290. https://www.spinics.net/lists/devicetree-compiler/msg02421.html
- 291. https://www.spinics.net/lists/devicetree-compiler/msg02422.html
- 292. https://www.spinics.net/lists/devicetree-compiler/msg02423.html
- 293. https://www.spinics.net/lists/devicetree-compiler/msg02416.html
- 294. https://www.spinics.net/lists/devicetree-compiler/msg02437.html
- 295. https://www.spinics.net/lists/devicetree-compiler/msg02413.html
- 296. https://www.spinics.net/lists/devicetree-compiler/msg02415.html
- 297. https://www.spinics.net/lists/devicetree-compiler/msg02424.html
- 298. https://www.spinics.net/lists/devicetree-compiler/msg02426.html
- 299. https://www.spinics.net/lists/devicetree-compiler/msg02435.html
- 300. https://www.spinics.net/lists/devicetree-compiler/msg02425.html
- 301. https://www.spinics.net/lists/devicetree-compiler/msg02427.html
- 302. https://www.spinics.net/lists/devicetree-compiler/msg02436.html
- 303. https://www.spinics.net/lists/devicetree-compiler/msg02440.html
- 304. https://www.spinics.net/lists/devicetree-compiler/msg02408.html
- 305. https://www.spinics.net/lists/devicetree-compiler/msg02409.html
- 306. https://www.spinics.net/lists/devicetree-compiler/msg02410.html
- 307. https://www.spinics.net/lists/devicetree-compiler/msg02417.html
- 308. https://www.spinics.net/lists/devicetree-compiler/msg02414.html
- 309. https://www.spinics.net/lists/devicetree-compiler/msg02411.html
- 310. https://www.spinics.net/lists/devicetree-compiler/msg02397.html
- 311. https://www.spinics.net/lists/devicetree-compiler/msg02398.html
- 312. https://www.spinics.net/lists/devicetree-compiler/msg02404.html
- 313. https://www.spinics.net/lists/devicetree-compiler/msg02394.html
- 314. https://www.spinics.net/lists/devicetree-compiler/msg02395.html
- 315. https://www.spinics.net/lists/devicetree-compiler/msg02403.html
- 316. https://www.spinics.net/lists/devicetree-compiler/msg02391.html
- 317. https://www.spinics.net/lists/devicetree-compiler/msg02393.html
- 318. https://www.spinics.net/lists/devicetree-compiler/msg02399.html
- 319. https://www.spinics.net/lists/devicetree-compiler/msg02400.html
- 320. https://www.spinics.net/lists/devicetree-compiler/msg02401.html
- 321. https://www.spinics.net/lists/devicetree-compiler/msg02402.html
- 322. https://www.spinics.net/lists/devicetree-compiler/msg02406.html
- 323. https://www.spinics.net/lists/devicetree-compiler/msg02430.html
- 324. https://www.spinics.net/lists/devicetree-compiler/msg02432.html
- 325. https://www.spinics.net/lists/devicetree-compiler/msg02441.html
- 326. https://www.spinics.net/lists/devicetree-compiler/msg02443.html
- 327. https://www.spinics.net/lists/devicetree-compiler/msg02455.html
- 328. https://www.spinics.net/lists/devicetree-compiler/msg02456.html
- 329. https://www.spinics.net/lists/devicetree-compiler/msg02458.html
- 330. https://www.spinics.net/lists/devicetree-compiler/msg02459.html
- 331. https://www.spinics.net/lists/devicetree-compiler/msg02380.html
- 332. https://www.spinics.net/lists/devicetree-compiler/msg02381.html
- 333. https://www.spinics.net/lists/devicetree-compiler/msg02447.html
- 334. https://www.spinics.net/lists/devicetree-compiler/msg02382.html
- 335. https://www.spinics.net/lists/devicetree-compiler/msg02446.html
- 336. https://www.spinics.net/lists/devicetree-compiler/msg02384.html
- 337. https://www.spinics.net/lists/devicetree-compiler/msg02448.html
- 338. https://www.spinics.net/lists/devicetree-compiler/msg02383.html
- 339. https://www.spinics.net/lists/devicetree-compiler/msg02445.html
- 340. https://www.spinics.net/lists/devicetree-compiler/msg02385.html
- 341. https://www.spinics.net/lists/devicetree-compiler/msg02449.html
- 342. https://www.spinics.net/lists/devicetree-compiler/msg02386.html
- 343. https://www.spinics.net/lists/devicetree-compiler/msg02453.html
- 344. https://www.spinics.net/lists/devicetree-compiler/msg02387.html
- 345. https://www.spinics.net/lists/devicetree-compiler/msg02452.html
- 346. https://www.spinics.net/lists/devicetree-compiler/msg02388.html
- 347. https://www.spinics.net/lists/devicetree-compiler/msg02450.html
- 348. https://www.spinics.net/lists/devicetree-compiler/msg02389.html
- 349. https://www.spinics.net/lists/devicetree-compiler/msg02451.html
- 350. https://www.spinics.net/lists/devicetree-compiler/msg02405.html
- 351. https://www.spinics.net/lists/devicetree-compiler/msg02407.html
- 352. https://www.spinics.net/lists/devicetree-compiler/msg02412.html
- 353. https://www.spinics.net/lists/devicetree-compiler/msg02442.html
- 354. https://www.spinics.net/lists/devicetree-compiler/msg02444.html
- 355. https://www.spinics.net/lists/devicetree-compiler/msg02454.html
- 356. https://www.spinics.net/lists/devicetree-compiler/msg02376.html
- 357. https://www.spinics.net/lists/devicetree-compiler/msg02372.html
- 358. https://www.spinics.net/lists/devicetree-compiler/msg02371.html
- 359. https://www.spinics.net/lists/devicetree-compiler/msg02374.html
- 360. https://www.spinics.net/lists/devicetree-compiler/msg02377.html
- 361. https://www.spinics.net/lists/devicetree-compiler/msg02370.html
- 362. https://www.spinics.net/lists/devicetree-compiler/msg02378.html
- 363. https://www.spinics.net/lists/devicetree-compiler/msg02379.html
- 364. https://www.spinics.net/lists/devicetree-compiler/msg02367.html
- 365. https://www.spinics.net/lists/devicetree-compiler/msg02368.html
- 366. https://www.spinics.net/lists/devicetree-compiler/msg02369.html
- 367. https://www.spinics.net/lists/devicetree-compiler/msg02363.html
- 368. https://www.spinics.net/lists/devicetree-compiler/msg02364.html
- 369. https://www.spinics.net/lists/devicetree-compiler/msg02365.html
- 370. https://www.spinics.net/lists/devicetree-compiler/msg02342.html
- 371. https://www.spinics.net/lists/devicetree-compiler/msg02343.html
- 372. https://www.spinics.net/lists/devicetree-compiler/msg02346.html
- 373. https://www.spinics.net/lists/devicetree-compiler/msg02347.html
- 374. https://www.spinics.net/lists/devicetree-compiler/msg02344.html
- 375. https://www.spinics.net/lists/devicetree-compiler/msg02373.html
- 376. https://www.spinics.net/lists/devicetree-compiler/msg02390.html
- 377. https://www.spinics.net/lists/devicetree-compiler/msg02345.html
- 378. https://www.spinics.net/lists/devicetree-compiler/msg02337.html
- 379. https://www.spinics.net/lists/devicetree-compiler/msg02338.html
- 380. https://www.spinics.net/lists/devicetree-compiler/msg02339.html
- 381. https://www.spinics.net/lists/devicetree-compiler/msg02341.html
- 382. https://www.spinics.net/lists/devicetree-compiler/msg02332.html
- 383. https://www.spinics.net/lists/devicetree-compiler/msg02333.html
- 384. https://www.spinics.net/lists/devicetree-compiler/msg02334.html
- 385. https://www.spinics.net/lists/devicetree-compiler/msg02331.html
- 386. https://www.spinics.net/lists/devicetree-compiler/msg02322.html
- 387. https://www.spinics.net/lists/devicetree-compiler/msg02323.html
- 388. https://www.spinics.net/lists/devicetree-compiler/msg02324.html
- 389. https://www.spinics.net/lists/devicetree-compiler/msg02325.html
- 390. https://www.spinics.net/lists/devicetree-compiler/msg02326.html
- 391. https://www.spinics.net/lists/devicetree-compiler/msg02327.html
- 392. https://www.spinics.net/lists/devicetree-compiler/msg02321.html
- 393. https://www.spinics.net/lists/devicetree-compiler/msg02359.html
- 394. https://www.spinics.net/lists/devicetree-compiler/msg02360.html
- 395. https://www.spinics.net/lists/devicetree-compiler/msg02362.html
- 396. https://www.spinics.net/lists/devicetree-compiler/msg02375.html
- 397. https://www.spinics.net/lists/devicetree-compiler/msg02392.html
- 398. https://www.spinics.net/lists/devicetree-compiler/msg02396.html
- 399. https://www.spinics.net/lists/devicetree-compiler/msg02431.html
- 400. https://www.spinics.net/lists/devicetree-compiler/msg02361.html
- 401. https://www.spinics.net/lists/devicetree-compiler/msg02319.html
- 402. https://www.spinics.net/lists/devicetree-compiler/msg02320.html
- 403. https://www.spinics.net/lists/devicetree-compiler/msg02313.html
- 404. https://www.spinics.net/lists/devicetree-compiler/msg02314.html
- 405. https://www.spinics.net/lists/devicetree-compiler/msg02315.html
- 406. https://www.spinics.net/lists/devicetree-compiler/msg02316.html
- 407. https://www.spinics.net/lists/devicetree-compiler/msg02317.html
- 408. https://www.spinics.net/lists/devicetree-compiler/msg02318.html
- 409. https://www.spinics.net/lists/devicetree-compiler/msg02302.html
- 410. https://www.spinics.net/lists/devicetree-compiler/msg02303.html
- 411. https://www.spinics.net/lists/devicetree-compiler/msg02335.html
- 412. https://www.spinics.net/lists/devicetree-compiler/msg02336.html
- 413. https://www.spinics.net/lists/devicetree-compiler/msg02340.html
- 414. https://www.spinics.net/lists/devicetree-compiler/msg02306.html
- 415. https://www.spinics.net/lists/devicetree-compiler/msg02300.html
- 416. https://www.spinics.net/lists/devicetree-compiler/msg02297.html
- 417. https://www.spinics.net/lists/devicetree-compiler/msg02312.html
- 418. https://www.spinics.net/lists/devicetree-compiler/msg02351.html
- 419. https://www.spinics.net/lists/devicetree-compiler/msg02353.html
- 420. https://www.spinics.net/lists/devicetree-compiler/msg02298.html
- 421. https://www.spinics.net/lists/devicetree-compiler/msg02307.html
- 422. https://www.spinics.net/lists/devicetree-compiler/msg02309.html
- 423. https://www.spinics.net/lists/devicetree-compiler/msg02348.html
- 424. https://www.spinics.net/lists/devicetree-compiler/msg02299.html
- 425. https://www.spinics.net/lists/devicetree-compiler/msg02311.html
- 426. https://www.spinics.net/lists/devicetree-compiler/msg02352.html
- 427. https://www.spinics.net/lists/devicetree-compiler/msg02301.html
- 428. https://www.spinics.net/lists/devicetree-compiler/msg02304.html
- 429. https://www.spinics.net/lists/devicetree-compiler/msg02310.html
- 430. https://www.spinics.net/lists/devicetree-compiler/msg02350.html
- 431. https://www.spinics.net/lists/devicetree-compiler/msg02305.html
- 432. https://www.spinics.net/lists/devicetree-compiler/msg02308.html
- 433. https://www.spinics.net/lists/devicetree-compiler/msg02349.html
- 434. https://www.spinics.net/lists/devicetree-compiler/msg02354.html
- 435. https://www.spinics.net/lists/devicetree-compiler/msg02355.html
- 436. https://www.spinics.net/lists/devicetree-compiler/msg02356.html
- 437. https://www.spinics.net/lists/devicetree-compiler/msg02509.html
- 438. https://www.spinics.net/lists/devicetree-compiler/msg02530.html
- 439. https://www.spinics.net/lists/devicetree-compiler/msg02531.html
- 440. https://www.spinics.net/lists/devicetree-compiler/msg02544.html
- 441. https://www.spinics.net/lists/devicetree-compiler/msg02559.html
- 442. https://www.spinics.net/lists/devicetree-compiler/msg02597.html
- 443. https://www.spinics.net/lists/devicetree-compiler/msg02598.html
- 444. https://www.spinics.net/lists/devicetree-compiler/msg02604.html
- 445. https://www.spinics.net/lists/devicetree-compiler/msg02611.html
- 446. https://www.spinics.net/lists/devicetree-compiler/msg02291.html
- 447. https://www.spinics.net/lists/devicetree-compiler/msg02292.html
- 448. https://www.spinics.net/lists/devicetree-compiler/msg02295.html
- 449. https://www.spinics.net/lists/devicetree-compiler/msg02289.html
- 450. https://www.spinics.net/lists/devicetree-compiler/msg02290.html
- 451. https://www.spinics.net/lists/devicetree-compiler/msg02294.html
- 452. https://www.spinics.net/lists/devicetree-compiler/msg02296.html
- 453. https://www.spinics.net/lists/devicetree-compiler/msg02278.html
- 454. https://www.spinics.net/lists/devicetree-compiler/msg02277.html
- 455. https://www.spinics.net/lists/devicetree-compiler/msg02282.html
- 456. https://www.spinics.net/lists/devicetree-compiler/msg02283.html
- 457. https://www.spinics.net/lists/devicetree-compiler/msg02279.html
- 458. https://www.spinics.net/lists/devicetree-compiler/msg02272.html
- 459. https://www.spinics.net/lists/devicetree-compiler/msg02273.html
- 460. https://www.spinics.net/lists/devicetree-compiler/msg02284.html
- 461. https://www.spinics.net/lists/devicetree-compiler/msg02274.html
- 462. https://www.spinics.net/lists/devicetree-compiler/msg02285.html
- 463. https://www.spinics.net/lists/devicetree-compiler/msg02275.html
- 464. https://www.spinics.net/lists/devicetree-compiler/msg02286.html
- 465. https://www.spinics.net/lists/devicetree-compiler/msg02266.html
- 466. https://www.spinics.net/lists/devicetree-compiler/msg02267.html
- 467. https://www.spinics.net/lists/devicetree-compiler/msg02264.html
- 468. https://www.spinics.net/lists/devicetree-compiler/msg02265.html
- 469. https://www.spinics.net/lists/devicetree-compiler/msg02262.html
- 470. https://www.spinics.net/lists/devicetree-compiler/msg02263.html
- 471. https://www.spinics.net/lists/devicetree-compiler/msg02268.html
- 472. https://www.spinics.net/lists/devicetree-compiler/msg02280.html
- 473. https://www.spinics.net/lists/devicetree-compiler/msg02281.html
- 474. https://www.spinics.net/lists/devicetree-compiler/msg02293.html
- 475. https://www.spinics.net/lists/devicetree-compiler/msg02251.html
- 476. https://www.spinics.net/lists/devicetree-compiler/msg02252.html
- 477. https://www.spinics.net/lists/devicetree-compiler/msg02254.html
- 478. https://www.spinics.net/lists/devicetree-compiler/msg02253.html
- 479. https://www.spinics.net/lists/devicetree-compiler/msg02256.html
- 480. https://www.spinics.net/lists/devicetree-compiler/msg02259.html
- 481. https://www.spinics.net/lists/devicetree-compiler/msg02260.html
- 482. https://www.spinics.net/lists/devicetree-compiler/msg02255.html
- 483. https://www.spinics.net/lists/devicetree-compiler/msg02243.html
- 484. https://www.spinics.net/lists/devicetree-compiler/msg02244.html
- 485. https://www.spinics.net/lists/devicetree-compiler/msg02248.html
- 486. https://www.spinics.net/lists/devicetree-compiler/msg02245.html
- 487. https://www.spinics.net/lists/devicetree-compiler/msg02249.html
- 488. https://www.spinics.net/lists/devicetree-compiler/msg02246.html
- 489. https://www.spinics.net/lists/devicetree-compiler/msg02247.html
- 490. https://www.spinics.net/lists/devicetree-compiler/msg02250.html
- 491. https://www.spinics.net/lists/devicetree-compiler/msg02240.html
- 492. https://www.spinics.net/lists/devicetree-compiler/msg02241.html
- 493. https://www.spinics.net/lists/devicetree-compiler/msg02235.html
- 494. https://www.spinics.net/lists/devicetree-compiler/msg02238.html
- 495. https://www.spinics.net/lists/devicetree-compiler/msg02233.html
- 496. https://www.spinics.net/lists/devicetree-compiler/msg02236.html
- 497. https://www.spinics.net/lists/devicetree-compiler/msg02206.html
- 498. https://www.spinics.net/lists/devicetree-compiler/msg02207.html
- 499. https://www.spinics.net/lists/devicetree-compiler/msg02220.html
- 500. https://www.spinics.net/lists/devicetree-compiler/msg02222.html
- 501. https://www.spinics.net/lists/devicetree-compiler/msg02230.html
- 502. https://www.spinics.net/lists/devicetree-compiler/msg02195.html
- 503. https://www.spinics.net/lists/devicetree-compiler/msg02196.html
- 504. https://www.spinics.net/lists/devicetree-compiler/msg02197.html
- 505. https://www.spinics.net/lists/devicetree-compiler/msg02198.html
- 506. https://www.spinics.net/lists/devicetree-compiler/msg02216.html
- 507. https://www.spinics.net/lists/devicetree-compiler/msg02218.html
- 508. https://www.spinics.net/lists/devicetree-compiler/msg02225.html
- 509. https://www.spinics.net/lists/devicetree-compiler/msg02231.html
- 510. https://www.spinics.net/lists/devicetree-compiler/msg02232.html
- 511. https://www.spinics.net/lists/devicetree-compiler/msg02234.html
- 512. https://www.spinics.net/lists/devicetree-compiler/msg02199.html
- 513. https://www.spinics.net/lists/devicetree-compiler/msg02200.html
- 514. https://www.spinics.net/lists/devicetree-compiler/msg02201.html
- 515. https://www.spinics.net/lists/devicetree-compiler/msg02202.html
- 516. https://www.spinics.net/lists/devicetree-compiler/msg02226.html
- 517. https://www.spinics.net/lists/devicetree-compiler/msg02203.html
- 518. https://www.spinics.net/lists/devicetree-compiler/msg02204.html
- 519. https://www.spinics.net/lists/devicetree-compiler/msg02227.html
- 520. https://www.spinics.net/lists/devicetree-compiler/msg02205.html
- 521. https://www.spinics.net/lists/devicetree-compiler/msg02228.html
- 522. https://www.spinics.net/lists/devicetree-compiler/msg02242.html
- 523. https://www.spinics.net/lists/devicetree-compiler/msg02229.html
- 524. https://www.spinics.net/lists/devicetree-compiler/msg02237.html
- 525. https://www.spinics.net/lists/devicetree-compiler/msg02239.html
- 526. https://www.spinics.net/lists/devicetree-compiler/msg02192.html
- 527. https://www.spinics.net/lists/devicetree-compiler/msg02193.html
- 528. https://www.spinics.net/lists/devicetree-compiler/msg02221.html
- 529. https://www.spinics.net/lists/devicetree-compiler/msg02213.html
- 530. https://www.spinics.net/lists/devicetree-compiler/msg02186.html
- 531. https://www.spinics.net/lists/devicetree-compiler/msg02187.html
- 532. https://www.spinics.net/lists/devicetree-compiler/msg02212.html
- 533. https://www.spinics.net/lists/devicetree-compiler/msg02182.html
- 534. https://www.spinics.net/lists/devicetree-compiler/msg02183.html
- 535. https://www.spinics.net/lists/devicetree-compiler/msg02184.html
- 536. https://www.spinics.net/lists/devicetree-compiler/msg02185.html
- 537. https://www.spinics.net/lists/devicetree-compiler/msg02156.html
- 538. https://www.spinics.net/lists/devicetree-compiler/msg02157.html
- 539. https://www.spinics.net/lists/devicetree-compiler/msg02158.html
- 540. https://www.spinics.net/lists/devicetree-compiler/msg02160.html
- 541. https://www.spinics.net/lists/devicetree-compiler/msg02167.html
- 542. https://www.spinics.net/lists/devicetree-compiler/msg02146.html
- 543. https://www.spinics.net/lists/devicetree-compiler/msg02151.html
- 544. https://www.spinics.net/lists/devicetree-compiler/msg02173.html
- 545. https://www.spinics.net/lists/devicetree-compiler/msg02152.html
- 546. https://www.spinics.net/lists/devicetree-compiler/msg02174.html
- 547. https://www.spinics.net/lists/devicetree-compiler/msg02153.html
- 548. https://www.spinics.net/lists/devicetree-compiler/msg02175.html
- 549. https://www.spinics.net/lists/devicetree-compiler/msg02147.html
- 550. https://www.spinics.net/lists/devicetree-compiler/msg02177.html
- 551. https://www.spinics.net/lists/devicetree-compiler/msg02148.html
- 552. https://www.spinics.net/lists/devicetree-compiler/msg02178.html
- 553. https://www.spinics.net/lists/devicetree-compiler/msg02149.html
- 554. https://www.spinics.net/lists/devicetree-compiler/msg02179.html
- 555. https://www.spinics.net/lists/devicetree-compiler/msg02154.html
- 556. https://www.spinics.net/lists/devicetree-compiler/msg02176.html
- 557. https://www.spinics.net/lists/devicetree-compiler/msg02194.html
- 558. https://www.spinics.net/lists/devicetree-compiler/msg02211.html
- 559. https://www.spinics.net/lists/devicetree-compiler/msg02150.html
- 560. https://www.spinics.net/lists/devicetree-compiler/msg02180.html
- 561. https://www.spinics.net/lists/devicetree-compiler/msg02155.html
- 562. https://www.spinics.net/lists/devicetree-compiler/msg02172.html
- 563. https://www.spinics.net/lists/devicetree-compiler/msg02143.html
- 564. https://www.spinics.net/lists/devicetree-compiler/msg02144.html
- 565. https://www.spinics.net/lists/devicetree-compiler/msg02171.html
- 566. https://www.spinics.net/lists/devicetree-compiler/msg02142.html
- 567. https://www.spinics.net/lists/devicetree-compiler/msg02145.html
- 568. https://www.spinics.net/lists/devicetree-compiler/msg02181.html
- 569. https://www.spinics.net/lists/devicetree-compiler/msg02136.html
- 570. https://www.spinics.net/lists/devicetree-compiler/msg02139.html
- 571. https://www.spinics.net/lists/devicetree-compiler/msg02163.html
- 572. https://www.spinics.net/lists/devicetree-compiler/msg02188.html
- 573. https://www.spinics.net/lists/devicetree-compiler/msg02209.html
- 574. https://www.spinics.net/lists/devicetree-compiler/msg02137.html
- 575. https://www.spinics.net/lists/devicetree-compiler/msg02162.html
- 576. https://www.spinics.net/lists/devicetree-compiler/msg02168.html
- 577. https://www.spinics.net/lists/devicetree-compiler/msg02138.html
- 578. https://www.spinics.net/lists/devicetree-compiler/msg02169.html
- 579. https://www.spinics.net/lists/devicetree-compiler/msg02190.html
- 580. https://www.spinics.net/lists/devicetree-compiler/msg02215.html
- 581. https://www.spinics.net/lists/devicetree-compiler/msg02164.html
- 582. https://www.spinics.net/lists/devicetree-compiler/msg02189.html
- 583. https://www.spinics.net/lists/devicetree-compiler/msg02132.html
- 584. https://www.spinics.net/lists/devicetree-compiler/msg02133.html
- 585. https://www.spinics.net/lists/devicetree-compiler/msg02134.html
- 586. https://www.spinics.net/lists/devicetree-compiler/msg02257.html
- 587. https://www.spinics.net/lists/devicetree-compiler/msg02258.html
- 588. https://www.spinics.net/lists/devicetree-compiler/msg02261.html
- 589. https://www.spinics.net/lists/devicetree-compiler/msg02135.html
- 590. https://www.spinics.net/lists/devicetree-compiler/msg02161.html
- 591. https://www.spinics.net/lists/devicetree-compiler/msg02165.html
- 592. https://www.spinics.net/lists/devicetree-compiler/msg02123.html
- 593. https://www.spinics.net/lists/devicetree-compiler/msg02124.html
- 594. https://www.spinics.net/lists/devicetree-compiler/msg02126.html
- 595. https://www.spinics.net/lists/devicetree-compiler/msg02129.html
- 596. https://www.spinics.net/lists/devicetree-compiler/msg02127.html
- 597. https://www.spinics.net/lists/devicetree-compiler/msg02130.html
- 598. https://www.spinics.net/lists/devicetree-compiler/msg02105.html
- 599. https://www.spinics.net/lists/devicetree-compiler/msg02106.html
- 600. https://www.spinics.net/lists/devicetree-compiler/msg02107.html
- 601. https://www.spinics.net/lists/devicetree-compiler/msg02110.html
- 602. https://www.spinics.net/lists/devicetree-compiler/msg02111.html
- 603. https://www.spinics.net/lists/devicetree-compiler/msg02114.html
- 604. https://www.spinics.net/lists/devicetree-compiler/msg02115.html
- 605. https://www.spinics.net/lists/devicetree-compiler/msg02116.html
- 606. https://www.spinics.net/lists/devicetree-compiler/msg02117.html
- 607. https://www.spinics.net/lists/devicetree-compiler/msg02118.html
- 608. https://www.spinics.net/lists/devicetree-compiler/msg02119.html
- 609. https://www.spinics.net/lists/devicetree-compiler/msg02122.html
- 610. https://www.spinics.net/lists/devicetree-compiler/msg02125.html
- 611. https://www.spinics.net/lists/devicetree-compiler/msg02131.html
- 612. https://www.spinics.net/lists/devicetree-compiler/msg02120.html
- 613. https://www.spinics.net/lists/devicetree-compiler/msg02109.html
- 614. https://www.spinics.net/lists/devicetree-compiler/msg02108.html
- 615. https://www.spinics.net/lists/devicetree-compiler/msg02112.html
- 616. https://www.spinics.net/lists/devicetree-compiler/msg02113.html
- 617. https://www.spinics.net/lists/devicetree-compiler/msg02121.html
- 618. https://www.spinics.net/lists/devicetree-compiler/msg02128.html
- 619. https://www.spinics.net/lists/devicetree-compiler/msg02101.html
- 620. https://www.spinics.net/lists/devicetree-compiler/msg02102.html
- 621. https://www.spinics.net/lists/devicetree-compiler/msg02076.html
- 622. https://www.spinics.net/lists/devicetree-compiler/msg02059.html
- 623. https://www.spinics.net/lists/devicetree-compiler/msg02060.html
- 624. https://www.spinics.net/lists/devicetree-compiler/msg02061.html
- 625. https://www.spinics.net/lists/devicetree-compiler/msg02087.html
- 626. https://www.spinics.net/lists/devicetree-compiler/msg02062.html
- 627. https://www.spinics.net/lists/devicetree-compiler/msg02088.html
- 628. https://www.spinics.net/lists/devicetree-compiler/msg02063.html
- 629. https://www.spinics.net/lists/devicetree-compiler/msg02089.html
- 630. https://www.spinics.net/lists/devicetree-compiler/msg02064.html
- 631. https://www.spinics.net/lists/devicetree-compiler/msg02091.html
- 632. https://www.spinics.net/lists/devicetree-compiler/msg02065.html
- 633. https://www.spinics.net/lists/devicetree-compiler/msg02066.html
- 634. https://www.spinics.net/lists/devicetree-compiler/msg02067.html
- 635. https://www.spinics.net/lists/devicetree-compiler/msg02090.html
- 636. https://www.spinics.net/lists/devicetree-compiler/msg02068.html
- 637. https://www.spinics.net/lists/devicetree-compiler/msg02069.html
- 638. https://www.spinics.net/lists/devicetree-compiler/msg02070.html
- 639. https://www.spinics.net/lists/devicetree-compiler/msg02071.html
- 640. https://www.spinics.net/lists/devicetree-compiler/msg02093.html
- 641. https://www.spinics.net/lists/devicetree-compiler/msg02072.html
- 642. https://www.spinics.net/lists/devicetree-compiler/msg02092.html
- 643. https://www.spinics.net/lists/devicetree-compiler/msg02094.html
- 644. https://www.spinics.net/lists/devicetree-compiler/msg02104.html
- 645. https://www.spinics.net/lists/devicetree-compiler/msg02073.html
- 646. https://www.spinics.net/lists/devicetree-compiler/msg02077.html
- 647. https://www.spinics.net/lists/devicetree-compiler/msg02159.html
- 648. https://www.spinics.net/lists/devicetree-compiler/msg02166.html
- 649. https://www.spinics.net/lists/devicetree-compiler/msg02208.html
- 650. https://www.spinics.net/lists/devicetree-compiler/msg02210.html
- 651. https://www.spinics.net/lists/devicetree-compiler/msg02214.html
- 652. https://www.spinics.net/lists/devicetree-compiler/msg02223.html
- 653. https://www.spinics.net/lists/devicetree-compiler/msg02224.html
- 654. https://www.spinics.net/lists/devicetree-compiler/msg02328.html
- 655. https://www.spinics.net/lists/devicetree-compiler/msg02357.html
- 656. https://www.spinics.net/lists/devicetree-compiler/msg02078.html
- 657. https://www.spinics.net/lists/devicetree-compiler/msg02080.html
- 658. https://www.spinics.net/lists/devicetree-compiler/msg02034.html
- 659. https://www.spinics.net/lists/devicetree-compiler/msg02038.html
- 660. https://www.spinics.net/lists/devicetree-compiler/msg02039.html
- 661. https://www.spinics.net/lists/devicetree-compiler/msg02040.html
- 662. https://www.spinics.net/lists/devicetree-compiler/msg02044.html
- 663. https://www.spinics.net/lists/devicetree-compiler/msg02046.html
- 664. https://www.spinics.net/lists/devicetree-compiler/msg02047.html
- 665. https://www.spinics.net/lists/devicetree-compiler/msg02048.html
- 666. https://www.spinics.net/lists/devicetree-compiler/msg02049.html
- 667. https://www.spinics.net/lists/devicetree-compiler/msg02050.html
- 668. https://www.spinics.net/lists/devicetree-compiler/msg02051.html
- 669. https://www.spinics.net/lists/devicetree-compiler/msg02017.html
- 670. https://www.spinics.net/lists/
- 671. https://www.spinics.net/lists/devicetree/
- 672. https://www.spinics.net/lists/devicetree-spec/
- 673. https://www.spinics.net/lists/linux-usb/
- 674. http://www.ske-art.com/z/biglist.php
- 675. https://www.spinics.net/lists/linux-scsi/
- 676. https://yosemitenews.info/
- 677. https://www.spinics.net/lists/
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02744.html][PATCH v2] pylibfdt: Add support for fdt_get_alias(), Appana Durga Kedareswara rao
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02747.html]Re: [PATCH v2] pylibfdt: Add support for fdt_get_alias(), David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02739.html][PATCH] pylibfdt: Correct the FdtSw example, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02741.html]Re: [PATCH] pylibfdt: Correct the FdtSw example, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02742.html]Re: [PATCH] pylibfdt: Correct the FdtSw example, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02738.html][PATCH] pylibfdt: Add support for fdt_get_alias(), Appana Durga Kedareswara rao
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02740.html]Re: [PATCH] pylibfdt: Add support for fdt_get_alias(), Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02743.html]RE: [PATCH] pylibfdt: Add support for fdt_get_alias(), Appana Durga Kedareswara Rao
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02745.html]Re: [PATCH] pylibfdt: Add support for fdt_get_alias(), David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02746.html]RE: [PATCH] pylibfdt: Add support for fdt_get_alias(), Appana Durga Kedareswara Rao
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02725.html][PATCH 0/7] SPDX Conversion, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02732.html][PATCH 1/7] dtc: Replace GPLv2 boilerplate/reference with SPDX tags, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02726.html][PATCH 3/7] pylibfdt: Replace dual GPLv2/BSD license boilerplate with SPDX tags, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02727.html][PATCH 2/7] libfdt: Replace GPL/BSD boilerplate/reference with SPDX tags, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02728.html][PATCH 5/7] libfdt: Add dual GPL/BSD SPDX tags to files missing license text, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02729.html][PATCH 6/7] dtc: Add GPLv2 SPDX tags to files missing license text, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02730.html][PATCH 7/7] README.license: Update to reflect SPDX tag usage, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02731.html][PATCH 4/7] tests: Replace license boilerplate with SPDX tags, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02734.html]Re: [PATCH 4/7] tests: Replace license boilerplate with SPDX tags, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02733.html]Re: [PATCH 0/7] SPDX Conversion, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02711.html][PATCH] Fix typos in various documentation and source files, Thomas Huth
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02715.html]Re: [PATCH] Fix typos in various documentation and source files, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02710.html][PATCH] Update the GPL2 text to the latest revision, Thomas Huth
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02714.html]Re: [PATCH] Update the GPL2 text to the latest revision, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02709.html][PATCH] livetree: add missing type markers in generated overlay properties, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02719.html]Re: [PATCH] livetree: add missing type markers in generated overlay properties, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02720.html]Re: [PATCH] livetree: add missing type markers in generated overlay properties, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02704.html][PATCH v4 0/3] libfdt error handling fix and no_name_dedup, Nicholas Piggin
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02707.html][PATCH v4 1/3] libfdt: Ensure fdt_add_property frees allocated name string on failure, Nicholas Piggin
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02708.html]Re: [PATCH v4 1/3] libfdt: Ensure fdt_add_property frees allocated name string on failure, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02705.html][PATCH v4 2/3] libfdt: Introduce fdt_create_with_flags(), Nicholas Piggin
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02706.html][PATCH v4 3/3] libfdt: Add FDT_CREATE_FLAG_NO_NAME_DEDUP flag that trades size for speed, Nicholas Piggin
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02695.html][PATCH v3 1/2] libfdt: Introduce fdt_create_with_flags(), Nicholas Piggin
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02696.html][PATCH v3 2/2] libfdt: Add FDT_CREATE_FLAG_NO_NAME_DEDUP flag that trades size for speed, Nicholas Piggin
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02697.html]Re: [PATCH v3 2/2] libfdt: Add FDT_CREATE_FLAG_NO_NAME_DEDUP flag that trades size for speed, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02699.html]Re: [PATCH v3 2/2] libfdt: Add FDT_CREATE_FLAG_NO_NAME_DEDUP flag that trades size for speed, Nicholas Piggin
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02701.html]Re: [PATCH v3 2/2] libfdt: Add FDT_CREATE_FLAG_NO_NAME_DEDUP flag that trades size for speed, Nicholas Piggin
+                              - [https://www.spinics.net/lists/devicetree-compiler/msg02702.html]Re: [PATCH v3 2/2] libfdt: Add FDT_CREATE_FLAG_NO_NAME_DEDUP flag that trades size for speed, David Gibson
+                                   = [https://www.spinics.net/lists/devicetree-compiler/msg02703.html]Re: [PATCH v3 2/2] libfdt: Add FDT_CREATE_FLAG_NO_NAME_DEDUP flag that trades size for speed, Nicholas Piggin
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02698.html]Re: [PATCH v3 1/2] libfdt: Introduce fdt_create_with_flags(), David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02691.html][PATCH v2 1/2] libfdt: Introduce fdt_create_with_flags(), Nicholas Piggin
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02692.html][PATCH v2 2/2] libfdt: Add FDT_CREATE_FLAG_FAST flag that trades size for speed, Nicholas Piggin
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02693.html]Re: [PATCH v2 1/2] libfdt: Introduce fdt_create_with_flags(), Nicholas Piggin
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02685.html][PATCH 1/2] libfdt: Introduce fdt_create_with_flags(), Nicholas Piggin
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02686.html][PATCH 2/2] libfdt: Add FDT_CREATE_FLAG_FAST flag that trades size for speed, Nicholas Piggin
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02687.html]Re: [PATCH 2/2] libfdt: Add FDT_CREATE_FLAG_FAST flag that trades size for speed, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02689.html]Re: [PATCH 2/2] libfdt: Add FDT_CREATE_FLAG_FAST flag that trades size for speed, Nicholas Piggin
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02694.html]Re: [PATCH 2/2] libfdt: Add FDT_CREATE_FLAG_FAST flag that trades size for speed, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02688.html]Re: [PATCH 1/2] libfdt: Introduce fdt_create_with_flags(), David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02690.html]Re: [PATCH 1/2] libfdt: Introduce fdt_create_with_flags(), Nicholas Piggin
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02684.html][PATCH] RFC: Python-based device-tree validation, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02700.html]Re: [PATCH] RFC: Python-based device-tree validation, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02712.html]Re: [PATCH] RFC: Python-based device-tree validation, Simon Glass
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02683.html][PATCH] libfdt: Add fdt_property_nocompress variants that trade size for speed, Nicholas Piggin
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02678.html][PATCH v5 0/1] libfdt: add fdt_appendprop_addrrange(), AKASHI Takahiro
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02679.html][PATCH v5 1/1] libfdt: add fdt_append_addrrange(), AKASHI Takahiro
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02680.html]Re: [PATCH v5 1/1] libfdt: add fdt_append_addrrange(), David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02681.html]Re: [PATCH v5 1/1] libfdt: add fdt_append_addrrange(), AKASHI Takahiro
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02649.html][PATCH v4 0/1] libfdt: add fdt_appendprop_addrrange(), AKASHI Takahiro
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02650.html][PATCH v4 1/1] libfdt: add fdt_append_addrrange(), AKASHI Takahiro
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02651.html]Re: [PATCH v4 1/1] libfdt: add fdt_append_addrrange(), David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02663.html]Re: [PATCH v4 1/1] libfdt: add fdt_append_addrrange(), AKASHI Takahiro
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02668.html]Re: [PATCH v4 1/1] libfdt: add fdt_append_addrrange(), David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02646.html][PATCH resend] checks: Do not omit nodes with labels if symbol generation is requested, Chen-Yu Tsai
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02647.html]Re: [PATCH resend] checks: Do not omit nodes with labels if symbol generation is requested, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02643.html][PATCH v4 1/3] libfdt: Add new maximum phandle lookup function, Thierry Reding
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02644.html][PATCH v4 2/3] libfdt: Use fdt_find_max_phandle(), Thierry Reding
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02645.html][PATCH v4 3/3] libfdt: Add phandle generation helper, Thierry Reding
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02653.html]Re: [PATCH v4 1/3] libfdt: Add new maximum phandle lookup function, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02657.html]Re: [PATCH v4 1/3] libfdt: Add new maximum phandle lookup function, Thierry Reding
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02631.html][PATCH v3] libfdt: Add phandle generation helper, Thierry Reding
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02632.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Frank Rowand
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02634.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Thierry Reding
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02635.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Frank Rowand
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02636.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Thierry Reding
+                              - [https://www.spinics.net/lists/devicetree-compiler/msg02637.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Frank Rowand
+                                   = [https://www.spinics.net/lists/devicetree-compiler/msg02641.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Thierry Reding
+                                   * [https://www.spinics.net/lists/devicetree-compiler/msg02652.html]Re: [PATCH v3] libfdt: Add phandle generation helper, David Gibson
+                                   + [https://www.spinics.net/lists/devicetree-compiler/msg02665.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Frank Rowand
+                                   o [https://www.spinics.net/lists/devicetree-compiler/msg02673.html]Re: [PATCH v3] libfdt: Add phandle generation helper, David Gibson
+                                   # [https://www.spinics.net/lists/devicetree-compiler/msg02675.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Frank Rowand
+                                   # [https://www.spinics.net/lists/devicetree-compiler/msg02677.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Thierry Reding
+                                   @ [https://www.spinics.net/lists/devicetree-compiler/msg02682.html]Re: [PATCH v3] libfdt: Add phandle generation helper, David Gibson
+                                   * [https://www.spinics.net/lists/devicetree-compiler/msg02664.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Frank Rowand
+                                   + [https://www.spinics.net/lists/devicetree-compiler/msg02667.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Frank Rowand
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02633.html]Re: [PATCH v3] libfdt: Add phandle generation helper, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02638.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Frank Rowand
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02639.html]Re: [PATCH v3] libfdt: Add phandle generation helper, David Gibson
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02640.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Thierry Reding
+                              - [https://www.spinics.net/lists/devicetree-compiler/msg02642.html]Re: [PATCH v3] libfdt: Add phandle generation helper, David Gibson
+                              - [https://www.spinics.net/lists/devicetree-compiler/msg02666.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Frank Rowand
+                                   = [https://www.spinics.net/lists/devicetree-compiler/msg02669.html]Re: [PATCH v3] libfdt: Add phandle generation helper, David Gibson
+                                   * [https://www.spinics.net/lists/devicetree-compiler/msg02670.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Frank Rowand
+                                   + [https://www.spinics.net/lists/devicetree-compiler/msg02671.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Frank Rowand
+                                   + [https://www.spinics.net/lists/devicetree-compiler/msg02672.html]Re: [PATCH v3] libfdt: Add phandle generation helper, David Gibson
+                                   o [https://www.spinics.net/lists/devicetree-compiler/msg02674.html]Re: [PATCH v3] libfdt: Add phandle generation helper, Frank Rowand
+                                   # [https://www.spinics.net/lists/devicetree-compiler/msg02676.html]Re: [PATCH v3] libfdt: Add phandle generation helper, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02630.html][PATCH v2] libfdt: Add phandle generation helper, Thierry Reding
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02628.html][PATCH] libfdt: Add phandle generation helper, Thierry Reding
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02629.html]Re: [PATCH] libfdt: Add phandle generation helper, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02625.html][PATCH] checks: Fix spelling in check_graph_endpoint, Leonard Crestez
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02626.html]Re: [PATCH] checks: Fix spelling in check_graph_endpoint, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02623.html][PATCH v3 0/1] libfdt: add fdt_appendprop_addrrange(), AKASHI Takahiro
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02624.html][PATCH v3 1/1] libfdt: add fdt_append_addrrange(), AKASHI Takahiro
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02627.html]Re: [PATCH v3 1/1] libfdt: add fdt_append_addrrange(), David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02648.html]Re: [PATCH v3 1/1] libfdt: add fdt_append_addrrange(), AKASHI Takahiro
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02610.html][PATCH] checks: Do not omit nodes with labels if symbol generation is requested, Chen-Yu Tsai
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02612.html]Re: [PATCH] checks: Do not omit nodes with labels if symbol generation is requested, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02613.html]Re: [PATCH] checks: Do not omit nodes with labels if symbol generation is requested, Chen-Yu Tsai
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02614.html]Re: [PATCH] checks: Do not omit nodes with labels if symbol generation is requested, David Gibson
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02615.html]Re: [PATCH] checks: Do not omit nodes with labels if symbol generation is requested, Maxime Ripard
+                              - [https://www.spinics.net/lists/devicetree-compiler/msg02616.html]Re: [PATCH] checks: Do not omit nodes with labels if symbol generation is requested, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02603.html][PATCH 1/5] pylibfdt: Proper handling of bytes/unicode strings and octal literals, frenzy
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02599.html][PATCH 3/5] pylibfdt: Test fdt.setprop take bytes on Python 3, add error handling, frenzy
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02608.html]Re: [PATCH 3/5] pylibfdt: Test fdt.setprop take bytes on Python 3, add error handling, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02600.html][PATCH 2/5] pylibfdt: check_err accepts only integer as a first argument., frenzy
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02606.html]Re: [PATCH 2/5] pylibfdt: check_err accepts only integer as a first argument., David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02601.html][PATCH 5/5] pylibfdt:tests: Extend the way how to find a Python module, frenzy
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02609.html]Re: [PATCH 5/5] pylibfdt:tests: Extend the way how to find a Python module, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02602.html][PATCH 4/5] pylibfdt: Change how passing tests are recognized, frenzy
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02605.html]Re: [PATCH 4/5] pylibfdt: Change how passing tests are recognized, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02607.html]Re: [PATCH 1/5] pylibfdt: Proper handling of bytes/unicode strings and octal literals, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02586.html][PATCH] yamltree: skip generated __symbols__, __local_fixups__ and __fixups__ nodes, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02587.html]Re: [PATCH] yamltree: skip generated __symbols__, __local_fixups__ and __fixups__ nodes, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02588.html]Re: [PATCH] yamltree: skip generated __symbols__, __local_fixups__ and __fixups__ nodes, Rob Herring
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02583.html][PATCH v2 0/2] libfdt: add fdt_appendprop_addrrange(), AKASHI Takahiro
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02584.html][PATCH v2 1/2] libfdt: add fdt_append_addrrange(), AKASHI Takahiro
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02590.html]Re: [PATCH v2 1/2] libfdt: add fdt_append_addrrange(), David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02593.html]Re: [PATCH v2 1/2] libfdt: add fdt_append_addrrange(), Frank Rowand
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02594.html]Re: [PATCH v2 1/2] libfdt: add fdt_append_addrrange(), David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02596.html]Re: [PATCH v2 1/2] libfdt: add fdt_append_addrrange(), AKASHI Takahiro
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02617.html]Re: [PATCH v2 1/2] libfdt: add fdt_append_addrrange(), AKASHI Takahiro
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02618.html]Re: [PATCH v2 1/2] libfdt: add fdt_append_addrrange(), David Gibson
+                              - [https://www.spinics.net/lists/devicetree-compiler/msg02622.html]Re: [PATCH v2 1/2] libfdt: add fdt_append_addrrange(), AKASHI Takahiro
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02585.html][PATCH v2 2/2] tests: add fdt_appendprop_addrrange() test, AKASHI Takahiro
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02591.html]Re: [PATCH v2 2/2] tests: add fdt_appendprop_addrrange() test, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02595.html]Re: [PATCH v2 2/2] tests: add fdt_appendprop_addrrange() test, AKASHI Takahiro
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02589.html]Re: [PATCH v2 0/2] libfdt: add fdt_appendprop_addrrange(), AKASHI Takahiro
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02592.html]Re: [PATCH v2 0/2] libfdt: add fdt_appendprop_addrrange(), Frank Rowand
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02572.html]Re: [U-Boot] [PATCH] fdt: Fix string property comparison overflow, Simon Glass
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02568.html][PATCH] libfdt: Fix FDT_ERR_NOTFOUND typos in documentation, Geert Uytterhoeven
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02570.html]Re: [PATCH] libfdt: Fix FDT_ERR_NOTFOUND typos in documentation, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02567.html][PATCH] libfdt: Fix fdt_getprop_by_offset() parameter name in documentation, Geert Uytterhoeven
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02569.html]Re: [PATCH] libfdt: Fix fdt_getprop_by_offset() parameter name in documentation, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02563.html][PATCH] checks: Add unit address check if node is enabled, Kumar Gala
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02564.html]Re: [PATCH] checks: Add unit address check if node is enabled, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02560.html][PATCH 1/2] libfdt: add fdt_setprop_reg(), AKASHI Takahiro
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02561.html][PATCH 2/2] tests: add fdt_setprop_reg() test, AKASHI Takahiro
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02565.html]Re: [PATCH 1/2] libfdt: add fdt_setprop_reg(), Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02566.html]Re: [PATCH 1/2] libfdt: add fdt_setprop_reg(), AKASHI, Takahiro
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02571.html]Re: [PATCH 1/2] libfdt: add fdt_setprop_reg(), David Gibson
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02573.html]Re: [PATCH 1/2] libfdt: add fdt_setprop_reg(), AKASHI, Takahiro
+                              - [https://www.spinics.net/lists/devicetree-compiler/msg02579.html]Re: [PATCH 1/2] libfdt: add fdt_setprop_reg(), David Gibson
+                                   = [https://www.spinics.net/lists/devicetree-compiler/msg02580.html]Re: [PATCH 1/2] libfdt: add fdt_setprop_reg(), AKASHI, Takahiro
+                                   * [https://www.spinics.net/lists/devicetree-compiler/msg02581.html]Re: [PATCH 1/2] libfdt: add fdt_setprop_reg(), David Gibson
+                                   + [https://www.spinics.net/lists/devicetree-compiler/msg02582.html]Re: [PATCH 1/2] libfdt: add fdt_setprop_reg(), AKASHI, Takahiro
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02540.html][PATCH] Make duplicate node name checks fail, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02541.html]Re: [PATCH] Make duplicate node name checks fail, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02532.html][PATCH] checks: Fix crash with multiple source annotations, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02533.html]Re: [PATCH] checks: Fix crash with multiple source annotations, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02534.html]Re: [PATCH] checks: Fix crash with multiple source annotations, Rob Herring
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02538.html]Re: [PATCH] checks: Fix crash with multiple source annotations, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02525.html][PATCH v2 1/3] util: Add xa{v}sprintf_append functions, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02526.html][PATCH v2 2/3] checks: Make each message output atomic, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02527.html][PATCH v2 3/3] checks: Use source position information for check failures, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02529.html]Re: [PATCH v2 1/3] util: Add xa{v}sprintf_append functions, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02518.html][RFC PATCH 0/2] libfdt: Start process of adjusting the libfdt API, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02519.html][RFC PATCH 1/2] libfdt: Add a test for fdt_getprop_by_offset(), Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02528.html]Re: [RFC PATCH 1/2] libfdt: Add a test for fdt_getprop_by_offset(), David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02520.html][RFC PATCH 2/2] libfdt: Add documentation and warnings about deprecation, Simon Glass
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02511.html][PATCH 1/3] checks: Restructure check_msg to decrease indentation, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02512.html][PATCH 3/3] checks: Use source position information for check failures, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02516.html]Re: [PATCH 3/3] checks: Use source position information for check failures, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02513.html][PATCH 2/3] checks: Make each message output atomic, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02514.html]Re: [PATCH 2/3] checks: Make each message output atomic, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02517.html]Re: [PATCH 2/3] checks: Make each message output atomic, Rob Herring
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02522.html]Re: [PATCH 2/3] checks: Make each message output atomic, David Gibson
+                              - [https://www.spinics.net/lists/devicetree-compiler/msg02524.html]Re: [PATCH 2/3] checks: Make each message output atomic, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02515.html]Re: [PATCH 1/3] checks: Restructure check_msg to decrease indentation, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02503.html][PATCH] checks: check_unique_unit_address: Update to skip if node is disabled, Kumar Gala
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02504.html]Re: [PATCH] checks: check_unique_unit_address: Update to skip if node is disabled, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02562.html]Re: [PATCH] checks: check_unique_unit_address: Update to skip if node is disabled, Kumar Gala
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02506.html]Re: [PATCH] checks: check_unique_unit_address: Update to skip if node is disabled, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02508.html][PATCH v2] checks: check_unique_unit_address: Update to skip if node is disabled, Kumar Gala
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02510.html]Re: [PATCH v2] checks: check_unique_unit_address: Update to skip if node is disabled, Rob Herring
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02521.html]Re: [PATCH v2] checks: check_unique_unit_address: Update to skip if node is disabled, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02500.html][PATCH v7 0/2] annotations, Julia Lawall
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02501.html][PATCH v7 2/2] annotations: add the annotation functionality, Julia Lawall
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02502.html][PATCH v7 1/2] annotations: add positions, Julia Lawall
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02505.html]Re: [PATCH v7 0/2] annotations, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02507.html]Re: [PATCH v7 0/2] annotations, Julia Lawall
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02496.html][PATCH] checks: Update SPI bus check for 'spi-slave', Kumar Gala
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02498.html]Re: [PATCH] checks: Update SPI bus check for 'spi-slave', David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02483.html][PATCH 0/2 v6] annotations, Julia Lawall
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02484.html][PATCH 2/2 v6] annotations: add the annotation functionality, Julia Lawall
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02493.html]Re: [PATCH 2/2 v6] annotations: add the annotation functionality, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02485.html][PATCH 1/2 v6] annotations: add positions, Julia Lawall
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02494.html]Re: [PATCH 1/2 v6] annotations: add positions, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02495.html]Re: [PATCH 1/2 v6] annotations: add positions, Julia Lawall
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02497.html]Re: [PATCH 1/2 v6] annotations: add positions, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02480.html][PATCH 0/2 v5] annotations, Julia Lawall
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02481.html][PATCH 2/2 v5] annotations: add the annotation functionality, Julia Lawall
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02482.html][PATCH 1/2 v5] annotations: add positions, Julia Lawall
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02477.html][PATCH] treesource: Fix dts output for phandles in middle of a sequence of ints, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02478.html]Re: [PATCH] treesource: Fix dts output for phandles in middle of a sequence of ints, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02476.html][PATCH v2] Fix dts output of string lists with dtb and fs input, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02548.html]Re: [PATCH v2] Fix dts output of string lists with dtb and fs input, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02551.html]Re: [PATCH v2] Fix dts output of string lists with dtb and fs input, Rob Herring
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02472.html][PATCH] tests: compare the DTS generated from the tree against a model one, Lubomir Rintel
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02473.html]Re: [PATCH] tests: compare the DTS generated from the tree against a model one, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02474.html]Re: [PATCH] tests: compare the DTS generated from the tree against a model one, Lubomir Rintel
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02475.html]Re: [PATCH] tests: compare the DTS generated from the tree against a model one, Rob Herring
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02479.html]Re: [PATCH] tests: compare the DTS generated from the tree against a model one, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02465.html][PATCH] tests: Wrap check_align() calls with base_run_test(), Lubomir Rintel
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02470.html]Re: [PATCH] tests: Wrap check_align() calls with base_run_test(), David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02464.html][PATCH] treesource: When using a dummy marker, replace the existing ones, Lubomir Rintel
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02466.html][PATCH v2] treesource: When using a dummy marker, replace the existing ones, Lubomir Rintel
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02467.html]Re: [PATCH v2] treesource: When using a dummy marker, replace the existing ones, Rob Herring
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02468.html]Re: [PATCH v2] treesource: When using a dummy marker, replace the existing ones, Lubomir Rintel
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02469.html]Re: [PATCH v2] treesource: When using a dummy marker, replace the existing ones, Rob Herring
+                              - [https://www.spinics.net/lists/devicetree-compiler/msg02471.html]Re: [PATCH v2] treesource: When using a dummy marker, replace the existing ones, Lubomir Rintel
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02463.html][PATCH] tests: Add a failed test case for 'fdtoverlay' with long target path, Fabrice Gasnier
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02737.html]Re: [PATCH] tests: Add a failed test case for 'fdtoverlay' with long target path, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02460.html][PATCH] Fix dts output with a REF_PATH marker, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02462.html]Re: [PATCH] Fix dts output with a REF_PATH marker, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02438.html][PATCH v2] checks: fix simple-bus compatible matching, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02439.html]Re: [PATCH v2] checks: fix simple-bus compatible matching, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02428.html][PATCH] checks: fix simple-bus compatible matching, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02429.html]Re: [PATCH] checks: fix simple-bus compatible matching, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02433.html]Re: [PATCH] checks: fix simple-bus compatible matching, Rob Herring
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02434.html]Re: [PATCH] checks: fix simple-bus compatible matching, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02418.html][PATCH 1/2] Revert dts output formatting changes of spaces around brackets, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02419.html][PATCH 2/2] Fix dts output of string lists with dtb and fs input, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02420.html]Re: [PATCH 2/2] Fix dts output of string lists with dtb and fs input, Grant Likely
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02421.html]Re: [PATCH 2/2] Fix dts output of string lists with dtb and fs input, Rob Herring
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02422.html]Re: [PATCH 2/2] Fix dts output of string lists with dtb and fs input, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02423.html]Re: [PATCH 1/2] Revert dts output formatting changes of spaces around brackets, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02416.html][PATCH] Fix missing labels when emitting dts format, Grant Likely
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02437.html]Re: [PATCH] Fix missing labels when emitting dts format, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02408.html][PATCH v2 0/2] Fix dts label printing, Łukasz Dobrowolski
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02409.html][PATCH v2 1/2] Fix assertion when label inside sequence, Łukasz Dobrowolski
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02410.html][PATCH v2 2/2] Add label printing test, Łukasz Dobrowolski
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02417.html]Re: [PATCH v2 2/2] Add label printing test, Grant Likely
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02414.html]Re: [PATCH v2 1/2] Fix assertion when label inside sequence, Grant Likely
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02411.html]Re: [PATCH v2 0/2] Fix dts label printing, Rob Herring
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02397.html][PATCH v3 1/2] Make type_marker_length helper public, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02398.html][PATCH v3 2/2] Add support for YAML encoded output, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02404.html]Re: [PATCH v3 2/2] Add support for YAML encoded output, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02394.html][PATCH 1/2] pylibfdt: Allow delprop() to return errors, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02395.html][PATCH 2/2] pylibfdt: Add a means to add and delete notes, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02403.html]Re: [PATCH 2/2] pylibfdt: Add a means to add and delete notes, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02391.html][PATCH] dtc: Merge nodes if possible in plugins, Fredrik Markstrom
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02393.html]Re: [PATCH] dtc: Merge nodes if possible in plugins, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02399.html]Re: [PATCH] dtc: Merge nodes if possible in plugins, Fredrik Markström
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02400.html][PATCH] dtc: Merge nodes with label references if possible in plugins, Fredrik Markstrom
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02401.html]Re: [PATCH] dtc: Merge nodes if possible in plugins, Fredrik Markström
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02402.html]Re: [PATCH] dtc: Merge nodes if possible in plugins, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02406.html][PATCH V2] dtc: Merge nodes with label references if possible in plugins, Fredrik Markstrom
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02430.html]Re: [PATCH V2] dtc: Merge nodes with label references if possible in plugins, David Gibson
+                              - [https://www.spinics.net/lists/devicetree-compiler/msg02432.html]Re: [PATCH V2] dtc: Merge nodes with label references if possible in plugins, Fredrik Markström
+                                   = [https://www.spinics.net/lists/devicetree-compiler/msg02441.html]Re: [PATCH V2] dtc: Merge nodes with label references if possible in plugins, David Gibson
+                                   * [https://www.spinics.net/lists/devicetree-compiler/msg02443.html][PATCH v3] Merge nodes with local target label references, Fredrik Markstrom
+                                   + [https://www.spinics.net/lists/devicetree-compiler/msg02455.html]Re: [PATCH v3] Merge nodes with local target label references, David Gibson
+                                   o [https://www.spinics.net/lists/devicetree-compiler/msg02456.html][PATCH] Added test cases for target references, Fredrik Markstrom
+                                   # [https://www.spinics.net/lists/devicetree-compiler/msg02458.html]Re: [PATCH] Added test cases for target references, David Gibson
+                                   @ [https://www.spinics.net/lists/devicetree-compiler/msg02459.html]Re: [PATCH] Added test cases for target references, Fredrik Markström
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02380.html][PATCH 0/9] Cleanups to building of Python extension module, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02381.html][PATCH 3/9] pylibfdt: Link extension module with libfdt rather than rebuilding, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02447.html]Re: [PATCH 3/9] pylibfdt: Link extension module with libfdt rather than rebuilding, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02382.html][PATCH 2/9] pylibfdt: Correctly set build output directory, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02446.html]Re: [PATCH 2/9] pylibfdt: Correctly set build output directory, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02384.html][PATCH 4/9] pylibfdt: Simpler CFLAGS handling, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02448.html]Re: [PATCH 4/9] pylibfdt: Simpler CFLAGS handling, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02383.html][PATCH 1/9] pylibfdt: We don't need include files from the base directory, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02445.html]Re: [PATCH 1/9] pylibfdt: We don't need include files from the base directory, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02385.html][PATCH 5/9] pylibfdt: Make SETUP make variable, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02449.html]Re: [PATCH 5/9] pylibfdt: Make SETUP make variable, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02386.html][PATCH 9/9] pylibfdt: Don't have setup.py depend on where it's invoked from, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02453.html]Re: [PATCH 9/9] pylibfdt: Don't have setup.py depend on where it's invoked from, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02387.html][PATCH 8/9] pylibfdt: Eliminate run_setup make function, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02452.html]Re: [PATCH 8/9] pylibfdt: Eliminate run_setup make function, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02388.html][PATCH 6/9] pylibfdt: Don't silence setup.py when V=1, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02450.html]Re: [PATCH 6/9] pylibfdt: Don't silence setup.py when V=1, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02389.html][PATCH 7/9] pylibfdt: Improved version extraction, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02451.html]Re: [PATCH 7/9] pylibfdt: Improved version extraction, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02405.html]Re: [PATCH 0/9] Cleanups to building of Python extension module, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02407.html]Re: [PATCH 0/9] Cleanups to building of Python extension module, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02412.html]Re: [PATCH 0/9] Cleanups to building of Python extension module, Simon Glass
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02442.html]Re: [PATCH 0/9] Cleanups to building of Python extension module, David Gibson
+                              - [https://www.spinics.net/lists/devicetree-compiler/msg02444.html]Re: [PATCH 0/9] Cleanups to building of Python extension module, Simon Glass
+                                   = [https://www.spinics.net/lists/devicetree-compiler/msg02454.html]Re: [PATCH 0/9] Cleanups to building of Python extension module, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02376.html][PATCH] Fix assertion when label inside sequence, Łukasz Dobrowolski
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02372.html]Re: [RESEND PATCHv2 3/4] arm64: dts: add support for building DT overlays, Frank Rowand
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02371.html]Re: [RESEND PATCHv2 1/4] ARM: dts: add support for building DT overlays, Frank Rowand
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02374.html]Re: [RESEND PATCHv2 1/4] ARM: dts: add support for building DT overlays, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02377.html]Re: [RESEND PATCHv2 1/4] ARM: dts: add support for building DT overlays, Frank Rowand
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02370.html][PATCH] dtc: trivial '-I fs -O dts' test, Greg Kurz
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02378.html]Re: [PATCH] dtc: trivial '-I fs -O dts' test, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02379.html]Re: [PATCH] dtc: trivial '-I fs -O dts' test, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02367.html][PATCH] Kill bogus TYPE_BLOB marker type, Greg Kurz
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02368.html]Re: [PATCH] Kill bogus TYPE_BLOB marker type, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02369.html]Re: [PATCH] Kill bogus TYPE_BLOB marker type, Greg Kurz
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02363.html][PATCH] Try to guess type of TYPE_BLOB when emitting dts format, Greg Kurz
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02364.html]Re: [PATCH] Try to guess type of TYPE_BLOB when emitting dts format, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02365.html]Re: [PATCH] Try to guess type of TYPE_BLOB when emitting dts format, Greg Kurz
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02342.html][PATCH v2 1/3] parser: add TYPE_STRING marker to path references, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02343.html][PATCH v2 2/3] Make next_type_marker and type_marker_length helpers public, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02346.html]Re: [PATCH v2 2/3] Make next_type_marker and type_marker_length helpers public, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02347.html]Re: [PATCH v2 2/3] Make next_type_marker and type_marker_length helpers public, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02344.html][PATCH v2 3/3] Add support for YAML encoded output, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02373.html]Re: [PATCH v2 3/3] Add support for YAML encoded output, Rob Herring
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02390.html]Re: [PATCH v2 3/3] Add support for YAML encoded output, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02345.html]Re: [PATCH v2 1/3] parser: add TYPE_STRING marker to path references, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02337.html][PATCH v1] dtc: Add set-ldshared.patch, Geoff Levand
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02338.html]Re: [Buildroot] [PATCH v1] dtc: Add set-ldshared.patch, Thomas Petazzoni
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02339.html]Re: [Buildroot] [PATCH v1] dtc: Add set-ldshared.patch, Thomas Petazzoni
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02341.html]Re: [Buildroot] [PATCH v1] dtc: Add set-ldshared.patch, Geoff Levand
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02332.html][PATCH 1/2] checks: add I2C bus checks, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02333.html][PATCH 2/2] checks: add SPI bus checks, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02334.html]Re: [PATCH 1/2] checks: add I2C bus checks, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02331.html][PATCH] libfdt: Update to latest pylibfdt implementation, Simon Glass
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02322.html][PATCH] checks: Detect cascoda,ca8210 extclock-gpio false-positive, Paul Burton
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02323.html]Re: [PATCH] checks: Detect cascoda,ca8210 extclock-gpio false-positive, Paul Burton
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02324.html]Re: [PATCH] checks: Detect cascoda,ca8210 extclock-gpio false-positive, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02325.html]Re: [PATCH] checks: Detect cascoda,ca8210 extclock-gpio false-positive, Paul Burton
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02326.html]Re: [PATCH] checks: Detect cascoda,ca8210 extclock-gpio false-positive, Andreas Färber
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02327.html]Re: [PATCH] checks: Detect cascoda,ca8210 extclock-gpio false-positive, Rob Herring
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02319.html][PATCH v2] libfdt: fdt_address_cells() and fdt_size_cells(), Sebastian Huber
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02320.html]Re: [PATCH v2] libfdt: fdt_address_cells() and fdt_size_cells(), David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02313.html][PATCH] libfdt: fdt_address_cells() and fdt_size_cells(), Sebastian Huber
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02314.html][PATCH] libfdt: fdt_address_cells() and fdt_size_cells(), Sebastian Huber
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02315.html]Re: [PATCH] libfdt: fdt_address_cells() and fdt_size_cells(), Rob Herring
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02316.html]Re: [PATCH] libfdt: fdt_address_cells() and fdt_size_cells(), Sebastian Huber
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02317.html]Re: [PATCH] libfdt: fdt_address_cells() and fdt_size_cells(), David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02318.html]Re: [PATCH] libfdt: fdt_address_cells() and fdt_size_cells(), David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02302.html][PATCH 1/2] livetree: Set phandle properties type to uint32, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02303.html][PATCH 2/2] Add support for YAML encoded output, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02335.html]Re: [PATCH 2/2] Add support for YAML encoded output, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02336.html]Re: [PATCH 2/2] Add support for YAML encoded output, Rob Herring
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02340.html]Re: [PATCH 2/2] Add support for YAML encoded output, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02306.html]Re: [PATCH 1/2] livetree: Set phandle properties type to uint32, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02300.html][PATCH 1/5] pylibfdt: Allow switch to Python 3 via environment variable PYTHON, frenzy
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02297.html][PATCH 5/5] pylibfdt: Change how passing tests are recognized, frenzy
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02312.html]Re: [PATCH 5/5] pylibfdt: Change how passing tests are recognized, Simon Glass
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02351.html]Re: [PATCH 5/5] pylibfdt: Change how passing tests are recognized, Lumir Balhar
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02353.html]Re: [PATCH 5/5] pylibfdt: Change how passing tests are recognized, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02298.html][PATCH 2/5] pylibfdt: Proper handling of bytes/unicode strings and octal literals, frenzy
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02307.html]Re: [PATCH 2/5] pylibfdt: Proper handling of bytes/unicode strings and octal literals, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02309.html]Re: [PATCH 2/5] pylibfdt: Proper handling of bytes/unicode strings and octal literals, Simon Glass
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02348.html]Re: [PATCH 2/5] pylibfdt: Proper handling of bytes/unicode strings and octal literals, Lumir Balhar
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02299.html][PATCH 4/5] pylibfdt: Test fdt.setprop take bytes on Python 3, add error handling, frenzy
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02311.html]Re: [PATCH 4/5] pylibfdt: Test fdt.setprop take bytes on Python 3, add error handling, Simon Glass
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02352.html]Re: [PATCH 4/5] pylibfdt: Test fdt.setprop take bytes on Python 3, add error handling, Lumir Balhar
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02301.html][PATCH 3/5] pylibfdt: Fix comparison of return value., frenzy
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02304.html]Re: [PATCH 3/5] pylibfdt: Fix comparison of return value., David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02310.html]Re: [PATCH 3/5] pylibfdt: Fix comparison of return value., Simon Glass
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02350.html]Re: [PATCH 3/5] pylibfdt: Fix comparison of return value., Lumir Balhar
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02305.html]Re: [PATCH 1/5] pylibfdt: Allow switch to Python 3 via environment variable PYTHON, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02308.html]Re: [PATCH 1/5] pylibfdt: Allow switch to Python 3 via environment variable PYTHON, Simon Glass
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02349.html]Re: [PATCH 1/5] pylibfdt: Allow switch to Python 3 via environment variable PYTHON, Lumir Balhar
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02354.html]Re: [PATCH 1/5] pylibfdt: Allow switch to Python 3 via environment variable PYTHON, Simon Glass
+                              - [https://www.spinics.net/lists/devicetree-compiler/msg02355.html]Re: [PATCH 1/5] pylibfdt: Allow switch to Python 3 via environment variable PYTHON, Lumir Balhar
+                                   = [https://www.spinics.net/lists/devicetree-compiler/msg02356.html]Re: [PATCH 1/5] pylibfdt: Allow switch to Python 3 via environment variable PYTHON, Simon Glass
+                                   * [https://www.spinics.net/lists/devicetree-compiler/msg02509.html]Re: [PATCH 1/5] pylibfdt: Allow switch to Python 3 via environment variable PYTHON, Lumir Balhar
+                                   + [https://www.spinics.net/lists/devicetree-compiler/msg02530.html]Re: [PATCH 1/5] pylibfdt: Allow switch to Python 3 via environment variable PYTHON, David Gibson
+                                   o [https://www.spinics.net/lists/devicetree-compiler/msg02531.html]Re: [PATCH 1/5] pylibfdt: Allow switch to Python 3 via environment variable PYTHON, Lumir Balhar
+                                   # [https://www.spinics.net/lists/devicetree-compiler/msg02544.html]Re: [PATCH 1/5] pylibfdt: Allow switch to Python 3 via environment variable PYTHON, David Gibson
+                                   @ [https://www.spinics.net/lists/devicetree-compiler/msg02559.html]Re: [PATCH 1/5] pylibfdt: Allow switch to Python 3 via environment variable PYTHON, Lumir Balhar
+                                   - [https://www.spinics.net/lists/devicetree-compiler/msg02597.html]Re: [PATCH 1/5] pylibfdt: Allow switch to Python 3 via environment variable PYTHON, Lumir Balhar
+                                   = [https://www.spinics.net/lists/devicetree-compiler/msg02598.html]Re: [PATCH 1/5] pylibfdt: Allow switch to Python 3 via environment variable PYTHON, Simon Glass
+                                   * [https://www.spinics.net/lists/devicetree-compiler/msg02604.html]Re: [PATCH 1/5] pylibfdt: Allow switch to Python 3 via environment variable PYTHON, Lumir Balhar
+                                   + [https://www.spinics.net/lists/devicetree-compiler/msg02611.html]Re: [PATCH 1/5] pylibfdt: Allow switch to Python 3 via environment variable PYTHON, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02291.html][PATCH v6 0/1] pylibfdt: Enhance pylibfdt support to cover sequential-write, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02292.html][PATCH v6 1/1] pylibfdt: Support the sequential-write interface, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02295.html]Re: [PATCH v6 1/1] pylibfdt: Support the sequential-write interface, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02289.html][PATCH] dtc and Python 3, Lumir Balhar
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02290.html]Re: [PATCH] dtc and Python 3, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02294.html]Re: [PATCH] dtc and Python 3, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02296.html]Re: [PATCH] dtc and Python 3, Lumir Balhar
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02278.html][PATCH v5 0/2] pylibfdt: Enhance pylibfdt support to cover sequential-write, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02277.html][PATCH v5 1/2] RFC: libfdt: Copy the struct region in fdt_resize(), Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02282.html]Re: [PATCH v5 1/2] RFC: libfdt: Copy the struct region in fdt_resize(), David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02283.html]Re: [PATCH v5 1/2] RFC: libfdt: Copy the struct region in fdt_resize(), Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02279.html][PATCH v5 2/2] pylibfdt: Support the sequential-write interface, Simon Glass
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02272.html][PATCH v2 00/29] binman: Add more tests and support for updating the device tree, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02273.html][PATCH v2 07/29] libfdt: Bring in proposed pylibfdt changes, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02284.html]Re: [PATCH v2 07/29] libfdt: Bring in proposed pylibfdt changes, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02274.html][PATCH v2 08/29] libfdt: Fix the Python pack() function, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02285.html]Re: [PATCH v2 08/29] libfdt: Fix the Python pack() function, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02275.html][PATCH v2 09/29] libfdt: Add get_property() and del_node(), Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02286.html]Re: [PATCH v2 09/29] libfdt: Add get_property() and del_node(), Simon Glass
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02266.html][PATCH v4] Preserve datatype markers when emitting dts format, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02267.html]Re: [PATCH v4] Preserve datatype markers when emitting dts format, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02262.html][PATCH v4 0/1] pylibfdt: Enhance pylibfdt support to cover sequential-write, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02263.html][PATCH v4 1/1] pylibfdt: Support the sequential-write interface, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02268.html]Re: [PATCH v4 1/1] pylibfdt: Support the sequential-write interface, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02280.html]Re: [PATCH v4 1/1] pylibfdt: Support the sequential-write interface, Simon Glass
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02281.html]Re: [PATCH v4 1/1] pylibfdt: Support the sequential-write interface, David Gibson
+                              - [https://www.spinics.net/lists/devicetree-compiler/msg02293.html]Re: [PATCH v4 1/1] pylibfdt: Support the sequential-write interface, Simon Glass
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02251.html][PATCH 1/3] tests: fix grep for checks error messages, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02252.html][PATCH 2/3] tests: Fix incorrect check name 'prop_name_chars', Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02254.html]Re: [PATCH 2/3] tests: Fix incorrect check name 'prop_name_chars', David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02253.html][PATCH 3/3] checks: Check node and property names are less than 32 characters, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02256.html]Re: [PATCH 3/3] checks: Check node and property names are less than 32 characters, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02259.html]Re: [PATCH 3/3] checks: Check node and property names are less than 32 characters, Rob Herring
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02260.html]Re: [PATCH 3/3] checks: Check node and property names are less than 32 characters, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02255.html]Re: [PATCH 1/3] tests: fix grep for checks error messages, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02243.html][PATCH v3 0/4] pylibfdt: Enhance pylibfdt support to cover sequential-write, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02244.html][PATCH v3 1/4] pylibfdt: Add functions to set and get properties as strings, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02248.html]Re: [PATCH v3 1/4] pylibfdt: Add functions to set and get properties as strings, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02245.html][PATCH v3 2/4] pylibfdt: Support setting the name of a node, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02249.html]Re: [PATCH v3 2/4] pylibfdt: Support setting the name of a node, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02246.html][PATCH v3 3/4] libfdt: Add a way to determine free space, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02247.html][PATCH v3 4/4] pylibfdt: Support the sequential-write interface, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02250.html]Re: [PATCH v3 4/4] pylibfdt: Support the sequential-write interface, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02240.html][PATCH] pylibfdt: Update the bytearray size with pack(), Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02241.html]Re: [PATCH] pylibfdt: Update the bytearray size with pack(), David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02235.html][PATCH v5] pylibfdt: Allow reading integer values from properties, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02238.html]Re: [PATCH v5] pylibfdt: Allow reading integer values from properties, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02233.html][PATCH] pylibfdt: Use an unsigned type for fdt32_t, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02236.html]Re: [PATCH] pylibfdt: Use an unsigned type for fdt32_t, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02195.html][PATCH v2 00/10] pylibfdt: Enhance pylibfdt support to cover sequential-write, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02196.html][PATCH v2 01/10] pylibfdt: Reorder functions to match libfdt.h, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02197.html][PATCH v2 02/10] pylibfdt: Add support for fdt_next_node(), Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02198.html][PATCH v2 03/10] pylibfdt: Add support for the rest of the header functions, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02216.html]Re: [PATCH v2 03/10] pylibfdt: Add support for the rest of the header functions, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02218.html]Re: [PATCH v2 03/10] pylibfdt: Add support for the rest of the header functions, Simon Glass
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02225.html]Re: [PATCH v2 03/10] pylibfdt: Add support for the rest of the header functions, David Gibson
+                              - [https://www.spinics.net/lists/devicetree-compiler/msg02231.html]Re: [PATCH v2 03/10] pylibfdt: Add support for the rest of the header functions, Simon Glass
+                                   = [https://www.spinics.net/lists/devicetree-compiler/msg02232.html]Re: [PATCH v2 03/10] pylibfdt: Add support for the rest of the header functions, David Gibson
+                                   * [https://www.spinics.net/lists/devicetree-compiler/msg02234.html]Re: [PATCH v2 03/10] pylibfdt: Add support for the rest of the header functions, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02199.html][PATCH v2 04/10] pylibfdt: Add support for reading the memory reserve map, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02200.html][PATCH v2 05/10] pylibfdt: Support device-tree creation/expansion, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02201.html][PATCH v2 06/10] pylibfdt: Add functions to update properties, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02202.html][PATCH v2 07/10] pylibfdt: Add functions to set and get properties as strings, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02226.html]Re: [PATCH v2 07/10] pylibfdt: Add functions to set and get properties as strings, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02203.html][PATCH v2 08/10] pylibfdt: Avoid accessing the internal _fdt member in tests, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02204.html][PATCH v2 09/10] pylibfdt: Support setting the name of a node, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02227.html]Re: [PATCH v2 09/10] pylibfdt: Support setting the name of a node, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02205.html][PATCH v2 10/10] pylibfdt: Support the sequential-write interface, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02228.html]Re: [PATCH v2 10/10] pylibfdt: Support the sequential-write interface, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02242.html]Re: [PATCH v2 10/10] pylibfdt: Support the sequential-write interface, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02229.html]Re: [PATCH v2 00/10] pylibfdt: Enhance pylibfdt support to cover sequential-write, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02237.html]Re: [PATCH v2 00/10] pylibfdt: Enhance pylibfdt support to cover sequential-write, David Gibson
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02239.html]Re: [PATCH v2 00/10] pylibfdt: Enhance pylibfdt support to cover sequential-write, Simon Glass
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02192.html][PATCH v4 1/2] pylibfdt: Return string instead of bytearray from getprop(), Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02193.html][PATCH v4 2/2] pylibfdt: Allow reading integer values from properties, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02221.html]Re: [PATCH v4 2/2] pylibfdt: Allow reading integer values from properties, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02213.html]Re: [PATCH v4 1/2] pylibfdt: Return string instead of bytearray from getprop(), David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02186.html][PATCH v2 1/2] fdtget: Add documentation, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02187.html][PATCH v2 2/2] fdtput: Add documentation, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02212.html]Re: [PATCH v2 1/2] fdtget: Add documentation, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02182.html][PATCH 00/29] binman: Add more tests and support for updating the device tree, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02183.html][PATCH 07/29] libfdt: Bring in proposed pylibfdt changes, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02184.html][PATCH 08/29] libfdt: Fix the Python pack() function, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02185.html][PATCH 09/29] libfdt: Add get_property() and del_node(), Simon Glass
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02156.html][PATCH] scripts/dtc: Fixed format mismatch in fprintf, nixiaoming
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02157.html]Re: [PATCH] scripts/dtc: Fixed format mismatch in fprintf, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02158.html]Re: [PATCH] scripts/dtc: Fixed format mismatch in fprintf, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02160.html]Re: [PATCH] scripts/dtc: Fixed format mismatch in fprintf, Frank Rowand
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02167.html]Re: [PATCH] scripts/dtc: Fixed format mismatch in fprintf, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02146.html][PATCH 01/10] pylibfdt: Reorder functions to match libfdt.h, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02151.html][PATCH 02/10] pylibfdt: Add support for fdt_next_node(), Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02173.html]Re: [PATCH 02/10] pylibfdt: Add support for fdt_next_node(), David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02152.html][PATCH 03/10] pylibfdt: Add support for the rest of the header functions, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02174.html]Re: [PATCH 03/10] pylibfdt: Add support for the rest of the header functions, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02153.html][PATCH 04/10] pylibfdt: Add support for reading the memory reserve map, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02175.html]Re: [PATCH 04/10] pylibfdt: Add support for reading the memory reserve map, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02147.html][PATCH 06/10] pylibfdt: Add functions to update properties, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02177.html]Re: [PATCH 06/10] pylibfdt: Add functions to update properties, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02148.html][PATCH 07/10] pylibfdt: Add functions to set and get properties as strings, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02178.html]Re: [PATCH 07/10] pylibfdt: Add functions to set and get properties as strings, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02149.html][PATCH 08/10] pylibfdt: Avoid accessing the internal _fdt member in tests, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02179.html]Re: [PATCH 08/10] pylibfdt: Avoid accessing the internal _fdt member in tests, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02154.html][PATCH 05/10] pylibfdt: Support device-tree creation/expansion, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02176.html]Re: [PATCH 05/10] pylibfdt: Support device-tree creation/expansion, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02194.html]Re: [PATCH 05/10] pylibfdt: Support device-tree creation/expansion, Simon Glass
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02211.html]Re: [PATCH 05/10] pylibfdt: Support device-tree creation/expansion, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02150.html][PATCH 09/10] pylibfdt: Support setting the name of a node, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02180.html]Re: [PATCH 09/10] pylibfdt: Support setting the name of a node, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02155.html][PATCH 10/10] pylibfdt: Support the sequential-write interface, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02172.html]Re: [PATCH 01/10] pylibfdt: Reorder functions to match libfdt.h, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02143.html][PATCH 1/2] fdtget: Add documentation, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02144.html][PATCH 2/2] fdtput: Add documentation, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02171.html]Re: [PATCH 1/2] fdtget: Add documentation, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02142.html][PATCH v3] fdtget: Support decoding phandles, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02145.html]Re: [PATCH v3] fdtget: Support decoding phandles, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02181.html]Re: [PATCH v3] fdtget: Support decoding phandles, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02136.html][PATCH v3 1/4] pylibfdt: Add a method to access the device tree directly, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02139.html][PATCH v3 2/4] Make Property a subclass of bytearray, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02163.html]Re: [PATCH v3 2/4] Make Property a subclass of bytearray, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02188.html]Re: [PATCH v3 2/4] Make Property a subclass of bytearray, Simon Glass
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02209.html]Re: [PATCH v3 2/4] Make Property a subclass of bytearray, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02137.html][PATCH v3 3/4] pylibfdt: Return string instead of bytearray from getprop(), Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02162.html]Re: [PATCH v3 3/4] pylibfdt: Return string instead of bytearray from getprop(), David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02168.html]Re: [PATCH v3 3/4] pylibfdt: Return string instead of bytearray from getprop(), David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02138.html][PATCH v3 4/4] pylibfdt: Allow reading integer values from properties, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02169.html]Re: [PATCH v3 4/4] pylibfdt: Allow reading integer values from properties, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02190.html]Re: [PATCH v3 4/4] pylibfdt: Allow reading integer values from properties, Simon Glass
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02215.html]Re: [PATCH v3 4/4] pylibfdt: Allow reading integer values from properties, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02164.html]Re: [PATCH v3 1/4] pylibfdt: Add a method to access the device tree directly, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02189.html]Re: [PATCH v3 1/4] pylibfdt: Add a method to access the device tree directly, Simon Glass
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02132.html][PATCH v3 0/2] Preserve datatypes in DTC, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02133.html][PATCH v3 1/2] Preserve datatype information when parsing dts, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02134.html][PATCH v3 2/2] Preserve datatype markers when emitting dts format, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02257.html]Re: [PATCH v3 2/2] Preserve datatype markers when emitting dts format, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02258.html]Re: [PATCH v3 2/2] Preserve datatype markers when emitting dts format, Rob Herring
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02261.html]Re: [PATCH v3 2/2] Preserve datatype markers when emitting dts format, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02135.html]Re: [PATCH v3 0/2] Preserve datatypes in DTC, Grant Likely
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02161.html]Re: [PATCH v3 0/2] Preserve datatypes in DTC, Rob Herring
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02165.html]Re: [PATCH v3 0/2] Preserve datatypes in DTC, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02123.html][PATCH v2 1/2] dtc: add ability to make nodes conditional on them being referenced, Maxime Ripard
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02124.html][PATCH v2 2/2] tests: Add a test case for the delete-if-unreferenced keyword, Maxime Ripard
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02126.html]Re: [PATCH v2 2/2] tests: Add a test case for the delete-if-unreferenced keyword, Rob Herring
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02129.html]Re: [PATCH v2 2/2] tests: Add a test case for the delete-if-unreferenced keyword, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02127.html]Re: [PATCH v2 1/2] dtc: add ability to make nodes conditional on them being referenced, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02130.html]Re: [PATCH v2 1/2] dtc: add ability to make nodes conditional on them being referenced, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02101.html][PATCH v2] checks: drop warning for missing PCI bridge bus-range, Rob Herring
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02102.html]Re: [PATCH v2] checks: drop warning for missing PCI bridge bus-range, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02076.html][PATCH v7] libfdt: add helper to read address and size from reg, Andrew F. Davis
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02059.html][PATCHv2 00/13] Improve libfdt's memory safety, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02060.html][PATCHv2 04/13] libfdt: Safer access to strings section, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02061.html][PATCHv2 01/13] libfdt: Clean up header checking functions, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02087.html]Re: [PATCHv2 01/13] libfdt: Clean up header checking functions, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02062.html][PATCHv2 02/13] libfdt: Improve sequential write state checking, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02088.html]Re: [PATCHv2 02/13] libfdt: Improve sequential write state checking, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02063.html][PATCHv2 03/13] libfdt: Make fdt_check_header() more thorough, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02089.html]Re: [PATCHv2 03/13] libfdt: Make fdt_check_header() more thorough, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02064.html][PATCHv2 06/13] libfdt: Safer access to memory reservations, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02091.html]Re: [PATCHv2 06/13] libfdt: Safer access to memory reservations, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02065.html][PATCHv2 07/13] Consolidate utilfdt_read_len() variants, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02066.html][PATCHv2 08/13] libfdt: Add fdt_header_size(), David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02067.html][PATCHv2 05/13] libfdt: Propagate name errors in fdt_getprop_by_offset(), David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02090.html]Re: [PATCHv2 05/13] libfdt: Propagate name errors in fdt_getprop_by_offset(), Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02068.html][PATCHv2 10/13] tests: Remove unused #define, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02069.html][PATCHv2 11/13] tests: Better handling of valgrind errors saving blobs, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02070.html][PATCHv2 09/13] Use size_t for blob lengths in utilfdt_read*, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02071.html][PATCHv2 13/13] libfdt: Add fdt_check_full() function, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02093.html]Re: [PATCHv2 13/13] libfdt: Add fdt_check_full() function, Simon Glass
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02072.html][PATCHv2 12/13] tests: Use valgrind client requests for better checking, David Gibson
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02092.html]Re: [PATCHv2 12/13] tests: Use valgrind client requests for better checking, Simon Glass
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02094.html]Re: [PATCHv2 12/13] tests: Use valgrind client requests for better checking, David Gibson
+                              - [https://www.spinics.net/lists/devicetree-compiler/msg02104.html]Re: [PATCHv2 12/13] tests: Use valgrind client requests for better checking, David Gibson
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02073.html]Re: [PATCHv2 00/13] Improve libfdt's memory safety, Simon Glass
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02077.html]Re: [PATCHv2 00/13] Improve libfdt's memory safety, David Gibson
+                    # [https://www.spinics.net/lists/devicetree-compiler/msg02159.html]Re: [PATCHv2 00/13] Improve libfdt's memory safety, Simon Glass
+                         @ [https://www.spinics.net/lists/devicetree-compiler/msg02166.html]Re: [PATCHv2 00/13] Improve libfdt's memory safety, David Gibson
+                              - [https://www.spinics.net/lists/devicetree-compiler/msg02208.html]Re: [PATCHv2 00/13] Improve libfdt's memory safety, Alexey Kardashevskiy
+                                   = [https://www.spinics.net/lists/devicetree-compiler/msg02210.html]Re: [PATCHv2 00/13] Improve libfdt's memory safety, David Gibson
+                                   * [https://www.spinics.net/lists/devicetree-compiler/msg02214.html]Re: [PATCHv2 00/13] Improve libfdt's memory safety, Alexey Kardashevskiy
+                                   + [https://www.spinics.net/lists/devicetree-compiler/msg02223.html]Re: [PATCHv2 00/13] Improve libfdt's memory safety, David Gibson
+                                   o [https://www.spinics.net/lists/devicetree-compiler/msg02224.html]Re: [PATCHv2 00/13] Improve libfdt's memory safety, Alexey Kardashevskiy
+                                   # [https://www.spinics.net/lists/devicetree-compiler/msg02328.html]Re: [PATCHv2 00/13] Improve libfdt's memory safety, David Gibson
+                                   @ [https://www.spinics.net/lists/devicetree-compiler/msg02357.html]Re: [PATCHv2 00/13] Improve libfdt's memory safety, Alexey Kardashevskiy
+          + [https://www.spinics.net/lists/devicetree-compiler/msg02078.html]Re: [PATCHv2 00/13] Improve libfdt's memory safety, Alexey Kardashevskiy
+               o [https://www.spinics.net/lists/devicetree-compiler/msg02080.html]Re: [PATCHv2 00/13] Improve libfdt's memory safety, David Gibson
+     * [https://www.spinics.net/lists/devicetree-compiler/msg02017.html][PATCH dtc] checks: Print duplicate node name instead of parent name, Geert Uytterhoeven
