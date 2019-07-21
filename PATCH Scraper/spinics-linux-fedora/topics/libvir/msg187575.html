@@ -1,0 +1,344 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v4 8/8] qemu_driver: hook up	query&#45;cpu&#45;model&#45;comparison -->
+<!--X-From-R13: Qbyyva Inyyvat &#60;jnyyvatNyvahk.voz.pbz> -->
+<!--X-Date: Wed, 17 Jul 2019 07:04:40 &#45;0700 -->
+<!--X-Message-Id: 1563372209&#45;23466&#45;9&#45;git&#45;send&#45;email&#45;walling@linux.ibm.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1563372209&#45;23466&#45;1&#45;git&#45;send&#45;email&#45;walling@linux.ibm.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v4 8/8] qemu_driver: hook up	query-cpu-model-comparison</title>
+<meta name="description" content="libvirt: [PATCH v4 8/8] qemu_driver: hook up	query-cpu-model-comparison">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v4 8/8] qemu_driver: hook up	query-cpu-model-comparison</h1>
+[<a href="msg187574.html">Date Prev</a>][<a href="msg187576.html">Date Next</a>][<a href="msg187574.html">Thread Prev</a>][<a href="msg187576.html">Thread Next</a>][<a href="maillist.html#187575">Date Index</a>][<a href="index.html#187575">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v4 8/8] qemu_driver: hook up	query-cpu-model-comparison</li>
+<li><em>From</em>: Collin Walling &lt;walling@xxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 17 Jul 2019 10:03:29 -0400</li>
+<li><em>Cc</em>: bwalk@xxxxxxxxxxxxx, jdenemar@xxxxxxxxxx, danielhb413@xxxxxxxxx,        david@xxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187571.html">1563372209-23466-1-git-send-email-walling@linux.ibm.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187571.html">1563372209-23466-1-git-send-email-walling@linux.ibm.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This command is hooked into the virsh hypervisor-cpu-compare command.
+As such, the CPU model XML provided to the command will be compared
+to the hypervisor CPU contained in the QEMU capabilities file for the
+appropriate QEMU binary (for s390x, this CPU definition can be observed
+via virsh domcapabilities).
+
+s390x can report that the first model (A) is a subset of the second
+(B). If A is the hypervisor CPU and a subset of B (the CPU contained
+in the XML), then B would not be able to run on this machine and thus
+we will report that CPU model B is incompatible.
+
+Signed-off-by: Collin Walling &lt;walling@xxxxxxxxxxxxx&gt;
+Reviewed-by: Daniel Henrique Barboza &lt;danielh413@xxxxxxxxx&gt;
+---
+ src/qemu/qemu_capabilities.c | 48 ++++++++++++++++++++++++++++++++++++++++++++
+ src/qemu/qemu_capabilities.h |  9 +++++++++
+ src/qemu/qemu_driver.c       | 11 ++++++++++
+ 3 files changed, 68 insertions(+)
+
+diff --git a/src/qemu/qemu_capabilities.c b/src/qemu/qemu_capabilities.c
+index a99ebcb..20cb82b 100644
+--- a/src/qemu/qemu_capabilities.c
++++ b/src/qemu/qemu_capabilities.c
+@@ -5660,3 +5660,51 @@ virQEMUCapsCPUModelBaseline(virQEMUCapsPtr qemuCaps,
+     virCPUDefFree(cpu);
+     return baseline;
+ }
++
++virCPUCompareResult
++virQEMUCapsCPUModelComparison(virQEMUCapsPtr qemuCaps,
++                              const char *libDir,
++                              uid_t runUid,
++                              gid_t runGid,
++                              virCPUDefPtr cpu_a,
++                              virCPUDefPtr cpu_b,
++                              bool failIncompatible)
++{
++    qemuProcessQMPPtr proc = NULL;
++    qemuMonitorCPUModelInfoPtr result = NULL;
++    int ret = -1;
++
++    if (!(proc = qemuProcessQMPNew(qemuCaps-&gt;binary, libDir,
++                                   runUid, runGid, false)))
++        goto cleanup;
++
++    if (qemuProcessQMPStart(proc) &lt; 0)
++        goto cleanup;
++
++    if (qemuMonitorGetCPUModelComparison(proc-&gt;mon, cpu_a-&gt;model,
++                                         cpu_a-&gt;nfeatures, cpu_a-&gt;features,
++                                         cpu_b-&gt;model, cpu_b-&gt;nfeatures,
++                                         cpu_b-&gt;features, &amp;result) &lt; 0)
++        goto cleanup;
++
++    if (STREQ(result-&gt;name, &quot;incompatible&quot;) ||
++        STREQ(result-&gt;name, &quot;subset&quot;))
++        ret = VIR_CPU_COMPARE_INCOMPATIBLE;
++    else if (STREQ(result-&gt;name, &quot;identical&quot;))
++        ret = VIR_CPU_COMPARE_IDENTICAL;
++    else if (STREQ(result-&gt;name, &quot;superset&quot;))
++        ret = VIR_CPU_COMPARE_SUPERSET;
++
++    if (failIncompatible &amp;&amp; ret == VIR_CPU_COMPARE_INCOMPATIBLE) {
++        ret = VIR_CPU_COMPARE_ERROR;
++        virReportError(VIR_ERR_CPU_INCOMPATIBLE, NULL);
++    }
++
++ cleanup:
++    if (ret &lt; 0)
++        virQEMUCapsLogProbeFailure(qemuCaps-&gt;binary);
++
++    qemuMonitorCPUModelInfoFree(result);
++    qemuProcessQMPFree(proc);
++    return ret;
++}
+diff --git a/src/qemu/qemu_capabilities.h b/src/qemu/qemu_capabilities.h
+index 8afa05c..a62499f 100644
+--- a/src/qemu/qemu_capabilities.h
++++ b/src/qemu/qemu_capabilities.h
+@@ -673,3 +673,12 @@ virCPUDefPtr virQEMUCapsCPUModelBaseline(virQEMUCapsPtr qemuCaps,
+                                         gid_t runGid,
+                                         int ncpus,
+                                         virCPUDefPtr *cpus);
++
++virCPUCompareResult
++virQEMUCapsCPUModelComparison(virQEMUCapsPtr qemuCaps,
++                              const char *libDir,
++                              uid_t runUid,
++                              gid_t runGid,
++                              virCPUDefPtr cpu_a,
++                              virCPUDefPtr cpu_b,
++                              bool failIncompatible);
+diff --git a/src/qemu/qemu_driver.c b/src/qemu/qemu_driver.c
+index 37b9c75..3e49c04 100644
+--- a/src/qemu/qemu_driver.c
++++ b/src/qemu/qemu_driver.c
+@@ -13446,9 +13446,11 @@ qemuConnectCompareHypervisorCPU(virConnectPtr conn,
+ {
+     int ret = VIR_CPU_COMPARE_ERROR;
+     virQEMUDriverPtr driver = conn-&gt;privateData;
++    virQEMUDriverConfigPtr config = driver-&gt;config;
+     virQEMUCapsPtr qemuCaps = NULL;
+     bool failIncompatible;
+     virCPUDefPtr hvCPU;
++    virCPUDefPtr cpu;
+     virArch arch;
+     virDomainVirtType virttype;
+ 
+@@ -13483,6 +13485,14 @@ qemuConnectCompareHypervisorCPU(virConnectPtr conn,
+ 
+     if (ARCH_IS_X86(arch)) {
+         ret = virCPUCompareXML(arch, hvCPU, xmlCPU, failIncompatible);
++    } else if (ARCH_IS_S390(arch) &amp;&amp;
++               virQEMUCapsGet(qemuCaps, QEMU_CAPS_QUERY_CPU_MODEL_COMPARISON)) {
++        if (virCPUDefParseXMLHelper(xmlCPU, NULL, VIR_CPU_TYPE_AUTO, &amp;cpu) &lt; 0)
++            goto cleanup;
++
++        ret = virQEMUCapsCPUModelComparison(qemuCaps, config-&gt;libDir,
++                                            config-&gt;user, config-&gt;group,
++                                            hvCPU, cpu, failIncompatible);
+     } else {
+         virReportError(VIR_ERR_OPERATION_UNSUPPORTED,
+                        _(&quot;comparing with the hypervisor CPU is not supported &quot;
+@@ -13490,6 +13500,7 @@ qemuConnectCompareHypervisorCPU(virConnectPtr conn,
+     }
+ 
+  cleanup:
++    virCPUDefFree(cpu);
+     virObjectUnref(qemuCaps);
+     return ret;
+ }
+-- 
+2.7.4
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187574.html">[PATCH v4 2/8] qemu_monitor: implement	query-cpu-model-baseline</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187576.html">[PATCH 0/2] qemu: blockjob: Tweak config saving in legacy	block job handling (blockdev-add saga)</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187574.html">[PATCH v4 2/8] qemu_monitor: implement	query-cpu-model-baseline</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187576.html">[PATCH 0/2] qemu: blockjob: Tweak config saving in legacy	block job handling (blockdev-add saga)</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187575"><strong>Date</strong></a></li>
+<li><a href="index.html#187575"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

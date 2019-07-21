@@ -1,0 +1,567 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH RFC v2 1/2] devfreq: mt8183&#45;cci: using cpu based scaling passive_governor -->
+<!--X-From-R13: Vfva&#45;Kv Inat &#60;ufvalvNpuebzvhz.bet> -->
+<!--X-Date: Tue, 16 Jul 2019 23:44:50 &#45;0700 -->
+<!--X-Message-Id: 20190717061124.453&#45;2&#45;hsinyi@chromium.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190717061124.453&#45;1&#45;hsinyi@chromium.org -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH RFC v2 1/2] devfreq: mt8183-cci: using cpu based scaling passive_governor">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH RFC v2 1/2] devfreq: mt8183-cci: using cpu based scaling passive_governor &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH RFC v2 1/2] devfreq: mt8183-cci: using cpu based scaling passive_governor</h1>
+[<a href="msg741470.html">Date Prev</a>][<a href="msg741472.html">Date Next</a>][<a href="msg741465.html">Thread Prev</a>][<a href="msg741717.html">Thread Next</a>][<a href="maillist.html#741471">Date Index</a>][<a href="threads.html#741471">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH RFC v2 1/2] devfreq: mt8183-cci: using cpu based scaling passive_governor</li>
+<li><em>From</em>: Hsin-Yi Wang &lt;hsinyi@xxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 17 Jul 2019 14:11:25 +0800</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg741464.html">20190717061124.453-1-hsinyi@chromium.org</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This is based on mediatek's devfreq patches[1].
+
+In MT8183 SoC, CCI and little core cluster share same regulator. In original
+implementation, CCI frequency depends on regulator voltage, which results in
+bad memory access performance if tasks are loaded on other cpus other than
+little cluster (cpus 0-3).
+
+Using cpu based scaling devfreq passive governor can improve this situation,
+since in most cases, higher cpufreq implies higher loadings on the CCI, and CCI
+should consider all cpu loadings instead of only the little cluster.
+
+[1] <a  rel="nofollow" href="https://patchwork.kernel.org/patch/10946063/">https://patchwork.kernel.org/patch/10946063/</a>
+
+Signed-off-by: Hsin-Yi Wang &lt;hsinyi@xxxxxxxxxxxx&gt;
+---
+ drivers/devfreq/mt8183-cci-devfreq.c | 239 +++++++--------------------
+ 1 file changed, 56 insertions(+), 183 deletions(-)
+
+diff --git a/drivers/devfreq/mt8183-cci-devfreq.c b/drivers/devfreq/mt8183-cci-devfreq.c
+index 250c963789f3..4e8e5948ed41 100644
+--- a/drivers/devfreq/mt8183-cci-devfreq.c
++++ b/drivers/devfreq/mt8183-cci-devfreq.c
+@@ -11,189 +11,82 @@
+ #include &lt;linux/of.h&gt;
+ #include &lt;linux/platform_device.h&gt;
+ #include &lt;linux/regulator/consumer.h&gt;
++#include &lt;linux/time.h&gt;
+ 
+ #include &quot;governor.h&quot;
+ 
++#define MAX_VOLT_LIMIT		(1150000)
++
+ struct cci_devfreq {
+ 	struct devfreq *devfreq;
+ 	struct regulator *proc_reg;
+-	unsigned long proc_reg_uV;
+ 	struct clk *cci_clk;
+-	unsigned long freq;
+-	struct notifier_block nb;
+-	struct notifier_block opp_nb;
+-	int cci_min_freq;
++	int old_vproc;
++	unsigned long old_freq;
+ };
+ 
+-static int cci_devfreq_regulator_notifier(struct notifier_block *nb,
+-					  unsigned long val, void *data)
+-{
+-	int ret;
+-	struct cci_devfreq *cci_df =
+-		container_of(nb, struct cci_devfreq, nb);
+-
+-	/* deal with reduce frequency */
+-	if (val &amp; REGULATOR_EVENT_PRE_VOLTAGE_CHANGE) {
+-		struct pre_voltage_change_data *pvc_data = data;
+-
+-		if (pvc_data-&gt;min_uV &lt; pvc_data-&gt;old_uV) {
+-			cci_df-&gt;proc_reg_uV =
+-				(unsigned long)(pvc_data-&gt;min_uV);
+-			mutex_lock(&amp;cci_df-&gt;devfreq-&gt;lock);
+-			ret = update_devfreq(cci_df-&gt;devfreq);
+-			if (ret)
+-				pr_err(&quot;Fail to reduce cci frequency: %d\n&quot;,
+-				       ret);
+-			mutex_unlock(&amp;cci_df-&gt;devfreq-&gt;lock);
+-		}
+-	} else if ((val &amp; REGULATOR_EVENT_ABORT_VOLTAGE_CHANGE) &amp;&amp;
+-	    ((unsigned long)data &gt; cci_df-&gt;proc_reg_uV)) {
+-		cci_df-&gt;proc_reg_uV = (unsigned long)data;
+-		mutex_lock(&amp;cci_df-&gt;devfreq-&gt;lock);
+-		ret = update_devfreq(cci_df-&gt;devfreq);
+-		if (ret)
+-			pr_err(&quot;Fail to raise cci frequency back: %d\n&quot;, ret);
+-		mutex_unlock(&amp;cci_df-&gt;devfreq-&gt;lock);
+-	} else if ((val &amp; REGULATOR_EVENT_VOLTAGE_CHANGE) &amp;&amp;
+-	    (cci_df-&gt;proc_reg_uV &lt; (unsigned long)data)) {
+-		/* deal with increase frequency */
+-		cci_df-&gt;proc_reg_uV = (unsigned long)data;
+-		mutex_lock(&amp;cci_df-&gt;devfreq-&gt;lock);
+-		ret = update_devfreq(cci_df-&gt;devfreq);
+-		if (ret)
+-			pr_err(&quot;Fail to raise cci frequency: %d\n&quot;, ret);
+-		mutex_unlock(&amp;cci_df-&gt;devfreq-&gt;lock);
+-	}
+-
+-	return 0;
+-}
+-
+-static int ccidevfreq_opp_notifier(struct notifier_block *nb,
+-unsigned long event, void *data)
+-{
+-	int ret;
+-	struct dev_pm_opp *opp = data;
+-	struct cci_devfreq *cci_df = container_of(nb, struct cci_devfreq,
+-						  opp_nb);
+-	unsigned long	freq, volt, cur_volt;
+-
+-	if (event == OPP_EVENT_ADJUST_VOLTAGE) {
+-		freq = dev_pm_opp_get_freq(opp);
+-		/* current opp item is changed */
+-		if (freq == cci_df-&gt;freq) {
+-			volt = dev_pm_opp_get_voltage(opp);
+-			cur_volt = regulator_get_voltage(cci_df-&gt;proc_reg);
+-
+-			if (volt &gt; cur_volt) {
+-				/* need reduce freq */
+-				mutex_lock(&amp;cci_df-&gt;devfreq-&gt;lock);
+-				ret = update_devfreq(cci_df-&gt;devfreq);
+-				if (ret)
+-					pr_err(&quot;Fail to reduce cci frequency by opp notification: %d\n&quot;,
+-					       ret);
+-				mutex_unlock(&amp;cci_df-&gt;devfreq-&gt;lock);
+-			}
+-		}
+-
+-		if (freq == cci_df-&gt;cci_min_freq) {
+-			volt = dev_pm_opp_get_voltage(opp);
+-			regulator_set_voltage(cci_df-&gt;proc_reg, volt, INT_MAX);
+-		}
+-	} else if (event == OPP_EVENT_DISABLE) {
+-	}
+-
+-	return 0;
+-}
+-
+-
+-static int mtk_cci_governor_get_target(struct devfreq *devfreq,
+-				       unsigned long *freq)
++static int mtk_cci_set_voltage(struct cci_devfreq *cci_df, int vproc)
+ {
+-	struct cci_devfreq *cci_df;
+-	struct dev_pm_opp *opp;
+ 	int ret;
+ 
+-	cci_df = dev_get_drvdata(devfreq-&gt;dev.parent);
+-
+-	/* find available frequency */
+-	opp = dev_pm_opp_find_freq_ceil_by_volt(devfreq-&gt;dev.parent,
+-						cci_df-&gt;proc_reg_uV);
+-	ret = PTR_ERR_OR_ZERO(opp);
+-	if (ret) {
+-		pr_err(&quot;%s[%d], cannot find opp with voltage=%d: %d\n&quot;,
+-		       __func__, __LINE__, cci_df-&gt;proc_reg_uV, ret);
+-		return ret;
+-	}
+-	*freq = dev_pm_opp_get_freq(opp);
+-
+-	return 0;
+-}
+-
+-static int mtk_cci_governor_event_handler(struct devfreq *devfreq,
+-					  unsigned int event, void *data)
+-{
+-	int ret;
+-	struct cci_devfreq *cci_df;
+-	struct notifier_block *nb;
+-	struct notifier_block *opp_nb;
+-
+-	cci_df = dev_get_drvdata(devfreq-&gt;dev.parent);
+-	nb = &amp;cci_df-&gt;nb;
+-	opp_nb = &amp;cci_df-&gt;opp_nb;
+-
+-	switch (event) {
+-	case DEVFREQ_GOV_START:
+-	case DEVFREQ_GOV_RESUME:
+-		nb-&gt;notifier_call = cci_devfreq_regulator_notifier;
+-		ret = regulator_register_notifier(cci_df-&gt;proc_reg,
+-						  nb);
+-		if (ret)
+-			pr_err(&quot;%s: failed to add governor: %d\n&quot;, __func__,
+-			       ret);
+-		opp_nb-&gt;notifier_call = ccidevfreq_opp_notifier;
+-		dev_pm_opp_register_notifier(devfreq-&gt;dev.parent, opp_nb);
+-		break;
+-
+-	case DEVFREQ_GOV_STOP:
+-	case DEVFREQ_GOV_SUSPEND:
+-		ret = regulator_unregister_notifier(cci_df-&gt;proc_reg,
+-						    nb);
+-		if (ret)
+-			pr_err(&quot;%s: failed to add governor: %d\n&quot;, __func__,
+-			       ret);
+-		break;
+-
+-	default:
+-		break;
+-	}
+-
+-	return 0;
++	ret = regulator_set_voltage(cci_df-&gt;proc_reg, vproc,
++						MAX_VOLT_LIMIT);
++	if (!ret)
++		cci_df-&gt;old_vproc = vproc;
++	return ret;
+ }
+ 
+-static struct devfreq_governor mtk_cci_devfreq_governor = {
+-	.name = &quot;mtk_cci_vmon&quot;,
+-	.get_target_freq = mtk_cci_governor_get_target,
+-	.event_handler = mtk_cci_governor_event_handler,
+-	.immutable = true
+-};
+-
+ static int mtk_cci_devfreq_target(struct device *dev, unsigned long *freq,
+ 				  u32 flags)
+ {
+ 	int ret;
+ 	struct cci_devfreq *cci_df = dev_get_drvdata(dev);
++	struct dev_pm_opp *opp;
++	unsigned long opp_rate, opp_voltage, old_voltage;
+ 
+ 	if (!cci_df)
+ 		return -EINVAL;
+ 
++	if (cci_df-&gt;old_freq == *freq)
++		return 0;
++
++	opp_rate = *freq;
++	opp = dev_pm_opp_find_freq_floor(dev, &amp;opp_rate);
++	opp_voltage = dev_pm_opp_get_voltage(opp);
++	dev_pm_opp_put(opp);
++
++	old_voltage = cci_df-&gt;old_vproc;
++	if (old_voltage == 0)
++		old_voltage = regulator_get_voltage(cci_df-&gt;proc_reg);
++
++	// scale up: set voltage first then freq
++	if (opp_voltage &gt; old_voltage) {
++		ret = mtk_cci_set_voltage(cci_df, opp_voltage);
++		if (ret) {
++			pr_err(&quot;cci: failed to scale up voltage\n&quot;);
++			return ret;
++		}
++	}
++
+ 	ret = clk_set_rate(cci_df-&gt;cci_clk, *freq);
+ 	if (ret) {
+ 		pr_err(&quot;%s: failed cci to set rate: %d\n&quot;, __func__,
+ 		       ret);
++		mtk_cci_set_voltage(cci_df, old_voltage);
+ 		return ret;
+ 	}
+ 
+-	cci_df-&gt;freq = *freq;
++	// scale down: set freq first then voltage
++	if (opp_voltage &lt; old_voltage) {
++		ret = mtk_cci_set_voltage(cci_df, opp_voltage);
++		if (ret) {
++			pr_err(&quot;cci: failed to scale down voltage\n&quot;);
++			clk_set_rate(cci_df-&gt;cci_clk, cci_df-&gt;old_freq);
++			return ret;
++		}
++	}
++
++	cci_df-&gt;old_freq = *freq;
+ 
+ 	return 0;
+ }
+@@ -206,8 +99,7 @@ static int mtk_cci_devfreq_probe(struct platform_device *pdev)
+ {
+ 	struct device *cci_dev = &amp;pdev-&gt;dev;
+ 	struct cci_devfreq *cci_df;
+-	unsigned long freq, volt;
+-	struct dev_pm_opp *opp;
++	struct devfreq_passive_data *passive_data;
+ 	int ret;
+ 
+ 	cci_df = devm_kzalloc(cci_dev, sizeof(*cci_df), GFP_KERNEL);
+@@ -237,19 +129,18 @@ static int mtk_cci_devfreq_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	/* set voltage lower bound */
+-	freq = 1;
+-	opp = dev_pm_opp_find_freq_ceil(cci_dev, &amp;freq);
+-	cci_df-&gt;cci_min_freq = dev_pm_opp_get_freq(opp);
+-	volt = dev_pm_opp_get_voltage(opp);
+-	dev_pm_opp_put(opp);
+-
+ 	platform_set_drvdata(pdev, cci_df);
+ 
++	passive_data = devm_kzalloc(cci_dev, sizeof(*passive_data), GFP_KERNEL);
++	if (!passive_data)
++		return -ENOMEM;
++
++	passive_data-&gt;cpufreq_type = true;
++
+ 	cci_df-&gt;devfreq = devm_devfreq_add_device(cci_dev,
+ 						  &amp;cci_devfreq_profile,
+-						  &quot;mtk_cci_vmon&quot;,
+-						  NULL);
++						  DEVFREQ_GOV_PASSIVE,
++						  passive_data);
+ 	if (IS_ERR(cci_df-&gt;devfreq)) {
+ 		ret = PTR_ERR(cci_df-&gt;devfreq);
+ 		dev_err(cci_dev, &quot;cannot create cci devfreq device:%d\n&quot;, ret);
+@@ -277,30 +168,12 @@ static struct platform_driver cci_devfreq_driver = {
+ 
+ static int __init mtk_cci_devfreq_init(void)
+ {
+-	int ret;
+-
+-	ret = devfreq_add_governor(&amp;mtk_cci_devfreq_governor);
+-	if (ret) {
+-		pr_err(&quot;%s: failed to add governor: %d\n&quot;, __func__, ret);
+-		return ret;
+-	}
+-
+-	ret = platform_driver_register(&amp;cci_devfreq_driver);
+-	if (ret)
+-		devfreq_remove_governor(&amp;mtk_cci_devfreq_governor);
+-
+-	return ret;
++	return platform_driver_register(&amp;cci_devfreq_driver);
+ }
+ module_init(mtk_cci_devfreq_init)
+ 
+ static void __exit mtk_cci_devfreq_exit(void)
+ {
+-	int ret;
+-
+-	ret = devfreq_remove_governor(&amp;mtk_cci_devfreq_governor);
+-	if (ret)
+-		pr_err(&quot;%s: failed to remove governor: %d\n&quot;, __func__, ret);
+-
+ 	platform_driver_unregister(&amp;cci_devfreq_driver);
+ }
+ module_exit(mtk_cci_devfreq_exit)
+-- 
+2.20.1
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="741464" href="msg741464.html">[PATCH RFC v2 0/2] Use cpu based scaling passive governor for MT8183 CCI</a></strong>
+<ul><li><em>From:</em> Hsin-Yi Wang</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741470.html">[PATCH] ARM: dts: ux500: Fix up the thermal nodes</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741472.html">Re: [PATCH v4, 25/33] drm/mediatek: add clock property check before get it</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741465.html">[PATCH RFC v2 2/2] cpufreq: mediatek: Support vproc shared by multiple component</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741717.html">Re: [PATCH RFC v2 0/2] Use cpu based scaling passive governor for MT8183 CCI</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741471"><strong>Date</strong></a></li>
+<li><a href="threads.html#741471"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

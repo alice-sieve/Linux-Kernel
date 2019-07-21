@@ -1,0 +1,546 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH V34 03/29] security: Add a static lockdown policy LSM -->
+<!--X-From-R13: Yrrf Qbbx &#60;xrrfpbbxNpuebzvhz.bet> -->
+<!--X-Date: Sat, 22 Jun 2019 16:37:46 &#45;0700 -->
+<!--X-Message-Id: 201906221637.C57BBFA87C@keescook -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190622000358.19895&#45;1&#45;matthewgarrett@google.com -->
+<!--X-Reference: 20190622000358.19895&#45;4&#45;matthewgarrett@google.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, Re: [PATCH V34 03/29] security: Add a static lockdown policy LSM">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- Re: [PATCH V34 03/29] security: Add a static lockdown policy LSM</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re: [PATCH V34 03/29] security: Add a static lockdown policy LSM</h1>
+[<a href="msg29239.html">Date Prev</a>][<a href="msg29241.html">Date Next</a>][<a href="msg29196.html">Thread Prev</a>][<a href="msg29197.html">Thread Next</a>][<a href="maillist.html#29240">Date Index</a>][<a href="index.html#29240">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH V34 03/29] security: Add a static lockdown policy LSM</li>
+<li><em>From</em>: Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Sat, 22 Jun 2019 16:37:42 -0700</li>
+<li><em>Cc</em>: jmorris@xxxxxxxxx, linux-security-module@xxxxxxxxxxxxxxx,        linux-kernel@xxxxxxxxxxxxxxx, linux-api@xxxxxxxxxxxxxxx,        Matthew Garrett &lt;mjg59@xxxxxxxxxx&gt;,        David Howells &lt;dhowells@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29196.html">20190622000358.19895-4-matthewgarrett@google.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg29183.html">20190622000358.19895-1-matthewgarrett@google.com</a>&gt; &lt;<a href="msg29196.html">20190622000358.19895-4-matthewgarrett@google.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On Fri, Jun 21, 2019 at 05:03:32PM -0700, Matthew Garrett wrote:
+&gt; While existing LSMs can be extended to handle lockdown policy,
+&gt; distributions generally want to be able to apply a straightforward
+&gt; static policy. This patch adds a simple LSM that can be configured to
+&gt; reject either integrity or all lockdown queries, and can be configured
+&gt; at runtime (through securityfs), boot time (via a kernel parameter) or
+&gt; build time (via a kconfig option). Based on initial code by David
+&gt; Howells.
+&gt; 
+&gt; Signed-off-by: Matthew Garrett &lt;mjg59@xxxxxxxxxx&gt;
+
+Reviewed-by: Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;
+
+-Kees
+
+&gt; Cc: David Howells &lt;dhowells@xxxxxxxxxx&gt;
+&gt; ---
+&gt;  .../admin-guide/kernel-parameters.txt         |   9 +
+&gt;  include/linux/security.h                      |   4 +
+&gt;  security/Kconfig                              |   3 +-
+&gt;  security/Makefile                             |   2 +
+&gt;  security/lockdown/Kconfig                     |  47 +++++
+&gt;  security/lockdown/Makefile                    |   1 +
+&gt;  security/lockdown/lockdown.c                  | 172 ++++++++++++++++++
+&gt;  7 files changed, 237 insertions(+), 1 deletion(-)
+&gt;  create mode 100644 security/lockdown/Kconfig
+&gt;  create mode 100644 security/lockdown/Makefile
+&gt;  create mode 100644 security/lockdown/lockdown.c
+&gt; 
+&gt; diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+&gt; index 2b8ee90bb644..fa336f6cd5bc 100644
+&gt; --- a/Documentation/admin-guide/kernel-parameters.txt
+&gt; +++ b/Documentation/admin-guide/kernel-parameters.txt
+&gt; @@ -2239,6 +2239,15 @@
+&gt;  	lockd.nlm_udpport=M	[NFS] Assign UDP port.
+&gt;  			Format: &lt;integer&gt;
+&gt;  
+&gt; +	lockdown=	[SECURITY]
+&gt; +			{ integrity | confidentiality }
+&gt; +			Enable the kernel lockdown feature. If set to
+&gt; +			integrity, kernel features that allow userland to
+&gt; +			modify the running kernel are disabled. If set to
+&gt; +			confidentiality, kernel features that allow userland
+&gt; +			to extract confidential information from the kernel
+&gt; +			are also disabled.
+&gt; +
+&gt;  	locktorture.nreaders_stress= [KNL]
+&gt;  			Set the number of locking read-acquisition kthreads.
+&gt;  			Defaults to being automatically set based on the
+&gt; diff --git a/include/linux/security.h b/include/linux/security.h
+&gt; index 9eaf02e70707..c808d344ec75 100644
+&gt; --- a/include/linux/security.h
+&gt; +++ b/include/linux/security.h
+&gt; @@ -76,6 +76,10 @@ enum lsm_event {
+&gt;  	LSM_POLICY_CHANGE,
+&gt;  };
+&gt;  
+&gt; +/*
+&gt; + *  If you add to this, remember to extend lockdown_reasons in
+&gt; + *  security/lockdown/lockdown.c.
+&gt; + */
+&gt;  enum lockdown_reason {
+&gt;  	LOCKDOWN_NONE,
+&gt;  	LOCKDOWN_INTEGRITY_MAX,
+&gt; diff --git a/security/Kconfig b/security/Kconfig
+&gt; index 1d6463fb1450..c35aa72103df 100644
+&gt; --- a/security/Kconfig
+&gt; +++ b/security/Kconfig
+&gt; @@ -236,12 +236,13 @@ source &quot;security/apparmor/Kconfig&quot;
+&gt;  source &quot;security/loadpin/Kconfig&quot;
+&gt;  source &quot;security/yama/Kconfig&quot;
+&gt;  source &quot;security/safesetid/Kconfig&quot;
+&gt; +source &quot;security/lockdown/Kconfig&quot;
+&gt;  
+&gt;  source &quot;security/integrity/Kconfig&quot;
+&gt;  
+&gt;  config LSM
+&gt;  	string &quot;Ordered list of enabled LSMs&quot;
+&gt; -	default &quot;yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor&quot;
+&gt; +	default &quot;lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor&quot;
+&gt;  	help
+&gt;  	  A comma-separated list of LSMs, in initialization order.
+&gt;  	  Any LSMs left off this list will be ignored. This can be
+&gt; diff --git a/security/Makefile b/security/Makefile
+&gt; index c598b904938f..be1dd9d2cb2f 100644
+&gt; --- a/security/Makefile
+&gt; +++ b/security/Makefile
+&gt; @@ -11,6 +11,7 @@ subdir-$(CONFIG_SECURITY_APPARMOR)	+= apparmor
+&gt;  subdir-$(CONFIG_SECURITY_YAMA)		+= yama
+&gt;  subdir-$(CONFIG_SECURITY_LOADPIN)	+= loadpin
+&gt;  subdir-$(CONFIG_SECURITY_SAFESETID)    += safesetid
+&gt; +subdir-$(CONFIG_SECURITY_LOCKDOWN_LSM)	+= lockdown
+&gt;  
+&gt;  # always enable default capabilities
+&gt;  obj-y					+= commoncap.o
+&gt; @@ -27,6 +28,7 @@ obj-$(CONFIG_SECURITY_APPARMOR)		+= apparmor/
+&gt;  obj-$(CONFIG_SECURITY_YAMA)		+= yama/
+&gt;  obj-$(CONFIG_SECURITY_LOADPIN)		+= loadpin/
+&gt;  obj-$(CONFIG_SECURITY_SAFESETID)       += safesetid/
+&gt; +obj-$(CONFIG_SECURITY_LOCKDOWN_LSM)	+= lockdown/
+&gt;  obj-$(CONFIG_CGROUP_DEVICE)		+= device_cgroup.o
+&gt;  
+&gt;  # Object integrity file lists
+&gt; diff --git a/security/lockdown/Kconfig b/security/lockdown/Kconfig
+&gt; new file mode 100644
+&gt; index 000000000000..7374ba76d8eb
+&gt; --- /dev/null
+&gt; +++ b/security/lockdown/Kconfig
+&gt; @@ -0,0 +1,47 @@
+&gt; +config SECURITY_LOCKDOWN_LSM
+&gt; +	bool &quot;Basic module for enforcing kernel lockdown&quot;
+&gt; +	depends on SECURITY
+&gt; +	help
+&gt; +	  Build support for an LSM that enforces a coarse kernel lockdown
+&gt; +	  behaviour.
+&gt; +
+&gt; +config SECURITY_LOCKDOWN_LSM_EARLY
+&gt; +	bool &quot;Enable lockdown LSM early in init&quot;
+&gt; +	depends on SECURITY_LOCKDOWN_LSM
+&gt; +	help
+&gt; +	  Enable the lockdown LSM early in boot. This is necessary in order
+&gt; +	  to ensure that lockdown enforcement can be carried out on kernel
+&gt; +	  boot parameters that are otherwise parsed before the security
+&gt; +	  subsystem is fully initialised. If enabled, lockdown will
+&gt; +	  unconditionally be called before any other LSMs.
+&gt; +
+&gt; +choice
+&gt; +	prompt &quot;Kernel default lockdown mode&quot;
+&gt; +	default LOCK_DOWN_KERNEL_FORCE_NONE
+&gt; +	depends on SECURITY_LOCKDOWN_LSM
+&gt; +	help
+&gt; +	  The kernel can be configured to default to differing levels of
+&gt; +	  lockdown.
+&gt; +
+&gt; +config LOCK_DOWN_KERNEL_FORCE_NONE
+&gt; +	bool &quot;None&quot;
+&gt; +	help
+&gt; +	  No lockdown functionality is enabled by default. Lockdown may be
+&gt; +	  enabled via the kernel commandline or /sys/kernel/security/lockdown.
+&gt; +
+&gt; +config LOCK_DOWN_KERNEL_FORCE_INTEGRITY
+&gt; +	bool &quot;Integrity&quot;
+&gt; +	help
+&gt; +	 The kernel runs in integrity mode by default. Features that allow
+&gt; +	 the kernel to be modified at runtime are disabled.
+&gt; +
+&gt; +config LOCK_DOWN_KERNEL_FORCE_CONFIDENTIALITY
+&gt; +	bool &quot;Confidentiality&quot;
+&gt; +	help
+&gt; +	 The kernel runs in confidentiality mode by default. Features that
+&gt; +	 allow the kernel to be modified at runtime or that permit userland
+&gt; +	 code to read confidential material held inside the kernel are
+&gt; +	 disabled.
+&gt; +
+&gt; +endchoice
+&gt; +
+&gt; diff --git a/security/lockdown/Makefile b/security/lockdown/Makefile
+&gt; new file mode 100644
+&gt; index 000000000000..e3634b9017e7
+&gt; --- /dev/null
+&gt; +++ b/security/lockdown/Makefile
+&gt; @@ -0,0 +1 @@
+&gt; +obj-$(CONFIG_SECURITY_LOCKDOWN_LSM) += lockdown.o
+&gt; diff --git a/security/lockdown/lockdown.c b/security/lockdown/lockdown.c
+&gt; new file mode 100644
+&gt; index 000000000000..8e39b36b8f33
+&gt; --- /dev/null
+&gt; +++ b/security/lockdown/lockdown.c
+&gt; @@ -0,0 +1,172 @@
+&gt; +// SPDX-License-Identifier: GPL-2.0
+&gt; +/* Lock down the kernel
+&gt; + *
+&gt; + * Copyright (C) 2016 Red Hat, Inc. All Rights Reserved.
+&gt; + * Written by David Howells (dhowells@xxxxxxxxxx)
+&gt; + *
+&gt; + * This program is free software; you can redistribute it and/or
+&gt; + * modify it under the terms of the GNU General Public Licence
+&gt; + * as published by the Free Software Foundation; either version
+&gt; + * 2 of the Licence, or (at your option) any later version.
+&gt; + */
+&gt; +
+&gt; +#include &lt;linux/security.h&gt;
+&gt; +#include &lt;linux/export.h&gt;
+&gt; +#include &lt;linux/lsm_hooks.h&gt;
+&gt; +
+&gt; +static enum lockdown_reason kernel_locked_down;
+&gt; +
+&gt; +static char *lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX+1] = {
+&gt; +	[LOCKDOWN_NONE] = &quot;none&quot;,
+&gt; +	[LOCKDOWN_INTEGRITY_MAX] = &quot;integrity&quot;,
+&gt; +	[LOCKDOWN_CONFIDENTIALITY_MAX] = &quot;confidentiality&quot;,
+&gt; +};
+&gt; +
+&gt; +static enum lockdown_reason lockdown_levels[] = {LOCKDOWN_NONE,
+&gt; +						 LOCKDOWN_INTEGRITY_MAX,
+&gt; +						 LOCKDOWN_CONFIDENTIALITY_MAX};
+&gt; +
+&gt; +/*
+&gt; + * Put the kernel into lock-down mode.
+&gt; + */
+&gt; +static int lock_kernel_down(const char *where, enum lockdown_reason level)
+&gt; +{
+&gt; +	if (kernel_locked_down &gt;= level)
+&gt; +		return -EPERM;
+&gt; +
+&gt; +	kernel_locked_down = level;
+&gt; +	pr_notice(&quot;Kernel is locked down from %s; see man kernel_lockdown.7\n&quot;,
+&gt; +		  where);
+&gt; +	return 0;
+&gt; +}
+&gt; +
+&gt; +static int __init lockdown_param(char *level)
+&gt; +{
+&gt; +	if (!level)
+&gt; +		return -EINVAL;
+&gt; +
+&gt; +	if (strcmp(level, &quot;integrity&quot;) == 0)
+&gt; +		lock_kernel_down(&quot;command line&quot;, LOCKDOWN_INTEGRITY_MAX);
+&gt; +	else if (strcmp(level, &quot;confidentiality&quot;) == 0)
+&gt; +		lock_kernel_down(&quot;command line&quot;, LOCKDOWN_CONFIDENTIALITY_MAX);
+&gt; +	else
+&gt; +		return -EINVAL;
+&gt; +
+&gt; +	return 0;
+&gt; +}
+&gt; +
+&gt; +early_param(&quot;lockdown&quot;, lockdown_param);
+&gt; +
+&gt; +/**
+&gt; + * lockdown_is_locked_down - Find out if the kernel is locked down
+&gt; + * @what: Tag to use in notice generated if lockdown is in effect
+&gt; + */
+&gt; +static int lockdown_is_locked_down(enum lockdown_reason what)
+&gt; +{	
+&gt; +	if ((kernel_locked_down &gt;= what)) {
+&gt; +		if (lockdown_reasons[what])
+&gt; +			pr_notice(&quot;Lockdown: %s is restricted; see man kernel_lockdown.7\n&quot;,
+&gt; +				  lockdown_reasons[what]);
+&gt; +		return -EPERM;
+&gt; +	}
+&gt; +
+&gt; +	return 0;
+&gt; +}
+&gt; +
+&gt; +static struct security_hook_list lockdown_hooks[] __lsm_ro_after_init = {
+&gt; +	LSM_HOOK_INIT(locked_down, lockdown_is_locked_down),
+&gt; +};
+&gt; +
+&gt; +static int __init lockdown_lsm_init(void)
+&gt; +{
+&gt; +#if defined(CONFIG_LOCK_DOWN_KERNEL_FORCE_INTEGRITY)
+&gt; +	lock_kernel_down(&quot;Kernel configuration&quot;, LOCKDOWN_INTEGRITY_MAX);
+&gt; +#elif defined(CONFIG_LOCK_DOWN_KERNEL_FORCE_CONFIDENTIALITY)
+&gt; +	lock_kernel_down(&quot;Kernel configuration&quot;, LOCKDOWN_CONFIDENTIALITY_MAX);
+&gt; +#endif
+&gt; +	security_add_hooks(lockdown_hooks, ARRAY_SIZE(lockdown_hooks),
+&gt; +			   &quot;lockdown&quot;);
+&gt; +	return 0;
+&gt; +}
+&gt; +
+&gt; +static ssize_t lockdown_read(struct file *filp, char __user *buf, size_t count,
+&gt; +			     loff_t *ppos)
+&gt; +{
+&gt; +	char temp[80];
+&gt; +	int i, offset=0;
+&gt; +
+&gt; +	for (i = 0; i &lt; ARRAY_SIZE(lockdown_levels); i++) {
+&gt; +		enum lockdown_reason level = lockdown_levels[i];
+&gt; +
+&gt; +		if (lockdown_reasons[level]) {
+&gt; +			const char *label = lockdown_reasons[level];
+&gt; +
+&gt; +			if (kernel_locked_down == level)
+&gt; +				offset += sprintf(temp+offset, &quot;[%s] &quot;, label);
+&gt; +			else
+&gt; +				offset += sprintf(temp+offset, &quot;%s &quot;, label);
+&gt; +		}
+&gt; +	}
+&gt; +
+&gt; +	/* Convert the last space to a newline if needed. */
+&gt; +	if (offset &gt; 0)
+&gt; +		temp[offset-1] = '\n';
+&gt; +
+&gt; +	return simple_read_from_buffer(buf, count, ppos, temp, strlen(temp));
+&gt; +}
+&gt; +
+&gt; +static ssize_t lockdown_write(struct file *file, const char __user *buf,
+&gt; +			      size_t n, loff_t *ppos)
+&gt; +{
+&gt; +	char *state;
+&gt; +	int i, len, err = -EINVAL;
+&gt; +
+&gt; +	state = memdup_user_nul(buf, n);
+&gt; +	if (IS_ERR(state))
+&gt; +		return PTR_ERR(state);
+&gt; +
+&gt; +	len = strlen(state);
+&gt; +	if (len &amp;&amp; state[len-1] == '\n') {
+&gt; +		state[len-1] = '\0';
+&gt; +		len--;
+&gt; +	}
+&gt; +
+&gt; +	for (i = 0; i &lt; ARRAY_SIZE(lockdown_levels); i++) {
+&gt; +		enum lockdown_reason level = lockdown_levels[i];
+&gt; +		const char *label = lockdown_reasons[level];
+&gt; +
+&gt; +		if (label &amp;&amp; !strcmp(state, label))
+&gt; +			err = lock_kernel_down(&quot;securityfs&quot;, level);
+&gt; +	}
+&gt; +
+&gt; +	kfree(state);
+&gt; +	return err ? err : n;
+&gt; +}
+&gt; +
+&gt; +static const struct file_operations lockdown_ops = {
+&gt; +	.read  = lockdown_read,
+&gt; +	.write = lockdown_write,
+&gt; +};
+&gt; +
+&gt; +static int __init lockdown_secfs_init(void)
+&gt; +{
+&gt; +	struct dentry *dentry;
+&gt; +
+&gt; +	dentry = securityfs_create_file(&quot;lockdown&quot;, 0600, NULL, NULL,
+&gt; +					&amp;lockdown_ops);
+&gt; +	if (IS_ERR(dentry))
+&gt; +		return PTR_ERR(dentry);
+&gt; +
+&gt; +	return 0;
+&gt; +}
+&gt; +
+&gt; +core_initcall(lockdown_secfs_init);
+&gt; +
+&gt; +#ifdef CONFIG_SECURITY_LOCKDOWN_LSM_EARLY
+&gt; +DEFINE_EARLY_LSM(lockdown) = {
+&gt; +#else
+&gt; +DEFINE_LSM(lockdown) = {
+&gt; +#endif
+&gt; +	.name = &quot;lockdown&quot;,
+&gt; +	.init = lockdown_lsm_init,
+&gt; +};
+&gt; -- 
+&gt; 2.22.0.410.gd8fdbe21b5-goog
+&gt; 
+
+-- 
+Kees Cook
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29183" href="msg29183.html">[PATCH V34 00/29] Lockdown as an LSM</a></strong>
+<ul><li><em>From:</em> Matthew Garrett</li></ul></li>
+<li><strong><a name="29196" href="msg29196.html">[PATCH V34 03/29] security: Add a static lockdown policy LSM</a></strong>
+<ul><li><em>From:</em> Matthew Garrett</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29239.html">Re: [PATCH V34 02/29] security: Add a &quot;locked down&quot; LSM hook</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29241.html">Re: [PATCH V34 04/29] Enforce module signatures if the kernel is locked down</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29196.html">[PATCH V34 03/29] security: Add a static lockdown policy LSM</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29197.html">[PATCH V34 05/29] Restrict /dev/{mem,kmem,port} when the kernel is locked down</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29240"><strong>Date</strong></a></li>
+<li><a href="index.html#29240"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

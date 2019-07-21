@@ -1,0 +1,570 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH v2 19/19] drm/mediatek: drop use of drmP.h -->
+<!--X-From-R13: Oyrk Rrhpure &#60;nyrkqrhpureNtznvy.pbz> -->
+<!--X-Date: Tue, 16 Jul 2019 07:03:18 &#45;0700 -->
+<!--X-Message-Id: CADnq5_NL0v941Pg0+=ova&#45;6N4jm1nmFzj9To5oQBRSqeYbzLWA@mail.gmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190716064220.18157&#45;1&#45;sam@ravnborg.org -->
+<!--X-Reference: 20190716064220.18157&#45;20&#45;sam@ravnborg.org -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: Re: [PATCH v2 19/19] drm/mediatek: drop use of drmP.h">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Re: [PATCH v2 19/19] drm/mediatek: drop use of drmP.h &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">Re: [PATCH v2 19/19] drm/mediatek: drop use of drmP.h</h1>
+[<a href="msg741341.html">Date Prev</a>][<a href="msg741343.html">Date Next</a>][<a href="msg741257.html">Thread Prev</a>][<a href="msg741254.html">Thread Next</a>][<a href="maillist.html#741342">Date Index</a>][<a href="threads.html#741342">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH v2 19/19] drm/mediatek: drop use of drmP.h</li>
+<li><em>From</em>: Alex Deucher &lt;alexdeucher@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 16 Jul 2019 10:02:53 -0400</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg741253.html">20190716064220.18157-20-sam@ravnborg.org</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On Tue, Jul 16, 2019 at 2:45 AM Sam Ravnborg &lt;sam@xxxxxxxxxxxx&gt; wrote:
+&gt;<i></i>
+&gt;<i> Drop use of the deprecated drmP.h header file.</i>
+&gt;<i></i>
+&gt;<i> While touching the include files divide them up in blocks</i>
+&gt;<i> in the typical order:</i>
+&gt;<i></i>
+&gt;<i> \#include &lt;linux/*&gt;</i>
+&gt;<i></i>
+&gt;<i> \#include &lt;video/*&gt;</i>
+&gt;<i></i>
+&gt;<i> \#include &lt;drm/*&gt;</i>
+&gt;<i></i>
+&gt;<i> \#include &quot;&quot;</i>
+&gt;<i></i>
+&gt;<i> And sort the includes in the blocks</i>
+&gt;<i> Add the necessary includes to fix build after removal of drmP.h</i>
+&gt;<i></i>
+&gt;<i> Signed-off-by: Sam Ravnborg &lt;sam@xxxxxxxxxxxx&gt;</i>
+&gt;<i> Acked-by: Emil Velikov &lt;emil.velikov@xxxxxxxxxxxxx&gt;</i>
+&gt;<i> Cc: CK Hu &lt;ck.hu@xxxxxxxxxxxx&gt;</i>
+&gt;<i> Cc: Philipp Zabel &lt;p.zabel@xxxxxxxxxxxxxx&gt;</i>
+&gt;<i> Cc: David Airlie &lt;airlied@xxxxxxxx&gt;</i>
+&gt;<i> Cc: Daniel Vetter &lt;daniel@xxxxxxxx&gt;</i>
+&gt;<i> Cc: Matthias Brugger &lt;matthias.bgg@xxxxxxxxx&gt;</i>
+&gt;<i> Cc: linux-arm-kernel@xxxxxxxxxxxxxxxxxxx</i>
+&gt;<i> Cc: linux-mediatek@xxxxxxxxxxxxxxxxxxx</i>
+
+
+Reviewed-by: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;
+
+&gt;<i> ---</i>
+&gt;<i>  drivers/gpu/drm/mediatek/mtk_disp_color.c   |  2 +-</i>
+&gt;<i>  drivers/gpu/drm/mediatek/mtk_disp_ovl.c     |  2 +-</i>
+&gt;<i>  drivers/gpu/drm/mediatek/mtk_disp_rdma.c    |  2 +-</i>
+&gt;<i>  drivers/gpu/drm/mediatek/mtk_dpi.c          | 18 ++++++++++--------</i>
+&gt;<i>  drivers/gpu/drm/mediatek/mtk_drm_crtc.c     | 10 ++++++----</i>
+&gt;<i>  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c |  2 +-</i>
+&gt;<i>  drivers/gpu/drm/mediatek/mtk_drm_drv.c      | 16 ++++++++++------</i>
+&gt;<i>  drivers/gpu/drm/mediatek/mtk_drm_fb.c       |  7 ++++---</i>
+&gt;<i>  drivers/gpu/drm/mediatek/mtk_drm_gem.c      |  6 ++++--</i>
+&gt;<i>  drivers/gpu/drm/mediatek/mtk_drm_plane.c    |  2 +-</i>
+&gt;<i>  drivers/gpu/drm/mediatek/mtk_dsi.c          | 14 ++++++++------</i>
+&gt;<i>  drivers/gpu/drm/mediatek/mtk_hdmi.c         | 14 +++++++++-----</i>
+&gt;<i>  12 files changed, 56 insertions(+), 39 deletions(-)</i>
+&gt;<i></i>
+&gt;<i> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_color.c b/drivers/gpu/drm/mediatek/mtk_disp_color.c</i>
+&gt;<i> index f33d98b356d6..59de2a46aa49 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/mediatek/mtk_disp_color.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/mediatek/mtk_disp_color.c</i>
+&gt;<i> @@ -3,9 +3,9 @@</i>
+&gt;<i>   * Copyright (c) 2017 MediaTek Inc.</i>
+&gt;<i>   */</i>
+&gt;<i></i>
+&gt;<i> -#include &lt;drm/drmP.h&gt;</i>
+&gt;<i>  #include &lt;linux/clk.h&gt;</i>
+&gt;<i>  #include &lt;linux/component.h&gt;</i>
+&gt;<i> +#include &lt;linux/module.h&gt;</i>
+&gt;<i>  #include &lt;linux/of_device.h&gt;</i>
+&gt;<i>  #include &lt;linux/of_irq.h&gt;</i>
+&gt;<i>  #include &lt;linux/platform_device.h&gt;</i>
+&gt;<i> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c</i>
+&gt;<i> index c4f07c28c74f..21851756c579 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c</i>
+&gt;<i> @@ -3,9 +3,9 @@</i>
+&gt;<i>   * Copyright (c) 2015 MediaTek Inc.</i>
+&gt;<i>   */</i>
+&gt;<i></i>
+&gt;<i> -#include &lt;drm/drmP.h&gt;</i>
+&gt;<i>  #include &lt;linux/clk.h&gt;</i>
+&gt;<i>  #include &lt;linux/component.h&gt;</i>
+&gt;<i> +#include &lt;linux/module.h&gt;</i>
+&gt;<i>  #include &lt;linux/of_device.h&gt;</i>
+&gt;<i>  #include &lt;linux/of_irq.h&gt;</i>
+&gt;<i>  #include &lt;linux/platform_device.h&gt;</i>
+&gt;<i> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c</i>
+&gt;<i> index 9a6f0a29e43c..405afef31407 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c</i>
+&gt;<i> @@ -3,9 +3,9 @@</i>
+&gt;<i>   * Copyright (c) 2015 MediaTek Inc.</i>
+&gt;<i>   */</i>
+&gt;<i></i>
+&gt;<i> -#include &lt;drm/drmP.h&gt;</i>
+&gt;<i>  #include &lt;linux/clk.h&gt;</i>
+&gt;<i>  #include &lt;linux/component.h&gt;</i>
+&gt;<i> +#include &lt;linux/module.h&gt;</i>
+&gt;<i>  #include &lt;linux/of_device.h&gt;</i>
+&gt;<i>  #include &lt;linux/of_irq.h&gt;</i>
+&gt;<i>  #include &lt;linux/platform_device.h&gt;</i>
+&gt;<i> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c</i>
+&gt;<i> index bacd989cc9aa..be6d95c5ff25 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c</i>
+&gt;<i> @@ -3,21 +3,23 @@</i>
+&gt;<i>   * Copyright (c) 2014 MediaTek Inc.</i>
+&gt;<i>   * Author: Jie Qiu &lt;jie.qiu@xxxxxxxxxxxx&gt;</i>
+&gt;<i>   */</i>
+&gt;<i> -#include &lt;drm/drmP.h&gt;</i>
+&gt;<i> -#include &lt;drm/drm_crtc.h&gt;</i>
+&gt;<i> -#include &lt;drm/drm_atomic_helper.h&gt;</i>
+&gt;<i> -#include &lt;drm/drm_of.h&gt;</i>
+&gt;<i> -#include &lt;linux/kernel.h&gt;</i>
+&gt;<i> +</i>
+&gt;<i> +#include &lt;linux/clk.h&gt;</i>
+&gt;<i>  #include &lt;linux/component.h&gt;</i>
+&gt;<i> -#include &lt;linux/platform_device.h&gt;</i>
+&gt;<i> +#include &lt;linux/interrupt.h&gt;</i>
+&gt;<i> +#include &lt;linux/kernel.h&gt;</i>
+&gt;<i>  #include &lt;linux/of.h&gt;</i>
+&gt;<i>  #include &lt;linux/of_device.h&gt;</i>
+&gt;<i>  #include &lt;linux/of_graph.h&gt;</i>
+&gt;<i> -#include &lt;linux/interrupt.h&gt;</i>
+&gt;<i> +#include &lt;linux/platform_device.h&gt;</i>
+&gt;<i>  #include &lt;linux/types.h&gt;</i>
+&gt;<i> -#include &lt;linux/clk.h&gt;</i>
+&gt;<i> +</i>
+&gt;<i>  #include &lt;video/videomode.h&gt;</i>
+&gt;<i></i>
+&gt;<i> +#include &lt;drm/drm_atomic_helper.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_crtc.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_of.h&gt;</i>
+&gt;<i> +</i>
+&gt;<i>  #include &quot;mtk_dpi_regs.h&quot;</i>
+&gt;<i>  #include &quot;mtk_drm_ddp_comp.h&quot;</i>
+&gt;<i></i>
+&gt;<i> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c</i>
+&gt;<i> index a9007210dda1..34a731755791 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c</i>
+&gt;<i> @@ -3,14 +3,16 @@</i>
+&gt;<i>   * Copyright (c) 2015 MediaTek Inc.</i>
+&gt;<i>   */</i>
+&gt;<i></i>
+&gt;<i> +#include &lt;linux/clk.h&gt;</i>
+&gt;<i> +#include &lt;linux/pm_runtime.h&gt;</i>
+&gt;<i> +</i>
+&gt;<i>  #include &lt;asm/barrier.h&gt;</i>
+&gt;<i> -#include &lt;drm/drmP.h&gt;</i>
+&gt;<i> +#include &lt;soc/mediatek/smi.h&gt;</i>
+&gt;<i> +</i>
+&gt;<i>  #include &lt;drm/drm_atomic_helper.h&gt;</i>
+&gt;<i>  #include &lt;drm/drm_plane_helper.h&gt;</i>
+&gt;<i>  #include &lt;drm/drm_probe_helper.h&gt;</i>
+&gt;<i> -#include &lt;linux/clk.h&gt;</i>
+&gt;<i> -#include &lt;linux/pm_runtime.h&gt;</i>
+&gt;<i> -#include &lt;soc/mediatek/smi.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_vblank.h&gt;</i>
+&gt;<i></i>
+&gt;<i>  #include &quot;mtk_drm_drv.h&quot;</i>
+&gt;<i>  #include &quot;mtk_drm_crtc.h&quot;</i>
+&gt;<i> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c</i>
+&gt;<i> index b38963f1f2ec..efa85973e46b 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c</i>
+&gt;<i> @@ -12,7 +12,7 @@</i>
+&gt;<i>  #include &lt;linux/of_irq.h&gt;</i>
+&gt;<i>  #include &lt;linux/of_platform.h&gt;</i>
+&gt;<i>  #include &lt;linux/platform_device.h&gt;</i>
+&gt;<i> -#include &lt;drm/drmP.h&gt;</i>
+&gt;<i> +</i>
+&gt;<i>  #include &quot;mtk_drm_drv.h&quot;</i>
+&gt;<i>  #include &quot;mtk_drm_plane.h&quot;</i>
+&gt;<i>  #include &quot;mtk_drm_ddp_comp.h&quot;</i>
+&gt;<i> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c</i>
+&gt;<i> index 2d5caf532431..2ee809a6f3dc 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c</i>
+&gt;<i> @@ -4,22 +4,26 @@</i>
+&gt;<i>   * Author: YT SHEN &lt;yt.shen@xxxxxxxxxxxx&gt;</i>
+&gt;<i>   */</i>
+&gt;<i></i>
+&gt;<i> -#include &lt;drm/drmP.h&gt;</i>
+&gt;<i> +#include &lt;linux/component.h&gt;</i>
+&gt;<i> +#include &lt;linux/iommu.h&gt;</i>
+&gt;<i> +#include &lt;linux/module.h&gt;</i>
+&gt;<i> +#include &lt;linux/of_address.h&gt;</i>
+&gt;<i> +#include &lt;linux/of_platform.h&gt;</i>
+&gt;<i> +#include &lt;linux/pm_runtime.h&gt;</i>
+&gt;<i> +</i>
+&gt;<i>  #include &lt;drm/drm_atomic.h&gt;</i>
+&gt;<i>  #include &lt;drm/drm_atomic_helper.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_drv.h&gt;</i>
+&gt;<i>  #include &lt;drm/drm_fb_helper.h&gt;</i>
+&gt;<i>  #include &lt;drm/drm_gem.h&gt;</i>
+&gt;<i>  #include &lt;drm/drm_gem_cma_helper.h&gt;</i>
+&gt;<i>  #include &lt;drm/drm_of.h&gt;</i>
+&gt;<i>  #include &lt;drm/drm_probe_helper.h&gt;</i>
+&gt;<i> -#include &lt;linux/component.h&gt;</i>
+&gt;<i> -#include &lt;linux/iommu.h&gt;</i>
+&gt;<i> -#include &lt;linux/of_address.h&gt;</i>
+&gt;<i> -#include &lt;linux/of_platform.h&gt;</i>
+&gt;<i> -#include &lt;linux/pm_runtime.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_vblank.h&gt;</i>
+&gt;<i></i>
+&gt;<i>  #include &quot;mtk_drm_crtc.h&quot;</i>
+&gt;<i>  #include &quot;mtk_drm_ddp.h&quot;</i>
+&gt;<i> +#include &quot;mtk_drm_ddp.h&quot;</i>
+&gt;<i>  #include &quot;mtk_drm_ddp_comp.h&quot;</i>
+&gt;<i>  #include &quot;mtk_drm_drv.h&quot;</i>
+&gt;<i>  #include &quot;mtk_drm_fb.h&quot;</i>
+&gt;<i> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_fb.c b/drivers/gpu/drm/mediatek/mtk_drm_fb.c</i>
+&gt;<i> index 396ba497986d..ae40b080ae47 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/mediatek/mtk_drm_fb.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/mediatek/mtk_drm_fb.c</i>
+&gt;<i> @@ -3,13 +3,14 @@</i>
+&gt;<i>   * Copyright (c) 2015 MediaTek Inc.</i>
+&gt;<i>   */</i>
+&gt;<i></i>
+&gt;<i> -#include &lt;drm/drmP.h&gt;</i>
+&gt;<i> +#include &lt;linux/dma-buf.h&gt;</i>
+&gt;<i> +#include &lt;linux/reservation.h&gt;</i>
+&gt;<i> +</i>
+&gt;<i>  #include &lt;drm/drm_modeset_helper.h&gt;</i>
+&gt;<i>  #include &lt;drm/drm_fb_helper.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_fourcc.h&gt;</i>
+&gt;<i>  #include &lt;drm/drm_gem.h&gt;</i>
+&gt;<i>  #include &lt;drm/drm_gem_framebuffer_helper.h&gt;</i>
+&gt;<i> -#include &lt;linux/dma-buf.h&gt;</i>
+&gt;<i> -#include &lt;linux/reservation.h&gt;</i>
+&gt;<i></i>
+&gt;<i>  #include &quot;mtk_drm_drv.h&quot;</i>
+&gt;<i>  #include &quot;mtk_drm_fb.h&quot;</i>
+&gt;<i> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_gem.c b/drivers/gpu/drm/mediatek/mtk_drm_gem.c</i>
+&gt;<i> index 0d69698f8173..9434f88c6341 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/mediatek/mtk_drm_gem.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/mediatek/mtk_drm_gem.c</i>
+&gt;<i> @@ -3,10 +3,12 @@</i>
+&gt;<i>   * Copyright (c) 2015 MediaTek Inc.</i>
+&gt;<i>   */</i>
+&gt;<i></i>
+&gt;<i> -#include &lt;drm/drmP.h&gt;</i>
+&gt;<i> -#include &lt;drm/drm_gem.h&gt;</i>
+&gt;<i>  #include &lt;linux/dma-buf.h&gt;</i>
+&gt;<i></i>
+&gt;<i> +#include &lt;drm/drm_device.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_gem.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_prime.h&gt;</i>
+&gt;<i> +</i>
+&gt;<i>  #include &quot;mtk_drm_drv.h&quot;</i>
+&gt;<i>  #include &quot;mtk_drm_gem.h&quot;</i>
+&gt;<i></i>
+&gt;<i> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c</i>
+&gt;<i> index 42cc9823eaaa..584a9ecadce6 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c</i>
+&gt;<i> @@ -4,9 +4,9 @@</i>
+&gt;<i>   * Author: CK Hu &lt;ck.hu@xxxxxxxxxxxx&gt;</i>
+&gt;<i>   */</i>
+&gt;<i></i>
+&gt;<i> -#include &lt;drm/drmP.h&gt;</i>
+&gt;<i>  #include &lt;drm/drm_atomic.h&gt;</i>
+&gt;<i>  #include &lt;drm/drm_atomic_helper.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_fourcc.h&gt;</i>
+&gt;<i>  #include &lt;drm/drm_plane_helper.h&gt;</i>
+&gt;<i>  #include &lt;drm/drm_gem_framebuffer_helper.h&gt;</i>
+&gt;<i></i>
+&gt;<i> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c</i>
+&gt;<i> index b91c4616644a..224afb666881 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c</i>
+&gt;<i> @@ -3,12 +3,6 @@</i>
+&gt;<i>   * Copyright (c) 2015 MediaTek Inc.</i>
+&gt;<i>   */</i>
+&gt;<i></i>
+&gt;<i> -#include &lt;drm/drmP.h&gt;</i>
+&gt;<i> -#include &lt;drm/drm_atomic_helper.h&gt;</i>
+&gt;<i> -#include &lt;drm/drm_mipi_dsi.h&gt;</i>
+&gt;<i> -#include &lt;drm/drm_panel.h&gt;</i>
+&gt;<i> -#include &lt;drm/drm_of.h&gt;</i>
+&gt;<i> -#include &lt;drm/drm_probe_helper.h&gt;</i>
+&gt;<i>  #include &lt;linux/clk.h&gt;</i>
+&gt;<i>  #include &lt;linux/component.h&gt;</i>
+&gt;<i>  #include &lt;linux/iopoll.h&gt;</i>
+&gt;<i> @@ -17,9 +11,17 @@</i>
+&gt;<i>  #include &lt;linux/of_platform.h&gt;</i>
+&gt;<i>  #include &lt;linux/phy/phy.h&gt;</i>
+&gt;<i>  #include &lt;linux/platform_device.h&gt;</i>
+&gt;<i> +</i>
+&gt;<i>  #include &lt;video/mipi_display.h&gt;</i>
+&gt;<i>  #include &lt;video/videomode.h&gt;</i>
+&gt;<i></i>
+&gt;<i> +#include &lt;drm/drm_atomic_helper.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_mipi_dsi.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_of.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_panel.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_print.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_probe_helper.h&gt;</i>
+&gt;<i> +</i>
+&gt;<i>  #include &quot;mtk_drm_ddp_comp.h&quot;</i>
+&gt;<i></i>
+&gt;<i>  #define DSI_START              0x00</i>
+&gt;<i> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c</i>
+&gt;<i> index 5d6a9f094df5..ce91b61364eb 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/mediatek/mtk_hdmi.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c</i>
+&gt;<i> @@ -3,11 +3,7 @@</i>
+&gt;<i>   * Copyright (c) 2014 MediaTek Inc.</i>
+&gt;<i>   * Author: Jie Qiu &lt;jie.qiu@xxxxxxxxxxxx&gt;</i>
+&gt;<i>   */</i>
+&gt;<i> -#include &lt;drm/drmP.h&gt;</i>
+&gt;<i> -#include &lt;drm/drm_atomic_helper.h&gt;</i>
+&gt;<i> -#include &lt;drm/drm_crtc.h&gt;</i>
+&gt;<i> -#include &lt;drm/drm_probe_helper.h&gt;</i>
+&gt;<i> -#include &lt;drm/drm_edid.h&gt;</i>
+&gt;<i> +</i>
+&gt;<i>  #include &lt;linux/arm-smccc.h&gt;</i>
+&gt;<i>  #include &lt;linux/clk.h&gt;</i>
+&gt;<i>  #include &lt;linux/delay.h&gt;</i>
+&gt;<i> @@ -23,7 +19,15 @@</i>
+&gt;<i>  #include &lt;linux/phy/phy.h&gt;</i>
+&gt;<i>  #include &lt;linux/platform_device.h&gt;</i>
+&gt;<i>  #include &lt;linux/regmap.h&gt;</i>
+&gt;<i> +</i>
+&gt;<i>  #include &lt;sound/hdmi-codec.h&gt;</i>
+&gt;<i> +</i>
+&gt;<i> +#include &lt;drm/drm_atomic_helper.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_crtc.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_edid.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_print.h&gt;</i>
+&gt;<i> +#include &lt;drm/drm_probe_helper.h&gt;</i>
+&gt;<i> +</i>
+&gt;<i>  #include &quot;mtk_cec.h&quot;</i>
+&gt;<i>  #include &quot;mtk_hdmi.h&quot;</i>
+&gt;<i>  #include &quot;mtk_hdmi_regs.h&quot;</i>
+&gt;<i> --</i>
+&gt;<i> 2.20.1</i>
+&gt;<i></i>
+&gt;<i> _______________________________________________</i>
+&gt;<i> dri-devel mailing list</i>
+&gt;<i> dri-devel@xxxxxxxxxxxxxxxxxxxxx</i>
+&gt;<i> <a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/dri-devel">https://lists.freedesktop.org/mailman/listinfo/dri-devel</a></i>
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="741253" href="msg741253.html">[PATCH v2 19/19] drm/mediatek: drop use of drmP.h</a></strong>
+<ul><li><em>From:</em> Sam Ravnborg</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741341.html">Re: [EXT] Re: [RFC 2/2] rpmsg: imx: add the initial imx rpmsg support</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741343.html">Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741257.html">Re: [PATCH v2 19/19] drm/mediatek: drop use of drmP.h</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741254.html">[PATCH v2 18/19] drm/rockchip: drop use of drmP.h</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741342"><strong>Date</strong></a></li>
+<li><a href="threads.html#741342"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

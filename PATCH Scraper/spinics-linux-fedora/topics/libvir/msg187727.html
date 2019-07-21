@@ -1,0 +1,287 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 14/14] virsh: Introduce virshPoolTypeCompleter -->
+<!--X-From-R13: [vpuny Bevibmavx &#60;zcevibmaNerqung.pbz> -->
+<!--X-Date: Fri, 19 Jul 2019 01:49:26 &#45;0700 -->
+<!--X-Message-Id: f6a0c8225d54e0d2e32ac2c6c478e45b97d2fcfd.1563525985.git.mprivozn@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1563525985.git.mprivozn@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 14/14] virsh: Introduce virshPoolTypeCompleter</title>
+<meta name="description" content="libvirt: [PATCH 14/14] virsh: Introduce virshPoolTypeCompleter">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 14/14] virsh: Introduce virshPoolTypeCompleter</h1>
+[<a href="msg187726.html">Date Prev</a>][<a href="msg187728.html">Date Next</a>][<a href="msg187726.html">Thread Prev</a>][<a href="msg187736.html">Thread Next</a>][<a href="maillist.html#187727">Date Index</a>][<a href="index.html#187727">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 14/14] virsh: Introduce virshPoolTypeCompleter</li>
+<li><em>From</em>: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 19 Jul 2019 10:48:38 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187713.html">cover.1563525985.git.mprivozn@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187713.html">cover.1563525985.git.mprivozn@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This completer can be used to complete pool types.
+
+Signed-off-by: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;
+---
+ tools/virsh-completer-pool.c | 27 +++++++++++++++++++++++++++
+ tools/virsh-completer-pool.h |  4 ++++
+ tools/virsh-pool.c           |  1 +
+ 3 files changed, 32 insertions(+)
+
+diff --git a/tools/virsh-completer-pool.c b/tools/virsh-completer-pool.c
+index fc01550908..9703589522 100644
+--- a/tools/virsh-completer-pool.c
++++ b/tools/virsh-completer-pool.c
+@@ -21,6 +21,7 @@
+ #include &lt;config.h&gt;
+ 
+ #include &quot;virsh-completer-pool.h&quot;
++#include &quot;conf/storage_conf.h&quot;
+ #include &quot;viralloc.h&quot;
+ #include &quot;virsh-pool.h&quot;
+ #include &quot;virsh.h&quot;
+@@ -91,3 +92,29 @@ virshPoolEventNameCompleter(vshControl *ctl ATTRIBUTE_UNUSED,
+     VIR_STEAL_PTR(ret, tmp);
+     return ret;
+ }
++
++
++char **
++virshPoolTypeCompleter(vshControl *ctl,
++                       const vshCmd *cmd,
++                       unsigned int flags)
++{
++    VIR_AUTOSTRINGLIST tmp = NULL;
++    const char *type_str = NULL;
++    size_t i = 0;
++
++    virCheckFlags(0, NULL);
++
++    if (vshCommandOptStringQuiet(ctl, cmd, &quot;type&quot;, &amp;type_str) &lt; 0)
++        return NULL;
++
++    if (VIR_ALLOC_N(tmp, VIR_STORAGE_POOL_LAST + 1) &lt; 0)
++        return NULL;
++
++    for (i = 0; i &lt; VIR_STORAGE_POOL_LAST; i++) {
++        if (VIR_STRDUP(tmp[i], virStoragePoolTypeToString(i)) &lt; 0)
++            return NULL;
++    }
++
++    return virshCommaStringListComplete(type_str, (const char **)tmp);
++}
+diff --git a/tools/virsh-completer-pool.h b/tools/virsh-completer-pool.h
+index 778ab25df2..510233fb65 100644
+--- a/tools/virsh-completer-pool.h
++++ b/tools/virsh-completer-pool.h
+@@ -29,3 +29,7 @@ char ** virshStoragePoolNameCompleter(vshControl *ctl,
+ char ** virshPoolEventNameCompleter(vshControl *ctl,
+                                     const vshCmd *cmd,
+                                     unsigned int flags);
++
++char ** virshPoolTypeCompleter(vshControl *ctl,
++                               const vshCmd *cmd,
++                               unsigned int flags);
+diff --git a/tools/virsh-pool.c b/tools/virsh-pool.c
+index 510d41b508..96ef626346 100644
+--- a/tools/virsh-pool.c
++++ b/tools/virsh-pool.c
+@@ -1095,6 +1095,7 @@ static const vshCmdOptDef opts_pool_list[] = {
+     },
+     {.name = &quot;type&quot;,
+      .type = VSH_OT_STRING,
++     .completer = virshPoolTypeCompleter,
+      .help = N_(&quot;only list pool of specified type(s) (if supported)&quot;)
+     },
+     {.name = &quot;details&quot;,
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187726.html">[PATCH 13/14] virsh-completer: Drop needless #include</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187728.html">Re:  [PATCH] util: Fix broken MinGW builds caused by commit 9bc01ad8</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187726.html">[PATCH 13/14] virsh-completer: Drop needless #include</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187736.html">[RFC PATCH 0/6] Split domain_conf.h</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187727"><strong>Date</strong></a></li>
+<li><a href="index.html#187727"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

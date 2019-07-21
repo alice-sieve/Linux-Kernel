@@ -1,0 +1,351 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 09/20] autofs&#45;5.1.4 &#45; add error handling for ext_mount_add() -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Tue, 13 Feb 2018 22:54:14 &#45;0800 -->
+<!--X-Message-Id: 151859062243.8026.16053425953604984633.stgit@pluto.themaw.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 151859051902.8026.13693256398323544616.stgit@pluto.themaw.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 09/20] autofs-5.1.4 - add error handling for ext_mount_add() &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 09/20] autofs-5.1.4 - add error handling for ext_mount_add() &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 09/20] autofs-5.1.4 - add error handling for ext_mount_add()</h1>
+[<a href="msg01851.html">Date Prev</a>][<a href="msg01853.html">Date Next</a>][<a href="msg01851.html">Thread Prev</a>][<a href="msg01853.html">Thread Next</a>][<a href="maillist.html#01852">Date Index</a>][<a href="index.html#01852">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 09/20] autofs-5.1.4 - add error handling for ext_mount_add()</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 14 Feb 2018 14:43:42 +0800</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg01861.html">151859051902.8026.13693256398323544616.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg01861.html">151859051902.8026.13693256398323544616.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>User-agent</em>: StGit/0.17.1-dirty</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Add error handling (memory allocation failures) for ext_mount_add().
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ CHANGELOG           |    1 +
+ lib/mounts.c        |    5 +----
+ modules/parse_amd.c |   42 ++++++++++++++++++++++++++++++------------
+ 3 files changed, 32 insertions(+), 16 deletions(-)
+
+diff --git a/CHANGELOG b/CHANGELOG
+index d0cfa19b..9d19c0a7 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -7,6 +7,7 @@ xx/xx/2018 autofs-5.1.5
+ - fix prefix option handling in expand_entry().
+ - fix sublink option not set from defaults.
+ - fix error return in do_nfs_mount().
++- add error handling for ext_mount_add().
+ 
+ 19/12/2017 autofs-5.1.4
+ - fix spec file url.
+diff --git a/lib/mounts.c b/lib/mounts.c
+index 6fa304aa..f46fab2b 100644
+--- a/lib/mounts.c
++++ b/lib/mounts.c
+@@ -715,15 +715,12 @@ int ext_mount_add(struct list_head *entry, const char *path, unsigned int umount
+ 	}
+ 
+ 	em = malloc(sizeof(struct ext_mount));
+-	if (!em) {
+-		ret = -1;
++	if (!em)
+ 		goto done;
+-	}
+ 
+ 	em-&gt;mountpoint = strdup(path);
+ 	if (!em-&gt;mountpoint) {
+ 		free(em);
+-		ret = -1;
+ 		goto done;
+ 	}
+ 	em-&gt;umount = umount;
+diff --git a/modules/parse_amd.c b/modules/parse_amd.c
+index 2a5d9a30..e7debc56 100644
+--- a/modules/parse_amd.c
++++ b/modules/parse_amd.c
+@@ -1080,7 +1080,14 @@ static int do_generic_mount(struct autofs_point *ap, const char *name,
+ 			umount = 1;
+ 		}
+ 		/* We have an external mount */
+-		ext_mount_add(&amp;entry-&gt;ext_mount, entry-&gt;fs, umount);
++		if (!ext_mount_add(&amp;entry-&gt;ext_mount, entry-&gt;fs, umount)) {
++			umount_ent(ap, entry-&gt;fs);
++			error(ap-&gt;logopt, MODPREFIX
++			      &quot;error: could not add external mount %s&quot;,
++			      entry-&gt;fs);
++			ret = 1;
++			goto out;
++		}
+ 		ret = do_link_mount(ap, name, entry, flags);
+ 	}
+ out:
+@@ -1124,7 +1131,13 @@ static int do_nfs_mount(struct autofs_point *ap, const char *name,
+ 			umount = 1;
+ 		}
+ 		/* We might be using an external mount */
+-		ext_mount_add(&amp;entry-&gt;ext_mount, entry-&gt;fs, umount);
++		if (!ext_mount_add(&amp;entry-&gt;ext_mount, entry-&gt;fs, umount)) {
++			umount_ent(ap, entry-&gt;fs);
++			error(ap-&gt;logopt, MODPREFIX
++			      &quot;error: could not add external mount %s&quot;, entry-&gt;fs);
++			ret = 1;
++			goto out;
++		}
+ 		ret = do_link_mount(ap, name, entry, flags);
+ 	}
+ out:
+@@ -1309,6 +1322,9 @@ static int do_program_mount(struct autofs_point *ap,
+ 	 */
+ 	if (ext_mount_inuse(entry-&gt;fs)) {
+ 		rv = 0;
++		/* An external mount with path entry-&gt;fs exists
++		 * so ext_mount_add() won't fail.
++		 */
+ 		ext_mount_add(&amp;entry-&gt;ext_mount, entry-&gt;fs, 1);
+ 	} else {
+ 		rv = mkdir_path(entry-&gt;fs, mp_mode);
+@@ -1325,17 +1341,19 @@ static int do_program_mount(struct autofs_point *ap,
+ 
+ 		rv = spawnv(ap-&gt;logopt, prog, (const char * const *) argv);
+ 		if (WIFEXITED(rv) &amp;&amp; !WEXITSTATUS(rv)) {
+-			rv = 0;
+-			ext_mount_add(&amp;entry-&gt;ext_mount, entry-&gt;fs, 1);
+-			debug(ap-&gt;logopt, MODPREFIX
+-			      &quot;%s: mounted %s&quot;, entry-&gt;type, entry-&gt;fs);
+-		} else {
+-			if (!ext_mount_inuse(entry-&gt;fs))
+-				rmdir_path(ap, entry-&gt;fs, ap-&gt;dev);
+-			error(ap-&gt;logopt, MODPREFIX
+-			     &quot;%s: failed to mount using: %s&quot;,
+-			     entry-&gt;type, entry-&gt;mount);
++			if (ext_mount_add(&amp;entry-&gt;ext_mount, entry-&gt;fs, 1)) {
++				rv = 0;
++				debug(ap-&gt;logopt, MODPREFIX
++				     &quot;%s: mounted %s&quot;, entry-&gt;type, entry-&gt;fs);
++				goto do_free;
++			}
++			umount_ent(ap, entry-&gt;fs);
+ 		}
++
++		if (!ext_mount_inuse(entry-&gt;fs))
++			rmdir_path(ap, entry-&gt;fs, ap-&gt;dev);
++		error(ap-&gt;logopt, MODPREFIX
++		   &quot;%s: failed to mount using %s&quot;, entry-&gt;type, entry-&gt;mount);
+ 	}
+ do_free:
+ 	free_argv(argc, (const char **) argv);
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01861" href="msg01861.html">[PATCH 00/20] Current patch queue</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01851.html">[PATCH 11/20] autofs-5.1.4 - use_hostname_for_mounts shouldn't prevent selection among replicas</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01853.html">[PATCH 08/20] autofs-5.1.4 - fix error return in do_nfs_mount()</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01851.html">[PATCH 11/20] autofs-5.1.4 - use_hostname_for_mounts shouldn't prevent selection among replicas</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01853.html">[PATCH 08/20] autofs-5.1.4 - fix error return in do_nfs_mount()</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01852"><strong>Date</strong></a></li>
+<li><a href="index.html#01852"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

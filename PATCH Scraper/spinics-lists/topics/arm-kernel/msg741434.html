@@ -1,0 +1,1233 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 2/3 v3] ARM: dts: aspeed: Add SGPIO driver -->
+<!--X-From-R13: Vbatjrv Lunat &#60;ubatjrvmNnzv.pbz> -->
+<!--X-Date: Tue, 16 Jul 2019 14:24:59 &#45;0700 -->
+<!--X-Message-Id: 1563312271&#45;17509&#45;1&#45;git&#45;send&#45;email&#45;hongweiz@ami.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH 2/3 v3] ARM: dts: aspeed: Add SGPIO driver">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH 2/3 v3] ARM: dts: aspeed: Add SGPIO driver &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH 2/3 v3] ARM: dts: aspeed: Add SGPIO driver</h1>
+[<a href="msg741433.html">Date Prev</a>][<a href="msg741435.html">Date Next</a>][<a href="msg741418.html">Thread Prev</a>][<a href="msg741445.html">Thread Next</a>][<a href="maillist.html#741434">Date Index</a>][<a href="threads.html#741434">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 2/3 v3] ARM: dts: aspeed: Add SGPIO driver</li>
+<li><em>From</em>: Hongwei Zhang &lt;hongweiz@xxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 16 Jul 2019 17:24:31 -0400</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Add SGPIO driver support for Aspeed AST2500 SoC.
+
+Signed-off-by: Hongwei Zhang &lt;hongweiz@xxxxxxx&gt;
+---
+ drivers/gpio/sgpio-aspeed.c | 487 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 487 insertions(+)
+ create mode 100644 drivers/gpio/sgpio-aspeed.c
+
+diff --git a/drivers/gpio/sgpio-aspeed.c b/drivers/gpio/sgpio-aspeed.c
+new file mode 100644
+index 0000000..ade2cb7
+--- /dev/null
++++ b/drivers/gpio/sgpio-aspeed.c
+@@ -0,0 +1,487 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright 2019 American Megatrends International LLC.
++ *
++ * Author: Karthikeyan Mani &lt;karthikeyanm@xxxxxxxxxxxxxx&gt;
++ */
++
++#include &lt;linux/gpio/driver.h&gt;
++#include &lt;linux/gpio/aspeed.h&gt;
++#include &lt;linux/hashtable.h&gt;
++#include &lt;linux/bitfield.h&gt;
++#include &lt;linux/init.h&gt;
++#include &lt;linux/clk.h&gt;
++#include &lt;linux/io.h&gt;
++#include &lt;linux/kernel.h&gt;
++#include &lt;linux/module.h&gt;
++#include &lt;linux/pinctrl/consumer.h&gt;
++#include &lt;linux/platform_device.h&gt;
++#include &lt;linux/spinlock.h&gt;
++#include &lt;linux/string.h&gt;
++#include &lt;linux/gpio.h&gt;
++
++#define MAX_NR_SGPIO			80
++
++#define ASPEED_SGPIO_CTRL		0x54
++
++#define ASPEED_SGPIO_PINS_MASK		GENMASK(9, 6)
++#define ASPEED_SGPIO_CLK_DIV_MASK	GENMASK(31, 16)
++#define ASPEED_SGPIO_ENABLE		BIT(0)
++
++// default sgpio direction is input.
++static uint32_t sgpio_dir_val[3] = {0xffffffff, 0xffffffff, 0xffffffff };
++
++struct aspeed_sgpio {
++	struct gpio_chip chip;
++	struct clk *pclk;
++	spinlock_t lock;
++	void __iomem *base;
++	int irq;
++};
++
++struct aspeed_sgpio_bank {
++	uint16_t    val_regs;
++	uint16_t    rdata_reg;
++	uint16_t    irq_regs;
++	const char  names[4][3];
++};
++
++/*
++ * Note: The &quot;value&quot; register returns the input value sampled on the
++ *       line even when the GPIO is configured as an output. Since
++ *       that input goes through synchronizers, writing, then reading
++ *       back may not return the written value right away.
++ *
++ *       The &quot;rdata&quot; register returns the content of the write latch
++ *       and thus can be used to read back what was last written
++ *       reliably.
++ */
++static const struct aspeed_sgpio_bank aspeed_sgpio_banks[] = {
++	{
++		.val_regs = 0x0000,
++		.rdata_reg = 0x0070,
++		.irq_regs = 0x0004,
++		.names = { &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot; },
++	},
++	{
++		.val_regs = 0x001C,
++		.rdata_reg = 0x0074,
++		.irq_regs = 0x0020,
++		.names = { &quot;E&quot;, &quot;F&quot;, &quot;G&quot;, &quot;H&quot; },
++	},
++	{
++		.val_regs = 0x0038,
++		.rdata_reg = 0x0078,
++		.irq_regs = 0x003C,
++		.names = { &quot;I&quot;, &quot;J&quot; },
++	},
++};
++
++enum aspeed_sgpio_reg {
++	reg_val,
++	reg_rdata,
++	reg_irq_enable,
++	reg_irq_type0,
++	reg_irq_type1,
++	reg_irq_type2,
++	reg_irq_status,
++};
++
++#define GPIO_VAL_VALUE      0x00
++#define GPIO_VAL_DIR        0x04
++#define GPIO_IRQ_ENABLE     0x00
++#define GPIO_IRQ_TYPE0      0x04
++#define GPIO_IRQ_TYPE1      0x08
++#define GPIO_IRQ_TYPE2      0x0C
++#define GPIO_IRQ_STATUS     0x10
++
++/* This will be resolved at compile time */
++static inline void __iomem *bank_reg(struct aspeed_sgpio *gpio,
++				     const struct aspeed_sgpio_bank *bank,
++				     const enum aspeed_sgpio_reg reg)
++{
++	switch (reg) {
++	case reg_val:
++		return gpio-&gt;base + bank-&gt;val_regs + GPIO_VAL_VALUE;
++	case reg_rdata:
++		return gpio-&gt;base + bank-&gt;rdata_reg;
++	case reg_irq_enable:
++		return gpio-&gt;base + bank-&gt;irq_regs + GPIO_IRQ_ENABLE;
++	case reg_irq_type0:
++		return gpio-&gt;base + bank-&gt;irq_regs + GPIO_IRQ_TYPE0;
++	case reg_irq_type1:
++		return gpio-&gt;base + bank-&gt;irq_regs + GPIO_IRQ_TYPE1;
++	case reg_irq_type2:
++		return gpio-&gt;base + bank-&gt;irq_regs + GPIO_IRQ_TYPE2;
++	case reg_irq_status:
++		return gpio-&gt;base + bank-&gt;irq_regs + GPIO_IRQ_STATUS;
++	default:
++		/* acturally if code runs to here, it's an error case */
++		BUG_ON(1);
++	}
++}
++
++#define GPIO_BANK(x)    ((x) &gt;&gt; 5)
++#define GPIO_OFFSET(x)  ((x) &amp; 0x1f)
++#define GPIO_BIT(x)     BIT(GPIO_OFFSET(x))
++
++static const struct aspeed_sgpio_bank *to_bank(unsigned int offset)
++{
++	unsigned int bank = GPIO_BANK(offset);
++
++	WARN_ON(bank &gt;= ARRAY_SIZE(aspeed_sgpio_banks));
++	return &amp;aspeed_sgpio_banks[bank];
++}
++
++static int aspeed_sgpio_get(struct gpio_chip *gc, unsigned int offset)
++{
++	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
++	const struct aspeed_sgpio_bank *bank = to_bank(offset);
++
++	if (sgpio_dir_val[GPIO_BANK(offset)] &amp; GPIO_BIT(offset))
++		return !!(ioread32(bank_reg(gpio, bank, reg_val)) &amp; GPIO_BIT(offset));
++	else
++		return !!(ioread32(bank_reg(gpio, bank, reg_rdata)) &amp; GPIO_BIT(offset));
++
++}
++
++static void aspeed_sgpio_set(struct gpio_chip *gc, unsigned int offset, int val)
++{
++	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
++	const struct aspeed_sgpio_bank *bank = to_bank(offset);
++	unsigned long flags;
++	void __iomem *addr;
++	u32 reg = 0;
++
++	spin_lock_irqsave(&amp;gpio-&gt;lock, flags);
++
++	addr = bank_reg(gpio, bank, reg_val);
++
++	if (val)
++		reg |= GPIO_BIT(offset);
++	else
++		reg &amp;= ~GPIO_BIT(offset);
++
++	iowrite32(reg, addr);
++	spin_unlock_irqrestore(&amp;gpio-&gt;lock, flags);
++}
++
++static int aspeed_sgpio_dir_in(struct gpio_chip *gc, unsigned int offset)
++{
++	sgpio_dir_val[GPIO_BANK(offset)] |= GPIO_BIT(offset);
++	return 0;
++}
++
++static int aspeed_sgpio_dir_out(struct gpio_chip *gc, unsigned int offset, int val)
++{
++	sgpio_dir_val[GPIO_BANK(offset)] &amp;= ~GPIO_BIT(offset);
++	return 0;
++}
++
++static int aspeed_sgpio_get_direction(struct gpio_chip *gc, unsigned int offset)
++{
++	return sgpio_dir_val[GPIO_BANK(offset)] &amp; GPIO_BIT(offset);
++
++}
++
++static inline int irqd_to_aspeed_sgpio_data(struct irq_data *d,
++					    struct aspeed_sgpio **gpio,
++					    const struct aspeed_sgpio_bank **bank,
++					    u32 *bit, int *offset)
++{
++	struct aspeed_sgpio *internal;
++
++	*offset = irqd_to_hwirq(d);
++
++	internal = irq_data_get_irq_chip_data(d);
++
++	*gpio = internal;
++	*bank = to_bank(*offset);
++	*bit = GPIO_BIT(*offset);
++
++	return 0;
++}
++
++static void aspeed_sgpio_irq_ack(struct irq_data *d)
++{
++	const struct aspeed_sgpio_bank *bank;
++	struct aspeed_sgpio *gpio;
++	unsigned long flags;
++	void __iomem *status_addr;
++	int rc, offset;
++	u32 bit;
++
++	rc = irqd_to_aspeed_sgpio_data(d, &amp;gpio, &amp;bank, &amp;bit, &amp;offset);
++	if (rc)
++		return;
++
++	status_addr = bank_reg(gpio, bank, reg_irq_status);
++
++	spin_lock_irqsave(&amp;gpio-&gt;lock, flags);
++
++	iowrite32(bit, status_addr);
++
++	spin_unlock_irqrestore(&amp;gpio-&gt;lock, flags);
++}
++
++static void aspeed_sgpio_irq_set_mask(struct irq_data *d, bool set)
++{
++	const struct aspeed_sgpio_bank *bank;
++	struct aspeed_sgpio *gpio;
++	unsigned long flags;
++	u32 reg, bit;
++	void __iomem *addr;
++	int rc, offset;
++
++	rc = irqd_to_aspeed_sgpio_data(d, &amp;gpio, &amp;bank, &amp;bit, &amp;offset);
++	if (rc)
++		return;
++
++	addr = bank_reg(gpio, bank, reg_irq_enable);
++
++	spin_lock_irqsave(&amp;gpio-&gt;lock, flags);
++
++	reg = ioread32(addr);
++	if (set)
++		reg |= bit;
++	else
++		reg &amp;= ~bit;
++
++	iowrite32(reg, addr);
++
++	spin_unlock_irqrestore(&amp;gpio-&gt;lock, flags);
++}
++
++static void aspeed_sgpio_irq_mask(struct irq_data *d)
++{
++	aspeed_sgpio_irq_set_mask(d, false);
++}
++
++static void aspeed_sgpio_irq_unmask(struct irq_data *d)
++{
++	aspeed_sgpio_irq_set_mask(d, true);
++}
++
++static int aspeed_sgpio_set_type(struct irq_data *d, unsigned int type)
++{
++	u32 type0 = 0;
++	u32 type1 = 0;
++	u32 type2 = 0;
++	u32 bit, reg;
++	const struct aspeed_sgpio_bank *bank;
++	irq_flow_handler_t handler;
++	struct aspeed_sgpio *gpio;
++	unsigned long flags;
++	void __iomem *addr;
++	int rc, offset;
++
++	rc = irqd_to_aspeed_sgpio_data(d, &amp;gpio, &amp;bank, &amp;bit, &amp;offset);
++	if (rc)
++		return -EINVAL;
++
++	switch (type &amp; IRQ_TYPE_SENSE_MASK) {
++	case IRQ_TYPE_EDGE_BOTH:
++		type2 |= bit;
++		/* fall through */
++	case IRQ_TYPE_EDGE_RISING:
++		type0 |= bit;
++		/* fall through */
++	case IRQ_TYPE_EDGE_FALLING:
++		handler = handle_edge_irq;
++		break;
++	case IRQ_TYPE_LEVEL_HIGH:
++		type0 |= bit;
++		/* fall through */
++	case IRQ_TYPE_LEVEL_LOW:
++		type1 |= bit;
++		handler = handle_level_irq;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	spin_lock_irqsave(&amp;gpio-&gt;lock, flags);
++
++	addr = bank_reg(gpio, bank, reg_irq_type0);
++	reg = ioread32(addr);
++	reg = (reg &amp; ~bit) | type0;
++	iowrite32(reg, addr);
++
++	addr = bank_reg(gpio, bank, reg_irq_type1);
++	reg = ioread32(addr);
++	reg = (reg &amp; ~bit) | type1;
++	iowrite32(reg, addr);
++
++	addr = bank_reg(gpio, bank, reg_irq_type2);
++	reg = ioread32(addr);
++	reg = (reg &amp; ~bit) | type2;
++	iowrite32(reg, addr);
++
++	spin_unlock_irqrestore(&amp;gpio-&gt;lock, flags);
++
++	irq_set_handler_locked(d, handler);
++
++	return 0;
++}
++
++static void aspeed_sgpio_irq_handler(struct irq_desc *desc)
++{
++	struct gpio_chip *gc = irq_desc_get_handler_data(desc);
++	struct irq_chip *ic = irq_desc_get_chip(desc);
++	struct aspeed_sgpio *data = gpiochip_get_data(gc);
++	unsigned int i, p, girq;
++	unsigned long reg;
++
++	chained_irq_enter(ic, desc);
++
++	for (i = 0; i &lt; ARRAY_SIZE(aspeed_sgpio_banks); i++) {
++		const struct aspeed_sgpio_bank *bank = &amp;aspeed_sgpio_banks[i];
++
++		reg = ioread32(bank_reg(data, bank, reg_irq_status));
++
++		for_each_set_bit(p, &amp;reg, 32) {
++			girq = irq_find_mapping(gc-&gt;irq.domain, i * 32 + p);
++			generic_handle_irq(girq);
++		}
++
++	}
++
++	chained_irq_exit(ic, desc);
++}
++
++static struct irq_chip aspeed_sgpio_irqchip = {
++	.name       = &quot;aspeed-sgpio&quot;,
++	.irq_ack    = aspeed_sgpio_irq_ack,
++	.irq_mask   = aspeed_sgpio_irq_mask,
++	.irq_unmask = aspeed_sgpio_irq_unmask,
++	.irq_set_type   = aspeed_sgpio_set_type,
++};
++
++static int aspeed_sgpio_setup_irqs(struct aspeed_sgpio *gpio,
++				   struct platform_device *pdev)
++{
++	int rc, i;
++	const struct aspeed_sgpio_bank *bank;
++
++	rc = platform_get_irq(pdev, 0);
++	if (rc &lt; 0)
++		return rc;
++
++	gpio-&gt;irq = rc;
++
++	/* Disable IRQ and clear Interrupt status registers for all SPGIO Pins. */
++	for (i = 0; i &lt; ARRAY_SIZE(aspeed_sgpio_banks); i++) {
++		bank =  &amp;aspeed_sgpio_banks[i];
++		/* disable irq enable bits */
++		iowrite32(0x00000000, bank_reg(gpio, bank, reg_irq_enable));
++		/* clear status bits */
++		iowrite32(0xffffffff, bank_reg(gpio, bank, reg_irq_status));
++	}
++
++	rc = gpiochip_irqchip_add(&amp;gpio-&gt;chip, &amp;aspeed_sgpio_irqchip,
++				  0, handle_bad_irq, IRQ_TYPE_NONE);
++	if (rc) {
++		dev_info(&amp;pdev-&gt;dev, &quot;Could not add irqchip\n&quot;);
++		return rc;
++	}
++
++	gpiochip_set_chained_irqchip(&amp;gpio-&gt;chip, &amp;aspeed_sgpio_irqchip,
++				     gpio-&gt;irq, aspeed_sgpio_irq_handler);
++
++	/* set IRQ settings and Enable Interrupt */
++	for (i = 0; i &lt; ARRAY_SIZE(aspeed_sgpio_banks); i++) {
++		bank = &amp;aspeed_sgpio_banks[i];
++		/* set falling or level-low irq */
++		iowrite32(0x00000000, bank_reg(gpio, bank, reg_irq_type0));
++		/* trigger type is edge */
++		iowrite32(0x00000000, bank_reg(gpio, bank, reg_irq_type1));
++		/* dual edge trigger mode. */
++		iowrite32(0xffffffff, bank_reg(gpio, bank, reg_irq_type2));
++		/* enable irq */
++		iowrite32(0xffffffff, bank_reg(gpio, bank, reg_irq_enable));
++	}
++
++	return 0;
++}
++
++static const struct of_device_id aspeed_sgpio_of_table[] = {
++	{ .compatible = &quot;aspeed,ast2400-sgpio&quot; },
++	{ .compatible = &quot;aspeed,ast2500-sgpio&quot; },
++	{}
++};
++MODULE_DEVICE_TABLE(of, aspeed_sgpio_of_table);
++
++static int __init aspeed_sgpio_probe(struct platform_device *pdev)
++{
++	struct aspeed_sgpio *gpio;
++	struct resource *res;
++	u32 nr_gpios, sgpio_freq;
++	int rc;
++	u16 sgpio_clk_div;
++	unsigned long apb_freq;
++
++	gpio = devm_kzalloc(&amp;pdev-&gt;dev, sizeof(*gpio), GFP_KERNEL);
++	if (!gpio)
++		return -ENOMEM;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	gpio-&gt;base = devm_ioremap_resource(&amp;pdev-&gt;dev, res);
++	if (IS_ERR(gpio-&gt;base))
++		return PTR_ERR(gpio-&gt;base);
++
++	rc = of_property_read_u32(pdev-&gt;dev.of_node, &quot;nr-gpios&quot;, &amp;nr_gpios);
++	if ((rc &lt; 0) || (nr_gpios &gt; MAX_NR_SGPIO))
++		nr_gpios = MAX_NR_SGPIO;
++
++	rc = of_property_read_u32(pdev-&gt;dev.of_node, &quot;bus-frequency&quot;, &amp;sgpio_freq);
++	if (rc &lt; 0) {
++		dev_err(&amp;pdev-&gt;dev, &quot;Could not read bus-frequency property\n&quot;);
++		sgpio_freq = 12000000;
++	}
++
++	gpio-&gt;pclk = devm_clk_get(&amp;pdev-&gt;dev, NULL);
++	if (IS_ERR(gpio-&gt;pclk)) {
++		dev_err(&amp;pdev-&gt;dev, &quot;devm_clk_get failed\n&quot;);
++		return PTR_ERR(gpio-&gt;pclk);
++	}
++
++	apb_freq = clk_get_rate(gpio-&gt;pclk);
++	sgpio_clk_div = 2 * ((apb_freq % sgpio_freq == 0) ?
++			     (apb_freq / sgpio_freq) - 1 : (apb_freq / sgpio_freq));
++	iowrite32(FIELD_PREP(ASPEED_SGPIO_CLK_DIV_MASK, sgpio_clk_div) |
++		  FIELD_PREP(ASPEED_SGPIO_PINS_MASK, (nr_gpios / 8)) |
++		  ASPEED_SGPIO_ENABLE,
++		  gpio-&gt;base + ASPEED_SGPIO_CTRL);
++
++	spin_lock_init(&amp;gpio-&gt;lock);
++
++	gpio-&gt;chip.parent = &amp;pdev-&gt;dev;
++	gpio-&gt;chip.ngpio = nr_gpios;
++	gpio-&gt;chip.direction_input = aspeed_sgpio_dir_in;
++	gpio-&gt;chip.direction_output = aspeed_sgpio_dir_out;
++	gpio-&gt;chip.get_direction = aspeed_sgpio_get_direction;
++	gpio-&gt;chip.request = NULL;
++	gpio-&gt;chip.free = NULL;
++	gpio-&gt;chip.get = aspeed_sgpio_get;
++	gpio-&gt;chip.set = aspeed_sgpio_set;
++	gpio-&gt;chip.set_config = NULL;
++	gpio-&gt;chip.label = dev_name(&amp;pdev-&gt;dev);
++	gpio-&gt;chip.base =  ARCH_NR_GPIOS - MAX_NR_SGPIO;
++
++	rc = devm_gpiochip_add_data(&amp;pdev-&gt;dev, &amp;gpio-&gt;chip, gpio);
++	if (rc &lt; 0)
++		return rc;
++
++	return aspeed_sgpio_setup_irqs(gpio, pdev);
++}
++
++static struct platform_driver aspeed_sgpio_driver = {
++	.driver = {
++		.name = KBUILD_MODNAME,
++		.of_match_table = aspeed_sgpio_of_table,
++	},
++};
++
++module_platform_driver_probe(aspeed_sgpio_driver, aspeed_sgpio_probe);
++MODULE_DESCRIPTION(&quot;Aspeed Serial GPIO Driver&quot;);
++MODULE_LICENSE(&quot;GPL&quot;);
+-- 
+2.7.4
+
+&gt;<i></i>
+
+thanks Anrew, please review v3 at above and also inline comments at below.
+
+&gt;<i></i>
+&gt;<i> From:	Andrew Jeffery &lt;andrew@xxxxxxxx&gt;</i>
+&gt;<i> Sent:	Wednesday, July 10, 2019 9:46 PM</i>
+&gt;<i> To:	Hongwei Zhang; Bartosz Golaszewski; Joel Stanley; Linus Walleij</i>
+&gt;<i> Cc:	linux-gpio@xxxxxxxxxxxxxxx; linux-arm-kernel@xxxxxxxxxxxxxxxxxxx; linux-aspeed@xxxxxxxxxxxxxxxx; </i>
+&gt;<i> linux-kernel@xxxxxxxxxxxxxxx</i>
+&gt;<i> Subject:	Re: [PATCH 2/3 v2] ARM: dts: aspeed: Add SGPIO driver</i>
+&gt;<i> </i>
+&gt;<i> </i>
+&gt;<i> </i>
+&gt;<i> On Thu, 11 Jul 2019, at 00:56, Hongwei Zhang wrote:</i>
+&gt;<i> &gt; Add SGPIO driver support for Aspeed AST2500 SoC.</i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; Signed-off-by: Hongwei Zhang &lt;hongweiz@xxxxxxx&gt;</i>
+&gt;<i> &gt; ---</i>
+&gt;<i> &gt;  drivers/gpio/sgpio-aspeed.c | 450 </i>
+&gt;<i> &gt; ++++++++++++++++++++++++++++++++++++++++++++</i>
+&gt;<i> &gt;  1 file changed, 450 insertions(+)</i>
+&gt;<i> &gt;  create mode 100644 drivers/gpio/sgpio-aspeed.c</i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; diff --git a/drivers/gpio/sgpio-aspeed.c b/drivers/gpio/sgpio-aspeed.c </i>
+&gt;<i> &gt; new file mode 100644 index 0000000..0743d22</i>
+&gt;<i> &gt; --- /dev/null</i>
+&gt;<i> &gt; +++ b/drivers/gpio/sgpio-aspeed.c</i>
+&gt;<i> &gt; @@ -0,0 +1,450 @@</i>
+&gt;<i> &gt; +// SPDX-License-Identifier: GPL-2.0+</i>
+&gt;<i> &gt; +/*</i>
+&gt;<i> &gt; + * Copyright 2019 American Megatrends International LLC.</i>
+&gt;<i> &gt; + *</i>
+&gt;<i> &gt; + * Author: Karthikeyan Mani &lt;karthikeyanm@xxxxxxxxxxxxxx&gt;  */</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +#include &lt;linux/gpio/driver.h&gt;</i>
+&gt;<i> &gt; +#include &lt;linux/gpio/aspeed.h&gt;</i>
+&gt;<i> &gt; +#include &lt;linux/hashtable.h&gt;</i>
+&gt;<i> &gt; +#include &lt;linux/init.h&gt;</i>
+&gt;<i> &gt; +#include &lt;linux/io.h&gt;</i>
+&gt;<i> &gt; +#include &lt;linux/kernel.h&gt;</i>
+&gt;<i> &gt; +#include &lt;linux/module.h&gt;</i>
+&gt;<i> &gt; +#include &lt;linux/pinctrl/consumer.h&gt;</i>
+&gt;<i> &gt; +#include &lt;linux/platform_device.h&gt;</i>
+&gt;<i> &gt; +#include &lt;linux/spinlock.h&gt;</i>
+&gt;<i> &gt; +#include &lt;linux/string.h&gt;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +#define NR_SGPIO        80</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +struct aspeed_sgpio {</i>
+&gt;<i> &gt; +	struct gpio_chip chip;</i>
+&gt;<i> &gt; +	spinlock_t lock;</i>
+&gt;<i> &gt; +	void __iomem *base;</i>
+&gt;<i> &gt; +	int irq;</i>
+&gt;<i> &gt; +};</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +struct aspeed_sgpio_bank {</i>
+&gt;<i> &gt; +	uint16_t    val_regs;</i>
+&gt;<i> &gt; +	uint16_t    rdata_reg;</i>
+&gt;<i> &gt; +	uint16_t    irq_regs;</i>
+&gt;<i> &gt; +	const char  names[4][3];</i>
+&gt;<i> &gt; +};</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +/*</i>
+&gt;<i> &gt; + * Note: The &quot;value&quot; register returns the input value sampled on the</i>
+&gt;<i> &gt; + *       line even when the GPIO is configured as an output. Since</i>
+&gt;<i> &gt; + *       that input goes through synchronizers, writing, then reading</i>
+&gt;<i> &gt; + *       back may not return the written value right away.</i>
+&gt;<i> &gt; + *</i>
+&gt;<i> &gt; + *       The &quot;rdata&quot; register returns the content of the write latch</i>
+&gt;<i> &gt; + *       and thus can be used to read back what was last written</i>
+&gt;<i> &gt; + *       reliably.</i>
+&gt;<i> &gt; + */</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static const struct aspeed_sgpio_bank aspeed_sgpio_banks[] = {</i>
+&gt;<i> &gt; +	{</i>
+&gt;<i> &gt; +		.val_regs = 0x0000,</i>
+&gt;<i> &gt; +		.rdata_reg = 0x0070,</i>
+&gt;<i> &gt; +		.irq_regs = 0x0004,</i>
+&gt;<i> &gt; +		.names = { &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot; },</i>
+&gt;<i> &gt; +	},</i>
+&gt;<i> &gt; +	{</i>
+&gt;<i> &gt; +		.val_regs = 0x001C,</i>
+&gt;<i> &gt; +		.rdata_reg = 0x0074,</i>
+&gt;<i> &gt; +		.irq_regs = 0x0020,</i>
+&gt;<i> &gt; +		.names = { &quot;E&quot;, &quot;F&quot;, &quot;G&quot;, &quot;H&quot; },</i>
+&gt;<i> &gt; +	},</i>
+&gt;<i> &gt; +	{</i>
+&gt;<i> &gt; +		.val_regs = 0x0038,</i>
+&gt;<i> &gt; +		.rdata_reg = 0x0078,</i>
+&gt;<i> &gt; +		.irq_regs = 0x003C,</i>
+&gt;<i> &gt; +		.names = { &quot;I&quot;, &quot;J&quot; },</i>
+&gt;<i> &gt; +	},</i>
+&gt;<i> &gt; +};</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +enum aspeed_sgpio_reg {</i>
+&gt;<i> &gt; +	reg_val,</i>
+&gt;<i> &gt; +	reg_rdata,</i>
+&gt;<i> &gt; +	reg_irq_enable,</i>
+&gt;<i> &gt; +	reg_irq_type0,</i>
+&gt;<i> &gt; +	reg_irq_type1,</i>
+&gt;<i> &gt; +	reg_irq_type2,</i>
+&gt;<i> &gt; +	reg_irq_status,</i>
+&gt;<i> &gt; +};</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +#define GPIO_VAL_VALUE      0x00</i>
+&gt;<i> &gt; +#define GPIO_VAL_DIR        0x04</i>
+&gt;<i> &gt; +#define GPIO_IRQ_ENABLE     0x00</i>
+&gt;<i> &gt; +#define GPIO_IRQ_TYPE0      0x04</i>
+&gt;<i> &gt; +#define GPIO_IRQ_TYPE1      0x08</i>
+&gt;<i> &gt; +#define GPIO_IRQ_TYPE2      0x0C</i>
+&gt;<i> &gt; +#define GPIO_IRQ_STATUS     0x10</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +/* This will be resolved at compile time */ static inline void </i>
+&gt;<i> &gt; +__iomem *bank_reg(struct aspeed_sgpio *gpio,</i>
+&gt;<i> &gt; +				     const struct aspeed_sgpio_bank *bank,</i>
+&gt;<i> &gt; +				     const enum aspeed_sgpio_reg reg) {</i>
+&gt;<i> &gt; +	switch (reg) {</i>
+&gt;<i> &gt; +	case reg_val:</i>
+&gt;<i> &gt; +		return gpio-&gt;base + bank-&gt;val_regs + GPIO_VAL_VALUE;</i>
+&gt;<i> &gt; +	case reg_rdata:</i>
+&gt;<i> &gt; +		return gpio-&gt;base + bank-&gt;rdata_reg;</i>
+&gt;<i> &gt; +	case reg_irq_enable:</i>
+&gt;<i> &gt; +		return gpio-&gt;base + bank-&gt;irq_regs + GPIO_IRQ_ENABLE;</i>
+&gt;<i> &gt; +	case reg_irq_type0:</i>
+&gt;<i> &gt; +		return gpio-&gt;base + bank-&gt;irq_regs + GPIO_IRQ_TYPE0;</i>
+&gt;<i> &gt; +	case reg_irq_type1:</i>
+&gt;<i> &gt; +		return gpio-&gt;base + bank-&gt;irq_regs + GPIO_IRQ_TYPE1;</i>
+&gt;<i> &gt; +	case reg_irq_type2:</i>
+&gt;<i> &gt; +		return gpio-&gt;base + bank-&gt;irq_regs + GPIO_IRQ_TYPE2;</i>
+&gt;<i> &gt; +	case reg_irq_status:</i>
+&gt;<i> &gt; +		return gpio-&gt;base + bank-&gt;irq_regs + GPIO_IRQ_STATUS;</i>
+&gt;<i> &gt; +	default:</i>
+&gt;<i> &gt; +		/* acturally if code runs to here, it's an error case */</i>
+&gt;<i> &gt; +		WARN_ON(reg);</i>
+&gt;<i> &gt; +		return gpio-&gt;base;</i>
+&gt;<i> &gt; +	}</i>
+&gt;<i> &gt; +}</i>
+&gt;<i> &gt; +</i>
+
+updated to use BUG_ON(1), please see v3.
+
+&gt;<i> &gt; +#define GPIO_BANK(x)    ((x) &gt;&gt; 5)</i>
+&gt;<i> &gt; +#define GPIO_OFFSET(x)  ((x) &amp; 0x1f)</i>
+&gt;<i> &gt; +#define GPIO_BIT(x)     BIT(GPIO_OFFSET(x))</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static const struct aspeed_sgpio_bank *to_bank(unsigned int offset) {</i>
+&gt;<i> &gt; +	unsigned int bank = GPIO_BANK(offset);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	WARN_ON(bank &gt;= ARRAY_SIZE(aspeed_sgpio_banks));</i>
+&gt;<i> &gt; +	return &amp;aspeed_sgpio_banks[bank];</i>
+&gt;<i> &gt; +}</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static int aspeed_sgpio_get(struct gpio_chip *gc, unsigned int </i>
+&gt;<i> &gt; +offset) {</i>
+&gt;<i> &gt; +	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);</i>
+&gt;<i> &gt; +	const struct aspeed_sgpio_bank *bank = to_bank(offset);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	return !!(ioread32(bank_reg(gpio, bank, reg_val)) &amp; </i>
+&gt;<i> &gt; +GPIO_BIT(offset)); }</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static void aspeed_sgpio_set(struct gpio_chip *gc, unsigned int</i>
+&gt;<i> &gt; offset, int val)</i>
+&gt;<i> &gt; +{</i>
+&gt;<i> &gt; +	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);</i>
+&gt;<i> &gt; +	const struct aspeed_sgpio_bank *bank = to_bank(offset);</i>
+&gt;<i> &gt; +	unsigned long flags;</i>
+&gt;<i> &gt; +	void __iomem *addr;</i>
+&gt;<i> &gt; +	u32 reg = 0;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	spin_lock_irqsave(&amp;gpio-&gt;lock, flags);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	addr = bank_reg(gpio, bank, reg_val);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	if (val)</i>
+&gt;<i> &gt; +		reg |= GPIO_BIT(offset);</i>
+&gt;<i> &gt; +	else</i>
+&gt;<i> &gt; +		reg &amp;= ~GPIO_BIT(offset);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	iowrite32(reg, addr);</i>
+&gt;<i> &gt; +	spin_unlock_irqrestore(&amp;gpio-&gt;lock, flags); }</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static int aspeed_sgpio_dir_in(struct gpio_chip *gc, unsigned int</i>
+&gt;<i> &gt; offset)</i>
+&gt;<i> &gt; +{</i>
+&gt;<i> &gt; +	/* By default all SGPIO Pins are input */</i>
+&gt;<i> &gt; +	return 0;</i>
+&gt;<i> &gt; +}</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static int aspeed_sgpio_dir_out(struct gpio_chip *gc, unsigned int</i>
+&gt;<i> &gt; offset, int val)</i>
+&gt;<i> &gt; +{</i>
+&gt;<i> &gt; +	return 0;</i>
+&gt;<i> &gt; +}</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static int aspeed_sgpio_get_direction(struct gpio_chip *gc, unsigned</i>
+&gt;<i> &gt; int offset)</i>
+&gt;<i> &gt; +{</i>
+&gt;<i> &gt; +	/* By default all SGPIO Pins are input */</i>
+&gt;<i> &gt; +	return 1;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +}</i>
+&gt;<i> </i>
+&gt;<i> Please see my follow-up reply on v1 that helps clarify what we should do with the </i>
+&gt;<i> dir_in()/dir_out()/get_direction() implementations. The implementation here will confuse everything in </i>
+&gt;<i> the stack above it.</i>
+&gt;<i> </i>
+
+updated, please see v3.
+
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static inline int irqd_to_aspeed_sgpio_data(struct irq_data *d,</i>
+&gt;<i> &gt; +					    struct aspeed_sgpio **gpio,</i>
+&gt;<i> &gt; +					    const struct aspeed_sgpio_bank **bank,</i>
+&gt;<i> &gt; +					    u32 *bit, int *offset)</i>
+&gt;<i> &gt; +{</i>
+&gt;<i> &gt; +	struct aspeed_sgpio *internal;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	*offset = irqd_to_hwirq(d);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	internal = irq_data_get_irq_chip_data(d);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	*gpio = internal;</i>
+&gt;<i> &gt; +	*bank = to_bank(*offset);</i>
+&gt;<i> &gt; +	*bit = GPIO_BIT(*offset);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	return 0;</i>
+&gt;<i> &gt; +}</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static void aspeed_sgpio_irq_ack(struct irq_data *d) {</i>
+&gt;<i> &gt; +	const struct aspeed_sgpio_bank *bank;</i>
+&gt;<i> &gt; +	struct aspeed_sgpio *gpio;</i>
+&gt;<i> &gt; +	unsigned long flags;</i>
+&gt;<i> &gt; +	void __iomem *status_addr;</i>
+&gt;<i> &gt; +	int rc, offset;</i>
+&gt;<i> &gt; +	u32 bit;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	rc = irqd_to_aspeed_sgpio_data(d, &amp;gpio, &amp;bank, &amp;bit, &amp;offset);</i>
+&gt;<i> &gt; +	if (rc)</i>
+&gt;<i> &gt; +		return;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	status_addr = bank_reg(gpio, bank, reg_irq_status);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	spin_lock_irqsave(&amp;gpio-&gt;lock, flags);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	iowrite32(bit, status_addr);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	spin_unlock_irqrestore(&amp;gpio-&gt;lock, flags); }</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static void aspeed_sgpio_irq_set_mask(struct irq_data *d, bool set) {</i>
+&gt;<i> &gt; +	const struct aspeed_sgpio_bank *bank;</i>
+&gt;<i> &gt; +	struct aspeed_sgpio *gpio;</i>
+&gt;<i> &gt; +	unsigned long flags;</i>
+&gt;<i> &gt; +	u32 reg, bit;</i>
+&gt;<i> &gt; +	void __iomem *addr;</i>
+&gt;<i> &gt; +	int rc, offset;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	rc = irqd_to_aspeed_sgpio_data(d, &amp;gpio, &amp;bank, &amp;bit, &amp;offset);</i>
+&gt;<i> &gt; +	if (rc)</i>
+&gt;<i> &gt; +		return;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	addr = bank_reg(gpio, bank, reg_irq_enable);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	spin_lock_irqsave(&amp;gpio-&gt;lock, flags);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	reg = ioread32(addr);</i>
+&gt;<i> &gt; +	if (set)</i>
+&gt;<i> &gt; +		reg |= bit;</i>
+&gt;<i> &gt; +	else</i>
+&gt;<i> &gt; +		reg &amp;= ~bit;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	iowrite32(reg, addr);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	spin_unlock_irqrestore(&amp;gpio-&gt;lock, flags); }</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static void aspeed_sgpio_irq_mask(struct irq_data *d) {</i>
+&gt;<i> &gt; +	aspeed_sgpio_irq_set_mask(d, false); }</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static void aspeed_sgpio_irq_unmask(struct irq_data *d) {</i>
+&gt;<i> &gt; +	aspeed_sgpio_irq_set_mask(d, true);</i>
+&gt;<i> &gt; +}</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static int aspeed_sgpio_set_type(struct irq_data *d, unsigned int </i>
+&gt;<i> &gt; +type) {</i>
+&gt;<i> &gt; +	u32 type0 = 0;</i>
+&gt;<i> &gt; +	u32 type1 = 0;</i>
+&gt;<i> &gt; +	u32 type2 = 0;</i>
+&gt;<i> &gt; +	u32 bit, reg;</i>
+&gt;<i> &gt; +	const struct aspeed_sgpio_bank *bank;</i>
+&gt;<i> &gt; +	irq_flow_handler_t handler;</i>
+&gt;<i> &gt; +	struct aspeed_sgpio *gpio;</i>
+&gt;<i> &gt; +	unsigned long flags;</i>
+&gt;<i> &gt; +	void __iomem *addr;</i>
+&gt;<i> &gt; +	int rc, offset;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	rc = irqd_to_aspeed_sgpio_data(d, &amp;gpio, &amp;bank, &amp;bit, &amp;offset);</i>
+&gt;<i> &gt; +	if (rc)</i>
+&gt;<i> &gt; +		return -EINVAL;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	switch (type &amp; IRQ_TYPE_SENSE_MASK) {</i>
+&gt;<i> &gt; +	case IRQ_TYPE_EDGE_BOTH:</i>
+&gt;<i> &gt; +		type2 |= bit;</i>
+&gt;<i> &gt; +		/* fall through */</i>
+&gt;<i> &gt; +	case IRQ_TYPE_EDGE_RISING:</i>
+&gt;<i> &gt; +		type0 |= bit;</i>
+&gt;<i> &gt; +		/* fall through */</i>
+&gt;<i> &gt; +	case IRQ_TYPE_EDGE_FALLING:</i>
+&gt;<i> &gt; +		handler = handle_edge_irq;</i>
+&gt;<i> &gt; +		break;</i>
+&gt;<i> &gt; +	case IRQ_TYPE_LEVEL_HIGH:</i>
+&gt;<i> &gt; +		type0 |= bit;</i>
+&gt;<i> &gt; +		/* fall through */</i>
+&gt;<i> &gt; +	case IRQ_TYPE_LEVEL_LOW:</i>
+&gt;<i> &gt; +		type1 |= bit;</i>
+&gt;<i> &gt; +		handler = handle_level_irq;</i>
+&gt;<i> &gt; +		break;</i>
+&gt;<i> &gt; +	default:</i>
+&gt;<i> &gt; +		return -EINVAL;</i>
+&gt;<i> &gt; +	}</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	spin_lock_irqsave(&amp;gpio-&gt;lock, flags);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	addr = bank_reg(gpio, bank, reg_irq_type0);</i>
+&gt;<i> &gt; +	reg = ioread32(addr);</i>
+&gt;<i> &gt; +	reg = (reg &amp; ~bit) | type0;</i>
+&gt;<i> &gt; +	iowrite32(reg, addr);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	addr = bank_reg(gpio, bank, reg_irq_type1);</i>
+&gt;<i> &gt; +	reg = ioread32(addr);</i>
+&gt;<i> &gt; +	reg = (reg &amp; ~bit) | type1;</i>
+&gt;<i> &gt; +	iowrite32(reg, addr);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	addr = bank_reg(gpio, bank, reg_irq_type2);</i>
+&gt;<i> &gt; +	reg = ioread32(addr);</i>
+&gt;<i> &gt; +	reg = (reg &amp; ~bit) | type2;</i>
+&gt;<i> &gt; +	iowrite32(reg, addr);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	spin_unlock_irqrestore(&amp;gpio-&gt;lock, flags);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	irq_set_handler_locked(d, handler);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	return 0;</i>
+&gt;<i> &gt; +}</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static void aspeed_sgpio_irq_handler(struct irq_desc *desc) {</i>
+&gt;<i> &gt; +	struct gpio_chip *gc = irq_desc_get_handler_data(desc);</i>
+&gt;<i> &gt; +	struct irq_chip *ic = irq_desc_get_chip(desc);</i>
+&gt;<i> &gt; +	struct aspeed_sgpio *data = gpiochip_get_data(gc);</i>
+&gt;<i> &gt; +	unsigned int i, p, girq;</i>
+&gt;<i> &gt; +	unsigned long reg;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	chained_irq_enter(ic, desc);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	for (i = 0; i &lt; ARRAY_SIZE(aspeed_sgpio_banks); i++) {</i>
+&gt;<i> &gt; +		const struct aspeed_sgpio_bank *bank = &amp;aspeed_sgpio_banks[i];</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +		reg = ioread32(bank_reg(data, bank, reg_irq_status));</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +		for_each_set_bit(p, &amp;reg, 32) {</i>
+&gt;<i> &gt; +			girq = irq_find_mapping(gc-&gt;irq.domain, i * 32 + p);</i>
+&gt;<i> &gt; +			generic_handle_irq(girq);</i>
+&gt;<i> &gt; +		}</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	}</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	chained_irq_exit(ic, desc);</i>
+&gt;<i> &gt; +}</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static struct irq_chip aspeed_sgpio_irqchip = {</i>
+&gt;<i> &gt; +	.name       = &quot;aspeed-sgpio&quot;,</i>
+&gt;<i> &gt; +	.irq_ack    = aspeed_sgpio_irq_ack,</i>
+&gt;<i> &gt; +	.irq_mask   = aspeed_sgpio_irq_mask,</i>
+&gt;<i> &gt; +	.irq_unmask = aspeed_sgpio_irq_unmask,</i>
+&gt;<i> &gt; +	.irq_set_type   = aspeed_sgpio_set_type,</i>
+&gt;<i> &gt; +};</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static int aspeed_sgpio_setup_irqs(struct aspeed_sgpio *gpio,</i>
+&gt;<i> &gt; +				   struct platform_device *pdev)</i>
+&gt;<i> &gt; +{</i>
+&gt;<i> &gt; +	int rc, i;</i>
+&gt;<i> &gt; +	const struct aspeed_sgpio_bank *bank;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	rc = platform_get_irq(pdev, 0);</i>
+&gt;<i> &gt; +	if (rc &lt; 0)</i>
+&gt;<i> &gt; +		return rc;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	gpio-&gt;irq = rc;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	/* Disable IRQ and clear Interrupt status registers for all SPGIO</i>
+&gt;<i> &gt; Pins. */</i>
+&gt;<i> &gt; +	for (i = 0; i &lt; ARRAY_SIZE(aspeed_sgpio_banks); i++) {</i>
+&gt;<i> &gt; +		bank =  &amp;aspeed_sgpio_banks[i];</i>
+&gt;<i> &gt; +		/* disable irq enable bits */</i>
+&gt;<i> &gt; +		iowrite32(0x00000000, bank_reg(gpio, bank, reg_irq_enable));</i>
+&gt;<i> &gt; +		/* clear status bits */</i>
+&gt;<i> &gt; +		iowrite32(0xffffffff, bank_reg(gpio, bank, reg_irq_status));</i>
+&gt;<i> &gt; +	}</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	rc = gpiochip_irqchip_add(&amp;gpio-&gt;chip, &amp;aspeed_sgpio_irqchip,</i>
+&gt;<i> &gt; +				  0, handle_bad_irq, IRQ_TYPE_NONE);</i>
+&gt;<i> &gt; +	if (rc) {</i>
+&gt;<i> &gt; +		dev_info(&amp;pdev-&gt;dev, &quot;Could not add irqchip\n&quot;);</i>
+&gt;<i> &gt; +		return rc;</i>
+&gt;<i> &gt; +	}</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	gpiochip_set_chained_irqchip(&amp;gpio-&gt;chip, &amp;aspeed_sgpio_irqchip,</i>
+&gt;<i> &gt; +				     gpio-&gt;irq, aspeed_sgpio_irq_handler);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	/* set IRQ settings and Enable Interrupt */</i>
+&gt;<i> &gt; +	for (i = 0; i &lt; ARRAY_SIZE(aspeed_sgpio_banks); i++) {</i>
+&gt;<i> &gt; +		bank = &amp;aspeed_sgpio_banks[i];</i>
+&gt;<i> &gt; +		/* set falling or level-low irq */</i>
+&gt;<i> &gt; +		iowrite32(0x00000000, bank_reg(gpio, bank, reg_irq_type0));</i>
+&gt;<i> &gt; +		/* trigger type is edge */</i>
+&gt;<i> &gt; +		iowrite32(0x00000000, bank_reg(gpio, bank, reg_irq_type1));</i>
+&gt;<i> &gt; +		/* dual edge trigger mode. */</i>
+&gt;<i> &gt; +		iowrite32(0xffffffff, bank_reg(gpio, bank, reg_irq_type2));</i>
+&gt;<i> &gt; +		/* enable irq */</i>
+&gt;<i> &gt; +		iowrite32(0xffffffff, bank_reg(gpio, bank, reg_irq_enable));</i>
+&gt;<i> &gt; +	}</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	return 0;</i>
+&gt;<i> &gt; +}</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static int aspeed_sgpio_request(struct gpio_chip *chip, unsigned int</i>
+&gt;<i> &gt; offset)</i>
+&gt;<i> &gt; +{</i>
+&gt;<i> &gt; +	return (offset &lt; NR_SGPIO);</i>
+&gt;<i> &gt; +}</i>
+&gt;<i> </i>
+&gt;<i> I don't think this request() implementation is helpful, especially as it stands in the face of needing to pull </i>
+&gt;<i> the number of GPIOs to serialise from the devicetree.</i>
+&gt;<i> </i>
+&gt;<i> request() is an optional callback, lets just drop it.</i>
+&gt;<i> </i>
+
+updated, please see v3.
+
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static const struct of_device_id aspeed_sgpio_of_table[] = {</i>
+&gt;<i> &gt; +	{ .compatible = &quot;aspeed,ast2400-sgpio&quot; },</i>
+&gt;<i> &gt; +	{ .compatible = &quot;aspeed,ast2500-sgpio&quot; },</i>
+&gt;<i> &gt; +	{}</i>
+&gt;<i> &gt; +};</i>
+&gt;<i> &gt; +MODULE_DEVICE_TABLE(of, aspeed_sgpio_of_table);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static int __init aspeed_sgpio_probe(struct platform_device *pdev) {</i>
+&gt;<i> &gt; +	struct aspeed_sgpio *gpio;</i>
+&gt;<i> &gt; +	struct resource *res;</i>
+&gt;<i> &gt; +	int rc;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	gpio = devm_kzalloc(&amp;pdev-&gt;dev, sizeof(*gpio), GFP_KERNEL);</i>
+&gt;<i> &gt; +	if (!gpio)</i>
+&gt;<i> &gt; +		return -ENOMEM;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);</i>
+&gt;<i> &gt; +	gpio-&gt;base = devm_ioremap_resource(&amp;pdev-&gt;dev, res);</i>
+&gt;<i> &gt; +	if (IS_ERR(gpio-&gt;base))</i>
+&gt;<i> &gt; +		return PTR_ERR(gpio-&gt;base);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	spin_lock_init(&amp;gpio-&gt;lock);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	gpio-&gt;chip.parent = &amp;pdev-&gt;dev;</i>
+&gt;<i> &gt; +	gpio-&gt;chip.ngpio = NR_SGPIO;</i>
+&gt;<i> &gt; +	gpio-&gt;chip.direction_input = aspeed_sgpio_dir_in;</i>
+&gt;<i> &gt; +	gpio-&gt;chip.direction_output = aspeed_sgpio_dir_out;</i>
+&gt;<i> &gt; +	gpio-&gt;chip.get_direction = aspeed_sgpio_get_direction;</i>
+&gt;<i> &gt; +	gpio-&gt;chip.request = aspeed_sgpio_request;</i>
+&gt;<i> &gt; +	gpio-&gt;chip.free = NULL;</i>
+&gt;<i> &gt; +	gpio-&gt;chip.get = aspeed_sgpio_get;</i>
+&gt;<i> &gt; +	gpio-&gt;chip.set = aspeed_sgpio_set;</i>
+&gt;<i> &gt; +	gpio-&gt;chip.set_config = NULL;</i>
+&gt;<i> &gt; +	gpio-&gt;chip.label = dev_name(&amp;pdev-&gt;dev);</i>
+&gt;<i> &gt; +	gpio-&gt;chip.base = -1;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	rc = devm_gpiochip_add_data(&amp;pdev-&gt;dev, &amp;gpio-&gt;chip, gpio);</i>
+&gt;<i> &gt; +	if (rc &lt; 0)</i>
+&gt;<i> &gt; +		return rc;</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +	return aspeed_sgpio_setup_irqs(gpio, pdev); }</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +static struct platform_driver aspeed_sgpio_driver = {</i>
+&gt;<i> &gt; +	.driver = {</i>
+&gt;<i> &gt; +		.name = KBUILD_MODNAME,</i>
+&gt;<i> &gt; +		.of_match_table = aspeed_sgpio_of_table,</i>
+&gt;<i> &gt; +	},</i>
+&gt;<i> &gt; +};</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt; +module_platform_driver_probe(aspeed_sgpio_driver, </i>
+&gt;<i> &gt; +aspeed_sgpio_probe); MODULE_DESCRIPTION(&quot;Aspeed Serial GPIO Driver&quot;); </i>
+&gt;<i> &gt; +MODULE_LICENSE(&quot;GPL&quot;);</i>
+&gt;<i> &gt; --</i>
+&gt;<i> &gt; 2.7.4</i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt;</i>
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="741445" href="msg741445.html">Re: [PATCH 2/3 v3] ARM: dts: aspeed: Add SGPIO driver</a></strong>
+<ul><li><em>From:</em> Andrew Jeffery</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741433.html">Re: [PATCH 17/18] arm64: dts: Convert to the hierarchical CPU topology layout for MSM8916</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741435.html">[PATCH] ARM: dts: pxa3xx: Fix polarity on Raumfeld SPI CS</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741418.html">[PATCH] MAINTAINERS: Update my email address to @kernel.org</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741445.html">Re: [PATCH 2/3 v3] ARM: dts: aspeed: Add SGPIO driver</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741434"><strong>Date</strong></a></li>
+<li><a href="threads.html#741434"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

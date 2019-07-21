@@ -1,0 +1,522 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [osinfo&#45;db&#45;tools PATCH 6/7] tests: Add	osinfo&#45;db&#45;{export, import} tests -->
+<!--X-From-R13: =?GFT&#45;8?d?Tnovnab=20Tvq=Q3=OOapvb?= &#60;svqrapvbNerqung.pbz> -->
+<!--X-Date: Fri, 5 Apr 2019 04:33:45 &#45;0700 -->
+<!--X-Message-Id: 20190405113319.489&#45;7&#45;fidencio@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190405113319.489&#45;1&#45;fidencio@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<title>[osinfo-db-tools PATCH 6/7] tests: Add	osinfo-db-{export, import} tests &mdash; libosinfo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="libosinfo: [osinfo-db-tools PATCH 6/7] tests: Add	osinfo-db-{export, import} tests">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="libosinfo" href="//feeds.feedburner.com/libosinfo">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[osinfo-db-tools PATCH 6/7] tests: Add	osinfo-db-{export, import} tests</h1>
+[<a href="msg05436.html">Date Prev</a>][<a href="msg05438.html">Date Next</a>][<a href="msg05436.html">Thread Prev</a>][<a href="msg05438.html">Thread Next</a>][<a href="maillist.html#05437">Date Index</a>][<a href="index.html#05437">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [osinfo-db-tools PATCH 6/7] tests: Add	osinfo-db-{export, import} tests</li>
+<li><em>From</em>: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri,  5 Apr 2019 13:33:18 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg05431.html">20190405113319.489-1-fidencio@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg05431.html">20190405113319.489-1-fidencio@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Add a set of functional tests to ensure osinfo-db-export and
+osinfo-db-import work as expected. The covered scenearios are:
+- osinfo-db-export DIR
+  - It's a negative test
+- osinfo-db-export --system and osinfo-db-import --system
+- osinfo-db-export --local FILENAME
+- osinfo-db-import --local FILENAME
+- cat FILENAME | osinfo-db-import -
+- cat FILENAME | osinfo-db-import
+- osinfo-db-export --user --license LICENSE --version VERSION
+  VERSIONED_FILENAME
+- osinfo-db-import --root / --user VERSIONED_FILENAME
+- osinfo-db-import --user URL
+- osinfo-db-import --latest
+
+The last two tests are only enabled when OSINFO_DB_TOOLS_NETWORK_TESTS
+is set.
+
+Last but not least, differently than the tests for osinfo-db-path and
+osinfo-db-validate, those tests pretty much only make sense when taken
+as pairs. So, we export a db, import it back and ensure the content is
+the same.
+
+<a  rel="nofollow" href="https://gitlab.com/libosinfo/osinfo-db-tools/issues/2">https://gitlab.com/libosinfo/osinfo-db-tools/issues/2</a>
+
+Signed-off-by: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;
+---
+ tests/Makefile.am                     |   1 +
+ tests/test_osinfo_db_export_import.py | 263 ++++++++++++++++++++++++++
+ 2 files changed, 264 insertions(+)
+ create mode 100755 tests/test_osinfo_db_export_import.py
+
+diff --git a/tests/Makefile.am b/tests/Makefile.am
+index fb7dfab..f9755a0 100644
+--- a/tests/Makefile.am
++++ b/tests/Makefile.am
+@@ -5,6 +5,7 @@ test_helpers = \
+ 	$(NULL)
+ 
+ test_programs = \
++	test_osinfo_db_export_import.py \
+ 	test_osinfo_db_path.py \
+ 	test_osinfo_db_validate.py \
+ 	$(NULL)
+diff --git a/tests/test_osinfo_db_export_import.py b/tests/test_osinfo_db_export_import.py
+new file mode 100755
+index 0000000..b2a83f6
+--- /dev/null
++++ b/tests/test_osinfo_db_export_import.py
+@@ -0,0 +1,263 @@
++#!/usr/bin/env python3
++#
++# This work is licensed under the GNU GPLv2 or later.
++# See the COPYING file in the top-level directory.
++
++import filecmp
++import json
++import os
++import pytest
++import requests
++import shutil
++import sys
++import time
++import util
++
++
++def test_negative_osinfo_db_export_path():
++    &quot;&quot;&quot;
++    Test osinfo-db-export dir fails
++    &quot;&quot;&quot;
++    cmd = [util.Tools.db_export, util.Data.positive]
++    returncode = util.get_returncode(cmd)
++    assert returncode == 1
++
++
++def test_osinfo_db_export_import_system():
++    &quot;&quot;&quot;
++    Test osinfo-db-export --system and osinfo-db-import --system
++    &quot;&quot;&quot;
++    default_filename = &quot;osinfo-db-%s.tar.xz&quot; % time.strftime(&quot;%Y%m%d&quot;)
++
++    os.environ[&quot;OSINFO_SYSTEM_DIR&quot;] = util.Data.positive
++    cmd = [util.Tools.db_export, util.ToolsArgs.SYSTEM]
++    returncode = util.get_returncode(cmd)
++    assert returncode == 0
++    assert os.path.isfile(default_filename)
++
++    tempdir = util.tempdir()
++    os.environ[&quot;OSINFO_SYSTEM_DIR&quot;] = tempdir
++    cmd = [util.Tools.db_import, util.ToolsArgs.SYSTEM, default_filename]
++    returncode = util.get_returncode(cmd)
++    assert returncode == 0
++    dcmp = filecmp.dircmp(util.Data.positive, tempdir)
++    assert len(dcmp.right_only) == 1
++    assert &quot;VERSION&quot; in dcmp.right_only
++    assert dcmp.left_only == []
++    assert dcmp.diff_files == []
++    shutil.rmtree(tempdir)
++    os.unlink(default_filename)
++
++
++@pytest.fixture
++def osinfo_db_export_local():
++    filename = &quot;foobar.tar.xz&quot;
++
++    os.environ[&quot;OSINFO_LOCAL_DIR&quot;] = util.Data.positive
++    cmd = [util.Tools.db_export, util.ToolsArgs.LOCAL, filename]
++    return filename, util.get_returncode(cmd)
++
++
++
++@pytest.mark.usefixtures(&quot;osinfo_db_export_local&quot;)
++def test_osinfo_db_export_local(osinfo_db_export_local):
++    &quot;&quot;&quot;
++    Test osinfo-db-export --local FILENAME
++    &quot;&quot;&quot;
++    filename, returncode = osinfo_db_export_local
++
++    assert returncode == 0
++    assert os.path.isfile(filename)
++
++
++
++@pytest.mark.usefixtures(&quot;osinfo_db_export_local&quot;)
++def test_osinfo_db_import_local_file(osinfo_db_export_local):
++    &quot;&quot;&quot;
++    Test osinfo-db-import --local FILENAME
++    &quot;&quot;&quot;
++    filename, _ = osinfo_db_export_local
++
++    tempdir = util.tempdir()
++    os.environ[&quot;OSINFO_LOCAL_DIR&quot;] = tempdir
++    cmd = [util.Tools.db_import, util.ToolsArgs.LOCAL, filename]
++    returncode = util.get_returncode(cmd)
++    assert returncode == 0
++    dcmp = filecmp.dircmp(util.Data.positive, tempdir)
++    assert len(dcmp.right_only) == 1
++    assert &quot;VERSION&quot; in dcmp.right_only
++    assert dcmp.left_only == []
++    assert dcmp.diff_files == []
++    shutil.rmtree(tempdir)
++    os.unlink(filename)
++
++
++@pytest.mark.usefixtures(&quot;osinfo_db_export_local&quot;)
++def test_osinfo_db_import_local_dash(osinfo_db_export_local):
++    &quot;&quot;&quot;
++    Test cat FILENAME | osinfo-db-import -
++    &quot;&quot;&quot;
++    filename, _ = osinfo_db_export_local
++
++    tempdir = util.tempdir()
++    os.environ[&quot;OSINFO_LOCAL_DIR&quot;] = tempdir
++    cmd = [&quot;cat&quot;, filename]
++    cmd2 = [util.Tools.db_import, util.ToolsArgs.LOCAL, &quot;-&quot;]
++    returncode = util.get_returncode(cmd, cmd2)
++    assert returncode == 0
++    dcmp = filecmp.dircmp(util.Data.positive, tempdir)
++    assert len(dcmp.right_only) == 1
++    assert &quot;VERSION&quot; in dcmp.right_only
++    assert dcmp.left_only == []
++    assert dcmp.diff_files == []
++    shutil.rmtree(tempdir)
++    os.unlink(filename)
++
++
++@pytest.mark.usefixtures(&quot;osinfo_db_export_local&quot;)
++def test_osinfo_db_import_local_no_file(osinfo_db_export_local):
++    &quot;&quot;&quot;
++    Test cat FILENAME | osinfo-db-import
++    &quot;&quot;&quot;
++    filename, _ = osinfo_db_export_local
++
++    tempdir = util.tempdir()
++    os.environ[&quot;OSINFO_LOCAL_DIR&quot;] = tempdir
++    cmd1 = [&quot;cat&quot;, filename]
++    cmd2 = [util.Tools.db_import, util.ToolsArgs.LOCAL]
++    returncode = util.get_returncode(cmd1, cmd2)
++    assert returncode == 0
++    dcmp = filecmp.dircmp(util.Data.positive, tempdir)
++    assert len(dcmp.right_only) == 1
++    assert &quot;VERSION&quot; in dcmp.right_only
++    assert dcmp.left_only == []
++    assert dcmp.diff_files == []
++    shutil.rmtree(tempdir)
++    os.unlink(filename)
++
++
++@pytest.fixture
++def osinfo_db_export_user_license_version():
++    version = &quot;foobar&quot;
++    versioned_filename = &quot;osinfo-db-%s.tar.xz&quot; % version
++
++    os.environ[&quot;OSINFO_USER_DIR&quot;] = util.Data.positive
++    cmd = [util.Tools.db_export, util.ToolsArgs.USER,
++            util.ToolsArgs.LICENSE, util.Data.license,
++            util.ToolsArgs.VERSION, version]
++    return versioned_filename, version, util.get_returncode(cmd)
++
++
++
++@pytest.mark.usefixtures(&quot;osinfo_db_export_user_license_version&quot;)
++def test_osinfo_db_export_user_license_version(
++        osinfo_db_export_user_license_version):
++    &quot;&quot;&quot;
++    Test osinfo-db-export --user --license LICENSE --version VERSION
++    &quot;&quot;&quot;
++    filename, _, returncode = osinfo_db_export_user_license_version
++
++    assert returncode == 0
++    assert os.path.isfile(filename)
++
++
++@pytest.mark.usefixtures(&quot;osinfo_db_export_user_license_version&quot;)
++def test_osinfo_db_import_root_user_versioned_file(
++        osinfo_db_export_user_license_version):
++    &quot;&quot;&quot;
++    Test osinfo-db-import --root / --user VERSIONED_FILE
++    &quot;&quot;&quot;
++    filename, version, returncode = osinfo_db_export_user_license_version
++
++    tempdir = util.tempdir()
++    os.environ[&quot;OSINFO_USER_DIR&quot;] = tempdir
++    cmd = [util.Tools.db_import, util.ToolsArgs.ROOT, &quot;/&quot;,
++            util.ToolsArgs.USER, filename]
++    returncode = util.get_returncode(cmd)
++    assert returncode == 0
++    dcmp = filecmp.dircmp(util.Data.positive, tempdir)
++    assert len(dcmp.right_only) == 2
++    assert &quot;VERSION&quot; in dcmp.right_only
++    with open(os.path.join(tempdir, &quot;VERSION&quot;)) as out:
++        content = out.read()
++        assert content == version
++    assert &quot;LICENSE&quot; in dcmp.right_only
++    fcmp = filecmp.cmp(os.path.join(tempdir, &quot;LICENSE&quot;), util.Data.license)
++    assert fcmp is True
++    assert dcmp.left_only == []
++    assert dcmp.diff_files == []
++    shutil.rmtree(tempdir)
++    os.unlink(filename)
++
++
++@pytest.mark.skipif(os.environ.get(&quot;OSINFO_DB_TOOLS_NETWORK_TESTS&quot;) is None,
++        reason=&quot;Network related tests are not enabled&quot;)
++def test_osinfo_db_import_url():
++    &quot;&quot;&quot;
++    Test osinfo-db-import URL
++    &quot;&quot;&quot;
++    url = &quot;<a  rel="nofollow" href="https://releases.pagure.org/libosinfo/osinfo-db-20190304.tar.xz&quot">https://releases.pagure.org/libosinfo/osinfo-db-20190304.tar.xz&quot</a>;
++
++    tempdir = util.tempdir()
++    os.environ[&quot;OSINFO_USER_DIR&quot;] = tempdir
++    cmd = [util.Tools.db_import, util.ToolsArgs.USER, url]
++    returncode = util.get_returncode(cmd)
++    assert returncode == 0
++
++    test_file = &quot;downloaded.tar.xz&quot;
++    tempdir2 = util.tempdir()
++    req = requests.get(url)
++    open(test_file, &quot;wb&quot;).write(req.content)
++    assert os.path.isfile(test_file)
++
++    cmd = [util.Tools.db_import, util.ToolsArgs.DIR, tempdir2, test_file]
++    returncode = util.get_returncode(cmd)
++    assert returncode == 0
++
++    dcmp = filecmp.dircmp(tempdir, tempdir2)
++    assert dcmp.right_only == []
++    assert dcmp.left_only == []
++    assert dcmp.diff_files == []
++    shutil.rmtree(tempdir)
++    shutil.rmtree(tempdir2)
++    os.unlink(test_file)
++
++
++@pytest.mark.skipif(os.environ.get(&quot;OSINFO_DB_TOOLS_NETWORK_TESTS&quot;) is None,
++        reason=&quot;Network related tests are not enabled&quot;)
++def test_osinfo_db_import_latest():
++    &quot;&quot;&quot;
++    Test osinfo-dbimport --latest
++    &quot;&quot;&quot;
++    tempdir = util.tempdir()
++    os.environ[&quot;OSINFO_USER_DIR&quot;] = tempdir
++    cmd = [util.Tools.db_import, util.ToolsArgs.LATEST]
++    returncode = util.get_returncode(cmd)
++    assert returncode == 0
++
++    latest_url = &quot;<a  rel="nofollow" href="https://db.libosinfo.org/latest.json&quot">https://db.libosinfo.org/latest.json&quot</a>;
++    req = requests.get(latest_url)
++    data = json.loads(req.content)
++    url = data[&quot;release&quot;][&quot;archive&quot;]
++
++    test_file = &quot;downloaded.tar.xz&quot;
++    tempdir2 = util.tempdir()
++    req = requests.get(url)
++    open(test_file, &quot;wb&quot;).write(req.content)
++    assert os.path.isfile(test_file)
++
++    cmd = [util.Tools.db_import, util.ToolsArgs.DIR, tempdir2, test_file]
++    returncode = util.get_returncode(cmd)
++    assert returncode == 0
++
++    dcmp = filecmp.dircmp(tempdir, tempdir2)
++    assert dcmp.right_only == []
++    assert dcmp.left_only == []
++    assert dcmp.diff_files == []
++    shutil.rmtree(tempdir)
++    shutil.rmtree(tempdir2)
++    os.unlink(test_file)
++
++
++if __name__ == &quot;__main__&quot;:
++    exit(pytest.main(sys.argv))
+-- 
+2.21.0
+
+_______________________________________________
+Libosinfo mailing list
+Libosinfo@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libosinfo">https://www.redhat.com/mailman/listinfo/libosinfo</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05436.html">[osinfo-db-tools PATCH 5/7] tests: Add	osinfo-db-validate tests</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05438.html">[osinfo-db-tools PATCH 7/7] spec: Add %check target</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05436.html">[osinfo-db-tools PATCH 5/7] tests: Add	osinfo-db-validate tests</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05438.html">[osinfo-db-tools PATCH 7/7] spec: Add %check target</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05437"><strong>Date</strong></a></li>
+<li><a href="index.html#05437"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

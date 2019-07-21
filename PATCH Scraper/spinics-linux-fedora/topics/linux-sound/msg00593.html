@@ -1,0 +1,299 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [RESEND RFC PATCH] ASoC: wm8731: let codec to manage clock by itself -->
+<!--X-From-R13: Ebatwha Ih &#60;fbatwha.jhNngzry.pbz> -->
+<!--X-Date: Fri, 13 Mar 2015 00:46:28 &#45;0700 -->
+<!--X-Message-Id: 1426232762&#45;3304&#45;1&#45;git&#45;send&#45;email&#45;songjun.wu@atmel.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Sound: [RESEND RFC PATCH] ASoC: wm8731: let codec to manage clock by itself">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Sound &mdash; [RESEND RFC PATCH] ASoC: wm8731: let codec to manage clock by itself</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Sound" href="//feeds.feedburner.com/LinuxSound">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:6612422167" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[RESEND RFC PATCH] ASoC: wm8731: let codec to manage clock by itself</h1>
+[<a href="msg00592.html">Date Prev</a>][<a href="msg00594.html">Date Next</a>][<a href="msg00586.html">Thread Prev</a>][<a href="msg00594.html">Thread Next</a>][<a href="maillist.html#00593">Date Index</a>][<a href="index.html#00593">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [RESEND RFC PATCH] ASoC: wm8731: let codec to manage clock by itself</li>
+<li><em>From</em>: Songjun Wu &lt;<a href="mailto:songjun.wu@DOMAIN.HIDDEN">songjun.wu@xxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Fri, 13 Mar 2015 15:46:02 +0800</li>
+<li><em>Cc</em>: Songjun Wu &lt;<a href="mailto:songjun.wu@DOMAIN.HIDDEN">songjun.wu@xxxxxxxxx</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Enable WM8731 to support common clock framework.
+
+Signed-off-by: Songjun Wu &lt;songjun.wu@xxxxxxxxx&gt;
+---
+ sound/soc/codecs/wm8731.c |   34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 098c143..8df1550 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -25,6 +25,7 @@
+ #include &lt;linux/spi/spi.h&gt;
+ #include &lt;linux/of_device.h&gt;
+ #include &lt;linux/mutex.h&gt;
++#include &lt;linux/clk.h&gt;
+ #include &lt;sound/core.h&gt;
+ #include &lt;sound/pcm.h&gt;
+ #include &lt;sound/pcm_params.h&gt;
+@@ -45,6 +46,7 @@ static const char *wm8731_supply_names[WM8731_NUM_SUPPLIES] = {
+ /* codec private data */
+ struct wm8731_priv {
+ 	struct regmap *regmap;
++	struct clk *mclk;
+ 	struct regulator_bulk_data supplies[WM8731_NUM_SUPPLIES];
+ 	const struct snd_pcm_hw_constraint_list *constraints;
+ 	unsigned int sysclk;
+@@ -390,6 +392,8 @@ static int wm8731_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	switch (clk_id) {
+ 	case WM8731_SYSCLK_XTAL:
+ 	case WM8731_SYSCLK_MCLK:
++		if (wm8731-&gt;mclk &amp;&amp; clk_set_rate(wm8731-&gt;mclk, freq))
++			return -EINVAL;
+ 		wm8731-&gt;sysclk_type = clk_id;
+ 		break;
+ 	default:
+@@ -491,6 +495,8 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
++		if (wm8731-&gt;mclk)
++			clk_prepare_enable(wm8731-&gt;mclk);
+ 		break;
+ 	case SND_SOC_BIAS_PREPARE:
+ 		break;
+@@ -509,6 +515,8 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
+ 		snd_soc_write(codec, WM8731_PWR, reg | 0x0040);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
++		if (wm8731-&gt;mclk)
++			clk_disable_unprepare(wm8731-&gt;mclk);
+ 		snd_soc_write(codec, WM8731_PWR, 0xffff);
+ 		regulator_bulk_disable(ARRAY_SIZE(wm8731-&gt;supplies),
+ 				       wm8731-&gt;supplies);
+@@ -667,6 +675,19 @@ static int wm8731_spi_probe(struct spi_device *spi)
+ 	if (wm8731 == NULL)
+ 		return -ENOMEM;
+ 
++	wm8731-&gt;mclk = devm_clk_get(&amp;spi-&gt;dev, &quot;mclk&quot;);
++	if (IS_ERR(wm8731-&gt;mclk)) {
++		ret = PTR_ERR(wm8731-&gt;mclk);
++		if (ret == -ENOENT) {
++			wm8731-&gt;mclk = NULL;
++			dev_warn(&amp;spi-&gt;dev, &quot;Assuming static MCLK\n&quot;);
++		} else {
++			dev_err(&amp;spi-&gt;dev, &quot;Failed to get MCLK: %d\n&quot;,
++				ret);
++			return ret;
++		}
++	}
++
+ 	mutex_init(&amp;wm8731-&gt;lock);
+ 
+ 	wm8731-&gt;regmap = devm_regmap_init_spi(spi, &amp;wm8731_regmap);
+@@ -718,6 +739,19 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
+ 	if (wm8731 == NULL)
+ 		return -ENOMEM;
+ 
++	wm8731-&gt;mclk = devm_clk_get(&amp;i2c-&gt;dev, &quot;mclk&quot;);
++	if (IS_ERR(wm8731-&gt;mclk)) {
++		ret = PTR_ERR(wm8731-&gt;mclk);
++		if (ret == -ENOENT) {
++			wm8731-&gt;mclk = NULL;
++			dev_warn(&amp;i2c-&gt;dev, &quot;Assuming static MCLK\n&quot;);
++		} else {
++			dev_err(&amp;i2c-&gt;dev, &quot;Failed to get MCLK: %d\n&quot;,
++				ret);
++			return ret;
++		}
++	}
++
+ 	mutex_init(&amp;wm8731-&gt;lock);
+ 
+ 	wm8731-&gt;regmap = devm_regmap_init_i2c(i2c, &amp;wm8731_regmap);
+-- 
+1.7.9.5
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe linux-sound&quot; in
+the body of a message to majordomo@xxxxxxxxxxxxxxx
+More majordomo info at  <a  rel="nofollow" href="http://vger.kernel.org/majordomo-info.html">http://vger.kernel.org/majordomo-info.html</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00592.html">Re: [alsa-devel] [PATCH] ASoC: wm8731: let codec to manage clock by itself</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00594.html">Understanding Atmel SSC SND_SOC_DAIFMT_CBS_CFS mode</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00586.html">[PATCH] ASoC: wm8731: let codec to manage clock by itself</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00594.html">Understanding Atmel SSC SND_SOC_DAIFMT_CBS_CFS mode</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00593"><strong>Date</strong></a></li>
+<li><a href="index.html#00593"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/Pulseaudio/>[Pulseaudio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/alsa-devel/>[ALSA&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td valign=top align=left>&nbsp;</td>
+<td valign=top align=right>
+<a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

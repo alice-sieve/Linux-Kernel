@@ -1,0 +1,924 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 4/6] conf: introduce domain_parse.h -->
+<!--X-From-R13: =?GFT&#45;8?d?X=Q3=O1a=20Fbzxb?= &#60;wgbzxbNerqung.pbz> -->
+<!--X-Date: Fri, 19 Jul 2019 05:16:14 &#45;0700 -->
+<!--X-Message-Id: 1054525cd47e0602414abd127b4e083da8420e24.1563538286.git.jtomko@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1563538286.git.jtomko@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 4/6] conf: introduce domain_parse.h</title>
+<meta name="description" content="libvirt: [PATCH 4/6] conf: introduce domain_parse.h">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 4/6] conf: introduce domain_parse.h</h1>
+[<a href="msg187738.html">Date Prev</a>][<a href="msg187740.html">Date Next</a>][<a href="msg187738.html">Thread Prev</a>][<a href="msg187740.html">Thread Next</a>][<a href="maillist.html#187739">Date Index</a>][<a href="index.html#187739">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 4/6] conf: introduce domain_parse.h</li>
+<li><em>From</em>: J&#xE1;n Tomko &lt;jtomko@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 19 Jul 2019 14:15:46 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187736.html">cover.1563538286.git.jtomko@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187736.html">cover.1563538286.git.jtomko@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Move domain and device XML parsing functions as well as validation
+and ABI stability checking.
+
+Signed-off-by: J&#xE1;n Tomko &lt;jtomko@xxxxxxxxxx&gt;
+---
+ src/conf/Makefile.inc.am |   1 +
+ src/conf/domain_conf.h   | 295 +----------------------------------
+ src/conf/domain_parse.h  | 321 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 323 insertions(+), 294 deletions(-)
+ create mode 100644 src/conf/domain_parse.h
+
+diff --git a/src/conf/Makefile.inc.am b/src/conf/Makefile.inc.am
+index dba015ff82..3afebb9c7d 100644
+--- a/src/conf/Makefile.inc.am
++++ b/src/conf/Makefile.inc.am
+@@ -24,6 +24,7 @@ DOMAIN_CONF_SOURCES = \
+ 	conf/domain_audit.h \
+ 	conf/domain_nwfilter.c \
+ 	conf/domain_nwfilter.h \
++	conf/domain_parse.h \
+ 	conf/virsavecookie.c \
+ 	conf/virsavecookie.h \
+ 	conf/moment_conf.c \
+diff --git a/src/conf/domain_conf.h b/src/conf/domain_conf.h
+index dacbb23a3e..eb2b84ad03 100644
+--- a/src/conf/domain_conf.h
++++ b/src/conf/domain_conf.h
+@@ -31,6 +31,7 @@
+ #include &quot;virdomaintypes.h&quot;
+ #include &quot;virstorageencryption.h&quot;
+ #include &quot;cpu_conf.h&quot;
++#include &quot;domain_parse.h&quot;
+ #include &quot;virthread.h&quot;
+ #include &quot;virsocketaddr.h&quot;
+ #include &quot;networkcommon_conf.h&quot;
+@@ -40,7 +41,6 @@
+ #include &quot;virbitmap.h&quot;
+ #include &quot;virseclabel.h&quot;
+ #include &quot;virtypedparam.h&quot;
+-#include &quot;virsavecookie.h&quot;
+ #include &quot;virenum.h&quot;
+ 
+ #define IS_USB2_CONTROLLER(ctrl) \
+@@ -50,185 +50,12 @@
+       (ctrl)-&gt;model == VIR_DOMAIN_CONTROLLER_MODEL_USB_ICH9_UHCI2 || \
+       (ctrl)-&gt;model == VIR_DOMAIN_CONTROLLER_MODEL_USB_ICH9_UHCI3))
+ 
+-/* Called after everything else has been parsed, for adjusting basics.
+- * This has similar semantics to virDomainDefPostParseCallback, but no
+- * parseOpaque is used. This callback is run prior to
+- * virDomainDefPostParseCallback. */
+-typedef int (*virDomainDefPostParseBasicCallback)(virDomainDefPtr def,
+-                                                  virCapsPtr caps,
+-                                                  void *opaque);
+-
+-/* Called once after everything else has been parsed, for adjusting
+- * overall domain defaults.
+- * @parseOpaque is opaque data passed by virDomainDefParse* caller,
+- * @opaque is opaque data set by driver (usually pointer to driver
+- * private data). Non-fatal failures should be reported by returning 1. In
+- * cases when that is allowed, such failure is translated to a success return
+- * value and the failure is noted in def-&gt;postParseFailed. Drivers should then
+- * re-run the post parse callback when attempting to use such definition. */
+-typedef int (*virDomainDefPostParseCallback)(virDomainDefPtr def,
+-                                             virCapsPtr caps,
+-                                             unsigned int parseFlags,
+-                                             void *opaque,
+-                                             void *parseOpaque);
+-/* Called once per device, for adjusting per-device settings while
+- * leaving the overall domain otherwise unchanged.
+- * @parseOpaque is opaque data passed by virDomainDefParse* caller,
+- * @opaque is opaque data set by driver (usually pointer to driver
+- * private data). */
+-typedef int (*virDomainDeviceDefPostParseCallback)(virDomainDeviceDefPtr dev,
+-                                                   const virDomainDef *def,
+-                                                   virCapsPtr caps,
+-                                                   unsigned int parseFlags,
+-                                                   void *opaque,
+-                                                   void *parseOpaque);
+-/* Drive callback for assigning device addresses, called at the end
+- * of parsing, after all defaults and implicit devices have been added.
+- * @parseOpaque is opaque data passed by virDomainDefParse* caller,
+- * @opaque is opaque data set by driver (usually pointer to driver
+- * private data). */
+-typedef int (*virDomainDefAssignAddressesCallback)(virDomainDef *def,
+-                                                   virCapsPtr caps,
+-                                                   unsigned int parseFlags,
+-                                                   void *opaque,
+-                                                   void *parseOpaque);
+-
+-typedef int (*virDomainDefPostParseDataAlloc)(const virDomainDef *def,
+-                                              virCapsPtr caps,
+-                                              unsigned int parseFlags,
+-                                              void *opaque,
+-                                              void **parseOpaque);
+-typedef void (*virDomainDefPostParseDataFree)(void *parseOpaque);
+-
+-/* Called in appropriate places where the domain conf parser can return failure
+- * for configurations that were previously accepted. This shall not modify the
+- * config. */
+-typedef int (*virDomainDefValidateCallback)(const virDomainDef *def,
+-                                            virCapsPtr caps,
+-                                            void *opaque);
+-
+-/* Called once per device, for adjusting per-device settings while
+- * leaving the overall domain otherwise unchanged.  */
+-typedef int (*virDomainDeviceDefValidateCallback)(const virDomainDeviceDef *dev,
+-                                                  const virDomainDef *def,
+-                                                  void *opaque);
+-
+-struct _virDomainDefParserConfig {
+-    /* driver domain definition callbacks */
+-    virDomainDefPostParseBasicCallback domainPostParseBasicCallback;
+-    virDomainDefPostParseDataAlloc domainPostParseDataAlloc;
+-    virDomainDefPostParseCallback domainPostParseCallback;
+-    virDomainDeviceDefPostParseCallback devicesPostParseCallback;
+-    virDomainDefAssignAddressesCallback assignAddressesCallback;
+-    virDomainDefPostParseDataFree domainPostParseDataFree;
+-
+-    /* validation callbacks */
+-    virDomainDefValidateCallback domainValidateCallback;
+-    virDomainDeviceDefValidateCallback deviceValidateCallback;
+-
+-    /* private data for the callbacks */
+-    void *priv;
+-    virFreeCallback privFree;
+-
+-    /* data */
+-    unsigned int features; /* virDomainDefFeatures */
+-    unsigned char macPrefix[VIR_MAC_PREFIX_BUFLEN];
+-};
+-
+-typedef void *(*virDomainXMLPrivateDataAllocFunc)(void *);
+-typedef void (*virDomainXMLPrivateDataFreeFunc)(void *);
+-typedef virObjectPtr (*virDomainXMLPrivateDataNewFunc)(void);
+-typedef int (*virDomainXMLPrivateDataFormatFunc)(virBufferPtr,
+-                                                 virDomainObjPtr);
+-typedef int (*virDomainXMLPrivateDataParseFunc)(xmlXPathContextPtr,
+-                                                virDomainObjPtr,
+-                                                virDomainDefParserConfigPtr);
+-
+-typedef void *(*virDomainXMLPrivateDataGetParseOpaqueFunc)(virDomainObjPtr vm);
+-
+-typedef int (*virDomainXMLPrivateDataDiskParseFunc)(xmlXPathContextPtr ctxt,
+-                                                    virDomainDiskDefPtr disk);
+-typedef int (*virDomainXMLPrivateDataDiskFormatFunc)(virDomainDiskDefPtr disk,
+-                                                     virBufferPtr buf);
+-
+-typedef int (*virDomainXMLPrivateDataStorageSourceParseFunc)(xmlXPathContextPtr ctxt,
+-                                                             virStorageSourcePtr src);
+-typedef int (*virDomainXMLPrivateDataStorageSourceFormatFunc)(virStorageSourcePtr src,
+-                                                              virBufferPtr buf);
+-
+-
+-struct _virDomainXMLPrivateDataCallbacks {
+-    virDomainXMLPrivateDataAllocFunc  alloc;
+-    virDomainXMLPrivateDataFreeFunc   free;
+-    /* note that private data for devices are not copied when using
+-     * virDomainDefCopy and similar functions */
+-    virDomainXMLPrivateDataNewFunc    diskNew;
+-    virDomainXMLPrivateDataDiskParseFunc diskParse;
+-    virDomainXMLPrivateDataDiskFormatFunc diskFormat;
+-    virDomainXMLPrivateDataNewFunc    vcpuNew;
+-    virDomainXMLPrivateDataNewFunc    chrSourceNew;
+-    virDomainXMLPrivateDataNewFunc    vsockNew;
+-    virDomainXMLPrivateDataNewFunc    graphicsNew;
+-    virDomainXMLPrivateDataFormatFunc format;
+-    virDomainXMLPrivateDataParseFunc  parse;
+-    /* following function shall return a pointer which will be used as the
+-     * 'parseOpaque' argument for virDomainDefPostParse */
+-    virDomainXMLPrivateDataGetParseOpaqueFunc getParseOpaque;
+-    virDomainXMLPrivateDataStorageSourceParseFunc storageParse;
+-    virDomainXMLPrivateDataStorageSourceFormatFunc storageFormat;
+-};
+-
+-typedef bool (*virDomainABIStabilityDomain)(const virDomainDef *src,
+-                                            const virDomainDef *dst);
+-
+-struct _virDomainABIStability {
+-    virDomainABIStabilityDomain domain;
+-};
+-
+-virDomainXMLOptionPtr virDomainXMLOptionNew(virDomainDefParserConfigPtr config,
+-                                            virDomainXMLPrivateDataCallbacksPtr priv,
+-                                            virDomainXMLNamespacePtr xmlns,
+-                                            virDomainABIStabilityPtr abi,
+-                                            virSaveCookieCallbacksPtr saveCookie);
+-
+-virSaveCookieCallbacksPtr
+-virDomainXMLOptionGetSaveCookie(virDomainXMLOptionPtr xmlopt);
+-
+-typedef int (*virDomainMomentPostParseCallback)(virDomainMomentDefPtr def);
+-
+-void virDomainXMLOptionSetMomentPostParse(virDomainXMLOptionPtr xmlopt,
+-                                          virDomainMomentPostParseCallback cb);
+-int virDomainXMLOptionRunMomentPostParse(virDomainXMLOptionPtr xmlopt,
+-                                         virDomainMomentDefPtr def);
+-
+-void virDomainNetGenerateMAC(virDomainXMLOptionPtr xmlopt, virMacAddrPtr mac);
+-
+-virDomainXMLNamespacePtr
+-virDomainXMLOptionGetNamespace(virDomainXMLOptionPtr xmlopt)
+-    ATTRIBUTE_NONNULL(1);
+-
+ bool
+ virDomainSCSIDriveAddressIsUsed(const virDomainDef *def,
+                                 const virDomainDeviceDriveAddress *addr);
+ 
+-int virDomainDefPostParse(virDomainDefPtr def,
+-                          virCapsPtr caps,
+-                          unsigned int parseFlags,
+-                          virDomainXMLOptionPtr xmlopt,
+-                          void *parseOpaque);
+ bool virDomainDefHasUSB(const virDomainDef *def);
+ 
+-int virDomainDeviceValidateAliasForHotplug(virDomainObjPtr vm,
+-                                           virDomainDeviceDefPtr dev,
+-                                           unsigned int flags);
+-
+-bool virDomainDeviceAliasIsUserAlias(const char *aliasStr);
+-
+-int virDomainDefValidate(virDomainDefPtr def,
+-                         virCapsPtr caps,
+-                         unsigned int parseFlags,
+-                         virDomainXMLOptionPtr xmlopt);
+-
+ static inline bool
+ virDomainObjIsActive(virDomainObjPtr dom)
+ {
+@@ -388,43 +215,6 @@ virDomainDefPtr virDomainObjCopyPersistentDef(virDomainObjPtr dom,
+                                               virCapsPtr caps,
+                                               virDomainXMLOptionPtr xmlopt);
+ 
+-typedef enum {
+-    /* parse internal domain status information */
+-    VIR_DOMAIN_DEF_PARSE_STATUS          = 1 &lt;&lt; 0,
+-    /* Parse only parts of the XML that would be present in an inactive libvirt
+-     * XML. Note that the flag does not imply that ABI incompatible
+-     * transformations can be used, since it's used to strip runtime info when
+-     * restoring save images/migration. */
+-    VIR_DOMAIN_DEF_PARSE_INACTIVE        = 1 &lt;&lt; 1,
+-    /* parse &lt;actual&gt; element */
+-    VIR_DOMAIN_DEF_PARSE_ACTUAL_NET      = 1 &lt;&lt; 2,
+-    /* parse original states of host PCI device */
+-    VIR_DOMAIN_DEF_PARSE_PCI_ORIG_STATES = 1 &lt;&lt; 3,
+-    /* internal flag passed to device info sub-parser to allow using &lt;rom&gt; */
+-    VIR_DOMAIN_DEF_PARSE_ALLOW_ROM       = 1 &lt;&lt; 4,
+-    /* internal flag passed to device info sub-parser to allow specifying boot order */
+-    VIR_DOMAIN_DEF_PARSE_ALLOW_BOOT      = 1 &lt;&lt; 5,
+-    /* parse only source half of &lt;disk&gt; */
+-    VIR_DOMAIN_DEF_PARSE_DISK_SOURCE     = 1 &lt;&lt; 6,
+-    /* perform RNG schema validation on the passed XML document */
+-    VIR_DOMAIN_DEF_PARSE_VALIDATE_SCHEMA = 1 &lt;&lt; 7,
+-    /* allow updates in post parse callback that would break ABI otherwise */
+-    VIR_DOMAIN_DEF_PARSE_ABI_UPDATE = 1 &lt;&lt; 8,
+-    /* skip definition validation checks meant to be executed on define time only */
+-    VIR_DOMAIN_DEF_PARSE_SKIP_VALIDATE = 1 &lt;&lt; 9,
+-    /* skip parsing of security labels */
+-    VIR_DOMAIN_DEF_PARSE_SKIP_SECLABEL        = 1 &lt;&lt; 10,
+-    /* Allows updates in post parse callback for incoming persistent migration
+-     * that would break ABI otherwise.  This should be used only if it's safe
+-     * to do such change. */
+-    VIR_DOMAIN_DEF_PARSE_ABI_UPDATE_MIGRATION = 1 &lt;&lt; 11,
+-    /* Allows to ignore certain failures in the post parse callbacks, which
+-     * may happen due to missing packages and can be fixed by re-running the
+-     * post parse callbacks before starting. Failure of the post parse callback
+-     * is recorded as def-&gt;postParseFail */
+-    VIR_DOMAIN_DEF_PARSE_ALLOW_POST_PARSE_FAIL = 1 &lt;&lt; 12,
+-} virDomainDefParseFlags;
+-
+ typedef enum {
+     VIR_DOMAIN_DEF_FORMAT_SECURE          = 1 &lt;&lt; 0,
+     VIR_DOMAIN_DEF_FORMAT_INACTIVE        = 1 &lt;&lt; 1,
+@@ -440,59 +230,6 @@ typedef enum {
+     VIR_DOMAIN_DEF_FORMAT_CLOCK_ADJUST    = 1 &lt;&lt; 8,
+ } virDomainDefFormatFlags;
+ 
+-/* Use these flags to skip specific domain ABI consistency checks done
+- * in virDomainDefCheckABIStabilityFlags.
+- */
+-typedef enum {
+-    /* Set when domain lock must be released and there exists the possibility
+-     * that some external action could alter the value, such as cur_balloon. */
+-    VIR_DOMAIN_DEF_ABI_CHECK_SKIP_VOLATILE = 1 &lt;&lt; 0,
+-} virDomainDefABICheckFlags;
+-
+-virDomainDeviceDefPtr virDomainDeviceDefParse(const char *xmlStr,
+-                                              const virDomainDef *def,
+-                                              virCapsPtr caps,
+-                                              virDomainXMLOptionPtr xmlopt,
+-                                              unsigned int flags);
+-virDomainDiskDefPtr virDomainDiskDefParse(const char *xmlStr,
+-                                          const virDomainDef *def,
+-                                          virDomainXMLOptionPtr xmlopt,
+-                                          unsigned int flags);
+-virDomainDefPtr virDomainDefParseString(const char *xmlStr,
+-                                        virCapsPtr caps,
+-                                        virDomainXMLOptionPtr xmlopt,
+-                                        void *parseOpaque,
+-                                        unsigned int flags);
+-virDomainDefPtr virDomainDefParseFile(const char *filename,
+-                                      virCapsPtr caps,
+-                                      virDomainXMLOptionPtr xmlopt,
+-                                      void *parseOpaque,
+-                                      unsigned int flags);
+-virDomainDefPtr virDomainDefParseNode(xmlDocPtr doc,
+-                                      xmlNodePtr root,
+-                                      virCapsPtr caps,
+-                                      virDomainXMLOptionPtr xmlopt,
+-                                      void *parseOpaque,
+-                                      unsigned int flags);
+-virDomainObjPtr virDomainObjParseNode(xmlDocPtr xml,
+-                                      xmlNodePtr root,
+-                                      virCapsPtr caps,
+-                                      virDomainXMLOptionPtr xmlopt,
+-                                      unsigned int flags);
+-virDomainObjPtr virDomainObjParseFile(const char *filename,
+-                                      virCapsPtr caps,
+-                                      virDomainXMLOptionPtr xmlopt,
+-                                      unsigned int flags);
+-
+-bool virDomainDefCheckABIStability(virDomainDefPtr src,
+-                                   virDomainDefPtr dst,
+-                                   virDomainXMLOptionPtr xmlopt);
+-
+-bool virDomainDefCheckABIStabilityFlags(virDomainDefPtr src,
+-                                        virDomainDefPtr dst,
+-                                        virDomainXMLOptionPtr xmlopt,
+-                                        unsigned int flags);
+-
+ int virDomainDefAddImplicitDevices(virDomainDefPtr def);
+ 
+ virDomainIOThreadIDDefPtr virDomainIOThreadIDFind(const virDomainDef *def,
+@@ -572,8 +309,6 @@ int virDomainDiskInsert(virDomainDefPtr def,
+     ATTRIBUTE_RETURN_CHECK;
+ void virDomainDiskInsertPreAlloced(virDomainDefPtr def,
+                                    virDomainDiskDefPtr disk);
+-int virDomainStorageNetworkParseHost(xmlNodePtr hostnode,
+-                                     virStorageNetHostDefPtr host);
+ int virDomainDiskDefAssignAddress(virDomainXMLOptionPtr xmlopt,
+                                   virDomainDiskDefPtr def,
+                                   const virDomainDef *vmdef);
+@@ -840,14 +575,6 @@ int virDomainObjSetMetadata(virDomainObjPtr vm,
+                             const char *configDir,
+                             unsigned int flags);
+ 
+-int
+-virDomainParseMemory(const char *xpath,
+-                     const char *units_xpath,
+-                     xmlXPathContextPtr ctxt,
+-                     unsigned long long *mem,
+-                     bool required,
+-                     bool capped);
+-
+ bool virDomainDefNeedsPlacementAdvice(virDomainDefPtr def)
+     ATTRIBUTE_NONNULL(1);
+ 
+@@ -855,26 +582,6 @@ int virDomainDiskDefCheckDuplicateInfo(const virDomainDiskDef *a,
+                                        const virDomainDiskDef *b)
+     ATTRIBUTE_NONNULL(1) ATTRIBUTE_NONNULL(2);
+ 
+-virStorageSourcePtr
+-virDomainStorageSourceParseBase(const char *type,
+-                                const char *format,
+-                                const char *index)
+-    ATTRIBUTE_RETURN_CHECK;
+-
+-int virDomainStorageSourceParse(xmlNodePtr node,
+-                                xmlXPathContextPtr ctxt,
+-                                virStorageSourcePtr src,
+-                                unsigned int flags,
+-                                virDomainXMLOptionPtr xmlopt)
+-    ATTRIBUTE_NONNULL(1) ATTRIBUTE_NONNULL(2) ATTRIBUTE_NONNULL(3);
+-
+-int
+-virDomainDiskBackingStoreParse(xmlXPathContextPtr ctxt,
+-                               virStorageSourcePtr src,
+-                               unsigned int flags,
+-                               virDomainXMLOptionPtr xmlopt)
+-    ATTRIBUTE_NONNULL(1) ATTRIBUTE_NONNULL(2) ATTRIBUTE_RETURN_CHECK;
+-
+ int virDomainDefGetVcpuPinInfoHelper(virDomainDefPtr def,
+                                      int maplen,
+                                      int ncpumaps,
+diff --git a/src/conf/domain_parse.h b/src/conf/domain_parse.h
+new file mode 100644
+index 0000000000..286726adba
+--- /dev/null
++++ b/src/conf/domain_parse.h
+@@ -0,0 +1,321 @@
++/*
++ * domain_parse.h: XML parser for the domain definition
++ *
++ * Copyright (C) 2006-2019 Red Hat, Inc.
++ * Copyright (C) 2006-2008 Daniel P. Berrange
++ * Copyright (c) 2015 SUSE LINUX Products GmbH, Nuernberg, Germany.
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library.  If not, see
++ * &lt;<a  rel="nofollow" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.
++ */
++
++#pragma once
++
++#include &quot;internal.h&quot;
++#include &quot;virconftypes.h&quot;
++#include &quot;virdomaintypes.h&quot;
++#include &quot;virsavecookie.h&quot;
++
++/* Called after everything else has been parsed, for adjusting basics.
++ * This has similar semantics to virDomainDefPostParseCallback, but no
++ * parseOpaque is used. This callback is run prior to
++ * virDomainDefPostParseCallback. */
++typedef int (*virDomainDefPostParseBasicCallback)(virDomainDefPtr def,
++                                                  virCapsPtr caps,
++                                                  void *opaque);
++
++/* Called once after everything else has been parsed, for adjusting
++ * overall domain defaults.
++ * @parseOpaque is opaque data passed by virDomainDefParse* caller,
++ * @opaque is opaque data set by driver (usually pointer to driver
++ * private data). Non-fatal failures should be reported by returning 1. In
++ * cases when that is allowed, such failure is translated to a success return
++ * value and the failure is noted in def-&gt;postParseFailed. Drivers should then
++ * re-run the post parse callback when attempting to use such definition. */
++typedef int (*virDomainDefPostParseCallback)(virDomainDefPtr def,
++                                             virCapsPtr caps,
++                                             unsigned int parseFlags,
++                                             void *opaque,
++                                             void *parseOpaque);
++/* Called once per device, for adjusting per-device settings while
++ * leaving the overall domain otherwise unchanged.
++ * @parseOpaque is opaque data passed by virDomainDefParse* caller,
++ * @opaque is opaque data set by driver (usually pointer to driver
++ * private data). */
++typedef int (*virDomainDeviceDefPostParseCallback)(virDomainDeviceDefPtr dev,
++                                                   const virDomainDef *def,
++                                                   virCapsPtr caps,
++                                                   unsigned int parseFlags,
++                                                   void *opaque,
++                                                   void *parseOpaque);
++/* Drive callback for assigning device addresses, called at the end
++ * of parsing, after all defaults and implicit devices have been added.
++ * @parseOpaque is opaque data passed by virDomainDefParse* caller,
++ * @opaque is opaque data set by driver (usually pointer to driver
++ * private data). */
++typedef int (*virDomainDefAssignAddressesCallback)(virDomainDef *def,
++                                                   virCapsPtr caps,
++                                                   unsigned int parseFlags,
++                                                   void *opaque,
++                                                   void *parseOpaque);
++
++typedef int (*virDomainDefPostParseDataAlloc)(const virDomainDef *def,
++                                              virCapsPtr caps,
++                                              unsigned int parseFlags,
++                                              void *opaque,
++                                              void **parseOpaque);
++typedef void (*virDomainDefPostParseDataFree)(void *parseOpaque);
++
++/* Called in appropriate places where the domain conf parser can return failure
++ * for configurations that were previously accepted. This shall not modify the
++ * config. */
++typedef int (*virDomainDefValidateCallback)(const virDomainDef *def,
++                                            virCapsPtr caps,
++                                            void *opaque);
++
++/* Called once per device, for adjusting per-device settings while
++ * leaving the overall domain otherwise unchanged.  */
++typedef int (*virDomainDeviceDefValidateCallback)(const virDomainDeviceDef *dev,
++                                                  const virDomainDef *def,
++                                                  void *opaque);
++
++struct _virDomainDefParserConfig {
++    /* driver domain definition callbacks */
++    virDomainDefPostParseBasicCallback domainPostParseBasicCallback;
++    virDomainDefPostParseDataAlloc domainPostParseDataAlloc;
++    virDomainDefPostParseCallback domainPostParseCallback;
++    virDomainDeviceDefPostParseCallback devicesPostParseCallback;
++    virDomainDefAssignAddressesCallback assignAddressesCallback;
++    virDomainDefPostParseDataFree domainPostParseDataFree;
++
++    /* validation callbacks */
++    virDomainDefValidateCallback domainValidateCallback;
++    virDomainDeviceDefValidateCallback deviceValidateCallback;
++
++    /* private data for the callbacks */
++    void *priv;
++    virFreeCallback privFree;
++
++    /* data */
++    unsigned int features; /* virDomainDefFeatures */
++    unsigned char macPrefix[VIR_MAC_PREFIX_BUFLEN];
++};
++
++typedef void *(*virDomainXMLPrivateDataAllocFunc)(void *);
++typedef void (*virDomainXMLPrivateDataFreeFunc)(void *);
++typedef virObjectPtr (*virDomainXMLPrivateDataNewFunc)(void);
++typedef int (*virDomainXMLPrivateDataFormatFunc)(virBufferPtr,
++                                                 virDomainObjPtr);
++typedef int (*virDomainXMLPrivateDataParseFunc)(xmlXPathContextPtr,
++                                                virDomainObjPtr,
++                                                virDomainDefParserConfigPtr);
++
++typedef void *(*virDomainXMLPrivateDataGetParseOpaqueFunc)(virDomainObjPtr vm);
++
++typedef int (*virDomainXMLPrivateDataDiskParseFunc)(xmlXPathContextPtr ctxt,
++                                                    virDomainDiskDefPtr disk);
++typedef int (*virDomainXMLPrivateDataDiskFormatFunc)(virDomainDiskDefPtr disk,
++                                                     virBufferPtr buf);
++
++typedef int (*virDomainXMLPrivateDataStorageSourceParseFunc)(xmlXPathContextPtr ctxt,
++                                                             virStorageSourcePtr src);
++typedef int (*virDomainXMLPrivateDataStorageSourceFormatFunc)(virStorageSourcePtr src,
++                                                              virBufferPtr buf);
++
++
++struct _virDomainXMLPrivateDataCallbacks {
++    virDomainXMLPrivateDataAllocFunc  alloc;
++    virDomainXMLPrivateDataFreeFunc   free;
++    /* note that private data for devices are not copied when using
++     * virDomainDefCopy and similar functions */
++    virDomainXMLPrivateDataNewFunc    diskNew;
++    virDomainXMLPrivateDataDiskParseFunc diskParse;
++    virDomainXMLPrivateDataDiskFormatFunc diskFormat;
++    virDomainXMLPrivateDataNewFunc    vcpuNew;
++    virDomainXMLPrivateDataNewFunc    chrSourceNew;
++    virDomainXMLPrivateDataNewFunc    vsockNew;
++    virDomainXMLPrivateDataNewFunc    graphicsNew;
++    virDomainXMLPrivateDataFormatFunc format;
++    virDomainXMLPrivateDataParseFunc  parse;
++    /* following function shall return a pointer which will be used as the
++     * 'parseOpaque' argument for virDomainDefPostParse */
++    virDomainXMLPrivateDataGetParseOpaqueFunc getParseOpaque;
++    virDomainXMLPrivateDataStorageSourceParseFunc storageParse;
++    virDomainXMLPrivateDataStorageSourceFormatFunc storageFormat;
++};
++
++typedef bool (*virDomainABIStabilityDomain)(const virDomainDef *src,
++                                            const virDomainDef *dst);
++
++struct _virDomainABIStability {
++    virDomainABIStabilityDomain domain;
++};
++
++virDomainXMLOptionPtr virDomainXMLOptionNew(virDomainDefParserConfigPtr config,
++                                            virDomainXMLPrivateDataCallbacksPtr priv,
++                                            virDomainXMLNamespacePtr xmlns,
++                                            virDomainABIStabilityPtr abi,
++                                            virSaveCookieCallbacksPtr saveCookie);
++
++virSaveCookieCallbacksPtr
++virDomainXMLOptionGetSaveCookie(virDomainXMLOptionPtr xmlopt);
++
++typedef int (*virDomainMomentPostParseCallback)(virDomainMomentDefPtr def);
++
++void virDomainXMLOptionSetMomentPostParse(virDomainXMLOptionPtr xmlopt,
++                                          virDomainMomentPostParseCallback cb);
++int virDomainXMLOptionRunMomentPostParse(virDomainXMLOptionPtr xmlopt,
++                                         virDomainMomentDefPtr def);
++
++void virDomainNetGenerateMAC(virDomainXMLOptionPtr xmlopt, virMacAddrPtr mac);
++
++virDomainXMLNamespacePtr
++virDomainXMLOptionGetNamespace(virDomainXMLOptionPtr xmlopt)
++    ATTRIBUTE_NONNULL(1);
++
++int virDomainDefPostParse(virDomainDefPtr def,
++                          virCapsPtr caps,
++                          unsigned int parseFlags,
++                          virDomainXMLOptionPtr xmlopt,
++                          void *parseOpaque);
++
++int virDomainDeviceValidateAliasForHotplug(virDomainObjPtr vm,
++                                           virDomainDeviceDefPtr dev,
++                                           unsigned int flags);
++
++bool virDomainDeviceAliasIsUserAlias(const char *aliasStr);
++
++int virDomainDefValidate(virDomainDefPtr def,
++                         virCapsPtr caps,
++                         unsigned int parseFlags,
++                         virDomainXMLOptionPtr xmlopt);
++typedef enum {
++    /* parse internal domain status information */
++    VIR_DOMAIN_DEF_PARSE_STATUS          = 1 &lt;&lt; 0,
++    /* Parse only parts of the XML that would be present in an inactive libvirt
++     * XML. Note that the flag does not imply that ABI incompatible
++     * transformations can be used, since it's used to strip runtime info when
++     * restoring save images/migration. */
++    VIR_DOMAIN_DEF_PARSE_INACTIVE        = 1 &lt;&lt; 1,
++    /* parse &lt;actual&gt; element */
++    VIR_DOMAIN_DEF_PARSE_ACTUAL_NET      = 1 &lt;&lt; 2,
++    /* parse original states of host PCI device */
++    VIR_DOMAIN_DEF_PARSE_PCI_ORIG_STATES = 1 &lt;&lt; 3,
++    /* internal flag passed to device info sub-parser to allow using &lt;rom&gt; */
++    VIR_DOMAIN_DEF_PARSE_ALLOW_ROM       = 1 &lt;&lt; 4,
++    /* internal flag passed to device info sub-parser to allow specifying boot order */
++    VIR_DOMAIN_DEF_PARSE_ALLOW_BOOT      = 1 &lt;&lt; 5,
++    /* parse only source half of &lt;disk&gt; */
++    VIR_DOMAIN_DEF_PARSE_DISK_SOURCE     = 1 &lt;&lt; 6,
++    /* perform RNG schema validation on the passed XML document */
++    VIR_DOMAIN_DEF_PARSE_VALIDATE_SCHEMA = 1 &lt;&lt; 7,
++    /* allow updates in post parse callback that would break ABI otherwise */
++    VIR_DOMAIN_DEF_PARSE_ABI_UPDATE = 1 &lt;&lt; 8,
++    /* skip definition validation checks meant to be executed on define time only */
++    VIR_DOMAIN_DEF_PARSE_SKIP_VALIDATE = 1 &lt;&lt; 9,
++    /* skip parsing of security labels */
++    VIR_DOMAIN_DEF_PARSE_SKIP_SECLABEL        = 1 &lt;&lt; 10,
++    /* Allows updates in post parse callback for incoming persistent migration
++     * that would break ABI otherwise.  This should be used only if it's safe
++     * to do such change. */
++    VIR_DOMAIN_DEF_PARSE_ABI_UPDATE_MIGRATION = 1 &lt;&lt; 11,
++    /* Allows to ignore certain failures in the post parse callbacks, which
++     * may happen due to missing packages and can be fixed by re-running the
++     * post parse callbacks before starting. Failure of the post parse callback
++     * is recorded as def-&gt;postParseFail */
++    VIR_DOMAIN_DEF_PARSE_ALLOW_POST_PARSE_FAIL = 1 &lt;&lt; 12,
++} virDomainDefParseFlags;
++
++/* Use these flags to skip specific domain ABI consistency checks done
++ * in virDomainDefCheckABIStabilityFlags.
++ */
++typedef enum {
++    /* Set when domain lock must be released and there exists the possibility
++     * that some external action could alter the value, such as cur_balloon. */
++    VIR_DOMAIN_DEF_ABI_CHECK_SKIP_VOLATILE = 1 &lt;&lt; 0,
++} virDomainDefABICheckFlags;
++
++virDomainDeviceDefPtr virDomainDeviceDefParse(const char *xmlStr,
++                                              const virDomainDef *def,
++                                              virCapsPtr caps,
++                                              virDomainXMLOptionPtr xmlopt,
++                                              unsigned int flags);
++virDomainDiskDefPtr virDomainDiskDefParse(const char *xmlStr,
++                                          const virDomainDef *def,
++                                          virDomainXMLOptionPtr xmlopt,
++                                          unsigned int flags);
++virDomainDefPtr virDomainDefParseString(const char *xmlStr,
++                                        virCapsPtr caps,
++                                        virDomainXMLOptionPtr xmlopt,
++                                        void *parseOpaque,
++                                        unsigned int flags);
++virDomainDefPtr virDomainDefParseFile(const char *filename,
++                                      virCapsPtr caps,
++                                      virDomainXMLOptionPtr xmlopt,
++                                      void *parseOpaque,
++                                      unsigned int flags);
++virDomainDefPtr virDomainDefParseNode(xmlDocPtr doc,
++                                      xmlNodePtr root,
++                                      virCapsPtr caps,
++                                      virDomainXMLOptionPtr xmlopt,
++                                      void *parseOpaque,
++                                      unsigned int flags);
++virDomainObjPtr virDomainObjParseNode(xmlDocPtr xml,
++                                      xmlNodePtr root,
++                                      virCapsPtr caps,
++                                      virDomainXMLOptionPtr xmlopt,
++                                      unsigned int flags);
++virDomainObjPtr virDomainObjParseFile(const char *filename,
++                                      virCapsPtr caps,
++                                      virDomainXMLOptionPtr xmlopt,
++                                      unsigned int flags);
++
++bool virDomainDefCheckABIStability(virDomainDefPtr src,
++                                   virDomainDefPtr dst,
++                                   virDomainXMLOptionPtr xmlopt);
++
++bool virDomainDefCheckABIStabilityFlags(virDomainDefPtr src,
++                                        virDomainDefPtr dst,
++                                        virDomainXMLOptionPtr xmlopt,
++                                        unsigned int flags);
++
++int virDomainStorageNetworkParseHost(xmlNodePtr hostnode,
++                                     virStorageNetHostDefPtr host);
++int
++virDomainParseMemory(const char *xpath,
++                     const char *units_xpath,
++                     xmlXPathContextPtr ctxt,
++                     unsigned long long *mem,
++                     bool required,
++                     bool capped);
++
++virStorageSourcePtr
++virDomainStorageSourceParseBase(const char *type,
++                                const char *format,
++                                const char *index)
++    ATTRIBUTE_RETURN_CHECK;
++
++int virDomainStorageSourceParse(xmlNodePtr node,
++                                xmlXPathContextPtr ctxt,
++                                virStorageSourcePtr src,
++                                unsigned int flags,
++                                virDomainXMLOptionPtr xmlopt)
++    ATTRIBUTE_NONNULL(1) ATTRIBUTE_NONNULL(2) ATTRIBUTE_NONNULL(3);
++
++int
++virDomainDiskBackingStoreParse(xmlXPathContextPtr ctxt,
++                               virStorageSourcePtr src,
++                               unsigned int flags,
++                               virDomainXMLOptionPtr xmlopt)
++    ATTRIBUTE_NONNULL(1) ATTRIBUTE_NONNULL(2) ATTRIBUTE_RETURN_CHECK;
+-- 
+2.19.2
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187738.html">[PATCH 2/6] virsh: clean up includes</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187740.html">[PATCH 6/6] maint: include virdomaintypes.h instead of	domain_conf.h</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187738.html">[PATCH 2/6] virsh: clean up includes</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187740.html">[PATCH 6/6] maint: include virdomaintypes.h instead of	domain_conf.h</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187739"><strong>Date</strong></a></li>
+<li><a href="index.html#187739"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

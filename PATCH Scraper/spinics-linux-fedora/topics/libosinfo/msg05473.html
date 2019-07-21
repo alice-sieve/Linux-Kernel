@@ -1,0 +1,273 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [osinfo&#45;db&#45;tools PATCH 1/2] tests: Only run the tests	if deps are installed -->
+<!--X-From-R13: =?GFT&#45;8?d?Tnovnab=20Tvq=Q3=OOapvb?= &#60;svqrapvbNerqung.pbz> -->
+<!--X-Date: Tue, 9 Apr 2019 09:30:36 &#45;0700 -->
+<!--X-Message-Id: 20190409163028.26210&#45;2&#45;fidencio@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190409163028.26210&#45;1&#45;fidencio@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<title>[osinfo-db-tools PATCH 1/2] tests: Only run the tests	if deps are installed &mdash; libosinfo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="libosinfo: [osinfo-db-tools PATCH 1/2] tests: Only run the tests	if deps are installed">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="libosinfo" href="//feeds.feedburner.com/libosinfo">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[osinfo-db-tools PATCH 1/2] tests: Only run the tests	if deps are installed</h1>
+[<a href="msg05472.html">Date Prev</a>][<a href="msg05474.html">Date Next</a>][<a href="msg05472.html">Thread Prev</a>][<a href="msg05474.html">Thread Next</a>][<a href="maillist.html#05473">Date Index</a>][<a href="index.html#05473">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [osinfo-db-tools PATCH 1/2] tests: Only run the tests	if deps are installed</li>
+<li><em>From</em>: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue,  9 Apr 2019 18:30:27 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg05472.html">20190409163028.26210-1-fidencio@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg05472.html">20190409163028.26210-1-fidencio@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Let's check whether we have all the deps installed in the system and
+only run the tests if that's the case.
+
+Signed-off-by: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;
+---
+ configure.ac      | 23 +++++++++++++++++++++++
+ tests/Makefile.am |  6 +++++-
+ 2 files changed, 28 insertions(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index d87f86c..1f29468 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -11,6 +11,29 @@ AC_PROG_LN_S
+ # Perl is needed for syntax-check
+ AC_PATH_PROG([PERL], [perl])
+ 
++# python3, python3-pytest and python3-requests are needed for our tests
++AC_CHECK_PROG(HAVE_PYTHON3, python3, yes, no)
++if test &quot;x$HAVE_PYTHON3&quot; == &quot;xyes&quot;;
++then
++    PYTHON=&quot;python3&quot;
++
++    $PYTHON -c &quot;import pytest&quot;
++    if test $? -eq 0;
++    then
++        HAVE_PYTEST=&quot;yes&quot;
++    fi
++
++    $PYTHON -c &quot;import requests&quot;
++    if test $? -eq 0;
++    then
++        HAVE_REQUESTS=&quot;yes&quot;
++    fi
++else
++    HAVE_PYTEST=&quot;no&quot;
++    HAVE_REQUESTS=&quot;no&quot;
++fi
++AM_CONDITIONAL([EXECUTE_TESTS], [test &quot;x$HAVE_PYTEST&quot; == &quot;xyes&quot; -a &quot;x$HAVE_REQUESTS&quot; = &quot;xyes&quot;])
++
+ LT_INIT([shared disable-static win32-dll])
+ 
+ LIBOSINFO_COMPILE_WARNINGS
+diff --git a/tests/Makefile.am b/tests/Makefile.am
+index f9755a0..efa31df 100644
+--- a/tests/Makefile.am
++++ b/tests/Makefile.am
+@@ -15,7 +15,10 @@ EXTRA_DIST += \
+ 	$(test_programs) \
+ 	$(NULL)
+ 
+-TESTS = \
++TESTS =
++
++if EXECUTE_TESTS
++TESTS += \
+ 	$(test_programs) \
+ 	$(NULL)
+ 
+@@ -24,3 +27,4 @@ TESTS_ENVIRONMENT = \
+ 	abs_top_srcdir=&quot;$(abs_top_srcdir)&quot; \
+ 	datadir=&quot;$(datadir)&quot; \
+ 	sysconfdir=&quot;$(sysconfdir)&quot;
++endif
+-- 
+2.20.1
+
+_______________________________________________
+Libosinfo mailing list
+Libosinfo@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libosinfo">https://www.redhat.com/mailman/listinfo/libosinfo</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05472.html">[osinfo-db-tools PATCH 0/2] Dependency check for tests	deps</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05474.html">[osinfo-db-tools PATCH 2/2] spec: Add %check target	(and the needed deps)</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05472.html">[osinfo-db-tools PATCH 0/2] Dependency check for tests	deps</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05474.html">[osinfo-db-tools PATCH 2/2] spec: Add %check target	(and the needed deps)</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05473"><strong>Date</strong></a></li>
+<li><a href="index.html#05473"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

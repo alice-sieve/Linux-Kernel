@@ -1,0 +1,244 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 14/14] Make partition separator follow standards -->
+<!--X-From-R13: Buvyyvc Ehfv &#60;cfhfvNpsy.ee.pbz> -->
+<!--X-Date: Tue, 6 Dec 2011 10:48:02 &#45;0800 -->
+<!--X-Message-Id: 20111206183959.484492629@cfl.rr.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20111206183923.006800557@cfl.rr.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 14/14] Make partition separator follow standards &mdash; Linux ATA RAID Storage Archive">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux ATA RAID Storage &mdash; [PATCH 14/14] Make partition separator follow standards</title>
+<link rel="alternate" type="application/rss+xml" title="ATA RAID" href="//feeds2.feedburner.com/ataraid">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 14/14] Make partition separator follow standards</h1>
+[<a href="msg03426.html">Date Prev</a>][<a href="msg03428.html">Date Next</a>][<a href="msg03426.html">Thread Prev</a>][<a href="msg03428.html">Thread Next</a>][<a href="maillist.html#03427">Date Index</a>][<a href="threads.html#03427">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 14/14] Make partition separator follow standards</li>
+<li><em>From</em>: Phillip Susi &lt;<a href="mailto:psusi@DOMAIN.HIDDEN">psusi@xxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Tue, 06 Dec 2011 13:39:37 -0500</li>
+<li><em>User-agent</em>: quilt/0.48-1</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Description: dmraid was changed at one point to insert a 'p' between
+ the base device name and the partition number.  For some time
+ debian and ubuntu reversed this change.  This patch modifies the
+ behavior to add the 'p' iff the last character of the base name is
+ a digit.  This makes dmraid comply with the behavior used by
+ kpartx and &quot;by linux since the dawn of time&quot;.
+
+Index: b/1.0.0.rc16/lib/format/partition/dos.c
+===================================================================
+--- a/1.0.0.rc16/lib/format/partition/dos.c
++++ b/1.0.0.rc16/lib/format/partition/dos.c
+@@ -31,8 +31,14 @@
+ {
+ 	const char *base = get_basename(lc, rd-&gt;di-&gt;path);
+ 
+-	return type ? snprintf(str, len, &quot;%s%s%u&quot;, base, OPT_STR_PARTCHAR(lc),
+-			       partition) : snprintf(str, len, &quot;%s&quot;, base);
++	if (type)
++	{
++		if (isdigit(base[strlen(base) - 1]))
++			return snprintf(str, len, &quot;%s%s%u&quot;, base,
++					OPT_STR_PARTCHAR(lc), partition);
++		else return snprintf(str, len, &quot;%s%u&quot;, base, partition);
++	}
++	else return snprintf(str, len, &quot;%s&quot;, base);
+ }
+ 
+ static char *
+
+_______________________________________________
+Ataraid-list mailing list
+Ataraid-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/ataraid-list">https://www.redhat.com/mailman/listinfo/ataraid-list</a>
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="03432" href="msg03432.html">[PATCH 00/14] Ubuntu patches for upstream merging</a></strong>
+<ul><li><em>From:</em> Phillip Susi</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg03426.html">[PATCH 13/14] Dump all 4 sets of PDC metadata</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg03428.html">[PATCH 04/14] Return with failure exit code when no raid disks found</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg03426.html">[PATCH 13/14] Dump all 4 sets of PDC metadata</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg03428.html">[PATCH 04/14] Return with failure exit code when no raid disks found</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#03427"><strong>Date</strong></a></li>
+<li><a href="threads.html#03427"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/raid/>[Linux&nbsp;RAID]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dm-devel/>[Linux&nbsp;Device&nbsp;Mapper]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ide/>[Linux&nbsp;IDE]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art/z/biglist.php>[Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-admin/>[Linux&nbsp;Admin]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gfs/>[GFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/rpm/>[RPM]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;Campgrounds]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/amd64/>[AMD&nbsp;64]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 2/6] ath6kl: implement rx flush for htc pipe -->
+<!--X-From-R13: Ynyyr Hnyb &#60;xinybNdpn.dhnypbzz.pbz> -->
+<!--X-Date: Tue, 17 Jun 2014 02:41:24 &#45;0700 -->
+<!--X-Message-Id: 20140617094058.22040.10223.stgit@potku.adurom.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20140617093836.22040.99081.stgit@potku.adurom.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux ATH6KL: [PATCH 2/6] ath6kl: implement rx flush for htc pipe">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 2/6] ath6kl: implement rx flush for htc pipe (Linux ATH6KL)</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ATH6KL" href="//feedproxy.google.com/LinuxATH6KL">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:6308783764" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 2/6] ath6kl: implement rx flush for htc pipe</h1>
+[<a href="msg00033.html">Date Prev</a>][<a href="msg00035.html">Date Next</a>][<a href="msg00033.html">Thread Prev</a>][<a href="msg00035.html">Thread Next</a>][<a href="maillist.html#00034">Date Index</a>][<a href="index.html#00034">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: <a href="mailto:ath6kl@DOMAIN.HIDDEN">ath6kl@xxxxxxxxxxxxxxxxxxx</a></li>
+<li><em>Subject</em>: [PATCH 2/6] ath6kl: implement rx flush for htc pipe</li>
+<li><em>From</em>: Kalle Valo &lt;<a href="mailto:kvalo@DOMAIN.HIDDEN">kvalo@xxxxxxxxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Tue, 17 Jun 2014 12:40:58 +0300</li>
+<li><em>Cc</em>: <a href="mailto:linux-wireless@DOMAIN.HIDDEN">linux-wireless@xxxxxxxxxxxxxxx</a></li>
+<li><em>In-reply-to</em>: &lt;<a href="msg00032.html">20140617093836.22040.99081.stgit@potku.adurom.net</a>&gt;</li>
+<li><em>User-agent</em>: StGit/0.15</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Jessica Wu &lt;kvalo@xxxxxxxxxxxxxxxx&gt;
+
+rx flush was not implemented for htc pipe, add that now. Doesn't fix any known
+issues.
+
+Also free the skb if htc control messages get canceled.
+
+Signed-off-by: Jessica Wu &lt;wjessica@xxxxxxxxxxxxxxxx&gt;
+Signed-off-by: Kalle Valo &lt;kvalo@xxxxxxxxxxxxxxxx&gt;
+---
+ drivers/net/wireless/ath/ath6kl/htc_pipe.c |   32 +++++++++++++++++++++++++---
+ 1 file changed, 29 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath6kl/htc_pipe.c b/drivers/net/wireless/ath/ath6kl/htc_pipe.c
+index 756fe52a12c8..ca1a18c86c0d 100644
+--- a/drivers/net/wireless/ath/ath6kl/htc_pipe.c
++++ b/drivers/net/wireless/ath/ath6kl/htc_pipe.c
+@@ -1170,8 +1170,12 @@ static int htc_wait_recv_ctrl_message(struct htc_target *target)
+ static void htc_rxctrl_complete(struct htc_target *context,
+ 				struct htc_packet *packet)
+ {
+-	/* TODO, can't really receive HTC control messages yet.... */
+-	ath6kl_dbg(ATH6KL_DBG_HTC, &quot;%s: invalid call function\n&quot;, __func__);
++	struct sk_buff *skb = packet-&gt;skb;
++
++	if (packet-&gt;endpoint == ENDPOINT_0 &amp;&amp;
++	    packet-&gt;status == -ECANCELED &amp;&amp;
++	    skb != NULL)
++		dev_kfree_skb(skb);
+ }
+ 
+ /* htc pipe initialization */
+@@ -1678,7 +1682,29 @@ static void ath6kl_htc_pipe_activity_changed(struct htc_target *target,
+ 
+ static void ath6kl_htc_pipe_flush_rx_buf(struct htc_target *target)
+ {
+-	/* TODO */
++	struct htc_endpoint *endpoint;
++	struct htc_packet *packet, *tmp_pkt;
++	int i;
++
++	for (i = ENDPOINT_0; i &lt; ENDPOINT_MAX; i++) {
++		endpoint = &amp;target-&gt;endpoint[i];
++
++		spin_lock_bh(&amp;target-&gt;rx_lock);
++
++		list_for_each_entry_safe(packet, tmp_pkt,
++					 &amp;endpoint-&gt;rx_bufq, list) {
++			list_del(&amp;packet-&gt;list);
++			spin_unlock_bh(&amp;target-&gt;rx_lock);
++			ath6kl_dbg(ATH6KL_DBG_HTC,
++				   &quot;htc rx flush pkt 0x%p len %d ep %d\n&quot;,
++				   packet, packet-&gt;buf_len,
++				   packet-&gt;endpoint);
++			dev_kfree_skb(packet-&gt;pkt_cntxt);
++			spin_lock_bh(&amp;target-&gt;rx_lock);
++		}
++
++		spin_unlock_bh(&amp;target-&gt;rx_lock);
++	}
+ }
+ 
+ static int ath6kl_htc_pipe_credit_setup(struct htc_target *target,
+
+
+_______________________________________________
+ath6kl mailing list
+ath6kl@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/ath6kl">http://lists.infradead.org/mailman/listinfo/ath6kl</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="00032" href="msg00032.html">[PATCH 0/6] ath6kl: add ar6004 hw3.0</a></strong>
+<ul><li><em>From:</em> Kalle Valo</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00033.html">[PATCH 1/6] ath6kl: convert ar6004 hardware flags to firmware feature flags</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00035.html">[PATCH 3/6] ath6kl: don't set hi_refclk_hz if hardware version doesn't need it</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00033.html">[PATCH 1/6] ath6kl: convert ar6004 hardware flags to firmware feature flags</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00035.html">[PATCH 3/6] ath6kl: don't set hi_refclk_hz if hardware version doesn't need it</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00034"><strong>Date</strong></a></li>
+<li><a href="index.html#00034"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-wireless/>[Linux&nbsp;Wireless]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-bluetooth/>[Linux&nbsp;Bluetooth]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-wpan/>[Linux&nbsp;WPAN]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/netdev/>[Linux&nbsp;Netdev]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/newbies/>[Kernel&nbsp;Newbies]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ide/>[IDE]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/netfilter/>[Netfilter]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[MIPS&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[ARM&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Linux&nbsp;Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/raid/>[Linux&nbsp;RAID]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ataraid/>[Linux&nbsp;ATA&nbsp;RAID]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/samba/>[Samba]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

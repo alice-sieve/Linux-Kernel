@@ -1,0 +1,283 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH V2] pykickstart: don't set bootProto if &#45;&#45;noipv4 -->
+<!--X-From-R13: Xbfrs Pnpvx &#60;wonpvxNso.pbz> -->
+<!--X-Date: Mon, 19 Oct 2015 12:55:57 &#45;0700 -->
+<!--X-Message-Id: 1445284010&#45;18680&#45;1&#45;git&#45;send&#45;email&#45;jbacik@fb.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Kickstart, [PATCH V2] pykickstart: don't set bootProto if --noipv4">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Kickstart &mdash; [PATCH V2] pykickstart: don't set bootProto if --noipv4</title>
+<link rel="alternate" type="application/rss+xml" title="Kickstart" href="maillist.rdf">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH V2] pykickstart: don't set bootProto if --noipv4</h1>
+[<a href="msg11632.html">Date Prev</a>][<a href="msg11634.html">Date Next</a>][<a href="msg11630.html">Thread Prev</a>][<a href="msg11634.html">Thread Next</a>][<a href="maillist.html#11633">Date Index</a>][<a href="index.html#11633">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH V2] pykickstart: don't set bootProto if --noipv4</li>
+<li><em>From</em>: Josef Bacik &lt;<a href="mailto:jbacik@DOMAIN.HIDDEN">jbacik@xxxxxx</a>&gt;</li>
+<li><em>Date</em>: Mon, 19 Oct 2015 15:46:50 -0400</li>
+<li><em>Reply-to</em>: Discussion list about Kickstart &lt;<a href="mailto:kickstart-list@DOMAIN.HIDDEN">kickstart-list@xxxxxxxxxx</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>If we specify a ipv6 only network configuration we still get bootproto=dhcp set,
+which during kickstart makes networkmanager try to do a ipv4 dhcp which takes a
+while to timeout.  We don't want bootproto=dhcp set when we specify --noipv4, so
+make sure it gets zero'ed out when we see that command.
+
+Signed-off-by: Josef Bacik &lt;jbacik@xxxxxx&gt;
+---
+V1-V2: only change --noipv4 behavior for F24 and onwards.
+
+ pykickstart/commands/network.py | 13 +++++++++++++
+ pykickstart/handlers/f24.py     |  2 +-
+ tests/commands/network.py       | 14 ++++++++++++++
+ 3 files changed, 28 insertions(+), 1 deletion(-)
+
+diff --git a/pykickstart/commands/network.py b/pykickstart/commands/network.py
+index 818be79..8510711 100644
+--- a/pykickstart/commands/network.py
++++ b/pykickstart/commands/network.py
+@@ -545,6 +545,19 @@ class F22_Network(F21_Network):
+ 
+         return retval
+ 
++class F24_Network(F22_Network):
++    removedKeywords = F22_Network.removedKeywords
++    removedAttrs = F22_Network.removedAttrs
++
++    def parse(self, args):
++        retval = F22_Network.parse(self, args)
++
++        # If we specify noipv4 then we need to make sure bootproto is zero'ed
++        # out
++        if retval.noipv4:
++            retval.bootProto = &quot;&quot;
++        return retval
++
+ class RHEL4_Network(FC3_Network):
+     removedKeywords = FC3_Network.removedKeywords
+     removedAttrs = FC3_Network.removedAttrs
+diff --git a/pykickstart/handlers/f24.py b/pykickstart/handlers/f24.py
+index af678a2..5e3b74e 100644
+--- a/pykickstart/handlers/f24.py
++++ b/pykickstart/handlers/f24.py
+@@ -60,7 +60,7 @@ class F24Handler(BaseHandler):
+         &quot;mediacheck&quot;: commands.mediacheck.FC4_MediaCheck,
+         &quot;method&quot;: commands.method.F19_Method,
+         &quot;multipath&quot;: commands.multipath.FC6_MultiPath,
+-        &quot;network&quot;: commands.network.F22_Network,
++        &quot;network&quot;: commands.network.F24_Network,
+         &quot;nfs&quot;: commands.nfs.FC6_NFS,
+         &quot;ostreesetup&quot;: commands.ostreesetup.F21_OSTreeSetup,
+         &quot;part&quot;: commands.partition.F23_Partition,
+diff --git a/tests/commands/network.py b/tests/commands/network.py
+index dbad1f9..56a4d47 100644
+--- a/tests/commands/network.py
++++ b/tests/commands/network.py
+@@ -94,6 +94,20 @@ class F22_TestCase(F20_TestCase):
+                                 &quot;--bridgeopts=priority&quot;,
+                                 KickstartValueError)
+ 
++class F24_TestCase(F22_TestCase):
++    def runTest(self):
++        F22_TestCase.runTest(self)
++
++        # Test ipv4 only settings
++        cmd = &quot;network --noipv4 --activate --hostname=blah.test.com --ipv6=1:2:3:4:5:6:7:8 --device eth0 --nameserver=1:1:1:1::,2:2:2:2::&quot;
++        nd = self.assert_parse(cmd)
++        self.assertEquals(nd.bootProto, &quot;&quot;)
++        self.assertEquals(nd.hostname, &quot;blah.test.com&quot;)
++        self.assertTrue(nd.noipv4)
++        self.assertEquals(nd.ipv6, &quot;1:2:3:4:5:6:7:8&quot;)
++        self.assertIn(&quot;1:1:1:1::&quot;, nd.nameserver)
++        self.assertIn(&quot;2:2:2:2::&quot;, nd.nameserver)
++        self.assertEquals(nd.device, &quot;eth0&quot;)
+ 
+ class RHEL7_TestCase(F20_TestCase):
+     def runTest(self):
+-- 
+2.1.0
+
+_______________________________________________
+Kickstart-list mailing list
+Kickstart-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/kickstart-list">https://www.redhat.com/mailman/listinfo/kickstart-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg11632.html">Re: [PATCH] pykickstart: don't set bootProto if --noipv4</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg11634.html">Re: [PATCH V2] pykickstart: don't set bootProto if --noipv4</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg11630.html">[PATCH] pykickstart: don't set bootProto if --noipv4</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg11634.html">Re: [PATCH V2] pykickstart: don't set bootProto if --noipv4</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#11633"><strong>Date</strong></a></li>
+<li><a href="index.html#11633"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/redhat/>[Red&nbsp;Hat&nbsp;General]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos/>[CentOS&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z//biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

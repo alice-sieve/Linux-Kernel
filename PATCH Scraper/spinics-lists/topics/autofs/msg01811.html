@@ -1,0 +1,597 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 15/27] autofs&#45;5.1.3 &#45; refactor amd_parse.c -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Mon, 11 Dec 2017 00:59:27 &#45;0800 -->
+<!--X-Message-Id: 151298274725.19722.9326513428342350453.stgit@pluto.themaw.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 151298256987.19722.18421086447160152668.stgit@pluto.themaw.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 15/27] autofs-5.1.3 - refactor amd_parse.c &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 15/27] autofs-5.1.3 - refactor amd_parse.c &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 15/27] autofs-5.1.3 - refactor amd_parse.c</h1>
+[<a href="msg01810.html">Date Prev</a>][<a href="msg01812.html">Date Next</a>][<a href="msg01810.html">Thread Prev</a>][<a href="msg01812.html">Thread Next</a>][<a href="maillist.html#01811">Date Index</a>][<a href="index.html#01811">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 15/27] autofs-5.1.3 - refactor amd_parse.c</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 11 Dec 2017 16:59:07 +0800</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg01795.html">151298256987.19722.18421086447160152668.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg01795.html">151298256987.19722.18421086447160152668.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>User-agent</em>: StGit/0.17.1-dirty</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Refactor some blocks of code into functions to allow later reuse.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ CHANGELOG           |    1 
+ modules/amd_parse.y |  293 ++++++++++++++++++++++++++++++++++-----------------
+ 2 files changed, 197 insertions(+), 97 deletions(-)
+
+diff --git a/CHANGELOG b/CHANGELOG
+index c856f9cb..3ad8bd7e 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -48,6 +48,7 @@ xx/xx/2017 autofs-5.1.4
+ - fix symlink false negative in umount_multi().
+ - remove expand_selectors() on amd parser entry.
+ - fix amd defaults map entry handling.
++- refactor amd_parse.c.
+ 
+ 24/05/2017 autofs-5.1.3
+ =======================
+diff --git a/modules/amd_parse.y b/modules/amd_parse.y
+index 2a92d4a1..d7f4ef07 100644
+--- a/modules/amd_parse.y
++++ b/modules/amd_parse.y
+@@ -55,6 +55,11 @@ static int make_selector(char *name,
+ 			 unsigned int compare);
+ static void add_selector(struct selector *selector);
+ 
++static int match_map_option_fs_type(char *map_option, char *type);
++static int match_map_option_map_type(char *map_option, char *type);
++static int match_map_option_cache_option(char *type);
++static int match_mnt_option_options(char *mnt_option, char *options);
++
+ static struct amd_entry entry;
+ static struct list_head *entries;
+ static struct autofs_point *pap;
+@@ -253,86 +258,13 @@ selection: SELECTOR IS_EQUAL SELECTOR_VALUE
+ 
+ option_assignment: MAP_OPTION OPTION_ASSIGN FS_TYPE
+ 	{
+-		if (!strcmp($3, &quot;auto&quot;)) {
+-			entry.flags |= AMD_MOUNT_TYPE_AUTO;
+-			entry.type = amd_strdup($3);
+-		} else if (!strcmp($3, &quot;nfs&quot;) ||
+-			   !strcmp($3, &quot;nfs4&quot;)) {
+-			entry.flags |= AMD_MOUNT_TYPE_NFS;
+-			entry.type = amd_strdup($3);
+-		} else if (!strcmp($3, &quot;nfsl&quot;)) {
+-			entry.flags |= AMD_MOUNT_TYPE_NFSL;
+-			entry.type = amd_strdup($3);
+-		} else if (!strcmp($3, &quot;link&quot;)) {
+-			entry.flags |= AMD_MOUNT_TYPE_LINK;
+-			entry.type = amd_strdup($3);
+-		} else if (!strcmp($3, &quot;linkx&quot;)) {
+-			entry.flags |= AMD_MOUNT_TYPE_LINKX;
+-			entry.type = amd_strdup($3);
+-		} else if (!strcmp($3, &quot;host&quot;)) {
+-			entry.flags |= AMD_MOUNT_TYPE_HOST;
+-			entry.type = amd_strdup($3);
+-		} else if (!strcmp($3, &quot;lofs&quot;)) {
+-			entry.flags |= AMD_MOUNT_TYPE_LOFS;
+-			entry.type = amd_strdup(&quot;bind&quot;);
+-		} else if (!strcmp($3, &quot;xfs&quot;)) {
+-			entry.flags |= AMD_MOUNT_TYPE_XFS;
+-			entry.type = amd_strdup($3);
+-		} else if (!strcmp($3, &quot;ext2&quot;) ||
+-			   !strcmp($3, &quot;ext3&quot;) ||
+-			   !strcmp($3, &quot;ext4&quot;)) {
+-			entry.flags |= AMD_MOUNT_TYPE_EXT;
+-			entry.type = amd_strdup($3);
+-		} else if (!strcmp($3, &quot;ufs&quot;)) {
+-			entry.flags |= AMD_MOUNT_TYPE_UFS;
+-			entry.type = conf_amd_get_linux_ufs_mount_type();
+-		} else if (!strcmp($3, &quot;cdfs&quot;)) {
+-			entry.flags |= AMD_MOUNT_TYPE_CDFS;
+-			entry.type = amd_strdup(&quot;iso9660&quot;);
+-		} else if (!strcmp($3, &quot;jfs&quot;) ||
+-			   !strcmp($3, &quot;nfsx&quot;) ||
+-			   !strcmp($3, &quot;program&quot;) ||
+-			   !strcmp($3, &quot;lustre&quot;) ||
+-			   !strcmp($3, &quot;direct&quot;)) {
+-			sprintf(msg_buf, &quot;file system type %s is &quot;
+-					 &quot;not yet implemented&quot;, $3);
+-			amd_msg(msg_buf);
+-			YYABORT;
+-		} else if (!strcmp($3, &quot;cachefs&quot;)) {
+-			sprintf(msg_buf, &quot;file system %s is not &quot;
+-					 &quot;supported by autofs, ignored&quot;, $3);
+-			amd_msg(msg_buf);
+-		} else {
+-			amd_notify($1);
++		if (!match_map_option_fs_type($1, $3))
+ 			YYABORT;
+-		}
+ 	}
+ 	| MAP_OPTION OPTION_ASSIGN MAP_TYPE
+ 	{
+-		if (!strcmp($3, &quot;file&quot;) ||
+-		    !strcmp($3, &quot;nis&quot;) ||
+-		    !strcmp($3, &quot;nisplus&quot;) ||
+-		    !strcmp($3, &quot;ldap&quot;) ||
+-		    !strcmp($3, &quot;hesiod&quot;))
+-			entry.map_type = amd_strdup($3);
+-		else if (!strcmp($3, &quot;exec&quot;))
+-			/* autofs uses &quot;program&quot; for &quot;exec&quot; map type */
+-			entry.map_type = amd_strdup(&quot;program&quot;);
+-		else if (!strcmp($3, &quot;passwd&quot;)) {
+-			sprintf(msg_buf, &quot;map type %s is &quot;
+-					 &quot;not yet implemented&quot;, $3);
+-			amd_msg(msg_buf);
+-			YYABORT;
+-		} else if (!strcmp($3, &quot;ndbm&quot;) ||
+-			   !strcmp($3, &quot;union&quot;)) {
+-			sprintf(msg_buf, &quot;map type %s is not &quot;
+-					 &quot;supported by autofs&quot;, $3);
+-			amd_msg(msg_buf);
+-			YYABORT;
+-		} else {
+-			amd_notify($1);
++		if (!match_map_option_map_type($1, $3))
+ 			YYABORT;
+-		}
+ 	}
+ 	| MAP_OPTION OPTION_ASSIGN FS_OPT_VALUE
+ 	{
+@@ -397,13 +329,7 @@ option_assignment: MAP_OPTION OPTION_ASSIGN FS_TYPE
+ 	}
+ 	| MNT_OPTION OPTION_ASSIGN options
+ 	{
+-		if (!strcmp($1, &quot;opts&quot;))
+-			entry.opts = amd_strdup(opts);
+-		else if (!strcmp($1, &quot;addopts&quot;))
+-			entry.addopts = amd_strdup(opts);
+-		else if (!strcmp($1, &quot;remopts&quot;))
+-			entry.remopts = amd_strdup(opts);
+-		else {
++		if (!match_mnt_option_options($1, $3)) {
+ 			amd_notify($1);
+ 			YYABORT;
+ 		}
+@@ -412,27 +338,20 @@ option_assignment: MAP_OPTION OPTION_ASSIGN FS_TYPE
+ 	| MNT_OPTION OPTION_ASSIGN
+ 	{
+ 		memset(opts, 0, sizeof(opts));
+-		if (!strcmp($1, &quot;opts&quot;))
+-			entry.opts = amd_strdup(&quot;&quot;);
+-		else if (!strcmp($1, &quot;addopts&quot;))
+-			entry.addopts = amd_strdup(&quot;&quot;);
+-		else if (!strcmp($1, &quot;remopts&quot;))
+-			entry.remopts = amd_strdup(&quot;&quot;);
+-		else {
++		if (!match_mnt_option_options($1, &quot;&quot;)) {
+ 			amd_notify($1);
+ 			YYABORT;
+ 		}
+ 	}
+ 	| MAP_OPTION OPTION_ASSIGN CACHE_OPTION
+ 	{
+-		if (strncmp($3, &quot;inc&quot;, 3))
+-			entry.cache_opts = AMD_CACHE_OPTION_INC;
+-		else if (strncmp($3, &quot;all&quot;, 3))
+-			entry.cache_opts = AMD_CACHE_OPTION_ALL;
+-		else if (strncmp($3, &quot;re&quot;, 2))
+-			entry.cache_opts = AMD_CACHE_OPTION_REGEXP;
+-		if (strstr($3, &quot;sync&quot;))
+-			entry.cache_opts |= AMD_CACHE_OPTION_SYNC;
++		if (!strcmp($1, &quot;cache&quot;)) {
++			if (!match_map_option_cache_option($3))
++				YYABORT;
++		} else {
++			amd_notify($1);
++			YYABORT;
++		}
+ 	}
+ 	;
+ 
+@@ -478,6 +397,186 @@ options: OPTION
+ 
+ %%
+ 
++static int match_map_option_fs_type(char *map_option, char *type)
++{
++	char *fs_type;
++
++	fs_type = amd_strdup(type);
++	if (!fs_type) {
++		amd_notify(type);
++		return 0;
++	}
++
++	if (!strcmp(fs_type, &quot;auto&quot;)) {
++		entry.flags |= AMD_MOUNT_TYPE_AUTO;
++		entry.type = fs_type;
++	} else if (!strcmp(fs_type, &quot;nfs&quot;) ||
++		   !strcmp(fs_type, &quot;nfs4&quot;)) {
++		entry.flags |= AMD_MOUNT_TYPE_NFS;
++		entry.type = fs_type;
++	} else if (!strcmp(fs_type, &quot;nfsl&quot;)) {
++		entry.flags |= AMD_MOUNT_TYPE_NFSL;
++		entry.type = fs_type;
++	} else if (!strcmp(fs_type, &quot;link&quot;)) {
++		entry.flags |= AMD_MOUNT_TYPE_LINK;
++		entry.type = fs_type;
++	} else if (!strcmp(fs_type, &quot;linkx&quot;)) {
++		entry.flags |= AMD_MOUNT_TYPE_LINKX;
++		entry.type = fs_type;
++	} else if (!strcmp(fs_type, &quot;host&quot;)) {
++		entry.flags |= AMD_MOUNT_TYPE_HOST;
++		entry.type = fs_type;
++	} else if (!strcmp(fs_type, &quot;lofs&quot;)) {
++		entry.flags |= AMD_MOUNT_TYPE_LOFS;
++		entry.type = fs_type;
++	} else if (!strcmp(fs_type, &quot;xfs&quot;)) {
++		entry.flags |= AMD_MOUNT_TYPE_XFS;
++		entry.type = fs_type;
++	} else if (!strcmp(fs_type, &quot;ext2&quot;) ||
++		   !strcmp(fs_type, &quot;ext3&quot;) ||
++		   !strcmp(fs_type, &quot;ext4&quot;)) {
++		entry.flags |= AMD_MOUNT_TYPE_EXT;
++		entry.type = fs_type;
++	} else if (!strcmp(fs_type, &quot;ufs&quot;)) {
++		entry.flags |= AMD_MOUNT_TYPE_UFS;
++		entry.type = conf_amd_get_linux_ufs_mount_type();
++		if (!entry.type) {
++			amd_msg(&quot;memory allocation error&quot;);
++			amd_notify(type);
++			free(fs_type);
++			return 0;
++		}
++		free(fs_type);
++	} else if (!strcmp(fs_type, &quot;cdfs&quot;)) {
++		entry.flags |= AMD_MOUNT_TYPE_CDFS;
++		entry.type = amd_strdup(&quot;iso9660&quot;);
++		if (!entry.type) {
++			amd_msg(&quot;memory allocation error&quot;);
++			amd_notify(map_option);
++			free(fs_type);
++			return 0;
++		}
++		free(fs_type);
++	} else if (!strcmp(fs_type, &quot;jfs&quot;) ||
++		   !strcmp(fs_type, &quot;nfsx&quot;) ||
++		   !strcmp(fs_type, &quot;program&quot;) ||
++		   !strcmp(fs_type, &quot;lustre&quot;) ||
++		   !strcmp(fs_type, &quot;direct&quot;)) {
++		sprintf(msg_buf, &quot;file system type %s is &quot;
++				 &quot;not yet implemented&quot;, fs_type);
++		amd_msg(msg_buf);
++		free(fs_type);
++		return 0;
++	} else if (!strcmp(fs_type, &quot;cachefs&quot;)) {
++		sprintf(msg_buf, &quot;file system %s is not &quot;
++				 &quot;supported by autofs, ignored&quot;,
++				 fs_type);
++		amd_msg(msg_buf);
++		free(fs_type);
++	} else {
++		amd_notify(fs_type);
++		free(fs_type);
++		return 0;
++	}
++
++	return 1;
++}
++
++static int match_map_option_map_type(char *map_option, char *type)
++{
++	char *map_type;
++
++	map_type = amd_strdup(type);
++	if (!map_type) {
++		amd_notify(type);
++		return 0;
++	}
++
++	if (!strcmp(map_type, &quot;file&quot;) ||
++	    !strcmp(map_type, &quot;nis&quot;) ||
++	    !strcmp(map_type, &quot;nisplus&quot;) ||
++	    !strcmp(map_type, &quot;ldap&quot;) ||
++	    !strcmp(map_type, &quot;hesiod&quot;)) {
++		entry.map_type = map_type;
++	} else if (!strcmp(map_type, &quot;exec&quot;)) {
++		/* autofs uses &quot;program&quot; for &quot;exec&quot; map type */
++		entry.map_type = amd_strdup(&quot;program&quot;);
++		if (!entry.map_type) {
++			amd_notify(type);
++			free(map_type);
++			return 0;
++		}
++		free(map_type);
++	} else if (!strcmp(map_type, &quot;passwd&quot;)) {
++		sprintf(msg_buf, &quot;map type %s is &quot;
++				 &quot;not yet implemented&quot;, map_type);
++		amd_msg(msg_buf);
++		free(map_type);
++		return 0;
++	} else if (!strcmp(map_type, &quot;ndbm&quot;) ||
++		   !strcmp(map_type, &quot;union&quot;)) {
++		sprintf(msg_buf, &quot;map type %s is not &quot;
++				 &quot;supported by autofs&quot;, map_type);
++		amd_msg(msg_buf);
++		free(map_type);
++		return 0;
++	} else {
++		amd_notify(type);
++		free(map_type);
++		return 0;
++	}
++
++	return 1;
++}
++
++static int match_map_option_cache_option(char *type)
++{
++	char *cache_opt;
++
++	cache_opt = amd_strdup(type);
++	if (!cache_opt) {
++		amd_notify(type);
++		return 0;
++	}
++
++	if (strncmp(cache_opt, &quot;inc&quot;, 3))
++		entry.cache_opts = AMD_CACHE_OPTION_INC;
++	else if (strncmp(cache_opt, &quot;all&quot;, 3))
++		entry.cache_opts = AMD_CACHE_OPTION_ALL;
++	else if (strncmp(cache_opt, &quot;re&quot;, 2))
++		entry.cache_opts = AMD_CACHE_OPTION_REGEXP;
++	if (strstr(cache_opt, &quot;sync&quot;))
++		entry.cache_opts |= AMD_CACHE_OPTION_SYNC;
++	free(cache_opt);
++
++	return 1;
++}
++
++static int match_mnt_option_options(char *mnt_option, char *options)
++{
++	char *tmp;
++
++	if (!strcmp(mnt_option, &quot;opts&quot;)) {
++		tmp = amd_strdup(options);
++		if (!tmp)
++			return 0;
++		entry.opts = tmp;
++	} else if (!strcmp(mnt_option, &quot;addopts&quot;)) {
++		tmp = amd_strdup(options);
++		if (!tmp)
++			return 0;
++		entry.addopts = tmp;
++	} else if (!strcmp(mnt_option, &quot;remopts&quot;)) {
++		tmp = amd_strdup(options);
++		if (!tmp)
++			return 0;
++		entry.remopts = tmp;
++	} else
++		return 0;
++
++	return 1;
++}
++
+ static void prepend_opt(char *dest, char *opt)
+ {
+ 	char new[MAX_OPTS_LEN];
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01795" href="msg01795.html">[PATCH 00/27] Still trying to get 5.1.4 released</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01810.html">[PATCH 16/27] autofs-5.1.3 - fix amd parser double quote handling</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01812.html">[PATCH 17/27] autofs-5.1.3 - fix expandamdent() quote handling</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01810.html">[PATCH 16/27] autofs-5.1.3 - fix amd parser double quote handling</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01812.html">[PATCH 17/27] autofs-5.1.3 - fix expandamdent() quote handling</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01811"><strong>Date</strong></a></li>
+<li><a href="index.html#01811"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

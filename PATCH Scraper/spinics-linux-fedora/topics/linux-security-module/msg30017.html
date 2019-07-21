@@ -1,0 +1,261 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH V36 21/29] Lock down /proc/kcore -->
+<!--X-From-R13: [nggurj Uneergg &#60;znggurjtneerggNtbbtyr.pbz> -->
+<!--X-Date: Thu, 18 Jul 2019 12:46:19 &#45;0700 -->
+<!--X-Message-Id: 20190718194415.108476&#45;22&#45;matthewgarrett@google.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190718194415.108476&#45;1&#45;matthewgarrett@google.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, [PATCH V36 21/29] Lock down /proc/kcore">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- [PATCH V36 21/29] Lock down /proc/kcore</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH V36 21/29] Lock down /proc/kcore</h1>
+[<a href="msg30016.html">Date Prev</a>][<a href="msg30018.html">Date Next</a>][<a href="msg30035.html">Thread Prev</a>][<a href="msg30018.html">Thread Next</a>][<a href="maillist.html#30017">Date Index</a>][<a href="index.html#30017">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH V36 21/29] Lock down /proc/kcore</li>
+<li><em>From</em>: Matthew Garrett &lt;matthewgarrett@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 18 Jul 2019 12:44:07 -0700</li>
+<li><em>Cc</em>: linux-security-module@xxxxxxxxxxxxxxx, linux-kernel@xxxxxxxxxxxxxxx,        linux-api@xxxxxxxxxxxxxxx, David Howells &lt;dhowells@xxxxxxxxxx&gt;,        Matthew Garrett &lt;mjg59@xxxxxxxxxx&gt;, Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg30003.html">20190718194415.108476-1-matthewgarrett@google.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg30003.html">20190718194415.108476-1-matthewgarrett@google.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: David Howells &lt;dhowells@xxxxxxxxxx&gt;
+
+Disallow access to /proc/kcore when the kernel is locked down to prevent
+access to cryptographic data. This is limited to lockdown
+confidentiality mode and is still permitted in integrity mode.
+
+Signed-off-by: David Howells &lt;dhowells@xxxxxxxxxx&gt;
+Signed-off-by: Matthew Garrett &lt;mjg59@xxxxxxxxxx&gt;
+Reviewed-by: Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;
+---
+ fs/proc/kcore.c              | 5 +++++
+ include/linux/security.h     | 1 +
+ security/lockdown/lockdown.c | 1 +
+ 3 files changed, 7 insertions(+)
+
+diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
+index f5834488b67d..ee2c576cc94e 100644
+--- a/fs/proc/kcore.c
++++ b/fs/proc/kcore.c
+@@ -31,6 +31,7 @@
+ #include &lt;linux/ioport.h&gt;
+ #include &lt;linux/memory.h&gt;
+ #include &lt;linux/sched/task.h&gt;
++#include &lt;linux/security.h&gt;
+ #include &lt;asm/sections.h&gt;
+ #include &quot;internal.h&quot;
+ 
+@@ -545,6 +546,10 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
+ 
+ static int open_kcore(struct inode *inode, struct file *filp)
+ {
++	int ret = security_locked_down(LOCKDOWN_KCORE);
++
++	if (ret)
++		return ret;
+ 	if (!capable(CAP_SYS_RAWIO))
+ 		return -EPERM;
+ 
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 3f7b6a4cd65a..f0cffd0977d3 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -116,6 +116,7 @@ enum lockdown_reason {
+ 	LOCKDOWN_MODULE_PARAMETERS,
+ 	LOCKDOWN_MMIOTRACE,
+ 	LOCKDOWN_INTEGRITY_MAX,
++	LOCKDOWN_KCORE,
+ 	LOCKDOWN_CONFIDENTIALITY_MAX,
+ };
+ 
+diff --git a/security/lockdown/lockdown.c b/security/lockdown/lockdown.c
+index 37b7d7e50474..c050b82c7f9f 100644
+--- a/security/lockdown/lockdown.c
++++ b/security/lockdown/lockdown.c
+@@ -31,6 +31,7 @@ static char *lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX+1] = {
+ 	[LOCKDOWN_MODULE_PARAMETERS] = &quot;unsafe module parameters&quot;,
+ 	[LOCKDOWN_MMIOTRACE] = &quot;unsafe mmio&quot;,
+ 	[LOCKDOWN_INTEGRITY_MAX] = &quot;integrity&quot;,
++	[LOCKDOWN_KCORE] = &quot;/proc/kcore access&quot;,
+ 	[LOCKDOWN_CONFIDENTIALITY_MAX] = &quot;confidentiality&quot;,
+ };
+ 
+-- 
+2.22.0.510.g264f2c817a-goog
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="30003" href="msg30003.html">[PATCH V36 00/29] security: Add kernel lockdown functionality</a></strong>
+<ul><li><em>From:</em> Matthew Garrett</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg30016.html">[PATCH V36 20/29] x86/mmiotrace: Lock down the testmmiotrace module</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg30018.html">[PATCH V36 25/29] kexec: Allow kexec_file() with appropriate IMA policy when locked down</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg30035.html">Re: [PATCH V36 20/29] x86/mmiotrace: Lock down the testmmiotrace module</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg30018.html">[PATCH V36 25/29] kexec: Allow kexec_file() with appropriate IMA policy when locked down</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#30017"><strong>Date</strong></a></li>
+<li><a href="index.html#30017"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

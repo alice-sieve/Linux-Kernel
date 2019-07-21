@@ -1,0 +1,284 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] test_driver: implement virDomainMemoryStats -->
+<!--X-From-R13: Wyvnf Egnzngvf &#60;fgnzngvf.vyvnffNtznvy.pbz> -->
+<!--X-Date: Tue, 16 Jul 2019 14:36:48 &#45;0700 -->
+<!--X-Message-Id: 20190716213631.16992&#45;1&#45;stamatis.iliass@gmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH] test_driver: implement virDomainMemoryStats</title>
+<meta name="description" content="libvirt: [PATCH] test_driver: implement virDomainMemoryStats">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH] test_driver: implement virDomainMemoryStats</h1>
+[<a href="msg187499.html">Date Prev</a>][<a href="msg187501.html">Date Next</a>][<a href="msg187451.html">Thread Prev</a>][<a href="msg187501.html">Thread Next</a>][<a href="maillist.html#187500">Date Index</a>][<a href="index.html#187500">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] test_driver: implement virDomainMemoryStats</li>
+<li><em>From</em>: Ilias Stamatis &lt;stamatis.iliass@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 16 Jul 2019 23:36:31 +0200</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Signed-off-by: Ilias Stamatis &lt;stamatis.iliass@xxxxxxxxx&gt;
+---
+ src/test/test_driver.c | 52 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
+
+diff --git a/src/test/test_driver.c b/src/test/test_driver.c
+index fcb80c9e47..55976eedf1 100644
+--- a/src/test/test_driver.c
++++ b/src/test/test_driver.c
+@@ -6845,6 +6845,57 @@ testDomainManagedSaveRemove(virDomainPtr dom, unsigned int flags)
+     return 0;
+ }
+
++
++static int
++testDomainMemoryStats(virDomainPtr dom,
++                      virDomainMemoryStatPtr stats,
++                      unsigned int nr_stats,
++                      unsigned int flags)
++{
++    virDomainObjPtr vm;
++    int ret = -1;
++
++    virCheckFlags(0, -1);
++
++    if (!(vm = testDomObjFromDomain(dom)))
++        return -1;
++
++    if (virDomainObjCheckActive(vm) &lt; 0)
++        goto cleanup;
++
++    ret = 0;
++
++#define STATS_SET_PARAM(name, value) \
++    if (ret &lt; nr_stats) { \
++        stats[ret].tag = name; \
++        stats[ret].val = value; \
++        ret++; \
++    }
++
++    if (virDomainDefHasMemballoon(vm-&gt;def)) {
++        STATS_SET_PARAM(VIR_DOMAIN_MEMORY_STAT_ACTUAL_BALLOON, 1024000);
++        STATS_SET_PARAM(VIR_DOMAIN_MEMORY_STAT_SWAP_IN, 0);
++        STATS_SET_PARAM(VIR_DOMAIN_MEMORY_STAT_SWAP_OUT, 0);
++        STATS_SET_PARAM(VIR_DOMAIN_MEMORY_STAT_MAJOR_FAULT, 0);
++        STATS_SET_PARAM(VIR_DOMAIN_MEMORY_STAT_MINOR_FAULT, 0);
++        STATS_SET_PARAM(VIR_DOMAIN_MEMORY_STAT_UNUSED, 791584);
++        STATS_SET_PARAM(VIR_DOMAIN_MEMORY_STAT_AVAILABLE, 977816);
++        STATS_SET_PARAM(VIR_DOMAIN_MEMORY_STAT_USABLE, 726244);
++        STATS_SET_PARAM(VIR_DOMAIN_MEMORY_STAT_LAST_UPDATE, 627319920);
++        STATS_SET_PARAM(VIR_DOMAIN_MEMORY_STAT_DISK_CACHES, 164964);
++        STATS_SET_PARAM(VIR_DOMAIN_MEMORY_STAT_HUGETLB_PGALLOC, 0);
++        STATS_SET_PARAM(VIR_DOMAIN_MEMORY_STAT_HUGETLB_PGFAIL, 0);
++        STATS_SET_PARAM(VIR_DOMAIN_MEMORY_STAT_RSS, 1131076);
++    }
++
++#undef STATS_SET_PARAM
++
++ cleanup:
++    virDomainObjEndAPI(&amp;vm);
++    return ret;
++}
++
++
+ static int
+ testDomainMemoryPeek(virDomainPtr dom,
+                      unsigned long long start,
+@@ -7799,6 +7850,7 @@ static virHypervisorDriver testHypervisorDriver = {
+     .domainManagedSave = testDomainManagedSave, /* 1.1.4 */
+     .domainHasManagedSaveImage = testDomainHasManagedSaveImage, /* 1.1.4 */
+     .domainManagedSaveRemove = testDomainManagedSaveRemove, /* 1.1.4 */
++    .domainMemoryStats = testDomainMemoryStats, /* 5.6.0 */
+     .domainMemoryPeek = testDomainMemoryPeek, /* 5.4.0 */
+
+     .domainSnapshotNum = testDomainSnapshotNum, /* 1.1.4 */
+--
+2.22.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187499.html">Re:  [PATCH v1 10/31] schemas: Introduce disk type NVMe</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187501.html">[PATCH Rust 1/4] connect: cleanup around	Connect::open_auth()'s method</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187451.html">[PATCH 0/9] qemu: refactor fsdev formatting (virtio-fs	epopee)</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187501.html">[PATCH Rust 1/4] connect: cleanup around	Connect::open_auth()'s method</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187500"><strong>Date</strong></a></li>
+<li><a href="index.html#187500"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH V35 26/29] debugfs: Restrict debugfs when the kernel is locked down -->
+<!--X-From-R13: Xnzrf [beevf &#60;wzbeevfNanzrv.bet> -->
+<!--X-Date: Mon, 15 Jul 2019 16:18:18 &#45;0700 -->
+<!--X-Message-Id: alpine.LRH.2.21.1907160915280.25034@namei.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715195946.223443&#45;1&#45;matthewgarrett@google.com -->
+<!--X-Reference: 20190715195946.223443&#45;27&#45;matthewgarrett@google.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, Re: [PATCH V35 26/29] debugfs: Restrict debugfs when the kernel is locked down">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- Re: [PATCH V35 26/29] debugfs: Restrict debugfs when the kernel is locked down</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re: [PATCH V35 26/29] debugfs: Restrict debugfs when the kernel is locked down</h1>
+[<a href="msg29948.html">Date Prev</a>][<a href="msg29950.html">Date Next</a>][<a href="msg29930.html">Thread Prev</a>][<a href="msg29931.html">Thread Next</a>][<a href="maillist.html#29949">Date Index</a>][<a href="index.html#29949">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH V35 26/29] debugfs: Restrict debugfs when the kernel is locked down</li>
+<li><em>From</em>: James Morris &lt;jmorris@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 16 Jul 2019 09:17:27 +1000 (AEST)</li>
+<li><em>Cc</em>: linux-security-module@xxxxxxxxxxxxxxx, linux-kernel@xxxxxxxxxxxxxxx,        linux-api@xxxxxxxxxxxxxxx, David Howells &lt;dhowells@xxxxxxxxxx&gt;,        Andy Shevchenko &lt;andy.shevchenko@xxxxxxxxx&gt;,        acpi4asus-user@xxxxxxxxxxxxxxxxxxxxx,        platform-driver-x86@xxxxxxxxxxxxxxx,        Matthew Garrett &lt;mjg59@xxxxxxxxxxxxx&gt;,        Thomas Gleixner &lt;tglx@xxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29930.html">20190715195946.223443-27-matthewgarrett@google.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg29916.html">20190715195946.223443-1-matthewgarrett@google.com</a>&gt; &lt;<a href="msg29930.html">20190715195946.223443-27-matthewgarrett@google.com</a>&gt;</li>
+<li><em>User-agent</em>: Alpine 2.21 (LRH 202 2017-01-01)</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On Mon, 15 Jul 2019, Matthew Garrett wrote:
+
+&gt; From: David Howells &lt;dhowells@xxxxxxxxxx&gt;
+&gt; 
+&gt; Disallow opening of debugfs files that might be used to muck around when
+&gt; the kernel is locked down as various drivers give raw access to hardware
+&gt; through debugfs.  Given the effort of auditing all 2000 or so files and
+&gt; manually fixing each one as necessary, I've chosen to apply a heuristic
+&gt; instead.  The following changes are made:
+
+Adding the debugfs maintainers.
+
+&gt; 
+&gt;  (1) chmod and chown are disallowed on debugfs objects (though the root dir
+&gt;      can be modified by mount and remount, but I'm not worried about that).
+&gt; 
+&gt;  (2) When the kernel is locked down, only files with the following criteria
+&gt;      are permitted to be opened:
+&gt; 
+&gt; 	- The file must have mode 00444
+&gt; 	- The file must not have ioctl methods
+&gt; 	- The file must not have mmap
+&gt; 
+&gt;  (3) When the kernel is locked down, files may only be opened for reading.
+&gt; 
+&gt; Normal device interaction should be done through configfs, sysfs or a
+&gt; miscdev, not debugfs.
+&gt; 
+&gt; Note that this makes it unnecessary to specifically lock down show_dsts(),
+&gt; show_devs() and show_call() in the asus-wmi driver.
+&gt; 
+&gt; I would actually prefer to lock down all files by default and have the
+&gt; the files unlocked by the creator.  This is tricky to manage correctly,
+&gt; though, as there are 19 creation functions and ~1600 call sites (some of
+&gt; them in loops scanning tables).
+&gt; 
+&gt; Signed-off-by: David Howells &lt;dhowells@xxxxxxxxxx&gt;
+&gt; cc: Andy Shevchenko &lt;andy.shevchenko@xxxxxxxxx&gt;
+&gt; cc: acpi4asus-user@xxxxxxxxxxxxxxxxxxxxx
+&gt; cc: platform-driver-x86@xxxxxxxxxxxxxxx
+&gt; cc: Matthew Garrett &lt;mjg59@xxxxxxxxxxxxx&gt;
+&gt; cc: Thomas Gleixner &lt;tglx@xxxxxxxxxxxxx&gt;
+&gt; Signed-off-by: Matthew Garrett &lt;matthewgarrett@xxxxxxxxxx&gt;
+&gt; ---
+&gt;  fs/debugfs/file.c            | 30 ++++++++++++++++++++++++++++++
+&gt;  fs/debugfs/inode.c           | 32 ++++++++++++++++++++++++++++++--
+&gt;  include/linux/security.h     |  1 +
+&gt;  security/lockdown/lockdown.c |  1 +
+&gt;  4 files changed, 62 insertions(+), 2 deletions(-)
+&gt; 
+&gt; diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+&gt; index 93e4ca6b2ad7..87846aad594b 100644
+&gt; --- a/fs/debugfs/file.c
+&gt; +++ b/fs/debugfs/file.c
+&gt; @@ -19,6 +19,7 @@
+&gt;  #include &lt;linux/atomic.h&gt;
+&gt;  #include &lt;linux/device.h&gt;
+&gt;  #include &lt;linux/poll.h&gt;
+&gt; +#include &lt;linux/security.h&gt;
+&gt;  
+&gt;  #include &quot;internal.h&quot;
+&gt;  
+&gt; @@ -136,6 +137,25 @@ void debugfs_file_put(struct dentry *dentry)
+&gt;  }
+&gt;  EXPORT_SYMBOL_GPL(debugfs_file_put);
+&gt;  
+&gt; +/*
+&gt; + * Only permit access to world-readable files when the kernel is locked down.
+&gt; + * We also need to exclude any file that has ways to write or alter it as root
+&gt; + * can bypass the permissions check.
+&gt; + */
+&gt; +static bool debugfs_is_locked_down(struct inode *inode,
+&gt; +				   struct file *filp,
+&gt; +				   const struct file_operations *real_fops)
+&gt; +{
+&gt; +	if ((inode-&gt;i_mode &amp; 07777) == 0444 &amp;&amp;
+&gt; +	    !(filp-&gt;f_mode &amp; FMODE_WRITE) &amp;&amp;
+&gt; +	    !real_fops-&gt;unlocked_ioctl &amp;&amp;
+&gt; +	    !real_fops-&gt;compat_ioctl &amp;&amp;
+&gt; +	    !real_fops-&gt;mmap)
+&gt; +		return false;
+&gt; +
+&gt; +	return security_locked_down(LOCKDOWN_DEBUGFS);
+&gt; +}
+&gt; +
+&gt;  static int open_proxy_open(struct inode *inode, struct file *filp)
+&gt;  {
+&gt;  	struct dentry *dentry = F_DENTRY(filp);
+&gt; @@ -147,6 +167,11 @@ static int open_proxy_open(struct inode *inode, struct file *filp)
+&gt;  		return r == -EIO ? -ENOENT : r;
+&gt;  
+&gt;  	real_fops = debugfs_real_fops(filp);
+&gt; +
+&gt; +	r = debugfs_is_locked_down(inode, filp, real_fops);
+&gt; +	if (r)
+&gt; +		goto out;
+&gt; +
+&gt;  	real_fops = fops_get(real_fops);
+&gt;  	if (!real_fops) {
+&gt;  		/* Huh? Module did not clean up after itself at exit? */
+&gt; @@ -272,6 +297,11 @@ static int full_proxy_open(struct inode *inode, struct file *filp)
+&gt;  		return r == -EIO ? -ENOENT : r;
+&gt;  
+&gt;  	real_fops = debugfs_real_fops(filp);
+&gt; +
+&gt; +	r = debugfs_is_locked_down(inode, filp, real_fops);
+&gt; +	if (r)
+&gt; +		goto out;
+&gt; +
+&gt;  	real_fops = fops_get(real_fops);
+&gt;  	if (!real_fops) {
+&gt;  		/* Huh? Module did not cleanup after itself at exit? */
+&gt; diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
+&gt; index 042b688ed124..7b975dbb2bb4 100644
+&gt; --- a/fs/debugfs/inode.c
+&gt; +++ b/fs/debugfs/inode.c
+&gt; @@ -26,6 +26,7 @@
+&gt;  #include &lt;linux/parser.h&gt;
+&gt;  #include &lt;linux/magic.h&gt;
+&gt;  #include &lt;linux/slab.h&gt;
+&gt; +#include &lt;linux/security.h&gt;
+&gt;  
+&gt;  #include &quot;internal.h&quot;
+&gt;  
+&gt; @@ -35,6 +36,32 @@ static struct vfsmount *debugfs_mount;
+&gt;  static int debugfs_mount_count;
+&gt;  static bool debugfs_registered;
+&gt;  
+&gt; +/*
+&gt; + * Don't allow access attributes to be changed whilst the kernel is locked down
+&gt; + * so that we can use the file mode as part of a heuristic to determine whether
+&gt; + * to lock down individual files.
+&gt; + */
+&gt; +static int debugfs_setattr(struct dentry *dentry, struct iattr *ia)
+&gt; +{
+&gt; +	int ret = security_locked_down(LOCKDOWN_DEBUGFS);
+&gt; +
+&gt; +	if (ret &amp;&amp; (ia-&gt;ia_valid &amp; (ATTR_MODE | ATTR_UID | ATTR_GID)))
+&gt; +		return ret;
+&gt; +	return simple_setattr(dentry, ia);
+&gt; +}
+&gt; +
+&gt; +static const struct inode_operations debugfs_file_inode_operations = {
+&gt; +	.setattr	= debugfs_setattr,
+&gt; +};
+&gt; +static const struct inode_operations debugfs_dir_inode_operations = {
+&gt; +	.lookup		= simple_lookup,
+&gt; +	.setattr	= debugfs_setattr,
+&gt; +};
+&gt; +static const struct inode_operations debugfs_symlink_inode_operations = {
+&gt; +	.get_link	= simple_get_link,
+&gt; +	.setattr	= debugfs_setattr,
+&gt; +};
+&gt; +
+&gt;  static struct inode *debugfs_get_inode(struct super_block *sb)
+&gt;  {
+&gt;  	struct inode *inode = new_inode(sb);
+&gt; @@ -369,6 +396,7 @@ static struct dentry *__debugfs_create_file(const char *name, umode_t mode,
+&gt;  	inode-&gt;i_mode = mode;
+&gt;  	inode-&gt;i_private = data;
+&gt;  
+&gt; +	inode-&gt;i_op = &amp;debugfs_file_inode_operations;
+&gt;  	inode-&gt;i_fop = proxy_fops;
+&gt;  	dentry-&gt;d_fsdata = (void *)((unsigned long)real_fops |
+&gt;  				DEBUGFS_FSDATA_IS_REAL_FOPS_BIT);
+&gt; @@ -532,7 +560,7 @@ struct dentry *debugfs_create_dir(const char *name, struct dentry *parent)
+&gt;  	}
+&gt;  
+&gt;  	inode-&gt;i_mode = S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO;
+&gt; -	inode-&gt;i_op = &amp;simple_dir_inode_operations;
+&gt; +	inode-&gt;i_op = &amp;debugfs_dir_inode_operations;
+&gt;  	inode-&gt;i_fop = &amp;simple_dir_operations;
+&gt;  
+&gt;  	/* directory inodes start off with i_nlink == 2 (for &quot;.&quot; entry) */
+&gt; @@ -632,7 +660,7 @@ struct dentry *debugfs_create_symlink(const char *name, struct dentry *parent,
+&gt;  		return failed_creating(dentry);
+&gt;  	}
+&gt;  	inode-&gt;i_mode = S_IFLNK | S_IRWXUGO;
+&gt; -	inode-&gt;i_op = &amp;simple_symlink_inode_operations;
+&gt; +	inode-&gt;i_op = &amp;debugfs_symlink_inode_operations;
+&gt;  	inode-&gt;i_link = link;
+&gt;  	d_instantiate(dentry, inode);
+&gt;  	return end_creating(dentry);
+&gt; diff --git a/include/linux/security.h b/include/linux/security.h
+&gt; index 8ef366de70b0..d92323b44a3f 100644
+&gt; --- a/include/linux/security.h
+&gt; +++ b/include/linux/security.h
+&gt; @@ -115,6 +115,7 @@ enum lockdown_reason {
+&gt;  	LOCKDOWN_TIOCSSERIAL,
+&gt;  	LOCKDOWN_MODULE_PARAMETERS,
+&gt;  	LOCKDOWN_MMIOTRACE,
+&gt; +	LOCKDOWN_DEBUGFS,
+&gt;  	LOCKDOWN_INTEGRITY_MAX,
+&gt;  	LOCKDOWN_KCORE,
+&gt;  	LOCKDOWN_KPROBES,
+&gt; diff --git a/security/lockdown/lockdown.c b/security/lockdown/lockdown.c
+&gt; index e43c9d001e49..37ef46320ef4 100644
+&gt; --- a/security/lockdown/lockdown.c
+&gt; +++ b/security/lockdown/lockdown.c
+&gt; @@ -30,6 +30,7 @@ static char *lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX+1] = {
+&gt;  	[LOCKDOWN_TIOCSSERIAL] = &quot;reconfiguration of serial port IO&quot;,
+&gt;  	[LOCKDOWN_MODULE_PARAMETERS] = &quot;unsafe module parameters&quot;,
+&gt;  	[LOCKDOWN_MMIOTRACE] = &quot;unsafe mmio&quot;,
+&gt; +	[LOCKDOWN_DEBUGFS] = &quot;debugfs access&quot;,
+&gt;  	[LOCKDOWN_INTEGRITY_MAX] = &quot;integrity&quot;,
+&gt;  	[LOCKDOWN_KCORE] = &quot;/proc/kcore access&quot;,
+&gt;  	[LOCKDOWN_KPROBES] = &quot;use of kprobes&quot;,
+&gt; 
+
+-- 
+James Morris
+&lt;jmorris@xxxxxxxxx&gt;
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29916" href="msg29916.html">[PATCH V35 00/29] Kernel lockdown functionality</a></strong>
+<ul><li><em>From:</em> Matthew Garrett</li></ul></li>
+<li><strong><a name="29930" href="msg29930.html">[PATCH V35 26/29] debugfs: Restrict debugfs when the kernel is locked down</a></strong>
+<ul><li><em>From:</em> Matthew Garrett</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29948.html">Re: [PATCH V35 23/29] bpf: Restrict bpf when kernel lockdown is in confidentiality mode</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29950.html">Re: [PATCH V35 19/29] Lock down module params that specify hardware parameters (eg. ioport)</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29930.html">[PATCH V35 26/29] debugfs: Restrict debugfs when the kernel is locked down</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29931.html">[PATCH V35 25/29] kexec: Allow kexec_file() with appropriate IMA policy when locked down</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29949"><strong>Date</strong></a></li>
+<li><a href="index.html#29949"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

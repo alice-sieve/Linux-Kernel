@@ -1,0 +1,1285 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v3 1/4] Move kaslr related functions from	sadump.c to kaslr_helper.c -->
+<!--X-From-R13: Eretvb Zbcrm &#60;fycNerqung.pbz> -->
+<!--X-Date: Tue, 20 Mar 2018 05:49:13 &#45;0700 -->
+<!--X-Message-Id: 20180320124852.1763&#45;2&#45;slp@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20180320124852.1763&#45;1&#45;slp@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH v3 1/4] Move kaslr related functions from	sadump.c to kaslr_helper.c &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  [PATCH v3 1/4] Move kaslr related functions from	sadump.c to kaslr_helper.c</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v3 1/4] Move kaslr related functions from	sadump.c to kaslr_helper.c</h1>
+[<a href="msg07385.html">Date Prev</a>][<a href="msg07387.html">Date Next</a>][<a href="msg07385.html">Thread Prev</a>][<a href="msg07396.html">Thread Next</a>][<a href="maillist.html#07386">Date Index</a>][<a href="index.html#07386">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v3 1/4] Move kaslr related functions from	sadump.c to kaslr_helper.c</li>
+<li><em>From</em>: Sergio Lopez &lt;slp@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 20 Mar 2018 13:48:49 +0100</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg07385.html">20180320124852.1763-1-slp@redhat.com</a>&gt;</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Those functions are going to be used for netdumps too.
+---
+ Makefile       |   7 +-
+ defs.h         |   7 +
+ kaslr_helper.c | 460 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ sadump.c       | 486 ++++-----------------------------------------------------
+ symbols.c      |   6 +-
+ 5 files changed, 511 insertions(+), 455 deletions(-)
+ create mode 100644 kaslr_helper.c
+
+diff --git a/Makefile b/Makefile
+index bdc8321..f8647b3 100644
+--- a/Makefile
++++ b/Makefile
+@@ -71,7 +71,7 @@ CFILES=main.c tools.c global_data.c memory.c filesys.c help.c task.c \
+ 	xen_hyper.c xen_hyper_command.c xen_hyper_global_data.c \
+ 	xen_hyper_dump_tables.c kvmdump.c qemu.c qemu-load.c sadump.c ipcs.c \
+ 	ramdump.c vmware_vmss.c \
+-	xen_dom0.c
++	xen_dom0.c kaslr_helper.c
+ 
+ SOURCE_FILES=${CFILES} ${GENERIC_HFILES} ${MCORE_HFILES} \
+ 	${REDHAT_CFILES} ${REDHAT_HFILES} ${UNWIND_HFILES} \
+@@ -90,7 +90,7 @@ OBJECT_FILES=main.o tools.o global_data.o memory.o filesys.o help.o task.o \
+ 	xen_hyper.o xen_hyper_command.o xen_hyper_global_data.o \
+ 	xen_hyper_dump_tables.o kvmdump.o qemu.o qemu-load.o sadump.o ipcs.o \
+ 	ramdump.o vmware_vmss.o \
+-	xen_dom0.o
++	xen_dom0.o kaslr_helper.o
+ 
+ MEMORY_DRIVER_FILES=memory_driver/Makefile memory_driver/crash.c memory_driver/README
+ 
+@@ -517,6 +517,9 @@ ramdump.o: ${GENERIC_HFILES} ${REDHAT_HFILES} ramdump.c
+ vmware_vmss.o: ${GENERIC_HFILES} ${VMWARE_HFILES} vmware_vmss.c
+ 	${CC} -c ${CRASH_CFLAGS} vmware_vmss.c ${WARNING_OPTIONS} ${WARNING_ERROR}
+ 
++kaslr_helper.o: ${GENERIC_HFILES} kaslr_helper.c
++	${CC} -c ${CRASH_CFLAGS} kaslr_helper.c ${WARNING_OPTIONS} ${WARNING_ERROR}
++
+ ${PROGRAM}: force
+ 	@make --no-print-directory all
+ 
+diff --git a/defs.h b/defs.h
+index 7998ebf..808ac61 100644
+--- a/defs.h
++++ b/defs.h
+@@ -6334,6 +6334,7 @@ FILE *set_sadump_fp(FILE *);
+ void get_sadump_regs(struct bt_info *bt, ulong *ipp, ulong *spp);
+ void sadump_display_regs(int, FILE *);
+ int sadump_phys_base(ulong *);
++int sadump_set_phys_base(ulong);
+ void sadump_show_diskset(void);
+ int sadump_is_zero_excluded(void);
+ void sadump_set_zero_excluded(void);
+@@ -6341,6 +6342,7 @@ void sadump_unset_zero_excluded(void);
+ struct sadump_data;
+ struct sadump_data *get_sadump_data(void);
+ int sadump_calc_kaslr_offset(ulong *);
++int sadump_get_cr3_idtr(ulong *, ulong *);
+ 
+ /*
+  * qemu.c
+@@ -6389,6 +6391,11 @@ uint vmware_vmss_page_size(void);
+ int read_vmware_vmss(int, void *, int, ulong, physaddr_t);
+ int write_vmware_vmss(int, void *, int, ulong, physaddr_t);
+ 
++/*
++ * kaslr_helper.c
++ */
++int calc_kaslr_offset(ulong *, ulong *);
++
+ /*
+  *  gnu_binutils.c
+  */
+diff --git a/kaslr_helper.c b/kaslr_helper.c
+new file mode 100644
+index 0000000..65256ab
+--- /dev/null
++++ b/kaslr_helper.c
+@@ -0,0 +1,460 @@
++/*
++ * kaslr_helper - helper for kaslr offset calculation
++ *
++ * Copyright (c) 2011 FUJITSU LIMITED
++ * Copyright (c) 2018 Red Hat Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * Author: HATAYAMA Daisuke &lt;d.hatayama@xxxxxxxxxxxxxx&gt;
++ */
++
++#include &quot;defs.h&quot;
++#include &lt;elf.h&gt;
++#include &lt;inttypes.h&gt;
++
++#ifdef X86_64
++/*
++ * Get address of vector0 interrupt handler (Devide Error) from Interrupt
++ * Descriptor Table.
++ */
++static ulong
++get_vec0_addr(ulong idtr)
++{
++	struct gate_struct64 {
++		uint16_t offset_low;
++		uint16_t segment;
++		uint32_t ist : 3, zero0 : 5, type : 5, dpl : 2, p : 1;
++		uint16_t offset_middle;
++		uint32_t offset_high;
++		uint32_t zero1;
++	} __attribute__((packed)) gate;
++
++	readmem(idtr, PHYSADDR, &amp;gate, sizeof(gate), &quot;idt_table&quot;, FAULT_ON_ERROR);
++
++	return ((ulong)gate.offset_high &lt;&lt; 32)
++		+ ((ulong)gate.offset_middle &lt;&lt; 16)
++		+ gate.offset_low;
++}
++
++/*
++ * Parse a string of [size[KMG] ]offset[KMG]
++ * Import from Linux kernel(lib/cmdline.c)
++ */
++static ulong memparse(char *ptr, char **retptr)
++{
++	char *endptr;
++
++	unsigned long long ret = strtoull(ptr, &amp;endptr, 0);
++
++	switch (*endptr) {
++	case 'E':
++	case 'e':
++		ret &lt;&lt;= 10;
++	case 'P':
++	case 'p':
++		ret &lt;&lt;= 10;
++	case 'T':
++	case 't':
++		ret &lt;&lt;= 10;
++	case 'G':
++	case 'g':
++		ret &lt;&lt;= 10;
++	case 'M':
++	case 'm':
++		ret &lt;&lt;= 10;
++	case 'K':
++	case 'k':
++		ret &lt;&lt;= 10;
++		endptr++;
++	default:
++		break;
++	}
++
++	if (retptr)
++		*retptr = endptr;
++
++	return ret;
++}
++
++/*
++ * Find &quot;elfcorehdr=&quot; in the boot parameter of kernel and return the address
++ * of elfcorehdr.
++ */
++static ulong
++get_elfcorehdr(ulong kaslr_offset)
++{
++	char cmdline[BUFSIZE], *ptr;
++	ulong cmdline_vaddr;
++	ulong cmdline_paddr;
++	ulong buf_vaddr, buf_paddr;
++	char *end;
++	ulong elfcorehdr_addr = 0, elfcorehdr_size = 0;
++	int verbose = CRASHDEBUG(1)? 1: 0;
++
++	cmdline_vaddr = st-&gt;saved_command_line_vmlinux + kaslr_offset;
++	if (!kvtop(NULL, cmdline_vaddr, &amp;cmdline_paddr, verbose))
++		return 0;
++
++	if (CRASHDEBUG(1)) {
++		fprintf(fp, &quot;cmdline vaddr=%lx\n&quot;, cmdline_vaddr);
++		fprintf(fp, &quot;cmdline paddr=%lx\n&quot;, cmdline_paddr);
++	}
++
++	if (!readmem(cmdline_paddr, PHYSADDR, &amp;buf_vaddr, sizeof(ulong),
++		     &quot;saved_command_line&quot;, RETURN_ON_ERROR))
++		return 0;
++
++	if (!kvtop(NULL, buf_vaddr, &amp;buf_paddr, verbose))
++		return 0;
++
++	if (CRASHDEBUG(1)) {
++		fprintf(fp, &quot;cmdline buffer vaddr=%lx\n&quot;, buf_vaddr);
++		fprintf(fp, &quot;cmdline buffer paddr=%lx\n&quot;, buf_paddr);
++	}
++
++	memset(cmdline, 0, BUFSIZE);
++	if (!readmem(buf_paddr, PHYSADDR, cmdline, BUFSIZE,
++		     &quot;saved_command_line&quot;, RETURN_ON_ERROR))
++		return 0;
++
++	ptr = strstr(cmdline, &quot;elfcorehdr=&quot;);
++	if (!ptr)
++		return 0;
++
++	if (CRASHDEBUG(1))
++		fprintf(fp, &quot;2nd kernel detected\n&quot;);
++
++	ptr += strlen(&quot;elfcorehdr=&quot;);
++	elfcorehdr_addr = memparse(ptr, &amp;end);
++	if (*end == '@') {
++		elfcorehdr_size = elfcorehdr_addr;
++		elfcorehdr_addr = memparse(end + 1, &amp;end);
++	}
++
++	if (CRASHDEBUG(1)) {
++		fprintf(fp, &quot;elfcorehdr_addr=%lx\n&quot;, elfcorehdr_addr);
++		fprintf(fp, &quot;elfcorehdr_size=%lx\n&quot;, elfcorehdr_size);
++	}
++
++	return elfcorehdr_addr;
++}
++
++ /*
++  * Get vmcoreinfo from elfcorehdr.
++  * Some codes are imported from Linux kernel(fs/proc/vmcore.c)
++  */
++static int
++get_vmcoreinfo(ulong elfcorehdr, ulong *addr, int *len)
++{
++	unsigned char e_ident[EI_NIDENT];
++	Elf64_Ehdr ehdr;
++	Elf64_Phdr phdr;
++	Elf64_Nhdr nhdr;
++	ulong ptr;
++	ulong nhdr_offset = 0;
++	int i;
++
++	if (!readmem(elfcorehdr, PHYSADDR, e_ident, EI_NIDENT,
++		     &quot;EI_NIDENT&quot;, RETURN_ON_ERROR))
++		return FALSE;
++
++	if (e_ident[EI_CLASS] != ELFCLASS64) {
++		error(INFO, &quot;Only ELFCLASS64 is supportd\n&quot;);
++		return FALSE;
++	}
++
++	if (!readmem(elfcorehdr, PHYSADDR, &amp;ehdr, sizeof(ehdr),
++			&quot;Elf64_Ehdr&quot;, RETURN_ON_ERROR))
++		return FALSE;
++
++	/* Sanity Check */
++	if (memcmp(ehdr.e_ident, ELFMAG, SELFMAG) != 0 ||
++		(ehdr.e_type != ET_CORE) ||
++		ehdr.e_ident[EI_CLASS] != ELFCLASS64 ||
++		ehdr.e_ident[EI_VERSION] != EV_CURRENT ||
++		ehdr.e_version != EV_CURRENT ||
++		ehdr.e_ehsize != sizeof(Elf64_Ehdr) ||
++		ehdr.e_phentsize != sizeof(Elf64_Phdr) ||
++		ehdr.e_phnum == 0) {
++		error(INFO, &quot;Invalid elf header\n&quot;);
++		return FALSE;
++	}
++
++	ptr = elfcorehdr + ehdr.e_phoff;
++	for (i = 0; i &lt; ehdr.e_phnum; i++) {
++		ulong offset;
++		char name[16];
++
++		if (!readmem(ptr, PHYSADDR, &amp;phdr, sizeof(phdr),
++				&quot;Elf64_Phdr&quot;, RETURN_ON_ERROR))
++			return FALSE;
++
++		ptr += sizeof(phdr);
++		if (phdr.p_type != PT_NOTE)
++			continue;
++
++		offset = phdr.p_offset;
++		if (!readmem(offset, PHYSADDR, &amp;nhdr, sizeof(nhdr),
++				&quot;Elf64_Nhdr&quot;, RETURN_ON_ERROR))
++			return FALSE;
++
++		offset += DIV_ROUND_UP(sizeof(Elf64_Nhdr), sizeof(Elf64_Word))*
++			  sizeof(Elf64_Word);
++		memset(name, 0, sizeof(name));
++		if (!readmem(offset, PHYSADDR, name, sizeof(name),
++				&quot;Elf64_Nhdr name&quot;, RETURN_ON_ERROR))
++			return FALSE;
++
++		if(!strcmp(name, &quot;VMCOREINFO&quot;)) {
++			nhdr_offset = offset;
++			break;
++		}
++	}
++
++	if (!nhdr_offset)
++		return FALSE;
++
++	*addr = nhdr_offset +
++		DIV_ROUND_UP(nhdr.n_namesz, sizeof(Elf64_Word))*
++		sizeof(Elf64_Word);
++	*len = nhdr.n_descsz;
++
++	if (CRASHDEBUG(1)) {
++		fprintf(fp, &quot;vmcoreinfo addr=%lx\n&quot;, *addr);
++		fprintf(fp, &quot;vmcoreinfo len=%d\n&quot;, *len);
++	}
++
++	return TRUE;
++}
++
++/*
++ * Check if current kaslr_offset/phys_base is for 1st kernel or 2nd kernel.
++ * If we are in 2nd kernel, get kaslr_offset/phys_base from vmcoreinfo.
++ *
++ * 1. Get command line and try to retrieve &quot;elfcorehdr=&quot; boot parameter
++ * 2. If &quot;elfcorehdr=&quot; is not found in command line, we are in 1st kernel.
++ *    There is nothing to do.
++ * 3. If &quot;elfcorehdr=&quot; is found, we are in 2nd kernel. Find vmcoreinfo
++ *    using &quot;elfcorehdr=&quot; and retrieve kaslr_offset/phys_base from vmcoreinfo.
++ */
++static int
++get_kaslr_offset_from_vmcoreinfo(ulong orig_kaslr_offset,
++		                 ulong *kaslr_offset, ulong *phys_base)
++{
++	ulong elfcorehdr_addr = 0;
++	ulong vmcoreinfo_addr;
++	int vmcoreinfo_len;
++	char *buf, *pos;
++	int ret = FALSE;
++
++	/* Find &quot;elfcorehdr=&quot; in the kernel boot parameter */
++	elfcorehdr_addr = get_elfcorehdr(orig_kaslr_offset);
++	if (!elfcorehdr_addr)
++		return FALSE;
++
++	/* Get vmcoreinfo from the address of &quot;elfcorehdr=&quot; */
++	if (!get_vmcoreinfo(elfcorehdr_addr, &amp;vmcoreinfo_addr, &amp;vmcoreinfo_len))
++		return FALSE;
++
++	if (!vmcoreinfo_len)
++		return FALSE;
++
++	if (CRASHDEBUG(1))
++		fprintf(fp, &quot;Find vmcoreinfo in kdump memory\n&quot;);
++
++	buf = GETBUF(vmcoreinfo_len);
++	if (!readmem(vmcoreinfo_addr, PHYSADDR, buf, vmcoreinfo_len,
++			&quot;vmcoreinfo&quot;, RETURN_ON_ERROR))
++		goto quit;
++
++	/* Get phys_base form vmcoreinfo */
++	pos = strstr(buf, &quot;NUMBER(phys_base)=&quot;);
++	if (!pos)
++		goto quit;
++	*phys_base  = strtoull(pos + strlen(&quot;NUMBER(phys_base)=&quot;), NULL, 0);
++
++	/* Get kaslr_offset form vmcoreinfo */
++	pos = strstr(buf, &quot;KERNELOFFSET=&quot;);
++	if (!pos)
++		goto quit;
++	*kaslr_offset = strtoull(pos + strlen(&quot;KERNELOFFSET=&quot;), NULL, 16);
++
++	ret = TRUE;
++
++quit:
++	FREEBUF(buf);
++	return ret;
++}
++
++/*
++ * Calculate kaslr_offset and phys_base
++ *
++ * kaslr_offset:
++ *   The difference between original address in System.map or vmlinux and
++ *   actual address placed randomly by kaslr feature. To be more accurate,
++ *   kaslr_offset = actual address  - original address
++ *
++ * phys_base:
++ *   Physical address where the kerenel is placed. In other words, it's a
++ *   physical address of __START_KERNEL_map. This is also decided randomly by
++ *   kaslr.
++ *
++ * kaslr offset and phys_base are calculated as follows:
++ *
++ * kaslr_offset:
++ * 1) Get IDTR and CR3 value from the dump header.
++ * 2) Get a virtual address of IDT from IDTR value
++ *    --- (A)
++ * 3) Translate (A) to physical address using CR3, the upper 52 bits
++ *    of which points a top of page table.
++ *    --- (B)
++ * 4) Get an address of vector0 (Devide Error) interrupt handler from
++ *    IDT, which are pointed by (B).
++ *    --- (C)
++ * 5) Get an address of symbol &quot;divide_error&quot; form vmlinux
++ *    --- (D)
++ *
++ * Now we have two addresses:
++ * (C)-&gt; Actual address of &quot;divide_error&quot;
++ * (D)-&gt; Original address of &quot;divide_error&quot; in the vmlinux
++ *
++ * kaslr_offset can be calculated by the difference between these two
++ * value.
++ *
++ * phys_base;
++ * 1) Get IDT virtual address from vmlinux
++ *    --- (E)
++ *
++ * So phys_base can be calculated using relationship of directly mapped
++ * address.
++ *
++ * phys_base =
++ *   Physical address(B) -
++ *   (Virtual address(E) + kaslr_offset - __START_KERNEL_map)
++ *
++ * Note that the address (A) cannot be used instead of (E) because (A) is
++ * not direct map address, it's a fixed map address.
++ *
++ * This solution works in most every case, but does not work in the
++ * following case.
++ *
++ * 1) If the dump is captured on early stage of kernel boot, IDTR points
++ *    early IDT table(early_idts) instead of normal IDT(idt_table).
++ * 2) If the dump is captured whle kdump is working, IDTR points
++ *    IDT table of 2nd kernel, not 1st kernel.
++ *
++ * Current implementation does not support the case 1), need
++ * enhancement in the future. For the case 2), get kaslr_offset and
++ * phys_base as follows.
++ *
++ * 1) Get kaslr_offset and phys_base using the above solution.
++ * 2) Get kernel boot parameter from &quot;saved_command_line&quot;
++ * 3) If &quot;elfcorehdr=&quot; is not included in boot parameter, we are in the
++ *    first kernel, nothing to do any more.
++ * 4) If &quot;elfcorehdr=&quot; is included in boot parameter, we are in the 2nd
++ *    kernel. Retrieve vmcoreinfo from address of &quot;elfcorehdr=&quot; and
++ *    get kaslr_offset and phys_base from vmcoreinfo.
++ */
++#define PTI_USER_PGTABLE_BIT	PAGE_SHIFT
++#define PTI_USER_PGTABLE_MASK	(1 &lt;&lt; PTI_USER_PGTABLE_BIT)
++#define CR3_PCID_MASK		0xFFFull
++int
++calc_kaslr_offset(ulong *kaslr_offset, ulong *phys_base)
++{
++	uint64_t cr3 = 0, idtr = 0, pgd = 0, idtr_paddr;
++	ulong divide_error_vmcore;
++	ulong kaslr_offset_kdump, phys_base_kdump;
++	int ret = FALSE;
++	int verbose = CRASHDEBUG(1)? 1: 0;
++
++	if (!machine_type(&quot;X86_64&quot;))
++		return FALSE;
++
++	if (SADUMP_DUMPFILE() &amp;&amp; !sadump_get_cr3_idtr(&amp;cr3, &amp;idtr)) {
++		return FALSE;
++	}
++
++	if (st-&gt;pti_init_vmlinux || st-&gt;kaiser_init_vmlinux)
++		pgd = cr3 &amp; ~(CR3_PCID_MASK|PTI_USER_PGTABLE_MASK);
++	else
++		pgd = cr3 &amp; ~CR3_PCID_MASK;
++
++	/*
++	 * Set up for kvtop.
++	 *
++	 * calc_kaslr_offset() is called before machdep_init(PRE_GDB), so some
++	 * variables are not initialized yet. Set up them here to call kvtop().
++	 *
++	 * TODO: XEN and 5-level is not supported
++	 */
++	vt-&gt;kernel_pgd[0] = pgd;
++	machdep-&gt;last_pgd_read = vt-&gt;kernel_pgd[0];
++	machdep-&gt;machspec-&gt;physical_mask_shift = __PHYSICAL_MASK_SHIFT_2_6;
++	machdep-&gt;machspec-&gt;pgdir_shift = PGDIR_SHIFT;
++	machdep-&gt;machspec-&gt;ptrs_per_pgd = PTRS_PER_PGD;
++	if (!readmem(pgd, PHYSADDR, machdep-&gt;pgd, PAGESIZE(),
++			&quot;pgd&quot;, RETURN_ON_ERROR))
++		goto quit;
++
++	/* Convert virtual address of IDT table to physical address */
++	if (!kvtop(NULL, idtr, &amp;idtr_paddr, verbose))
++		goto quit;
++
++	/* Now we can calculate kaslr_offset and phys_base */
++	divide_error_vmcore = get_vec0_addr(idtr_paddr);
++	*kaslr_offset = divide_error_vmcore - st-&gt;divide_error_vmlinux;
++	*phys_base = idtr_paddr -
++		(st-&gt;idt_table_vmlinux + *kaslr_offset - __START_KERNEL_map);
++
++	if (CRASHDEBUG(1)) {
++		fprintf(fp, &quot;calc_kaslr_offset: idtr=%lx\n&quot;, idtr);
++		fprintf(fp, &quot;calc_kaslr_offset: pgd=%lx\n&quot;, pgd);
++		fprintf(fp, &quot;calc_kaslr_offset: idtr(phys)=%lx\n&quot;, idtr_paddr);
++		fprintf(fp, &quot;calc_kaslr_offset: divide_error(vmlinux): %lx\n&quot;,
++			st-&gt;divide_error_vmlinux);
++		fprintf(fp, &quot;calc_kaslr_offset: divide_error(vmcore): %lx\n&quot;,
++			divide_error_vmcore);
++	}
++
++	/*
++	 * Check if current kaslr_offset/phys_base is for 1st kernel or 2nd
++	 * kernel. If we are in 2nd kernel, get kaslr_offset/phys_base
++	 * from vmcoreinfo
++	 */
++	if (get_kaslr_offset_from_vmcoreinfo(
++		*kaslr_offset, &amp;kaslr_offset_kdump, &amp;phys_base_kdump)) {
++		*kaslr_offset =  kaslr_offset_kdump;
++		*phys_base =  phys_base_kdump;
++	} else if (CRASHDEBUG(1)) {
++		fprintf(fp, &quot;kaslr_helper: failed to determine which kernel was running at crash,\n&quot;);
++		fprintf(fp, &quot;kaslr_helper: asssuming the kdump 1st kernel.\n&quot;);
++	}
++
++	if (CRASHDEBUG(1)) {
++		fprintf(fp, &quot;calc_kaslr_offset: kaslr_offset=%lx\n&quot;,
++			*kaslr_offset);
++		fprintf(fp, &quot;calc_kaslr_offset: phys_base=%lx\n&quot;, *phys_base);
++	}
++
++	ret = TRUE;
++quit:
++	vt-&gt;kernel_pgd[0] = 0;
++	machdep-&gt;last_pgd_read = 0;
++	return ret;
++}
++#else
++int
++calc_kaslr_offset(ulong *kaslr_offset, ulong *phys_page)
++{
++	return FALSE;
++}
++#endif /* X86_64 */
+diff --git a/sadump.c b/sadump.c
+index d19b40a..a37602b 100644
+--- a/sadump.c
++++ b/sadump.c
+@@ -1569,6 +1569,13 @@ int sadump_phys_base(ulong *phys_base)
+ 	return FALSE;
+ }
+ 
++int sadump_set_phys_base(ulong phys_base)
++{
++	sd-&gt;phys_base = phys_base;
++
++	return TRUE;
++}
++
+ /*
+  *  Used by &quot;sys&quot; command to show diskset disk names.
+  */
+@@ -1656,466 +1663,41 @@ get_sadump_data(void)
+ static int
+ get_sadump_smram_cpu_state_any(struct sadump_smram_cpu_state *smram)
+ {
+-	ulong offset;
+-	struct sadump_header *sh = sd-&gt;dump_header;
+-	int apicid;
+-	struct sadump_smram_cpu_state scs, zero;
+-
+-	offset = sd-&gt;sub_hdr_offset + sizeof(uint32_t) +
+-		 sd-&gt;dump_header-&gt;nr_cpus * sizeof(struct sadump_apic_state);
+-
+-	memset(&amp;zero, 0, sizeof(zero));
+-
+-	for (apicid = 0; apicid &lt; sh-&gt;nr_cpus; ++apicid) {
+-		if (!read_device(&amp;scs, sizeof(scs), &amp;offset)) {
+-			error(INFO, &quot;sadump: cannot read sub header &quot;
+-			      &quot;cpu_state\n&quot;);
+-			return FALSE;
+-		}
+-		if (memcmp(&amp;scs, &amp;zero, sizeof(scs)) != 0) {
+-			*smram = scs;
+-			return TRUE;
+-		}
+-	}
+-
+-	return FALSE;
+-}
+-
+-/*
+- * Get address of vector0 interrupt handler (Devide Error) from Interrupt
+- * Descriptor Table.
+- */
+-static ulong
+-get_vec0_addr(ulong idtr)
+-{
+-	struct gate_struct64 {
+-		uint16_t offset_low;
+-		uint16_t segment;
+-		uint32_t ist : 3, zero0 : 5, type : 5, dpl : 2, p : 1;
+-		uint16_t offset_middle;
+-		uint32_t offset_high;
+-		uint32_t zero1;
+-	} __attribute__((packed)) gate;
+-
+-	readmem(idtr, PHYSADDR, &amp;gate, sizeof(gate), &quot;idt_table&quot;, FAULT_ON_ERROR);
+-
+-	return ((ulong)gate.offset_high &lt;&lt; 32)
+-		+ ((ulong)gate.offset_middle &lt;&lt; 16)
+-		+ gate.offset_low;
+-}
+-
+-/*
+- * Parse a string of [size[KMG] ]offset[KMG]
+- * Import from Linux kernel(lib/cmdline.c)
+- */
+-static ulong memparse(char *ptr, char **retptr)
+-{
+-	char *endptr;
+-
+-	unsigned long long ret = strtoull(ptr, &amp;endptr, 0);
+-
+-	switch (*endptr) {
+-	case 'E':
+-	case 'e':
+-		ret &lt;&lt;= 10;
+-	case 'P':
+-	case 'p':
+-		ret &lt;&lt;= 10;
+-	case 'T':
+-	case 't':
+-		ret &lt;&lt;= 10;
+-	case 'G':
+-	case 'g':
+-		ret &lt;&lt;= 10;
+-	case 'M':
+-	case 'm':
+-		ret &lt;&lt;= 10;
+-	case 'K':
+-	case 'k':
+-		ret &lt;&lt;= 10;
+-		endptr++;
+-	default:
+-		break;
+-	}
+-
+-	if (retptr)
+-		*retptr = endptr;
+-
+-	return ret;
+-}
+-
+-/*
+- * Find &quot;elfcorehdr=&quot; in the boot parameter of kernel and return the address
+- * of elfcorehdr.
+- */
+-static ulong
+-get_elfcorehdr(ulong kaslr_offset)
+-{
+-	char cmdline[BUFSIZE], *ptr;
+-	ulong cmdline_vaddr;
+-	ulong cmdline_paddr;
+-	ulong buf_vaddr, buf_paddr;
+-	char *end;
+-	ulong elfcorehdr_addr = 0, elfcorehdr_size = 0;
+-	int verbose = CRASHDEBUG(1)? 1: 0;
+-
+-	cmdline_vaddr = st-&gt;saved_command_line_vmlinux + kaslr_offset;
+-	if (!kvtop(NULL, cmdline_vaddr, &amp;cmdline_paddr, verbose))
+-		return 0;
+-
+-	if (CRASHDEBUG(1)) {
+-		fprintf(fp, &quot;cmdline vaddr=%lx\n&quot;, cmdline_vaddr);
+-		fprintf(fp, &quot;cmdline paddr=%lx\n&quot;, cmdline_paddr);
+-	}
+-
+-	if (!readmem(cmdline_paddr, PHYSADDR, &amp;buf_vaddr, sizeof(ulong),
+-		     &quot;saved_command_line&quot;, RETURN_ON_ERROR))
+-		return 0;
+-
+-	if (!kvtop(NULL, buf_vaddr, &amp;buf_paddr, verbose))
+-		return 0;
+-
+-	if (CRASHDEBUG(1)) {
+-		fprintf(fp, &quot;cmdline buffer vaddr=%lx\n&quot;, buf_vaddr);
+-		fprintf(fp, &quot;cmdline buffer paddr=%lx\n&quot;, buf_paddr);
+-	}
+-
+-	memset(cmdline, 0, BUFSIZE);
+-	if (!readmem(buf_paddr, PHYSADDR, cmdline, BUFSIZE,
+-		     &quot;saved_command_line&quot;, RETURN_ON_ERROR))
+-		return 0;
+-
+-	ptr = strstr(cmdline, &quot;elfcorehdr=&quot;);
+-	if (!ptr)
+-		return 0;
+-
+-	if (CRASHDEBUG(1))
+-		fprintf(fp, &quot;2nd kernel detected\n&quot;);
+-
+-	ptr += strlen(&quot;elfcorehdr=&quot;);
+-	elfcorehdr_addr = memparse(ptr, &amp;end);
+-	if (*end == '@') {
+-		elfcorehdr_size = elfcorehdr_addr;
+-		elfcorehdr_addr = memparse(end + 1, &amp;end);
+-	}
+-
+-	if (CRASHDEBUG(1)) {
+-		fprintf(fp, &quot;elfcorehdr_addr=%lx\n&quot;, elfcorehdr_addr);
+-		fprintf(fp, &quot;elfcorehdr_size=%lx\n&quot;, elfcorehdr_size);
+-	}
+-
+-	return elfcorehdr_addr;
+-}
+-
+- /*
+-  * Get vmcoreinfo from elfcorehdr.
+-  * Some codes are imported from Linux kernel(fs/proc/vmcore.c)
+-  */
+-static int
+-get_vmcoreinfo(ulong elfcorehdr, ulong *addr, int *len)
+-{
+-	unsigned char e_ident[EI_NIDENT];
+-	Elf64_Ehdr ehdr;
+-	Elf64_Phdr phdr;
+-	Elf64_Nhdr nhdr;
+-	ulong ptr;
+-	ulong nhdr_offset = 0;
+-	int i;
+-
+-	if (!readmem(elfcorehdr, PHYSADDR, e_ident, EI_NIDENT,
+-		     &quot;EI_NIDENT&quot;, RETURN_ON_ERROR))
+-		return FALSE;
+-
+-	if (e_ident[EI_CLASS] != ELFCLASS64) {
+-		error(INFO, &quot;Only ELFCLASS64 is supportd\n&quot;);
+-		return FALSE;
+-	}
+-
+-	if (!readmem(elfcorehdr, PHYSADDR, &amp;ehdr, sizeof(ehdr),
+-			&quot;Elf64_Ehdr&quot;, RETURN_ON_ERROR))
+-		return FALSE;
+-
+-	/* Sanity Check */
+-	if (memcmp(ehdr.e_ident, ELFMAG, SELFMAG) != 0 ||
+-		(ehdr.e_type != ET_CORE) ||
+-		ehdr.e_ident[EI_CLASS] != ELFCLASS64 ||
+-		ehdr.e_ident[EI_VERSION] != EV_CURRENT ||
+-		ehdr.e_version != EV_CURRENT ||
+-		ehdr.e_ehsize != sizeof(Elf64_Ehdr) ||
+-		ehdr.e_phentsize != sizeof(Elf64_Phdr) ||
+-		ehdr.e_phnum == 0) {
+-		error(INFO, &quot;Invalid elf header\n&quot;);
+-		return FALSE;
+-	}
+-
+-	ptr = elfcorehdr + ehdr.e_phoff;
+-	for (i = 0; i &lt; ehdr.e_phnum; i++) {
+-		ulong offset;
+-		char name[16];
+-
+-		if (!readmem(ptr, PHYSADDR, &amp;phdr, sizeof(phdr),
+-				&quot;Elf64_Phdr&quot;, RETURN_ON_ERROR))
+-			return FALSE;
+-
+-		ptr += sizeof(phdr);
+-		if (phdr.p_type != PT_NOTE)
+-			continue;
+-
+-		offset = phdr.p_offset;
+-		if (!readmem(offset, PHYSADDR, &amp;nhdr, sizeof(nhdr),
+-				&quot;Elf64_Nhdr&quot;, RETURN_ON_ERROR))
+-			return FALSE;
+-
+-		offset += DIV_ROUND_UP(sizeof(Elf64_Nhdr), sizeof(Elf64_Word))*
+-			  sizeof(Elf64_Word);
+-		memset(name, 0, sizeof(name));
+-		if (!readmem(offset, PHYSADDR, name, sizeof(name),
+-				&quot;Elf64_Nhdr name&quot;, RETURN_ON_ERROR))
+-			return FALSE;
+-
+-		if(!strcmp(name, &quot;VMCOREINFO&quot;)) {
+-			nhdr_offset = offset;
+-			break;
+-		}
+-	}
+-
+-	if (!nhdr_offset)
+-		return FALSE;
+-
+-	*addr = nhdr_offset +
+-		DIV_ROUND_UP(nhdr.n_namesz, sizeof(Elf64_Word))*
+-		sizeof(Elf64_Word);
+-	*len = nhdr.n_descsz;
+-
+-	if (CRASHDEBUG(1)) {
+-		fprintf(fp, &quot;vmcoreinfo addr=%lx\n&quot;, *addr);
+-		fprintf(fp, &quot;vmcoreinfo len=%d\n&quot;, *len);
+-	}
+-
+-	return TRUE;
+-}
+-
+-/*
+- * Check if current kaslr_offset/phys_base is for 1st kernel or 2nd kernel.
+- * If we are in 2nd kernel, get kaslr_offset/phys_base from vmcoreinfo.
+- *
+- * 1. Get command line and try to retrieve &quot;elfcorehdr=&quot; boot parameter
+- * 2. If &quot;elfcorehdr=&quot; is not found in command line, we are in 1st kernel.
+- *    There is nothing to do.
+- * 3. If &quot;elfcorehdr=&quot; is found, we are in 2nd kernel. Find vmcoreinfo
+- *    using &quot;elfcorehdr=&quot; and retrieve kaslr_offset/phys_base from vmcoreinfo.
+- */
+-static int
+-get_kaslr_offset_from_vmcoreinfo(ulong orig_kaslr_offset,
+-		                 ulong *kaslr_offset, ulong *phys_base)
+-{
+-	ulong elfcorehdr_addr = 0;
+-	ulong vmcoreinfo_addr;
+-	int vmcoreinfo_len;
+-	char *buf, *pos;
+-	int ret = FALSE;
+-
+-	/* Find &quot;elfcorehdr=&quot; in the kernel boot parameter */
+-	elfcorehdr_addr = get_elfcorehdr(orig_kaslr_offset);
+-	if (!elfcorehdr_addr)
+-		return FALSE;
+-
+-	/* Get vmcoreinfo from the address of &quot;elfcorehdr=&quot; */
+-	if (!get_vmcoreinfo(elfcorehdr_addr, &amp;vmcoreinfo_addr, &amp;vmcoreinfo_len))
+-		return FALSE;
+-
+-	if (!vmcoreinfo_len)
+-		return FALSE;
+-
+-	if (CRASHDEBUG(1))
+-		fprintf(fp, &quot;Find vmcoreinfo in kdump memory\n&quot;);
+-
+-	buf = GETBUF(vmcoreinfo_len);
+-	if (!readmem(vmcoreinfo_addr, PHYSADDR, buf, vmcoreinfo_len,
+-			&quot;vmcoreinfo&quot;, RETURN_ON_ERROR))
+-		goto quit;
+-
+-	/* Get phys_base form vmcoreinfo */
+-	pos = strstr(buf, &quot;NUMBER(phys_base)=&quot;);
+-	if (!pos)
+-		goto quit;
+-	*phys_base  = strtoull(pos + strlen(&quot;NUMBER(phys_base)=&quot;), NULL, 0);
+-
+-	/* Get kaslr_offset form vmcoreinfo */
+-	pos = strstr(buf, &quot;KERNELOFFSET=&quot;);
+-	if (!pos)
+-		goto quit;
+-	*kaslr_offset = strtoull(pos + strlen(&quot;KERNELOFFSET=&quot;), NULL, 16);
+-
+-	ret = TRUE;
+-
+-quit:
+-	FREEBUF(buf);
+-	return ret;
++        ulong offset;
++        struct sadump_header *sh = sd-&gt;dump_header;
++        int apicid;
++        struct sadump_smram_cpu_state scs, zero;
++
++        offset = sd-&gt;sub_hdr_offset + sizeof(uint32_t) +
++                 sd-&gt;dump_header-&gt;nr_cpus * sizeof(struct sadump_apic_state);
++
++        memset(&amp;zero, 0, sizeof(zero));
++
++        for (apicid = 0; apicid &lt; sh-&gt;nr_cpus; ++apicid) {
++                if (!read_device(&amp;scs, sizeof(scs), &amp;offset)) {
++                        error(INFO, &quot;sadump: cannot read sub header &quot;
++                              &quot;cpu_state\n&quot;);
++                        return FALSE;
++                }
++                if (memcmp(&amp;scs, &amp;zero, sizeof(scs)) != 0) {
++                        *smram = scs;
++                        return TRUE;
++                }
++        }
++
++        return FALSE;
+ }
+ 
+-/*
+- * Calculate kaslr_offset and phys_base
+- *
+- * kaslr_offset:
+- *   The difference between original address in System.map or vmlinux and
+- *   actual address placed randomly by kaslr feature. To be more accurate,
+- *   kaslr_offset = actual address  - original address
+- *
+- * phys_base:
+- *   Physical address where the kerenel is placed. In other words, it's a
+- *   physical address of __START_KERNEL_map. This is also decided randomly by
+- *   kaslr.
+- *
+- * kaslr offset and phys_base are calculated as follows:
+- *
+- * kaslr_offset:
+- * 1) Get IDTR and CR3 value from the dump header.
+- * 2) Get a virtual address of IDT from IDTR value
+- *    --- (A)
+- * 3) Translate (A) to physical address using CR3, the upper 52 bits
+- *    of which points a top of page table.
+- *    --- (B)
+- * 4) Get an address of vector0 (Devide Error) interrupt handler from
+- *    IDT, which are pointed by (B).
+- *    --- (C)
+- * 5) Get an address of symbol &quot;divide_error&quot; form vmlinux
+- *    --- (D)
+- *
+- * Now we have two addresses:
+- * (C)-&gt; Actual address of &quot;divide_error&quot;
+- * (D)-&gt; Original address of &quot;divide_error&quot; in the vmlinux
+- *
+- * kaslr_offset can be calculated by the difference between these two
+- * value.
+- *
+- * phys_base;
+- * 1) Get IDT virtual address from vmlinux
+- *    --- (E)
+- *
+- * So phys_base can be calculated using relationship of directly mapped
+- * address.
+- *
+- * phys_base =
+- *   Physical address(B) -
+- *   (Virtual address(E) + kaslr_offset - __START_KERNEL_map)
+- *
+- * Note that the address (A) cannot be used instead of (E) because (A) is
+- * not direct map address, it's a fixed map address.
+- *
+- * This solution works in most every case, but does not work in the
+- * following case.
+- *
+- * 1) If the dump is captured on early stage of kernel boot, IDTR points
+- *    early IDT table(early_idts) instead of normal IDT(idt_table).
+- * 2) If the dump is captured whle kdump is working, IDTR points
+- *    IDT table of 2nd kernel, not 1st kernel.
+- *
+- * Current implementation does not support the case 1), need
+- * enhancement in the future. For the case 2), get kaslr_offset and
+- * phys_base as follows.
+- *
+- * 1) Get kaslr_offset and phys_base using the above solution.
+- * 2) Get kernel boot parameter from &quot;saved_command_line&quot;
+- * 3) If &quot;elfcorehdr=&quot; is not included in boot parameter, we are in the
+- *    first kernel, nothing to do any more.
+- * 4) If &quot;elfcorehdr=&quot; is included in boot parameter, we are in the 2nd
+- *    kernel. Retrieve vmcoreinfo from address of &quot;elfcorehdr=&quot; and
+- *    get kaslr_offset and phys_base from vmcoreinfo.
+- */
+-#define PTI_USER_PGTABLE_BIT	PAGE_SHIFT
+-#define PTI_USER_PGTABLE_MASK	(1 &lt;&lt; PTI_USER_PGTABLE_BIT)
+-#define CR3_PCID_MASK		0xFFFull
+-int
+-sadump_calc_kaslr_offset(ulong *kaslr_offset)
++int sadump_get_cr3_idtr(ulong *cr3, ulong *idtr)
+ {
+-	ulong phys_base = 0;
+ 	struct sadump_smram_cpu_state scs;
+-	uint64_t idtr = 0, pgd = 0, idtr_paddr;
+-	ulong divide_error_vmcore;
+-	ulong kaslr_offset_kdump, phys_base_kdump;
+-	int ret = FALSE;
+-	int verbose = CRASHDEBUG(1)? 1: 0;
+-
+-	if (!machine_type(&quot;X86_64&quot;))
+-		return FALSE;
+ 
+ 	memset(&amp;scs, 0, sizeof(scs));
+ 	get_sadump_smram_cpu_state_any(&amp;scs);
+-	if (st-&gt;pti_init_vmlinux || st-&gt;kaiser_init_vmlinux)
+-		pgd = scs.Cr3 &amp; ~(CR3_PCID_MASK|PTI_USER_PGTABLE_MASK);
+-	else
+-		pgd = scs.Cr3 &amp; ~CR3_PCID_MASK;
+-	idtr = ((uint64_t)scs.IdtUpper)&lt;&lt;32 | (uint64_t)scs.IdtLower;
+ 
+-	/*
+-	 * Set up for kvtop.
+-	 *
+-	 * calc_kaslr_offset() is called before machdep_init(PRE_GDB), so some
+-	 * variables are not initialized yet. Set up them here to call kvtop().
+-	 *
+-	 * TODO: XEN and 5-level is not supported
+-	 */
+-	vt-&gt;kernel_pgd[0] = pgd;
+-	machdep-&gt;last_pgd_read = vt-&gt;kernel_pgd[0];
+-	machdep-&gt;machspec-&gt;physical_mask_shift = __PHYSICAL_MASK_SHIFT_2_6;
+-	machdep-&gt;machspec-&gt;pgdir_shift = PGDIR_SHIFT;
+-	machdep-&gt;machspec-&gt;ptrs_per_pgd = PTRS_PER_PGD;
+-	if (!readmem(pgd, PHYSADDR, machdep-&gt;pgd, PAGESIZE(),
+-			&quot;pgd&quot;, RETURN_ON_ERROR))
+-		goto quit;
+-
+-	/* Convert virtual address of IDT table to physical address */
+-	if (!kvtop(NULL, idtr, &amp;idtr_paddr, verbose))
+-		goto quit;
+-
+-	/* Now we can calculate kaslr_offset and phys_base */
+-	divide_error_vmcore = get_vec0_addr(idtr_paddr);
+-	*kaslr_offset = divide_error_vmcore - st-&gt;divide_error_vmlinux;
+-	phys_base = idtr_paddr -
+-		(st-&gt;idt_table_vmlinux + *kaslr_offset - __START_KERNEL_map);
+-
+-	if (CRASHDEBUG(1)) {
+-		fprintf(fp, &quot;calc_kaslr_offset: idtr=%lx\n&quot;, idtr);
+-		fprintf(fp, &quot;calc_kaslr_offset: pgd=%lx\n&quot;, pgd);
+-		fprintf(fp, &quot;calc_kaslr_offset: idtr(phys)=%lx\n&quot;, idtr_paddr);
+-		fprintf(fp, &quot;calc_kaslr_offset: divide_error(vmlinux): %lx\n&quot;,
+-			st-&gt;divide_error_vmlinux);
+-		fprintf(fp, &quot;calc_kaslr_offset: divide_error(vmcore): %lx\n&quot;,
+-			divide_error_vmcore);
+-	}
+-
+-	/*
+-	 * Check if current kaslr_offset/phys_base is for 1st kernel or 2nd
+-	 * kernel. If we are in 2nd kernel, get kaslr_offset/phys_base
+-	 * from vmcoreinfo
+-	 */
+-	if (get_kaslr_offset_from_vmcoreinfo(
+-		*kaslr_offset, &amp;kaslr_offset_kdump, &amp;phys_base_kdump)) {
+-		*kaslr_offset =  kaslr_offset_kdump;
+-		phys_base =  phys_base_kdump;
+-	} else if (CRASHDEBUG(1)) {
+-		fprintf(fp, &quot;sadump: failed to determine which kernel was running at crash,\n&quot;);
+-		fprintf(fp, &quot;sadump: asssuming the kdump 1st kernel.\n&quot;);
+-	}
++	*cr3 = scs.Cr3;
++	*idtr = ((uint64_t)scs.IdtUpper)&lt;&lt;32 | (uint64_t)scs.IdtLower;
+ 
+-	if (CRASHDEBUG(1)) {
+-		fprintf(fp, &quot;calc_kaslr_offset: kaslr_offset=%lx\n&quot;,
+-			*kaslr_offset);
+-		fprintf(fp, &quot;calc_kaslr_offset: phys_base=%lx\n&quot;, phys_base);
+-	}
+-
+-	sd-&gt;phys_base = phys_base;
+-	ret = TRUE;
+-quit:
+-	vt-&gt;kernel_pgd[0] = 0;
+-	machdep-&gt;last_pgd_read = 0;
+-	return ret;
+-}
+-#else
+-int
+-sadump_calc_kaslr_offset(ulong *kaslr_offset)
+-{
+-	return FALSE;
++	return TRUE;
+ }
+ #endif /* X86_64 */
+diff --git a/symbols.c b/symbols.c
+index 7910f53..54aa5b2 100644
+--- a/symbols.c
++++ b/symbols.c
+@@ -642,14 +642,18 @@ derive_kaslr_offset(bfd *abfd, int dynamic, bfd_byte *start, bfd_byte *end,
+ 
+ 	if (SADUMP_DUMPFILE()) {
+ 		ulong kaslr_offset = 0;
++		ulong phys_base = 0;
+ 
+-		sadump_calc_kaslr_offset(&amp;kaslr_offset);
++		calc_kaslr_offset(&amp;kaslr_offset, &amp;phys_base);
+ 
+ 		if (kaslr_offset) {
+ 			kt-&gt;relocate = kaslr_offset * -1;
+ 			kt-&gt;flags |= RELOC_SET;
+ 		}
+ 
++		if (phys_base)
++			sadump_set_phys_base(phys_base);
++
+ 		return;
+ 	}
+ 
+-- 
+2.14.3
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07396" href="msg07396.html">Re:  [PATCH v3 1/4] Move kaslr related functions from	sadump.c to kaslr_helper.c</a></strong>
+<ul><li><em>From:</em> Hatayama, Daisuke</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="07385" href="msg07385.html">[PATCH v3 0/4] Generalize KASLR calculation and use	it for KDUMPs</a></strong>
+<ul><li><em>From:</em> Sergio Lopez</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07385.html">[PATCH v3 0/4] Generalize KASLR calculation and use	it for KDUMPs</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07387.html">[PATCH v3 3/4] netdump: infer kaslr offset for QEMU	ELF dumps without vmcoreinfo</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07385.html">[PATCH v3 0/4] Generalize KASLR calculation and use	it for KDUMPs</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07396.html">Re:  [PATCH v3 1/4] Move kaslr related functions from	sadump.c to kaslr_helper.c</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07386"><strong>Date</strong></a></li>
+<li><a href="index.html#07386"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

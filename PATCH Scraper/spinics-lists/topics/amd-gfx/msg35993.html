@@ -1,0 +1,511 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 057/102] drm/amdgpu/VCN2: expose rings functions -->
+<!--X-From-R13: Oyrk Rrhpure &#60;nyrkqrhpureNtznvy.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 14:25:42 &#45;0700 -->
+<!--X-Message-Id: 20190715212437.31793&#45;55&#45;alexander.deucher@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715212437.31793&#45;1&#45;alexander.deucher@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 057/102] drm/amdgpu/VCN2: expose rings functions">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 057/102] drm/amdgpu/VCN2: expose rings functions &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 057/102] drm/amdgpu/VCN2: expose rings functions</h1>
+[<a href="msg35992.html">Date Prev</a>][<a href="msg35994.html">Date Next</a>][<a href="msg35992.html">Thread Prev</a>][<a href="msg35994.html">Thread Next</a>][<a href="maillist.html#35993">Date Index</a>][<a href="index.html#35993">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: amd-gfx@xxxxxxxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH 057/102] drm/amdgpu/VCN2: expose rings functions</li>
+<li><em>From</em>: Alex Deucher &lt;alexdeucher@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 16:23:52 -0500</li>
+<li><em>Cc</em>: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;, Leo Liu &lt;leo.liu@xxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg35938.html">20190715212437.31793-1-alexander.deucher@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg35938.html">20190715212437.31793-1-alexander.deucher@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Leo Liu &lt;leo.liu@xxxxxxx&gt;
+
+They can be reused by VCN2.x family
+
+Signed-off-by: Leo Liu &lt;leo.liu@xxxxxxx&gt;
+Reviewed-by: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;
+Signed-off-by: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;
+---
+ drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c | 87 +++++++++++++--------------
+ drivers/gpu/drm/amd/amdgpu/vcn_v2_0.h | 38 ++++++++++++
+ 2 files changed, 79 insertions(+), 46 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
+index c801b69f0b75..52a5e3ac9f55 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
+@@ -1490,7 +1490,7 @@ static void vcn_v2_0_dec_ring_set_wptr(struct amdgpu_ring *ring)
+  *
+  * Write a start command to the ring.
+  */
+-static void vcn_v2_0_dec_ring_insert_start(struct amdgpu_ring *ring)
++void vcn_v2_0_dec_ring_insert_start(struct amdgpu_ring *ring)
+ {
+ 	struct amdgpu_device *adev = ring-&gt;adev;
+ 
+@@ -1507,7 +1507,7 @@ static void vcn_v2_0_dec_ring_insert_start(struct amdgpu_ring *ring)
+  *
+  * Write a end command to the ring.
+  */
+-static void vcn_v2_0_dec_ring_insert_end(struct amdgpu_ring *ring)
++void vcn_v2_0_dec_ring_insert_end(struct amdgpu_ring *ring)
+ {
+ 	struct amdgpu_device *adev = ring-&gt;adev;
+ 
+@@ -1522,7 +1522,7 @@ static void vcn_v2_0_dec_ring_insert_end(struct amdgpu_ring *ring)
+  *
+  * Write a nop command to the ring.
+  */
+-static void vcn_v2_0_dec_ring_insert_nop(struct amdgpu_ring *ring, uint32_t count)
++void vcn_v2_0_dec_ring_insert_nop(struct amdgpu_ring *ring, uint32_t count)
+ {
+ 	struct amdgpu_device *adev = ring-&gt;adev;
+ 	int i;
+@@ -1543,8 +1543,8 @@ static void vcn_v2_0_dec_ring_insert_nop(struct amdgpu_ring *ring, uint32_t coun
+  *
+  * Write a fence and a trap command to the ring.
+  */
+-static void vcn_v2_0_dec_ring_emit_fence(struct amdgpu_ring *ring, u64 addr, u64 seq,
+-				     unsigned flags)
++void vcn_v2_0_dec_ring_emit_fence(struct amdgpu_ring *ring, u64 addr, u64 seq,
++				unsigned flags)
+ {
+ 	struct amdgpu_device *adev = ring-&gt;adev;
+ 
+@@ -1580,10 +1580,10 @@ static void vcn_v2_0_dec_ring_emit_fence(struct amdgpu_ring *ring, u64 addr, u64
+  *
+  * Write ring commands to execute the indirect buffer
+  */
+-static void vcn_v2_0_dec_ring_emit_ib(struct amdgpu_ring *ring,
+-				      struct amdgpu_job *job,
+-				      struct amdgpu_ib *ib,
+-				      uint32_t flags)
++void vcn_v2_0_dec_ring_emit_ib(struct amdgpu_ring *ring,
++			       struct amdgpu_job *job,
++			       struct amdgpu_ib *ib,
++			       uint32_t flags)
+ {
+ 	struct amdgpu_device *adev = ring-&gt;adev;
+ 	unsigned vmid = AMDGPU_JOB_GET_VMID(job);
+@@ -1599,9 +1599,8 @@ static void vcn_v2_0_dec_ring_emit_ib(struct amdgpu_ring *ring,
+ 	amdgpu_ring_write(ring, ib-&gt;length_dw);
+ }
+ 
+-static void vcn_v2_0_dec_ring_emit_reg_wait(struct amdgpu_ring *ring,
+-					    uint32_t reg, uint32_t val,
+-					    uint32_t mask)
++void vcn_v2_0_dec_ring_emit_reg_wait(struct amdgpu_ring *ring, uint32_t reg,
++				uint32_t val, uint32_t mask)
+ {
+ 	struct amdgpu_device *adev = ring-&gt;adev;
+ 
+@@ -1619,8 +1618,8 @@ static void vcn_v2_0_dec_ring_emit_reg_wait(struct amdgpu_ring *ring,
+ 	amdgpu_ring_write(ring, VCN_DEC_CMD_REG_READ_COND_WAIT &lt;&lt; 1);
+ }
+ 
+-static void vcn_v2_0_dec_ring_emit_vm_flush(struct amdgpu_ring *ring,
+-					    unsigned vmid, uint64_t pd_addr)
++void vcn_v2_0_dec_ring_emit_vm_flush(struct amdgpu_ring *ring,
++				unsigned vmid, uint64_t pd_addr)
+ {
+ 	struct amdgpu_vmhub *hub = &amp;ring-&gt;adev-&gt;vmhub[ring-&gt;funcs-&gt;vmhub];
+ 	uint32_t data0, data1, mask;
+@@ -1634,8 +1633,8 @@ static void vcn_v2_0_dec_ring_emit_vm_flush(struct amdgpu_ring *ring,
+ 	vcn_v2_0_dec_ring_emit_reg_wait(ring, data0, data1, mask);
+ }
+ 
+-static void vcn_v2_0_dec_ring_emit_wreg(struct amdgpu_ring *ring,
+-					uint32_t reg, uint32_t val)
++void vcn_v2_0_dec_ring_emit_wreg(struct amdgpu_ring *ring,
++				uint32_t reg, uint32_t val)
+ {
+ 	struct amdgpu_device *adev = ring-&gt;adev;
+ 
+@@ -1727,8 +1726,8 @@ static void vcn_v2_0_enc_ring_set_wptr(struct amdgpu_ring *ring)
+  *
+  * Write enc a fence and a trap command to the ring.
+  */
+-static void vcn_v2_0_enc_ring_emit_fence(struct amdgpu_ring *ring, u64 addr,
+-			u64 seq, unsigned flags)
++void vcn_v2_0_enc_ring_emit_fence(struct amdgpu_ring *ring, u64 addr,
++				u64 seq, unsigned flags)
+ {
+ 	WARN_ON(flags &amp; AMDGPU_FENCE_FLAG_64BIT);
+ 
+@@ -1739,7 +1738,7 @@ static void vcn_v2_0_enc_ring_emit_fence(struct amdgpu_ring *ring, u64 addr,
+ 	amdgpu_ring_write(ring, VCN_ENC_CMD_TRAP);
+ }
+ 
+-static void vcn_v2_0_enc_ring_insert_end(struct amdgpu_ring *ring)
++void vcn_v2_0_enc_ring_insert_end(struct amdgpu_ring *ring)
+ {
+ 	amdgpu_ring_write(ring, VCN_ENC_CMD_END);
+ }
+@@ -1752,10 +1751,10 @@ static void vcn_v2_0_enc_ring_insert_end(struct amdgpu_ring *ring)
+  *
+  * Write enc ring commands to execute the indirect buffer
+  */
+-static void vcn_v2_0_enc_ring_emit_ib(struct amdgpu_ring *ring,
+-				      struct amdgpu_job *job,
+-				      struct amdgpu_ib *ib,
+-				      uint32_t flags)
++void vcn_v2_0_enc_ring_emit_ib(struct amdgpu_ring *ring,
++			       struct amdgpu_job *job,
++			       struct amdgpu_ib *ib,
++			       uint32_t flags)
+ {
+ 	unsigned vmid = AMDGPU_JOB_GET_VMID(job);
+ 
+@@ -1766,9 +1765,8 @@ static void vcn_v2_0_enc_ring_emit_ib(struct amdgpu_ring *ring,
+ 	amdgpu_ring_write(ring, ib-&gt;length_dw);
+ }
+ 
+-static void vcn_v2_0_enc_ring_emit_reg_wait(struct amdgpu_ring *ring,
+-					    uint32_t reg, uint32_t val,
+-					    uint32_t mask)
++void vcn_v2_0_enc_ring_emit_reg_wait(struct amdgpu_ring *ring, uint32_t reg,
++				uint32_t val, uint32_t mask)
+ {
+ 	amdgpu_ring_write(ring, VCN_ENC_CMD_REG_WAIT);
+ 	amdgpu_ring_write(ring, reg &lt;&lt; 2);
+@@ -1776,8 +1774,8 @@ static void vcn_v2_0_enc_ring_emit_reg_wait(struct amdgpu_ring *ring,
+ 	amdgpu_ring_write(ring, val);
+ }
+ 
+-static void vcn_v2_0_enc_ring_emit_vm_flush(struct amdgpu_ring *ring,
+-					    unsigned int vmid, uint64_t pd_addr)
++void vcn_v2_0_enc_ring_emit_vm_flush(struct amdgpu_ring *ring,
++				unsigned int vmid, uint64_t pd_addr)
+ {
+ 	struct amdgpu_vmhub *hub = &amp;ring-&gt;adev-&gt;vmhub[ring-&gt;funcs-&gt;vmhub];
+ 
+@@ -1788,8 +1786,7 @@ static void vcn_v2_0_enc_ring_emit_vm_flush(struct amdgpu_ring *ring,
+ 					lower_32_bits(pd_addr), 0xffffffff);
+ }
+ 
+-static void vcn_v2_0_enc_ring_emit_wreg(struct amdgpu_ring *ring,
+-					uint32_t reg, uint32_t val)
++void vcn_v2_0_enc_ring_emit_wreg(struct amdgpu_ring *ring, uint32_t reg, uint32_t val)
+ {
+ 	amdgpu_ring_write(ring, VCN_ENC_CMD_REG_WRITE);
+ 	amdgpu_ring_write(ring,	reg &lt;&lt; 2);
+@@ -1853,7 +1850,7 @@ static void vcn_v2_0_jpeg_ring_set_wptr(struct amdgpu_ring *ring)
+  *
+  * Write a start command to the ring.
+  */
+-static void vcn_v2_0_jpeg_ring_insert_start(struct amdgpu_ring *ring)
++void vcn_v2_0_jpeg_ring_insert_start(struct amdgpu_ring *ring)
+ {
+ 	amdgpu_ring_write(ring, PACKETJ(mmUVD_JRBC_EXTERNAL_REG_INTERNAL_OFFSET,
+ 		0, 0, PACKETJ_TYPE0));
+@@ -1871,7 +1868,7 @@ static void vcn_v2_0_jpeg_ring_insert_start(struct amdgpu_ring *ring)
+  *
+  * Write a end command to the ring.
+  */
+-static void vcn_v2_0_jpeg_ring_insert_end(struct amdgpu_ring *ring)
++void vcn_v2_0_jpeg_ring_insert_end(struct amdgpu_ring *ring)
+ {
+ 	amdgpu_ring_write(ring, PACKETJ(mmUVD_JRBC_EXTERNAL_REG_INTERNAL_OFFSET,
+ 		0, 0, PACKETJ_TYPE0));
+@@ -1890,8 +1887,8 @@ static void vcn_v2_0_jpeg_ring_insert_end(struct amdgpu_ring *ring)
+  *
+  * Write a fence and a trap command to the ring.
+  */
+-static void vcn_v2_0_jpeg_ring_emit_fence(struct amdgpu_ring *ring, u64 addr, u64 seq,
+-				     unsigned flags)
++void vcn_v2_0_jpeg_ring_emit_fence(struct amdgpu_ring *ring, u64 addr, u64 seq,
++				unsigned flags)
+ {
+ 	WARN_ON(flags &amp; AMDGPU_FENCE_FLAG_64BIT);
+ 
+@@ -1939,10 +1936,10 @@ static void vcn_v2_0_jpeg_ring_emit_fence(struct amdgpu_ring *ring, u64 addr, u6
+  *
+  * Write ring commands to execute the indirect buffer.
+  */
+-static void vcn_v2_0_jpeg_ring_emit_ib(struct amdgpu_ring *ring,
+-				       struct amdgpu_job *job,
+-				       struct amdgpu_ib *ib,
+-				       uint32_t flags)
++void vcn_v2_0_jpeg_ring_emit_ib(struct amdgpu_ring *ring,
++				struct amdgpu_job *job,
++				struct amdgpu_ib *ib,
++				uint32_t flags)
+ {
+ 	unsigned vmid = AMDGPU_JOB_GET_VMID(job);
+ 
+@@ -1990,9 +1987,8 @@ static void vcn_v2_0_jpeg_ring_emit_ib(struct amdgpu_ring *ring,
+ 	amdgpu_ring_write(ring, 0x2);
+ }
+ 
+-static void vcn_v2_0_jpeg_ring_emit_reg_wait(struct amdgpu_ring *ring,
+-					    uint32_t reg, uint32_t val,
+-					    uint32_t mask)
++void vcn_v2_0_jpeg_ring_emit_reg_wait(struct amdgpu_ring *ring, uint32_t reg,
++				uint32_t val, uint32_t mask)
+ {
+ 	uint32_t reg_offset = (reg &lt;&lt; 2);
+ 
+@@ -2018,8 +2014,8 @@ static void vcn_v2_0_jpeg_ring_emit_reg_wait(struct amdgpu_ring *ring,
+ 	amdgpu_ring_write(ring, mask);
+ }
+ 
+-static void vcn_v2_0_jpeg_ring_emit_vm_flush(struct amdgpu_ring *ring,
+-		unsigned vmid, uint64_t pd_addr)
++void vcn_v2_0_jpeg_ring_emit_vm_flush(struct amdgpu_ring *ring,
++				unsigned vmid, uint64_t pd_addr)
+ {
+ 	struct amdgpu_vmhub *hub = &amp;ring-&gt;adev-&gt;vmhub[ring-&gt;funcs-&gt;vmhub];
+ 	uint32_t data0, data1, mask;
+@@ -2033,8 +2029,7 @@ static void vcn_v2_0_jpeg_ring_emit_vm_flush(struct amdgpu_ring *ring,
+ 	vcn_v2_0_jpeg_ring_emit_reg_wait(ring, data0, data1, mask);
+ }
+ 
+-static void vcn_v2_0_jpeg_ring_emit_wreg(struct amdgpu_ring *ring,
+-					uint32_t reg, uint32_t val)
++void vcn_v2_0_jpeg_ring_emit_wreg(struct amdgpu_ring *ring, uint32_t reg, uint32_t val)
+ {
+ 	uint32_t reg_offset = (reg &lt;&lt; 2);
+ 
+@@ -2052,7 +2047,7 @@ static void vcn_v2_0_jpeg_ring_emit_wreg(struct amdgpu_ring *ring,
+ 	amdgpu_ring_write(ring, val);
+ }
+ 
+-static void vcn_v2_0_jpeg_ring_nop(struct amdgpu_ring *ring, uint32_t count)
++void vcn_v2_0_jpeg_ring_nop(struct amdgpu_ring *ring, uint32_t count)
+ {
+ 	int i;
+ 
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.h b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.h
+index a74227f4663b..8467292f32e5 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.h
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.h
+@@ -24,6 +24,44 @@
+ #ifndef __VCN_V2_0_H__
+ #define __VCN_V2_0_H__
+ 
++extern void vcn_v2_0_dec_ring_insert_start(struct amdgpu_ring *ring);
++extern void vcn_v2_0_dec_ring_insert_end(struct amdgpu_ring *ring);
++extern void vcn_v2_0_dec_ring_insert_nop(struct amdgpu_ring *ring, uint32_t count);
++extern void vcn_v2_0_dec_ring_emit_fence(struct amdgpu_ring *ring, u64 addr, u64 seq,
++				unsigned flags);
++extern void vcn_v2_0_dec_ring_emit_ib(struct amdgpu_ring *ring, struct amdgpu_job *job,
++				struct amdgpu_ib *ib, uint32_t flags);
++extern void vcn_v2_0_dec_ring_emit_reg_wait(struct amdgpu_ring *ring, uint32_t reg,
++				uint32_t val, uint32_t mask);
++extern void vcn_v2_0_dec_ring_emit_vm_flush(struct amdgpu_ring *ring,
++				unsigned vmid, uint64_t pd_addr);
++extern void vcn_v2_0_dec_ring_emit_wreg(struct amdgpu_ring *ring,
++				uint32_t reg, uint32_t val);
++
++extern void vcn_v2_0_enc_ring_insert_end(struct amdgpu_ring *ring);
++extern void vcn_v2_0_enc_ring_emit_fence(struct amdgpu_ring *ring, u64 addr,
++				u64 seq, unsigned flags);
++extern void vcn_v2_0_enc_ring_emit_ib(struct amdgpu_ring *ring, struct amdgpu_job *job,
++				struct amdgpu_ib *ib, uint32_t flags);
++extern void vcn_v2_0_enc_ring_emit_reg_wait(struct amdgpu_ring *ring, uint32_t reg,
++				uint32_t val, uint32_t mask);
++extern void vcn_v2_0_enc_ring_emit_vm_flush(struct amdgpu_ring *ring,
++				unsigned int vmid, uint64_t pd_addr);
++extern void vcn_v2_0_enc_ring_emit_wreg(struct amdgpu_ring *ring, uint32_t reg, uint32_t val);
++
++extern void vcn_v2_0_jpeg_ring_insert_start(struct amdgpu_ring *ring);
++extern void vcn_v2_0_jpeg_ring_insert_end(struct amdgpu_ring *ring);
++extern void vcn_v2_0_jpeg_ring_emit_fence(struct amdgpu_ring *ring, u64 addr, u64 seq,
++				unsigned flags);
++extern void vcn_v2_0_jpeg_ring_emit_ib(struct amdgpu_ring *ring, struct amdgpu_job *job,
++				struct amdgpu_ib *ib, uint32_t flags);
++extern void vcn_v2_0_jpeg_ring_emit_reg_wait(struct amdgpu_ring *ring, uint32_t reg,
++				uint32_t val, uint32_t mask);
++extern void vcn_v2_0_jpeg_ring_emit_vm_flush(struct amdgpu_ring *ring,
++				unsigned vmid, uint64_t pd_addr);
++extern void vcn_v2_0_jpeg_ring_emit_wreg(struct amdgpu_ring *ring, uint32_t reg, uint32_t val);
++extern void vcn_v2_0_jpeg_ring_nop(struct amdgpu_ring *ring, uint32_t count);
++
+ extern const struct amdgpu_ip_block_version vcn_v2_0_ip_block;
+ 
+ #endif /* __VCN_V2_0_H__ */
+-- 
+2.20.1
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="35938" href="msg35938.html">[PATCH 000/102] Add Arcturus support</a></strong>
+<ul><li><em>From:</em> Alex Deucher</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35992.html">[PATCH 061/102] drm/amdgpu/VCN2.5: set decode ring functions</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35994.html">[PATCH 055/102] drm/amdgpu: declare sdma firmware binary files for Arcturus</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35992.html">[PATCH 061/102] drm/amdgpu/VCN2.5: set decode ring functions</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35994.html">[PATCH 055/102] drm/amdgpu: declare sdma firmware binary files for Arcturus</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35993"><strong>Date</strong></a></li>
+<li><a href="index.html#35993"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

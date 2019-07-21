@@ -1,0 +1,420 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 6/6] autofs &#45; add AUTOFS_EXP_FORCED flag -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Mon, 18 Jun 2018 20:03:30 &#45;0700 -->
+<!--X-Message-Id: 152937734715.21213.6594007182776598970.stgit@pluto.themaw.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 152937731702.21213.7371321165189170865.stgit@pluto.themaw.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 6/6] autofs - add AUTOFS_EXP_FORCED flag &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 6/6] autofs - add AUTOFS_EXP_FORCED flag &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 6/6] autofs - add AUTOFS_EXP_FORCED flag</h1>
+[<a href="msg01911.html">Date Prev</a>][<a href="msg01913.html">Date Next</a>][<a href="msg01911.html">Thread Prev</a>][<a href="msg01913.html">Thread Next</a>][<a href="maillist.html#01912">Date Index</a>][<a href="index.html#01912">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: Andrew Morton &lt;akpm@xxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 6/6] autofs - add AUTOFS_EXP_FORCED flag</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 19 Jun 2018 11:02:27 +0800</li>
+<li><em>Cc</em>: linux-fsdevel &lt;linux-fsdevel@xxxxxxxxxxxxxxx&gt;,        autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;,        Kernel Mailing List &lt;linux-kernel@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg01910.html">152937731702.21213.7371321165189170865.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg01910.html">152937731702.21213.7371321165189170865.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>User-agent</em>: StGit/0.17.1-dirty</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The user space automount(8) daemon is meant to perform a forced
+expire when sent a SIGUSR2.
+
+But since the expiration is routed through the kernel and the
+kernel doesn't send an expire request if the mount is busy this
+hasn't worked at least since autofs version 5.
+
+Add an AUTOFS_EXP_FORCED flag to allow implemention of the feature
+and bump the protocol version so user space can check if it's
+implemented if needed.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ fs/autofs/expire.c           |   62 ++++++++++++++++++++++++++++++++++--------
+ include/uapi/linux/auto_fs.h |    8 +++--
+ 2 files changed, 55 insertions(+), 15 deletions(-)
+
+diff --git a/fs/autofs/expire.c b/fs/autofs/expire.c
+index dfb666c5b8a2..d441244b79df 100644
+--- a/fs/autofs/expire.c
++++ b/fs/autofs/expire.c
+@@ -29,7 +29,8 @@ static inline int autofs_can_expire(struct dentry *dentry,
+ }
+ 
+ /* Check a mount point for busyness */
+-static int autofs_mount_busy(struct vfsmount *mnt, struct dentry *dentry)
++static int autofs_mount_busy(struct vfsmount *mnt,
++			     struct dentry *dentry, unsigned int how)
+ {
+ 	struct dentry *top = dentry;
+ 	struct path path = {.mnt = mnt, .dentry = dentry};
+@@ -50,6 +51,12 @@ static int autofs_mount_busy(struct vfsmount *mnt, struct dentry *dentry)
+ 			goto done;
+ 	}
+ 
++	/* Not a submount, has a forced expire been requested */
++	if (how &amp; AUTOFS_EXP_FORCED) {
++		status = 0;
++		goto done;
++	}
++
+ 	/* Update the expiry counter if fs is busy */
+ 	if (!may_umount_tree(path.mnt)) {
+ 		struct autofs_info *ino;
+@@ -189,6 +196,10 @@ static int autofs_direct_busy(struct vfsmount *mnt,
+ {
+ 	pr_debug(&quot;top %p %pd\n&quot;, top, top);
+ 
++	/* Forced expire, user space handles busy mounts */
++	if (how &amp; AUTOFS_EXP_FORCED)
++		return 0;
++
+ 	/* If it's busy update the expiry counters */
+ 	if (!may_umount_tree(mnt)) {
+ 		struct autofs_info *ino;
+@@ -235,7 +246,7 @@ static int autofs_tree_busy(struct vfsmount *mnt,
+ 		 * If the fs is busy update the expiry counter.
+ 		 */
+ 		if (d_mountpoint(p)) {
+-			if (autofs_mount_busy(mnt, p)) {
++			if (autofs_mount_busy(mnt, p, how)) {
+ 				top_ino-&gt;last_used = jiffies;
+ 				dput(p);
+ 				return 1;
+@@ -258,6 +269,10 @@ static int autofs_tree_busy(struct vfsmount *mnt,
+ 		}
+ 	}
+ 
++	/* Forced expire, user space handles busy mounts */
++	if (how &amp; AUTOFS_EXP_FORCED)
++		return 0;
++
+ 	/* Timeout of a tree mount is ultimately determined by its top dentry */
+ 	if (!autofs_can_expire(top, timeout, how))
+ 		return 1;
+@@ -280,9 +295,15 @@ static struct dentry *autofs_check_leaves(struct vfsmount *mnt,
+ 
+ 		if (d_mountpoint(p)) {
+ 			/* Can we umount this guy */
+-			if (autofs_mount_busy(mnt, p))
++			if (autofs_mount_busy(mnt, p, how))
+ 				continue;
+ 
++			/* This isn't a submount so if a forced expire
++			 * has been requested, user space handles busy
++			 * mounts */
++			if (how &amp; AUTOFS_EXP_FORCED)
++				return p;
++
+ 			/* Can we expire this guy */
+ 			if (autofs_can_expire(p, timeout, how))
+ 				return p;
+@@ -361,9 +382,15 @@ static struct dentry *should_expire(struct dentry *dentry,
+ 		pr_debug(&quot;checking mountpoint %p %pd\n&quot;, dentry, dentry);
+ 
+ 		/* Can we umount this guy */
+-		if (autofs_mount_busy(mnt, dentry))
++		if (autofs_mount_busy(mnt, dentry, how))
+ 			return NULL;
+ 
++		/* This isn't a submount so if a forced expire
++		 * has been requested, user space handles busy
++		 * mounts */
++		if (how &amp; AUTOFS_EXP_FORCED)
++			return dentry;
++
+ 		/* Can we expire this guy */
+ 		if (autofs_can_expire(dentry, timeout, how))
+ 			return dentry;
+@@ -372,6 +399,11 @@ static struct dentry *should_expire(struct dentry *dentry,
+ 
+ 	if (d_really_is_positive(dentry) &amp;&amp; d_is_symlink(dentry)) {
+ 		pr_debug(&quot;checking symlink %p %pd\n&quot;, dentry, dentry);
++
++		/* Forced expire, user space handles busy mounts */
++		if (how &amp; AUTOFS_EXP_FORCED)
++			return dentry;
++
+ 		/*
+ 		 * A symlink can't be &quot;busy&quot; in the usual sense so
+ 		 * just check last used for expire timeout.
+@@ -386,10 +418,13 @@ static struct dentry *should_expire(struct dentry *dentry,
+ 
+ 	/* Case 2: tree mount, expire iff entire tree is not busy */
+ 	if (!(how &amp; AUTOFS_EXP_LEAVES)) {
+-		/* Path walk currently on this dentry? */
+-		ino_count = atomic_read(&amp;ino-&gt;count) + 1;
+-		if (d_count(dentry) &gt; ino_count)
+-			return NULL;
++		/* Not a forced expire? */
++		if (!(how &amp; AUTOFS_EXP_FORCED)) {
++			/* ref-walk currently on this dentry? */
++			ino_count = atomic_read(&amp;ino-&gt;count) + 1;
++			if (d_count(dentry) &gt; ino_count)
++				return NULL;
++		}
+ 
+ 		if (!autofs_tree_busy(mnt, dentry, timeout, how))
+ 			return dentry;
+@@ -398,12 +433,15 @@ static struct dentry *should_expire(struct dentry *dentry,
+ 	 *	   (autofs-4.1).
+ 	 */
+ 	} else {
+-		/* Path walk currently on this dentry? */
+ 		struct dentry *expired;
+ 
+-		ino_count = atomic_read(&amp;ino-&gt;count) + 1;
+-		if (d_count(dentry) &gt; ino_count)
+-			return NULL;
++		/* Not a forced expire? */
++		if (!(how &amp; AUTOFS_EXP_FORCED)) {
++			/* ref-walk currently on this dentry? */
++			ino_count = atomic_read(&amp;ino-&gt;count) + 1;
++			if (d_count(dentry) &gt; ino_count)
++				return NULL;
++		}
+ 
+ 		expired = autofs_check_leaves(mnt, dentry, timeout, how);
+ 		if (expired) {
+diff --git a/include/uapi/linux/auto_fs.h b/include/uapi/linux/auto_fs.h
+index e13eec3dfb2f..df31aa9c9a8c 100644
+--- a/include/uapi/linux/auto_fs.h
++++ b/include/uapi/linux/auto_fs.h
+@@ -23,7 +23,7 @@
+ #define AUTOFS_MIN_PROTO_VERSION	3
+ #define AUTOFS_MAX_PROTO_VERSION	5
+ 
+-#define AUTOFS_PROTO_SUBVERSION		2
++#define AUTOFS_PROTO_SUBVERSION		3
+ 
+ /*
+  * The wait_queue_token (autofs_wqt_t) is part of a structure which is passed
+@@ -90,8 +90,10 @@ enum {
+ /* autofs version 4 and later definitions */
+ 
+ /* Mask for expire behaviour */
+-#define AUTOFS_EXP_IMMEDIATE		1
+-#define AUTOFS_EXP_LEAVES		2
++#define AUTOFS_EXP_NORMAL		0x00
++#define AUTOFS_EXP_IMMEDIATE		0x01
++#define AUTOFS_EXP_LEAVES		0x02
++#define AUTOFS_EXP_FORCED		0x04
+ 
+ #define AUTOFS_TYPE_ANY			0U
+ #define AUTOFS_TYPE_INDIRECT		1U
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01910" href="msg01910.html">[PATCH 1/6] autofs - fix inconsistent use of now variable</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01911.html">[PATCH 4/6] autofs - make autofs_expire_indirect() static</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01913.html">[PATCH 5/6] autofs - make expire flags usage consistent with v5 params</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01911.html">[PATCH 4/6] autofs - make autofs_expire_indirect() static</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01913.html">[PATCH 5/6] autofs - make expire flags usage consistent with v5 params</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01912"><strong>Date</strong></a></li>
+<li><a href="index.html#01912"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

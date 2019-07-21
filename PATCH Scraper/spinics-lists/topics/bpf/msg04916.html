@@ -1,0 +1,322 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH bpf&#45;next RFC v3 6/6] selftests/bpf: add test to measure performance of BPF_MAP_DUMP -->
+<!--X-From-R13: Pevna Hnmdhrm &#60;oevnaiiNtbbtyr.pbz> -->
+<!--X-Date: Wed, 3 Jul 2019 10:02:38 &#45;0700 -->
+<!--X-Message-Id: 20190703170118.196552&#45;7&#45;brianvv@google.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190703170118.196552&#45;1&#45;brianvv@google.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BPF: [PATCH bpf-next RFC v3 6/6] selftests/bpf: add test to measure performance of BPF_MAP_DUMP">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH bpf-next RFC v3 6/6] selftests/bpf: add test to measure performance of BPF_MAP_DUMP &mdash; BPF</title>
+<link rel="alternate" type="application/rss+xml" title="BPF" href="//feeds.feedburner.com/packetfilters">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH bpf-next RFC v3 6/6] selftests/bpf: add test to measure performance of BPF_MAP_DUMP</h1>
+[<a href="msg04915.html">Date Prev</a>][<a href="msg04917.html">Date Next</a>][<a href="msg04915.html">Thread Prev</a>][<a href="msg04917.html">Thread Next</a>][<a href="maillist.html#04916">Date Index</a>][<a href="index.html#04916">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH bpf-next RFC v3 6/6] selftests/bpf: add test to measure performance of BPF_MAP_DUMP</li>
+<li><em>From</em>: Brian Vazquez &lt;brianvv@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed,  3 Jul 2019 10:01:18 -0700</li>
+<li><em>Cc</em>: Stanislav Fomichev &lt;sdf@xxxxxxxxxx&gt;,        Willem de Bruijn &lt;willemb@xxxxxxxxxx&gt;,        Petar Penkov &lt;ppenkov@xxxxxxxxxx&gt;, linux-kernel@xxxxxxxxxxxxxxx,        netdev@xxxxxxxxxxxxxxx, bpf@xxxxxxxxxxxxxxx,        Brian Vazquez &lt;brianvv@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg04911.html">20190703170118.196552-1-brianvv@google.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This tests compares the amount of time that takes to read an entire
+table of 100K elements on a bpf hashmap using both BPF_MAP_DUMP and
+BPF_MAP_GET_NEXT_KEY + BPF_MAP_LOOKUP_ELEM.
+
+Signed-off-by: Brian Vazquez &lt;brianvv@xxxxxxxxxx&gt;
+---
+ tools/testing/selftests/bpf/test_maps.c | 65 +++++++++++++++++++++++++
+ 1 file changed, 65 insertions(+)
+
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index b19ba6aa8e36..786d0e340aed 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -18,6 +18,7 @@
+ #include &lt;sys/socket.h&gt;
+ #include &lt;netinet/in.h&gt;
+ #include &lt;linux/bpf.h&gt;
++#include &lt;linux/time64.h&gt;
+ 
+ #include &lt;bpf/bpf.h&gt;
+ #include &lt;bpf/libbpf.h&gt;
+@@ -388,6 +389,69 @@ static void test_hashmap_dump(void)
+ 	close(fd);
+ }
+ 
++static void test_hashmap_dump_perf(void)
++{
++	int fd, i, max_entries = 100000;
++	uint64_t key, value, next_key;
++	bool next_key_valid = true;
++	void *buf;
++	u32 buf_len, entries;
++	int j = 0;
++	int clk_id = CLOCK_MONOTONIC;
++	struct timespec begin, end;
++	long long time_spent, dump_time_spent;
++	double res;
++	int tests[] = {1, 2, 230, 5000, 73000, 100000, 234567};
++	int test_len = ARRAY_SIZE(tests);
++	const int elem_size = sizeof(key) + sizeof(value);
++
++	fd = helper_fill_hashmap(max_entries);
++	// Alloc memory considering the largest buffer
++	buf = malloc(elem_size * tests[test_len-1]);
++	assert(buf != NULL);
++
++test:
++	entries = tests[j];
++	buf_len = elem_size*tests[j];
++	j++;
++	clock_gettime(clk_id, &amp;begin);
++	errno = 0;
++	i = 0;
++	while (errno == 0) {
++		bpf_map_dump(fd, !i ? NULL : &amp;key,
++				  buf, &amp;buf_len);
++		if (errno)
++			break;
++		if (!i)
++			key = *((uint64_t *)(buf + buf_len - elem_size));
++		i += buf_len / elem_size;
++	}
++	clock_gettime(clk_id, &amp;end);
++	assert(i  == max_entries);
++	dump_time_spent = NSEC_PER_SEC * (end.tv_sec - begin.tv_sec) +
++			  end.tv_nsec - begin.tv_nsec;
++	next_key_valid = true;
++	clock_gettime(clk_id, &amp;begin);
++	assert(bpf_map_get_next_key(fd, NULL, &amp;key) == 0);
++	for (i = 0; next_key_valid; i++) {
++		next_key_valid = bpf_map_get_next_key(fd, &amp;key, &amp;next_key) == 0;
++		assert(bpf_map_lookup_elem(fd, &amp;key, &amp;value) == 0);
++		key = next_key;
++	}
++	clock_gettime(clk_id, &amp;end);
++	time_spent = NSEC_PER_SEC * (end.tv_sec - begin.tv_sec) +
++		     end.tv_nsec - begin.tv_nsec;
++	res = (1-((double)dump_time_spent/time_spent))*100;
++	printf(&quot;buf_len_%u:\t %llu entry-by-entry: %llu improvement %lf\n&quot;,
++	       entries, dump_time_spent, time_spent, res);
++	assert(i  == max_entries);
++
++	if (j &lt; test_len)
++		goto test;
++	free(buf);
++	close(fd);
++}
++
+ static void test_hashmap_zero_seed(void)
+ {
+ 	int i, first, second, old_flags;
+@@ -1748,6 +1812,7 @@ static void run_all_tests(void)
+ 	test_hashmap_walk(0, NULL);
+ 	test_hashmap_zero_seed();
+ 	test_hashmap_dump();
++	test_hashmap_dump_perf();
+ 
+ 	test_arraymap(0, NULL);
+ 	test_arraymap_percpu(0, NULL);
+-- 
+2.22.0.410.gd8fdbe21b5-goog
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="04911" href="msg04911.html">[PATCH bpf-next RFC v3 0/6] bpf: add BPF_MAP_DUMP command to dump more than one entry per call</a></strong>
+<ul><li><em>From:</em> Brian Vazquez</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg04915.html">[PATCH bpf-next RFC v3 5/6] selftests/bpf: test BPF_MAP_DUMP command on a bpf hashmap</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg04917.html">[PATCH bpf-next RFC v3 1/6] bpf: add bpf_map_value_size and bp_map_copy_value helper functions</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg04915.html">[PATCH bpf-next RFC v3 5/6] selftests/bpf: test BPF_MAP_DUMP command on a bpf hashmap</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg04917.html">[PATCH bpf-next RFC v3 1/6] bpf: add bpf_map_value_size and bp_map_copy_value helper functions</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#04916"><strong>Date</strong></a></li>
+<li><a href="index.html#04916"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;Samsung&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-rockchip/>[Linux&nbsp;Rockchip&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-actions/>[Linux&nbsp;Actions&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-snps-arc/>[Linux&nbsp;for&nbsp;Synopsys&nbsp;ARC&nbsp;Processors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nfs/>[Linux&nbsp;NFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nilfs/>[Linux&nbsp;NILFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/vfl/>[Video&nbsp;for&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<p>
+<hr>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

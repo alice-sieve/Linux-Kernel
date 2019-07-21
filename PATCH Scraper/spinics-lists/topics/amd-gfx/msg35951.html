@@ -1,0 +1,323 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 015/102] drm/amdgpu: dynamically initialize IP offset for Arcturus -->
+<!--X-From-R13: Oyrk Rrhpure &#60;nyrkqrhpureNtznvy.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 14:25:03 &#45;0700 -->
+<!--X-Message-Id: 20190715212437.31793&#45;13&#45;alexander.deucher@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715212437.31793&#45;1&#45;alexander.deucher@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 015/102] drm/amdgpu: dynamically initialize IP offset for Arcturus">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 015/102] drm/amdgpu: dynamically initialize IP offset for Arcturus &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 015/102] drm/amdgpu: dynamically initialize IP offset for Arcturus</h1>
+[<a href="msg35950.html">Date Prev</a>][<a href="msg35952.html">Date Next</a>][<a href="msg35950.html">Thread Prev</a>][<a href="msg35952.html">Thread Next</a>][<a href="maillist.html#35951">Date Index</a>][<a href="index.html#35951">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: amd-gfx@xxxxxxxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH 015/102] drm/amdgpu: dynamically initialize IP offset for Arcturus</li>
+<li><em>From</em>: Alex Deucher &lt;alexdeucher@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 16:23:10 -0500</li>
+<li><em>Cc</em>: Snow Zhang &lt;Snow.Zhang@xxxxxxx&gt;, Le Ma &lt;le.ma@xxxxxxx&gt;,        Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg35938.html">20190715212437.31793-1-alexander.deucher@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg35938.html">20190715212437.31793-1-alexander.deucher@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Le Ma &lt;le.ma@xxxxxxx&gt;
+
+Add support for the IP offsets on Arcturus.
+
+Signed-off-by: Le Ma &lt;le.ma@xxxxxxx&gt;
+Acked-by: Snow Zhang &lt; Snow.Zhang@xxxxxxx&gt;
+Signed-off-by: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;
+---
+ drivers/gpu/drm/amd/amdgpu/Makefile        |  3 +-
+ drivers/gpu/drm/amd/amdgpu/arct_reg_init.c | 57 ++++++++++++++++++++++
+ drivers/gpu/drm/amd/amdgpu/soc15.c         |  3 ++
+ drivers/gpu/drm/amd/amdgpu/soc15.h         |  1 +
+ 4 files changed, 63 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/gpu/drm/amd/amdgpu/arct_reg_init.c
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/Makefile b/drivers/gpu/drm/amd/amdgpu/Makefile
+index 7b6fb0e9ee76..97671df6a5f0 100644
+--- a/drivers/gpu/drm/amd/amdgpu/Makefile
++++ b/drivers/gpu/drm/amd/amdgpu/Makefile
+@@ -66,7 +66,8 @@ amdgpu-$(CONFIG_DRM_AMDGPU_SI)+= si.o gmc_v6_0.o gfx_v6_0.o si_ih.o si_dma.o dce
+ 
+ amdgpu-y += \
+ 	vi.o mxgpu_vi.o nbio_v6_1.o soc15.o emu_soc.o mxgpu_ai.o nbio_v7_0.o vega10_reg_init.o \
+-	vega20_reg_init.o nbio_v7_4.o nbio_v2_3.o nv.o navi10_reg_init.o navi14_reg_init.o
++	vega20_reg_init.o nbio_v7_4.o nbio_v2_3.o nv.o navi10_reg_init.o navi14_reg_init.o \
++	arct_reg_init.o
+ 
+ # add DF block
+ amdgpu-y += \
+diff --git a/drivers/gpu/drm/amd/amdgpu/arct_reg_init.c b/drivers/gpu/drm/amd/amdgpu/arct_reg_init.c
+new file mode 100644
+index 000000000000..51b8cdffb196
+--- /dev/null
++++ b/drivers/gpu/drm/amd/amdgpu/arct_reg_init.c
+@@ -0,0 +1,57 @@
++/*
++ * Copyright 2018 Advanced Micro Devices, Inc.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the &quot;Software&quot;),
++ * to deal in the Software without restriction, including without limitation
++ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
++ * and/or sell copies of the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice shall be included in
++ * all copies or substantial portions of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++ * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
++ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
++ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
++ * OTHER DEALINGS IN THE SOFTWARE.
++ *
++ */
++#include &quot;amdgpu.h&quot;
++#include &quot;soc15.h&quot;
++
++#include &quot;soc15_common.h&quot;
++#include &quot;soc15_hw_ip.h&quot;
++#include &quot;arct_ip_offset.h&quot;
++
++int arct_reg_base_init(struct amdgpu_device *adev)
++{
++	/* HW has more IP blocks,  only initialized the block needed by our driver  */
++	uint32_t i;
++	for (i = 0 ; i &lt; MAX_INSTANCE ; ++i) {
++		adev-&gt;reg_offset[GC_HWIP][i] = (uint32_t *)(&amp;(GC_BASE.instance[i]));
++		adev-&gt;reg_offset[HDP_HWIP][i] = (uint32_t *)(&amp;(HDP_BASE.instance[i]));
++		adev-&gt;reg_offset[MMHUB_HWIP][i] = (uint32_t *)(&amp;(MMHUB_BASE.instance[i]));
++		adev-&gt;reg_offset[ATHUB_HWIP][i] = (uint32_t *)(&amp;(ATHUB_BASE.instance[i]));
++		adev-&gt;reg_offset[NBIO_HWIP][i] = (uint32_t *)(&amp;(NBIF0_BASE.instance[i]));
++		adev-&gt;reg_offset[MP0_HWIP][i] = (uint32_t *)(&amp;(MP0_BASE.instance[i]));
++		adev-&gt;reg_offset[UVD_HWIP][i] = (uint32_t *)(&amp;(UVD_BASE.instance[i]));
++		adev-&gt;reg_offset[DF_HWIP][i] = (uint32_t *)(&amp;(DF_BASE.instance[i]));
++		adev-&gt;reg_offset[OSSSYS_HWIP][i] = (uint32_t *)(&amp;(OSSSYS_BASE.instance[i]));
++		adev-&gt;reg_offset[SDMA0_HWIP][i] = (uint32_t *)(&amp;(SDMA0_BASE.instance[i]));
++		adev-&gt;reg_offset[SDMA1_HWIP][i] = (uint32_t *)(&amp;(SDMA1_BASE.instance[i]));
++		adev-&gt;reg_offset[SDMA2_HWIP][i] = (uint32_t *)(&amp;(SDMA2_BASE.instance[i]));
++		adev-&gt;reg_offset[SDMA3_HWIP][i] = (uint32_t *)(&amp;(SDMA3_BASE.instance[i]));
++		adev-&gt;reg_offset[SDMA4_HWIP][i] = (uint32_t *)(&amp;(SDMA4_BASE.instance[i]));
++		adev-&gt;reg_offset[SDMA5_HWIP][i] = (uint32_t *)(&amp;(SDMA5_BASE.instance[i]));
++		adev-&gt;reg_offset[SDMA6_HWIP][i] = (uint32_t *)(&amp;(SDMA6_BASE.instance[i]));
++		adev-&gt;reg_offset[SDMA7_HWIP][i] = (uint32_t *)(&amp;(SDMA7_BASE.instance[i]));
++		adev-&gt;reg_offset[SMUIO_HWIP][i] = (uint32_t *)(&amp;(SMUIO_BASE.instance[i]));
++	}
++	return 0;
++}
++
++
+diff --git a/drivers/gpu/drm/amd/amdgpu/soc15.c b/drivers/gpu/drm/amd/amdgpu/soc15.c
+index 3b5223fca9a0..800dd76dcf92 100644
+--- a/drivers/gpu/drm/amd/amdgpu/soc15.c
++++ b/drivers/gpu/drm/amd/amdgpu/soc15.c
+@@ -585,6 +585,9 @@ int soc15_set_ip_blocks(struct amdgpu_device *adev)
+ 	case CHIP_VEGA20:
+ 		vega20_reg_base_init(adev);
+ 		break;
++	case CHIP_ARCTURUS:
++		arct_reg_base_init(adev);
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+diff --git a/drivers/gpu/drm/amd/amdgpu/soc15.h b/drivers/gpu/drm/amd/amdgpu/soc15.h
+index 7a6b2cc6d9f5..a3dde0c31f57 100644
+--- a/drivers/gpu/drm/amd/amdgpu/soc15.h
++++ b/drivers/gpu/drm/amd/amdgpu/soc15.h
+@@ -77,6 +77,7 @@ void soc15_program_register_sequence(struct amdgpu_device *adev,
+ 
+ int vega10_reg_base_init(struct amdgpu_device *adev);
+ int vega20_reg_base_init(struct amdgpu_device *adev);
++int arct_reg_base_init(struct amdgpu_device *adev);
+ 
+ void vega10_doorbell_index_init(struct amdgpu_device *adev);
+ void vega20_doorbell_index_init(struct amdgpu_device *adev);
+-- 
+2.20.1
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="35938" href="msg35938.html">[PATCH 000/102] Add Arcturus support</a></strong>
+<ul><li><em>From:</em> Alex Deucher</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35950.html">[PATCH 016/102] drm/amdgpu: add VMC1 interrupt client id for Arcturus</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35952.html">[PATCH 017/102] drm/amdgpu: update vmc interrupt routine to support 3 vmhubs</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35950.html">[PATCH 016/102] drm/amdgpu: add VMC1 interrupt client id for Arcturus</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35952.html">[PATCH 017/102] drm/amdgpu: update vmc interrupt routine to support 3 vmhubs</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35951"><strong>Date</strong></a></li>
+<li><a href="index.html#35951"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

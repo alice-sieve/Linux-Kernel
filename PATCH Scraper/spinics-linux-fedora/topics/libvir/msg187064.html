@@ -1,0 +1,477 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 4/5] qemu_agent: add helper for getting guest users -->
+<!--X-From-R13: Xbanguba Xbatfzn &#60;wwbatfznNerqung.pbz> -->
+<!--X-Date: Wed, 10 Jul 2019 13:07:59 &#45;0700 -->
+<!--X-Message-Id: 20190710200747.745&#45;5&#45;jjongsma@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190710200747.745&#45;1&#45;jjongsma@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 4/5] qemu_agent: add helper for getting guest users</title>
+<meta name="description" content="libvirt: [PATCH 4/5] qemu_agent: add helper for getting guest users">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 4/5] qemu_agent: add helper for getting guest users</h1>
+[<a href="msg187063.html">Date Prev</a>][<a href="msg187065.html">Date Next</a>][<a href="msg187063.html">Thread Prev</a>][<a href="msg187065.html">Thread Next</a>][<a href="maillist.html#187064">Date Index</a>][<a href="index.html#187064">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 4/5] qemu_agent: add helper for getting guest users</li>
+<li><em>From</em>: Jonathon Jongsma &lt;jjongsma@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 10 Jul 2019 15:07:46 -0500</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187060.html">20190710200747.745-1-jjongsma@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187060.html">20190710200747.745-1-jjongsma@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This function fetches the list of logged-in users from the qemu agent
+and converts them into a form that can be used internally in libvirt.
+
+Also add some basic tests for the function.
+
+Signed-off-by: Jonathon Jongsma &lt;jjongsma@xxxxxxxxxx&gt;
+---
+ src/qemu/qemu_agent.c |  92 +++++++++++++++++++++++++++++++
+ src/qemu/qemu_agent.h |   2 +
+ tests/qemuagenttest.c | 125 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 219 insertions(+)
+
+diff --git a/src/qemu/qemu_agent.c b/src/qemu/qemu_agent.c
+index 361db299a5..b70d6806cd 100644
+--- a/src/qemu/qemu_agent.c
++++ b/src/qemu/qemu_agent.c
+@@ -2240,3 +2240,95 @@ qemuAgentSetUserPassword(qemuAgentPtr mon,
+     VIR_FREE(password64);
+     return ret;
+ }
++
++int
++qemuAgentGetUsers(qemuAgentPtr mon,
++                  virDomainUserInfoPtr **info)
++{
++    int ret = -1;
++    size_t i;
++    virJSONValuePtr cmd;
++    virJSONValuePtr reply = NULL;
++    virJSONValuePtr data = NULL;
++    size_t ndata;
++    const char *result;
++    virDomainUserInfoPtr *users = NULL;
++
++    if (!(cmd = qemuAgentMakeCommand(&quot;guest-get-users&quot;, NULL)))
++        return -1;
++
++    if (qemuAgentCommand(mon, cmd, &amp;reply, true,
++                         VIR_DOMAIN_QEMU_AGENT_COMMAND_BLOCK) &lt; 0)
++        goto cleanup;
++
++    if (!(data = virJSONValueObjectGetArray(reply, &quot;return&quot;))) {
++        virReportError(VIR_ERR_INTERNAL_ERROR, &quot;%s&quot;,
++                       _(&quot;guest-get-users reply was missing return data&quot;));
++        goto cleanup;
++    }
++
++    if (!virJSONValueIsArray(data)) {
++        virReportError(VIR_ERR_INTERNAL_ERROR, &quot;%s&quot;,
++                       _(&quot;Malformed guest-get-users data array&quot;));
++        goto cleanup;
++    }
++
++    ndata = virJSONValueArraySize(data);
++
++    if (VIR_ALLOC_N(users, ndata) &lt; 0)
++        goto cleanup;
++
++    for (i = 0; i &lt; ndata; i++) {
++        virJSONValuePtr entry = virJSONValueArrayGet(data, i);
++        if (VIR_ALLOC(users[i]) &lt; 0)
++            goto cleanup;
++
++        if (!entry) {
++            virReportError(VIR_ERR_INTERNAL_ERROR, &quot;%s&quot;,
++                           _(&quot;array element missing in guest-get-users return &quot;
++                             &quot;value&quot;));
++            goto cleanup;
++        }
++
++        if (!(result = virJSONValueObjectGetString(entry, &quot;user&quot;))) {
++            virReportError(VIR_ERR_INTERNAL_ERROR, &quot;%s&quot;,
++                           _(&quot;'user' missing in reply of guest-get-users&quot;));
++            goto cleanup;
++        }
++
++        if (VIR_STRDUP(users[i]-&gt;user, result) &lt; 0) {
++            goto cleanup;
++        }
++
++        /* 'domain' is only present for windows guests */
++        if ((result = virJSONValueObjectGetString(entry, &quot;domain&quot;))) {
++            if (VIR_STRDUP(users[i]-&gt;domain, result) &lt; 0) {
++                goto cleanup;
++            }
++        }
++
++        double loginseconds;
++        if (virJSONValueObjectGetNumberDouble(entry, &quot;login-time&quot;, &amp;loginseconds) &lt; 0) {
++            virReportError(VIR_ERR_INTERNAL_ERROR, &quot;%s&quot;,
++                           _(&quot;'login-time' missing in reply of guest-get-users&quot;));
++            goto cleanup;
++        }
++        /* convert to milliseconds */
++        users[i]-&gt;loginTime = loginseconds * 1000;
++    }
++
++    *info = users;
++    users = NULL;
++    ret = ndata;
++
++ cleanup:
++    if (users) {
++        for (i = 0; i &lt; ndata; i++) {
++            virDomainUserInfoFree(users[i]);
++        }
++        VIR_FREE(users);
++    }
++    virJSONValueFree(cmd);
++    virJSONValueFree(reply);
++    return ret;
++}
+diff --git a/src/qemu/qemu_agent.h b/src/qemu/qemu_agent.h
+index 6ae9fe54da..70797dc894 100644
+--- a/src/qemu/qemu_agent.h
++++ b/src/qemu/qemu_agent.h
+@@ -120,3 +120,5 @@ int qemuAgentSetUserPassword(qemuAgentPtr mon,
+                              const char *user,
+                              const char *password,
+                              bool crypted);
++
++int qemuAgentGetUsers(qemuAgentPtr mon, virDomainUserInfoPtr **info);
+diff --git a/tests/qemuagenttest.c b/tests/qemuagenttest.c
+index 2f79986207..d97f05102e 100644
+--- a/tests/qemuagenttest.c
++++ b/tests/qemuagenttest.c
+@@ -902,6 +902,130 @@ testQemuAgentGetInterfaces(const void *data)
+     return ret;
+ }
+ 
++static const char testQemuAgentUsersResponse[] =
++    &quot;{\&quot;return\&quot;: &quot;
++    &quot;   [&quot;
++    &quot;       {\&quot;user\&quot;: \&quot;test\&quot;,&quot;
++    &quot;        \&quot;login-time\&quot;: 1561739203.584038&quot;
++    &quot;       },&quot;
++    &quot;       {\&quot;user\&quot;: \&quot;test2\&quot;,&quot;
++    &quot;        \&quot;login-time\&quot;: 1561739229.190697&quot;
++    &quot;       }&quot;
++    &quot;   ]&quot;
++    &quot;}&quot;;
++
++static const char testQemuAgentUsersResponse2[] =
++    &quot;{\&quot;return\&quot;: &quot;
++    &quot;   [&quot;
++    &quot;       {\&quot;user\&quot;: \&quot;test\&quot;,&quot;
++    &quot;        \&quot;domain\&quot;: \&quot;DOMAIN\&quot;,&quot;
++    &quot;        \&quot;login-time\&quot;: 1561739203.584038&quot;
++    &quot;       }&quot;
++    &quot;   ]&quot;
++    &quot;}&quot;;
++
++static int
++testQemuAgentUsers(const void *data)
++{
++    virDomainXMLOptionPtr xmlopt = (virDomainXMLOptionPtr)data;
++    qemuMonitorTestPtr test = qemuMonitorTestNewAgent(xmlopt);
++    virDomainUserInfoPtr *userinfo = NULL;
++    int nusers;
++    int ret = -1;
++    int i;
++
++    if (!test)
++        return -1;
++
++    if (qemuMonitorTestAddAgentSyncResponse(test) &lt; 0)
++        goto cleanup;
++
++    if (qemuMonitorTestAddItem(test, &quot;guest-get-users&quot;,
++                               testQemuAgentUsersResponse) &lt; 0)
++        goto cleanup;
++
++    /* get users */
++    if ((nusers = qemuAgentGetUsers(qemuMonitorTestGetAgent(test),
++                                    &amp;userinfo)) &lt; 0)
++        goto cleanup;
++
++    if (nusers != 2) {
++        virReportError(VIR_ERR_INTERNAL_ERROR,
++                       &quot;Expected '2' users, got '%d'&quot;, nusers);
++        goto cleanup;
++    }
++    if (STRNEQ(userinfo[0]-&gt;user, &quot;test&quot;)) {
++        virReportError(VIR_ERR_INTERNAL_ERROR,
++                       &quot;Expected user name 'test', got '%s'&quot;, userinfo[0]-&gt;user);
++        goto cleanup;
++    }
++    if (userinfo[0]-&gt;loginTime != 1561739203.584038) {
++        virReportError(VIR_ERR_INTERNAL_ERROR,
++                       &quot;Expected login time of '1561739203584', got '%llu'&quot;,
++                       userinfo[0]-&gt;loginTime);
++        goto cleanup;
++    }
++
++    if (STRNEQ(userinfo[1]-&gt;user, &quot;test2&quot;)) {
++        virReportError(VIR_ERR_INTERNAL_ERROR,
++                       &quot;Expected user name 'test2', got '%s'&quot;, userinfo[1]-&gt;user);
++        goto cleanup;
++    }
++    if (userinfo[1]-&gt;loginTime != 1561739229.190697) {
++        virReportError(VIR_ERR_INTERNAL_ERROR,
++                       &quot;Expected login time of '1561739229190', got '%llu'&quot;,
++                       userinfo[1]-&gt;loginTime);
++        goto cleanup;
++    }
++
++    if (qemuMonitorTestAddAgentSyncResponse(test) &lt; 0)
++        goto cleanup;
++
++    if (qemuMonitorTestAddItem(test, &quot;guest-get-users&quot;,
++                               testQemuAgentUsersResponse2) &lt; 0)
++        goto cleanup;
++
++    VIR_FREE(userinfo);
++    /* get users with domain */
++    if ((nusers = qemuAgentGetUsers(qemuMonitorTestGetAgent(test),
++                                    &amp;userinfo)) &lt; 0)
++        goto cleanup;
++
++    if (nusers != 1) {
++        virReportError(VIR_ERR_INTERNAL_ERROR,
++                       &quot;Expected '1' user, got '%d'&quot;, nusers);
++        goto cleanup;
++    }
++
++    if (STRNEQ(userinfo[0]-&gt;user, &quot;test&quot;)) {
++        virReportError(VIR_ERR_INTERNAL_ERROR,
++                       &quot;Expected user name 'test', got '%s'&quot;, userinfo[0]-&gt;user);
++        goto cleanup;
++    }
++    if (userinfo[0]-&gt;loginTime != 1561739203.584038) {
++        virReportError(VIR_ERR_INTERNAL_ERROR,
++                       &quot;Expected login time of '1561739203584', got '%llu'&quot;,
++                       userinfo[0]-&gt;loginTime);
++        goto cleanup;
++    }
++    if (STRNEQ(userinfo[0]-&gt;domain, &quot;DOMAIN&quot;)) {
++        virReportError(VIR_ERR_INTERNAL_ERROR,
++                       &quot;Expected domain 'DOMAIN', got '%s'&quot;, userinfo[0]-&gt;domain);
++        goto cleanup;
++    }
++    ret = 0;
++
++ cleanup:
++    if (nusers &gt;= 0) {
++        for (i = 0; i &lt; nusers; i++)
++            virDomainUserInfoFree(userinfo[i]);
++    }
++    VIR_FREE(userinfo);
++    qemuMonitorTestFree(test);
++    return ret;
++}
++
++
+ static int
+ mymain(void)
+ {
+@@ -931,6 +1055,7 @@ mymain(void)
+     DO_TEST(CPU);
+     DO_TEST(ArbitraryCommand);
+     DO_TEST(GetInterfaces);
++    DO_TEST(Users);
+ 
+     DO_TEST(Timeout); /* Timeout should always be called last */
+ 
+-- 
+2.20.1
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187063.html">[PATCH 2/5] remote: implement remote protocol for	virDomainGetGuestUsers</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187065.html">[PATCH 5/5] qemu: implement virDomainGetGuestUsers</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187063.html">[PATCH 2/5] remote: implement remote protocol for	virDomainGetGuestUsers</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187065.html">[PATCH 5/5] qemu: implement virDomainGetGuestUsers</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187064"><strong>Date</strong></a></li>
+<li><a href="index.html#187064"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

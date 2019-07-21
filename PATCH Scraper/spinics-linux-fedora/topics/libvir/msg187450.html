@@ -1,0 +1,337 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 2/9] qemu: add CAPS_LATEST tests for 9pfs -->
+<!--X-From-R13: =?GFT&#45;8?d?X=Q3=O1a=20Fbzxb?= &#60;wgbzxbNerqung.pbz> -->
+<!--X-Date: Tue, 16 Jul 2019 04:07:09 &#45;0700 -->
+<!--X-Message-Id: 58ba4558711d22ccac25d3f32aa0d9a7d49f3503.1563275164.git.jtomko@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1563275164.git.jtomko@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 2/9] qemu: add CAPS_LATEST tests for 9pfs</title>
+<meta name="description" content="libvirt: [PATCH 2/9] qemu: add CAPS_LATEST tests for 9pfs">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 2/9] qemu: add CAPS_LATEST tests for 9pfs</h1>
+[<a href="msg187449.html">Date Prev</a>][<a href="msg187451.html">Date Next</a>][<a href="msg187451.html">Thread Prev</a>][<a href="msg187452.html">Thread Next</a>][<a href="maillist.html#187450">Date Index</a>][<a href="index.html#187450">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 2/9] qemu: add CAPS_LATEST tests for 9pfs</li>
+<li><em>From</em>: J&#xE1;n Tomko &lt;jtomko@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 16 Jul 2019 13:06:50 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187451.html">cover.1563275164.git.jtomko@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187451.html">cover.1563275164.git.jtomko@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Use the existing fs9p.xml and fs9p-ccw.xml to run the tests
+with latest caps on x86_64 and s390x.
+
+Signed-off-by: J&#xE1;n Tomko &lt;jtomko@xxxxxxxxxx&gt;
+---
+ .../fs9p-ccw.s390x-latest.args                | 44 +++++++++++++++++++
+ .../qemuxml2argvdata/fs9p.x86_64-latest.args  | 41 +++++++++++++++++
+ tests/qemuxml2argvtest.c                      |  2 +
+ 3 files changed, 87 insertions(+)
+ create mode 100644 tests/qemuxml2argvdata/fs9p-ccw.s390x-latest.args
+ create mode 100644 tests/qemuxml2argvdata/fs9p.x86_64-latest.args
+
+diff --git a/tests/qemuxml2argvdata/fs9p-ccw.s390x-latest.args b/tests/qemuxml2argvdata/fs9p-ccw.s390x-latest.args
+new file mode 100644
+index 0000000000..efd29c10ea
+--- /dev/null
++++ b/tests/qemuxml2argvdata/fs9p-ccw.s390x-latest.args
+@@ -0,0 +1,44 @@
++LC_ALL=C \
++PATH=/bin \
++HOME=/tmp/lib/domain--1-QEMUGuest1 \
++USER=test \
++LOGNAME=test \
++XDG_DATA_HOME=/tmp/lib/domain--1-QEMUGuest1/.local/share \
++XDG_CACHE_HOME=/tmp/lib/domain--1-QEMUGuest1/.cache \
++XDG_CONFIG_HOME=/tmp/lib/domain--1-QEMUGuest1/.config \
++QEMU_AUDIO_DRV=none \
++/usr/bin/qemu-system-s390x \
++-name guest=QEMUGuest1,debug-threads=on \
++-S \
++-object secret,id=masterKey0,format=raw,\
++file=/tmp/lib/domain--1-QEMUGuest1/master-key.aes \
++-machine s390-ccw-virtio,accel=tcg,usb=off,dump-guest-core=off \
++-m 214 \
++-overcommit mem-lock=off \
++-smp 1,sockets=1,cores=1,threads=1 \
++-uuid c7a5fdbd-edaf-9455-926a-d65c16db1809 \
++-display none \
++-no-user-config \
++-nodefaults \
++-chardev socket,id=charmonitor,fd=1729,server,nowait \
++-mon chardev=charmonitor,id=monitor,mode=control \
++-rtc base=utc \
++-no-shutdown \
++-boot strict=on \
++-drive file=/dev/HostVG/QEMUGuest1,format=raw,if=none,id=drive-virtio-disk0 \
++-device virtio-blk-ccw,scsi=off,devno=fe.0.0000,drive=drive-virtio-disk0,\
++id=virtio-disk0,bootindex=1 \
++-fsdev local,security_model=passthrough,id=fsdev-fs0,path=/export/to/guest \
++-device virtio-9p-ccw,id=fs0,fsdev=fsdev-fs0,mount_tag=/import/from/host,\
++devno=fe.0.0001 \
++-fsdev local,security_model=mapped,writeout=immediate,id=fsdev-fs1,\
++path=/export/to/guest2 \
++-device virtio-9p-ccw,id=fs1,fsdev=fsdev-fs1,mount_tag=/import/from/host2,\
++devno=fe.0.0002 \
++-fsdev handle,writeout=immediate,id=fsdev-fs2,path=/export/to/guest3 \
++-device virtio-9p-ccw,id=fs2,fsdev=fsdev-fs2,mount_tag=/import/from/host3,\
++devno=fe.0.0003 \
++-device virtio-balloon-ccw,id=balloon0,devno=fe.0.0004 \
++-sandbox on,obsolete=deny,elevateprivileges=deny,spawn=deny,\
++resourcecontrol=deny \
++-msg timestamp=on
+diff --git a/tests/qemuxml2argvdata/fs9p.x86_64-latest.args b/tests/qemuxml2argvdata/fs9p.x86_64-latest.args
+new file mode 100644
+index 0000000000..47b7580817
+--- /dev/null
++++ b/tests/qemuxml2argvdata/fs9p.x86_64-latest.args
+@@ -0,0 +1,41 @@
++LC_ALL=C \
++PATH=/bin \
++HOME=/tmp/lib/domain--1-QEMUGuest1 \
++USER=test \
++LOGNAME=test \
++XDG_DATA_HOME=/tmp/lib/domain--1-QEMUGuest1/.local/share \
++XDG_CACHE_HOME=/tmp/lib/domain--1-QEMUGuest1/.cache \
++XDG_CONFIG_HOME=/tmp/lib/domain--1-QEMUGuest1/.config \
++QEMU_AUDIO_DRV=none \
++/usr/bin/qemu-system-i686 \
++-name guest=QEMUGuest1,debug-threads=on \
++-S \
++-object secret,id=masterKey0,format=raw,\
++file=/tmp/lib/domain--1-QEMUGuest1/master-key.aes \
++-machine pc,accel=tcg,usb=off,dump-guest-core=off \
++-m 214 \
++-overcommit mem-lock=off \
++-smp 1,sockets=1,cores=1,threads=1 \
++-uuid c7a5fdbd-edaf-9455-926a-d65c16db1809 \
++-display none \
++-no-user-config \
++-nodefaults \
++-chardev socket,id=charmonitor,fd=1729,server,nowait \
++-mon chardev=charmonitor,id=monitor,mode=control \
++-rtc base=utc \
++-no-shutdown \
++-no-acpi \
++-boot strict=on \
++-fsdev local,security_model=passthrough,id=fsdev-fs0,path=/export/to/guest \
++-device virtio-9p-pci,id=fs0,fsdev=fsdev-fs0,mount_tag=/import/from/host,\
++bus=pci.0,addr=0x2 \
++-fsdev local,security_model=mapped,writeout=immediate,id=fsdev-fs1,\
++path=/export/to/guest2 \
++-device virtio-9p-pci,id=fs1,fsdev=fsdev-fs1,mount_tag=/import/from/host2,\
++bus=pci.0,addr=0x3 \
++-fsdev handle,writeout=immediate,id=fsdev-fs2,path=/export/to/guest3 \
++-device virtio-9p-pci,id=fs2,fsdev=fsdev-fs2,mount_tag=/import/from/host3,\
++bus=pci.0,addr=0x4 \
++-sandbox on,obsolete=deny,elevateprivileges=deny,spawn=deny,\
++resourcecontrol=deny \
++-msg timestamp=on
+diff --git a/tests/qemuxml2argvtest.c b/tests/qemuxml2argvtest.c
+index ca22d6b6d5..d6e6272518 100644
+--- a/tests/qemuxml2argvtest.c
++++ b/tests/qemuxml2argvtest.c
+@@ -1568,8 +1568,10 @@ mymain(void)
+             QEMU_CAPS_DEVICE_ICH9_INTEL_HDA,
+             QEMU_CAPS_OBJECT_USB_AUDIO);
+     DO_TEST(&quot;fs9p&quot;, NONE);
++    DO_TEST_CAPS_LATEST(&quot;fs9p&quot;);
+     DO_TEST(&quot;fs9p-ccw&quot;,
+             QEMU_CAPS_CCW, QEMU_CAPS_VIRTIO_S390);
++    DO_TEST_CAPS_ARCH_LATEST(&quot;fs9p-ccw&quot;, &quot;s390x&quot;);
+ 
+     DO_TEST(&quot;hostdev-usb-address&quot;, NONE);
+     DO_TEST(&quot;hostdev-usb-address-device&quot;, NONE);
+-- 
+2.19.2
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187449.html">[PATCH v2 4/4] virCommand: use procfs to learn opened FDs</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187451.html">[PATCH 0/9] qemu: refactor fsdev formatting (virtio-fs	epopee)</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187451.html">[PATCH 0/9] qemu: refactor fsdev formatting (virtio-fs	epopee)</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187452.html">[PATCH 4/9] qemu: command: rename	qemuBuildFSDevCommandLine</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187450"><strong>Date</strong></a></li>
+<li><a href="index.html#187450"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

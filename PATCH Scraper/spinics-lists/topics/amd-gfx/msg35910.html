@@ -1,0 +1,493 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 63/87] drm/amd/display: add set and get clock for testing purposes -->
+<!--X-From-R13: &#60;fhacrat.yvNnzq.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 14:21:59 &#45;0700 -->
+<!--X-Message-Id: 20190715212049.4584&#45;64&#45;sunpeng.li@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715212049.4584&#45;1&#45;sunpeng.li@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 63/87] drm/amd/display: add set and get clock for testing purposes">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 63/87] drm/amd/display: add set and get clock for testing purposes &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 63/87] drm/amd/display: add set and get clock for testing purposes</h1>
+[<a href="msg35909.html">Date Prev</a>][<a href="msg35911.html">Date Next</a>][<a href="msg35909.html">Thread Prev</a>][<a href="msg35911.html">Thread Next</a>][<a href="maillist.html#35910">Date Index</a>][<a href="index.html#35910">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: &lt;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 63/87] drm/amd/display: add set and get clock for testing purposes</li>
+<li><em>From</em>: &lt;sunpeng.li@xxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 17:20:25 -0400</li>
+<li><em>Cc</em>: Leo Li &lt;sunpeng.li@xxxxxxx&gt;, Charlene Liu &lt;charlene.liu@xxxxxxx&gt;,        Dmytro Laktyushkin &lt;Dmytro.Laktyushkin@xxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg35850.html">20190715212049.4584-1-sunpeng.li@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg35850.html">20190715212049.4584-1-sunpeng.li@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Charlene Liu &lt;charlene.liu@xxxxxxx&gt;
+
+add dc_set_clock
+add dc_get_clock
+
+this is for testing and diagnostics to get/set DPPCLK and DISPCLK.
+
+Signed-off-by: Charlene Liu &lt;charlene.liu@xxxxxxx&gt;
+Reviewed-by: Dmytro Laktyushkin &lt;Dmytro.Laktyushkin@xxxxxxx&gt;
+Acked-by: Leo Li &lt;sunpeng.li@xxxxxxx&gt;
+---
+ .../display/dc/clk_mgr/dcn20/dcn20_clk_mgr.c  | 23 +++++++-
+ .../display/dc/clk_mgr/dcn20/dcn20_clk_mgr.h  |  5 ++
+ drivers/gpu/drm/amd/display/dc/core/dc.c      | 11 ++++
+ drivers/gpu/drm/amd/display/dc/dc.h           |  5 ++
+ drivers/gpu/drm/amd/display/dc/dc_types.h     | 13 +++++
+ .../amd/display/dc/dcn10/dcn10_hw_sequencer.c | 53 ++++++++++++++++++-
+ .../drm/amd/display/dc/dcn20/dcn20_resource.c |  5 ++
+ .../gpu/drm/amd/display/dc/inc/core_status.h  |  3 ++
+ .../gpu/drm/amd/display/dc/inc/hw/clk_mgr.h   |  7 +++
+ .../gpu/drm/amd/display/dc/inc/hw_sequencer.h |  9 ++++
+ 10 files changed, 132 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn20/dcn20_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn20/dcn20_clk_mgr.c
+index e9a7a7af11df..9a873e2b3736 100644
+--- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn20/dcn20_clk_mgr.c
++++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn20/dcn20_clk_mgr.c
+@@ -316,11 +316,32 @@ void dcn2_enable_pme_wa(struct clk_mgr *clk_mgr_base)
+ 	}
+ }
+ 
++void dcn2_get_clock(struct clk_mgr *clk_mgr,
++		struct dc_state *context,
++			enum dc_clock_type clock_type,
++			struct dc_clock_config *clock_cfg)
++{
++
++	if (clock_type == DC_CLOCK_TYPE_DISPCLK) {
++		clock_cfg-&gt;max_clock_khz = context-&gt;bw_ctx.bw.dcn.clk.max_supported_dispclk_khz;
++		clock_cfg-&gt;min_clock_khz = DCN_MINIMUM_DISPCLK_Khz;
++		clock_cfg-&gt;current_clock_khz = clk_mgr-&gt;clks.dispclk_khz;
++		clock_cfg-&gt;bw_requirequired_clock_khz = context-&gt;bw_ctx.bw.dcn.clk.bw_dispclk_khz;
++	}
++	if (clock_type == DC_CLOCK_TYPE_DPPCLK) {
++		clock_cfg-&gt;max_clock_khz = context-&gt;bw_ctx.bw.dcn.clk.max_supported_dppclk_khz;
++		clock_cfg-&gt;min_clock_khz = DCN_MINIMUM_DPPCLK_Khz;
++		clock_cfg-&gt;current_clock_khz = clk_mgr-&gt;clks.dppclk_khz;
++		clock_cfg-&gt;bw_requirequired_clock_khz = context-&gt;bw_ctx.bw.dcn.clk.bw_dppclk_khz;
++	}
++}
++
+ static struct clk_mgr_funcs dcn2_funcs = {
+ 	.get_dp_ref_clk_frequency = dce12_get_dp_ref_freq_khz,
+ 	.update_clocks = dcn2_update_clocks,
+ 	.init_clocks = dcn2_init_clocks,
+-	.enable_pme_wa = dcn2_enable_pme_wa
++	.enable_pme_wa = dcn2_enable_pme_wa,
++	.get_clock = dcn2_get_clock,
+ };
+ 
+ 
+diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn20/dcn20_clk_mgr.h b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn20/dcn20_clk_mgr.h
+index 5661a5a89847..ac31a9787305 100644
+--- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn20/dcn20_clk_mgr.h
++++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn20/dcn20_clk_mgr.h
+@@ -45,4 +45,9 @@ void dcn20_clk_mgr_construct(struct dc_context *ctx,
+ 
+ uint32_t dentist_get_did_from_divider(int divider);
+ 
++void dcn2_get_clock(struct clk_mgr *clk_mgr,
++		struct dc_state *context,
++			enum dc_clock_type clock_type,
++			struct dc_clock_config *clock_cfg);
++
+ #endif //__DCN20_CLK_MGR_H__
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
+index b57e4550e73f..b2004b3056af 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
+@@ -2429,3 +2429,14 @@ void get_clock_requirements_for_state(struct dc_state *state, struct AsicStateEx
+ 	info-&gt;fClock					= (unsigned int)state-&gt;bw_ctx.bw.dcn.clk.fclk_khz;
+ 	info-&gt;phyClock					= (unsigned int)state-&gt;bw_ctx.bw.dcn.clk.phyclk_khz;
+ }
++enum dc_status dc_set_clock(struct dc *dc, enum dc_clock_type clock_type, uint32_t clk_khz, uint32_t stepping)
++{
++	if (dc-&gt;hwss.set_clock)
++		return dc-&gt;hwss.set_clock(dc, clock_type, clk_khz, stepping);
++	return DC_ERROR_UNEXPECTED;
++}
++void dc_get_clock(struct dc *dc, enum dc_clock_type clock_type, struct dc_clock_config *clock_cfg)
++{
++	if (dc-&gt;hwss.get_clock)
++		dc-&gt;hwss.get_clock(dc, clock_type, clock_cfg);
++}
+diff --git a/drivers/gpu/drm/amd/display/dc/dc.h b/drivers/gpu/drm/amd/display/dc/dc.h
+index b314fd2869dd..a5b5afd48a7b 100644
+--- a/drivers/gpu/drm/amd/display/dc/dc.h
++++ b/drivers/gpu/drm/amd/display/dc/dc.h
+@@ -252,7 +252,10 @@ enum wm_report_mode {
+ struct dc_clocks {
+ 	int dispclk_khz;
+ 	int max_supported_dppclk_khz;
++	int max_supported_dispclk_khz;
+ 	int dppclk_khz;
++	int bw_dppclk_khz; /*a copy of dppclk_khz*/
++	int bw_dispclk_khz;
+ 	int dcfclk_khz;
+ 	int socclk_khz;
+ 	int dcfclk_deep_sleep_khz;
+@@ -1041,6 +1044,8 @@ unsigned int dc_get_target_backlight_pwm(struct dc *dc);
+ 
+ bool dc_is_dmcu_initialized(struct dc *dc);
+ 
++enum dc_status dc_set_clock(struct dc *dc, enum dc_clock_type clock_type, uint32_t clk_khz, uint32_t stepping);
++void dc_get_clock(struct dc *dc, enum dc_clock_type clock_type, struct dc_clock_config *clock_cfg);
+ #if defined(CONFIG_DRM_AMD_DC_DSC_SUPPORT)
+ /*******************************************************************************
+  * DSC Interfaces
+diff --git a/drivers/gpu/drm/amd/display/dc/dc_types.h b/drivers/gpu/drm/amd/display/dc/dc_types.h
+index ce6d73d21cca..b273735b6a3e 100644
+--- a/drivers/gpu/drm/amd/display/dc/dc_types.h
++++ b/drivers/gpu/drm/amd/display/dc/dc_types.h
+@@ -726,6 +726,19 @@ struct AsicStateEx {
+ 	unsigned int phyClock;
+ };
+ 
++
++enum dc_clock_type {
++	DC_CLOCK_TYPE_DISPCLK = 0,
++	DC_CLOCK_TYPE_DPPCLK        = 1,
++};
++
++struct dc_clock_config {
++	uint32_t max_clock_khz;
++	uint32_t min_clock_khz;
++	uint32_t bw_requirequired_clock_khz;
++	uint32_t current_clock_khz;/*current clock in use*/
++};
++
+ #ifdef CONFIG_DRM_AMD_DC_DSC_SUPPORT
+ /* DSC DPCD capabilities */
+ union dsc_slice_caps1 {
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+index c22fc1568184..58d118a3ee8e 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+@@ -3068,6 +3068,56 @@ static void dcn10_send_immediate_sdp_message(struct pipe_ctx *pipe_ctx,
+ 				sdp_message_size);
+ 	}
+ }
++static enum dc_status dcn10_set_clock(struct dc *dc,
++			enum dc_clock_type clock_type,
++			uint32_t clk_khz,
++			uint32_t stepping)
++{
++	struct dc_state *context = dc-&gt;current_state;
++	struct dc_clock_config clock_cfg = {0};
++	struct dc_clocks *current_clocks = &amp;context-&gt;bw_ctx.bw.dcn.clk;
++
++	if (dc-&gt;clk_mgr &amp;&amp; dc-&gt;clk_mgr-&gt;funcs-&gt;get_clock)
++				dc-&gt;clk_mgr-&gt;funcs-&gt;get_clock(dc-&gt;clk_mgr,
++						context, clock_type, &amp;clock_cfg);
++
++	if (!dc-&gt;clk_mgr-&gt;funcs-&gt;get_clock)
++		return DC_FAIL_UNSUPPORTED_1;
++
++	if (clk_khz &gt; clock_cfg.max_clock_khz)
++		return DC_FAIL_CLK_EXCEED_MAX;
++
++	if (clk_khz &lt; clock_cfg.min_clock_khz)
++		return DC_FAIL_CLK_BELOW_MIN;
++
++	if (clk_khz &lt; clock_cfg.bw_requirequired_clock_khz)
++		return DC_FAIL_CLK_BELOW_CFG_REQUIRED;
++
++	/*update internal request clock for update clock use*/
++	if (clock_type == DC_CLOCK_TYPE_DISPCLK)
++		current_clocks-&gt;dispclk_khz = clk_khz;
++	else if (clock_type == DC_CLOCK_TYPE_DPPCLK)
++		current_clocks-&gt;dppclk_khz = clk_khz;
++	else
++		return DC_ERROR_UNEXPECTED;
++
++	if (dc-&gt;clk_mgr &amp;&amp; dc-&gt;clk_mgr-&gt;funcs-&gt;update_clocks)
++				dc-&gt;clk_mgr-&gt;funcs-&gt;update_clocks(dc-&gt;clk_mgr,
++				context, true);
++	return DC_OK;
++
++}
++
++static void dcn10_get_clock(struct dc *dc,
++			enum dc_clock_type clock_type,
++			struct dc_clock_config *clock_cfg)
++{
++	struct dc_state *context = dc-&gt;current_state;
++
++	if (dc-&gt;clk_mgr &amp;&amp; dc-&gt;clk_mgr-&gt;funcs-&gt;get_clock)
++				dc-&gt;clk_mgr-&gt;funcs-&gt;get_clock(dc-&gt;clk_mgr, context, clock_type, clock_cfg);
++
++}
+ 
+ static const struct hw_sequencer_funcs dcn10_funcs = {
+ 	.program_gamut_remap = program_gamut_remap,
+@@ -3122,7 +3172,8 @@ static const struct hw_sequencer_funcs dcn10_funcs = {
+ 	.enable_stream_gating = NULL,
+ 	.setup_periodic_interrupt = dcn10_setup_periodic_interrupt,
+ 	.setup_vupdate_interrupt = dcn10_setup_vupdate_interrupt,
+-	.did_underflow_occur = dcn10_did_underflow_occur
++	.set_clock = dcn10_set_clock,
++	.get_clock = dcn10_get_clock,
+ };
+ 
+ 
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
+index 022d0f38723b..158743b165e8 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
+@@ -2396,6 +2396,11 @@ void dcn20_calculate_dlg_params(
+ 		context-&gt;res_ctx.pipe_ctx[i].pipe_dlg_param = pipes[pipe_idx].pipe.dest;
+ 		pipe_idx++;
+ 	}
++	/*save a original dppclock copy*/
++	context-&gt;bw_ctx.bw.dcn.clk.bw_dppclk_khz = context-&gt;bw_ctx.bw.dcn.clk.dppclk_khz;
++	context-&gt;bw_ctx.bw.dcn.clk.bw_dispclk_khz = context-&gt;bw_ctx.bw.dcn.clk.dispclk_khz;
++	context-&gt;bw_ctx.bw.dcn.clk.max_supported_dppclk_khz = context-&gt;bw_ctx.dml.soc.clock_limits[vlevel].dppclk_mhz*1000;
++	context-&gt;bw_ctx.bw.dcn.clk.max_supported_dispclk_khz = context-&gt;bw_ctx.dml.soc.clock_limits[vlevel].dispclk_mhz*1000;
+ 
+ 	for (i = 0, pipe_idx = 0; i &lt; dc-&gt;res_pool-&gt;pipe_count; i++) {
+ 		bool cstate_en = context-&gt;bw_ctx.dml.vba.PrefetchMode[vlevel][context-&gt;bw_ctx.dml.vba.maxMpcComb] != 2;
+diff --git a/drivers/gpu/drm/amd/display/dc/inc/core_status.h b/drivers/gpu/drm/amd/display/dc/inc/core_status.h
+index 0a094d7c9380..fd39e2abe2ed 100644
+--- a/drivers/gpu/drm/amd/display/dc/inc/core_status.h
++++ b/drivers/gpu/drm/amd/display/dc/inc/core_status.h
+@@ -48,6 +48,9 @@ enum dc_status {
+ 	DC_NO_DSC_RESOURCE = 17,
+ #endif
+ 	DC_FAIL_UNSUPPORTED_1 = 18,
++	DC_FAIL_CLK_EXCEED_MAX = 21,
++	DC_FAIL_CLK_BELOW_MIN = 22, /*THIS IS MIN PER IP*/
++	DC_FAIL_CLK_BELOW_CFG_REQUIRED = 23, /*THIS IS hard_min in PPLIB*/
+ 
+ 	DC_ERROR_UNEXPECTED = -1
+ };
+diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw/clk_mgr.h b/drivers/gpu/drm/amd/display/dc/inc/hw/clk_mgr.h
+index 36ebd5bc7863..938bdc5c21a1 100644
+--- a/drivers/gpu/drm/amd/display/dc/inc/hw/clk_mgr.h
++++ b/drivers/gpu/drm/amd/display/dc/inc/hw/clk_mgr.h
+@@ -28,6 +28,9 @@
+ 
+ #include &quot;dc.h&quot;
+ 
++#define DCN_MINIMUM_DISPCLK_Khz 100000
++#define DCN_MINIMUM_DPPCLK_Khz 100000
++
+ /* Public interfaces */
+ 
+ struct clk_states {
+@@ -51,6 +54,10 @@ struct clk_mgr_funcs {
+ 	void (*init_clocks)(struct clk_mgr *clk_mgr);
+ 
+ 	void (*enable_pme_wa) (struct clk_mgr *clk_mgr);
++	void (*get_clock)(struct clk_mgr *clk_mgr,
++			struct dc_state *context,
++			enum dc_clock_type clock_type,
++			struct dc_clock_config *clock_cfg);
+ };
+ 
+ struct clk_mgr {
+diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw_sequencer.h b/drivers/gpu/drm/amd/display/dc/inc/hw_sequencer.h
+index 4d56d48a3179..36be08adae05 100644
+--- a/drivers/gpu/drm/amd/display/dc/inc/hw_sequencer.h
++++ b/drivers/gpu/drm/amd/display/dc/inc/hw_sequencer.h
+@@ -294,6 +294,15 @@ struct hw_sequencer_funcs {
+ 	void (*disable_writeback)(struct dc *dc,
+ 			unsigned int dwb_pipe_inst);
+ #endif
++	enum dc_status (*set_clock)(struct dc *dc,
++			enum dc_clock_type clock_type,
++			uint32_t clk_khz,
++			uint32_t stepping);
++
++	void (*get_clock)(struct dc *dc,
++			enum dc_clock_type clock_type,
++			struct dc_clock_config *clock_cfg);
++
+ };
+ 
+ void color_space_to_black_color(
+-- 
+2.22.0
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="35850" href="msg35850.html">[PATCH 00/87] DC Patches 15 Jul, 2019</a></strong>
+<ul><li><em>From:</em> sunpeng.li</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35909.html">[PATCH 59/87] drm/amd/display: Fixes for some MPO cases</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35911.html">[PATCH 68/87] drm/amd/display: add pipe CRC sources without disabling dithering.</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35909.html">[PATCH 59/87] drm/amd/display: Fixes for some MPO cases</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35911.html">[PATCH 68/87] drm/amd/display: add pipe CRC sources without disabling dithering.</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35910"><strong>Date</strong></a></li>
+<li><a href="index.html#35910"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Add leavebootorder option (pykickstart) -->
+<!--X-From-R13: [nex Vnzml &#60;unzmlNhf.voz.pbz> -->
+<!--X-Date: Fri, 8 Jun 2012 13:50:41 &#45;0700 -->
+<!--X-Message-Id: 1339187990&#45;28148&#45;1&#45;git&#45;send&#45;email&#45;hamzy@us.ibm.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Kickstart, [PATCH] Add leavebootorder option (pykickstart)">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Kickstart &mdash; [PATCH] Add leavebootorder option (pykickstart)</title>
+<link rel="alternate" type="application/rss+xml" title="Kickstart" href="maillist.rdf">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] Add leavebootorder option (pykickstart)</h1>
+[<a href="msg11324.html">Date Prev</a>][<a href="msg11326.html">Date Next</a>][<a href="msg11324.html">Thread Prev</a>][<a href="msg11326.html">Thread Next</a>][<a href="maillist.html#11325">Date Index</a>][<a href="index.html#11325">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Add leavebootorder option (pykickstart)</li>
+<li><em>From</em>: Mark Hamzy &lt;<a href="mailto:hamzy@DOMAIN.HIDDEN">hamzy@xxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Fri,  8 Jun 2012 15:39:50 -0500</li>
+<li><em>Cc</em>: Mark Hamzy &lt;<a href="mailto:hamzy@DOMAIN.HIDDEN">hamzy@xxxxxxxxxx</a>&gt;</li>
+<li><em>Reply-to</em>: Discussion list about Kickstart &lt;<a href="mailto:kickstart-list@DOMAIN.HIDDEN">kickstart-list@xxxxxxxxxx</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre><a  rel="nofollow" href="https://bugzilla.redhat.com/show_bug.cgi?id=827116">https://bugzilla.redhat.com/show_bug.cgi?id=827116</a>
+
+The default on PowerPC machines is to change the boot order to boot into the
+newly installed drive.  There are install scenarios where this is not
+preferable.  So, I have added a new boot commandline and kickstart option
+called leavebootorder.
+
+---
+ pykickstart/commands/bootloader.py |   19 +++++++++++++++++++
+ pykickstart/handlers/control.py    |    2 +-
+ 2 files changed, 20 insertions(+), 1 deletions(-)
+
+diff --git a/pykickstart/commands/bootloader.py b/pykickstart/commands/bootloader.py
+index bb40a18..2268a68 100644
+--- a/pykickstart/commands/bootloader.py
++++ b/pykickstart/commands/bootloader.py
+@@ -234,6 +234,25 @@ class F17_Bootloader(F15_Bootloader):
+         op.add_option(&quot;--boot-drive&quot;, dest=&quot;bootDrive&quot;, default=&quot;&quot;)
+         return op
+ 
++class F18_Bootloader(F17_Bootloader):
++    def __init__(self, writePriority=10, *args, **kwargs):
++        F17_Bootloader.__init__(self, writePriority, *args, **kwargs)
++
++        self.leavebootorder = kwargs.get(&quot;leavebootorder&quot;, False)
++
++    def _getArgsAsStr(self):
++        ret = F17_Bootloader._getArgsAsStr(self)
++
++        if self.leavebootorder:
++            ret += &quot; --leavebootorder&quot;
++
++        return ret
++
++    def _getParser(self):
++        op = F17_Bootloader._getParser(self)
++        op.add_option(&quot;--leavebootorder&quot;, action=&quot;store_true&quot;, default=False)
++        return op
++
+ class RHEL5_Bootloader(FC4_Bootloader):
+     removedKeywords = FC4_Bootloader.removedKeywords
+     removedAttrs = FC4_Bootloader.removedAttrs
+diff --git a/pykickstart/handlers/control.py b/pykickstart/handlers/control.py
+index 6fe7c10..4a7b41e 100644
+--- a/pykickstart/handlers/control.py
++++ b/pykickstart/handlers/control.py
+@@ -890,7 +890,7 @@ commandMap = {
+         &quot;authconfig&quot;: authconfig.FC3_Authconfig,
+         &quot;autopart&quot;: autopart.F17_AutoPart,
+         &quot;autostep&quot;: autostep.FC3_AutoStep,
+-        &quot;bootloader&quot;: bootloader.F17_Bootloader,
++        &quot;bootloader&quot;: bootloader.F18_Bootloader,
+         &quot;btrfs&quot;: btrfs.F17_BTRFS,
+         &quot;cdrom&quot;: method.F14_Method,
+         &quot;clearpart&quot;: clearpart.F17_ClearPart,
+-- 
+1.7.7.6
+
+_______________________________________________
+Kickstart-list mailing list
+Kickstart-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/kickstart-list">https://www.redhat.com/mailman/listinfo/kickstart-list</a>
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg11324.html">Kickstart packages --default parsing query</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg11326.html">how to tell when biosboot partition is needed?</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg11324.html">Kickstart packages --default parsing query</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg11326.html">how to tell when biosboot partition is needed?</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#11325"><strong>Date</strong></a></li>
+<li><a href="index.html#11325"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/redhat/>[Red&nbsp;Hat&nbsp;General]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos/>[CentOS&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z//biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

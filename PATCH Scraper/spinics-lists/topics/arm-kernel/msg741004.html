@@ -1,0 +1,577 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v4 5/8] clk: sunxi&#45;ng: v3s: add Allwinner V3 support -->
+<!--X-From-R13: Wprabjl Lurat &#60;vprabjlNnbfp.vb> -->
+<!--X-Date: Fri, 12 Jul 2019 20:49:18 &#45;0700 -->
+<!--X-Message-Id: 20190713034634.44585&#45;6&#45;icenowy@aosc.io -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190713034634.44585&#45;1&#45;icenowy@aosc.io -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH v4 5/8] clk: sunxi-ng: v3s: add Allwinner V3 support">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH v4 5/8] clk: sunxi-ng: v3s: add Allwinner V3 support &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH v4 5/8] clk: sunxi-ng: v3s: add Allwinner V3 support</h1>
+[<a href="msg741003.html">Date Prev</a>][<a href="msg741005.html">Date Next</a>][<a href="msg741003.html">Thread Prev</a>][<a href="msg741005.html">Thread Next</a>][<a href="maillist.html#741004">Date Index</a>][<a href="threads.html#741004">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v4 5/8] clk: sunxi-ng: v3s: add Allwinner V3 support</li>
+<li><em>From</em>: Icenowy Zheng &lt;icenowy@xxxxxxx&gt;</li>
+<li><em>Date</em>: Sat, 13 Jul 2019 11:46:31 +0800</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg740999.html">20190713034634.44585-1-icenowy@aosc.io</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Allwinner V3 has the same main die with V3s, but with more pins wired.
+There's a I2S bus on V3 that is not available on V3s.
+
+Add the V3-only peripheral's clocks and reset to the V3s CCU driver,
+bound to a new V3 compatible string. The driver name is not changed
+because it's part of the device tree binding (the header file name).
+
+Signed-off-by: Icenowy Zheng &lt;icenowy@xxxxxxx&gt;
+---
+Changes in v4:
+- Add the missing MMC2 clock slices.
+
+No changes in v3/v2.
+
+ drivers/clk/sunxi-ng/ccu-sun8i-v3s.c      | 228 +++++++++++++++++++++-
+ drivers/clk/sunxi-ng/ccu-sun8i-v3s.h      |   2 +-
+ include/dt-bindings/clock/sun8i-v3s-ccu.h |   4 +
+ include/dt-bindings/reset/sun8i-v3s-ccu.h |   3 +
+ 4 files changed, 234 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-v3s.c b/drivers/clk/sunxi-ng/ccu-sun8i-v3s.c
+index 9c88015d4419..32854dec3753 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun8i-v3s.c
++++ b/drivers/clk/sunxi-ng/ccu-sun8i-v3s.c
+@@ -235,6 +235,8 @@ static SUNXI_CCU_GATE(bus_codec_clk,	&quot;bus-codec&quot;,	&quot;apb1&quot;,
+ 		      0x068, BIT(0), 0);
+ static SUNXI_CCU_GATE(bus_pio_clk,	&quot;bus-pio&quot;,	&quot;apb1&quot;,
+ 		      0x068, BIT(5), 0);
++static SUNXI_CCU_GATE(bus_i2s0_clk,	&quot;bus-i2s0&quot;,	&quot;apb1&quot;,
++		      0x068, BIT(12), 0);
+ 
+ static SUNXI_CCU_GATE(bus_i2c0_clk,	&quot;bus-i2c0&quot;,	&quot;apb2&quot;,
+ 		      0x06c, BIT(0), 0);
+@@ -306,6 +308,11 @@ static SUNXI_CCU_MP_WITH_MUX_GATE(spi0_clk, &quot;spi0&quot;, mod0_default_parents, 0x0a0,
+ 				  BIT(31),	/* gate */
+ 				  0);
+ 
++static const char * const i2s_parents[] = { &quot;pll-audio-8x&quot;, &quot;pll-audio-4x&quot;,
++					    &quot;pll-audio-2x&quot;, &quot;pll-audio&quot; };
++static SUNXI_CCU_MUX_WITH_GATE(i2s0_clk, &quot;i2s0&quot;, i2s_parents,
++			       0x0b0, 16, 2, BIT(31), CLK_SET_RATE_PARENT);
++
+ static SUNXI_CCU_GATE(usb_phy0_clk,	&quot;usb-phy0&quot;,	&quot;osc24M&quot;,
+ 		      0x0cc, BIT(8), 0);
+ static SUNXI_CCU_GATE(usb_ohci0_clk,	&quot;usb-ohci0&quot;,	&quot;osc24M&quot;,
+@@ -443,6 +450,80 @@ static const struct clk_hw *clk_parent_pll_audio[] = {
+ 	&amp;pll_audio_base_clk.common.hw
+ };
+ 
++static struct ccu_common *sun8i_v3_ccu_clks[] = {
++	&amp;pll_cpu_clk.common,
++	&amp;pll_audio_base_clk.common,
++	&amp;pll_video_clk.common,
++	&amp;pll_ve_clk.common,
++	&amp;pll_ddr0_clk.common,
++	&amp;pll_periph0_clk.common,
++	&amp;pll_isp_clk.common,
++	&amp;pll_periph1_clk.common,
++	&amp;pll_ddr1_clk.common,
++	&amp;cpu_clk.common,
++	&amp;axi_clk.common,
++	&amp;ahb1_clk.common,
++	&amp;apb1_clk.common,
++	&amp;apb2_clk.common,
++	&amp;ahb2_clk.common,
++	&amp;bus_ce_clk.common,
++	&amp;bus_dma_clk.common,
++	&amp;bus_mmc0_clk.common,
++	&amp;bus_mmc1_clk.common,
++	&amp;bus_mmc2_clk.common,
++	&amp;bus_dram_clk.common,
++	&amp;bus_emac_clk.common,
++	&amp;bus_hstimer_clk.common,
++	&amp;bus_spi0_clk.common,
++	&amp;bus_otg_clk.common,
++	&amp;bus_ehci0_clk.common,
++	&amp;bus_ohci0_clk.common,
++	&amp;bus_ve_clk.common,
++	&amp;bus_tcon0_clk.common,
++	&amp;bus_csi_clk.common,
++	&amp;bus_de_clk.common,
++	&amp;bus_codec_clk.common,
++	&amp;bus_pio_clk.common,
++	&amp;bus_i2s0_clk.common,
++	&amp;bus_i2c0_clk.common,
++	&amp;bus_i2c1_clk.common,
++	&amp;bus_uart0_clk.common,
++	&amp;bus_uart1_clk.common,
++	&amp;bus_uart2_clk.common,
++	&amp;bus_ephy_clk.common,
++	&amp;bus_dbg_clk.common,
++	&amp;mmc0_clk.common,
++	&amp;mmc0_sample_clk.common,
++	&amp;mmc0_output_clk.common,
++	&amp;mmc1_clk.common,
++	&amp;mmc1_sample_clk.common,
++	&amp;mmc1_output_clk.common,
++	&amp;mmc2_clk.common,
++	&amp;mmc2_sample_clk.common,
++	&amp;mmc2_output_clk.common,
++	&amp;ce_clk.common,
++	&amp;spi0_clk.common,
++	&amp;i2s0_clk.common,
++	&amp;usb_phy0_clk.common,
++	&amp;usb_ohci0_clk.common,
++	&amp;dram_clk.common,
++	&amp;dram_ve_clk.common,
++	&amp;dram_csi_clk.common,
++	&amp;dram_ohci_clk.common,
++	&amp;dram_ehci_clk.common,
++	&amp;de_clk.common,
++	&amp;tcon_clk.common,
++	&amp;csi_misc_clk.common,
++	&amp;csi0_mclk_clk.common,
++	&amp;csi1_sclk_clk.common,
++	&amp;csi1_mclk_clk.common,
++	&amp;ve_clk.common,
++	&amp;ac_dig_clk.common,
++	&amp;avs_clk.common,
++	&amp;mbus_clk.common,
++	&amp;mipi_csi_clk.common,
++};
++
+ /* We hardcode the divider to 4 for now */
+ static CLK_FIXED_FACTOR_HWS(pll_audio_clk, &quot;pll-audio&quot;,
+ 			    clk_parent_pll_audio,
+@@ -540,6 +621,88 @@ static struct clk_hw_onecell_data sun8i_v3s_hw_clks = {
+ 	.num	= CLK_NUMBER,
+ };
+ 
++static struct clk_hw_onecell_data sun8i_v3_hw_clks = {
++	.hws	= {
++		[CLK_PLL_CPU]		= &amp;pll_cpu_clk.common.hw,
++		[CLK_PLL_AUDIO_BASE]	= &amp;pll_audio_base_clk.common.hw,
++		[CLK_PLL_AUDIO]		= &amp;pll_audio_clk.hw,
++		[CLK_PLL_AUDIO_2X]	= &amp;pll_audio_2x_clk.hw,
++		[CLK_PLL_AUDIO_4X]	= &amp;pll_audio_4x_clk.hw,
++		[CLK_PLL_AUDIO_8X]	= &amp;pll_audio_8x_clk.hw,
++		[CLK_PLL_VIDEO]		= &amp;pll_video_clk.common.hw,
++		[CLK_PLL_VE]		= &amp;pll_ve_clk.common.hw,
++		[CLK_PLL_DDR0]		= &amp;pll_ddr0_clk.common.hw,
++		[CLK_PLL_PERIPH0]	= &amp;pll_periph0_clk.common.hw,
++		[CLK_PLL_PERIPH0_2X]	= &amp;pll_periph0_2x_clk.hw,
++		[CLK_PLL_ISP]		= &amp;pll_isp_clk.common.hw,
++		[CLK_PLL_PERIPH1]	= &amp;pll_periph1_clk.common.hw,
++		[CLK_PLL_DDR1]		= &amp;pll_ddr1_clk.common.hw,
++		[CLK_CPU]		= &amp;cpu_clk.common.hw,
++		[CLK_AXI]		= &amp;axi_clk.common.hw,
++		[CLK_AHB1]		= &amp;ahb1_clk.common.hw,
++		[CLK_APB1]		= &amp;apb1_clk.common.hw,
++		[CLK_APB2]		= &amp;apb2_clk.common.hw,
++		[CLK_AHB2]		= &amp;ahb2_clk.common.hw,
++		[CLK_BUS_CE]		= &amp;bus_ce_clk.common.hw,
++		[CLK_BUS_DMA]		= &amp;bus_dma_clk.common.hw,
++		[CLK_BUS_MMC0]		= &amp;bus_mmc0_clk.common.hw,
++		[CLK_BUS_MMC1]		= &amp;bus_mmc1_clk.common.hw,
++		[CLK_BUS_MMC2]		= &amp;bus_mmc2_clk.common.hw,
++		[CLK_BUS_DRAM]		= &amp;bus_dram_clk.common.hw,
++		[CLK_BUS_EMAC]		= &amp;bus_emac_clk.common.hw,
++		[CLK_BUS_HSTIMER]	= &amp;bus_hstimer_clk.common.hw,
++		[CLK_BUS_SPI0]		= &amp;bus_spi0_clk.common.hw,
++		[CLK_BUS_OTG]		= &amp;bus_otg_clk.common.hw,
++		[CLK_BUS_EHCI0]		= &amp;bus_ehci0_clk.common.hw,
++		[CLK_BUS_OHCI0]		= &amp;bus_ohci0_clk.common.hw,
++		[CLK_BUS_VE]		= &amp;bus_ve_clk.common.hw,
++		[CLK_BUS_TCON0]		= &amp;bus_tcon0_clk.common.hw,
++		[CLK_BUS_CSI]		= &amp;bus_csi_clk.common.hw,
++		[CLK_BUS_DE]		= &amp;bus_de_clk.common.hw,
++		[CLK_BUS_CODEC]		= &amp;bus_codec_clk.common.hw,
++		[CLK_BUS_PIO]		= &amp;bus_pio_clk.common.hw,
++		[CLK_BUS_I2S0]		= &amp;bus_i2s0_clk.common.hw,
++		[CLK_BUS_I2C0]		= &amp;bus_i2c0_clk.common.hw,
++		[CLK_BUS_I2C1]		= &amp;bus_i2c1_clk.common.hw,
++		[CLK_BUS_UART0]		= &amp;bus_uart0_clk.common.hw,
++		[CLK_BUS_UART1]		= &amp;bus_uart1_clk.common.hw,
++		[CLK_BUS_UART2]		= &amp;bus_uart2_clk.common.hw,
++		[CLK_BUS_EPHY]		= &amp;bus_ephy_clk.common.hw,
++		[CLK_BUS_DBG]		= &amp;bus_dbg_clk.common.hw,
++		[CLK_MMC0]		= &amp;mmc0_clk.common.hw,
++		[CLK_MMC0_SAMPLE]	= &amp;mmc0_sample_clk.common.hw,
++		[CLK_MMC0_OUTPUT]	= &amp;mmc0_output_clk.common.hw,
++		[CLK_MMC1]		= &amp;mmc1_clk.common.hw,
++		[CLK_MMC1_SAMPLE]	= &amp;mmc1_sample_clk.common.hw,
++		[CLK_MMC1_OUTPUT]	= &amp;mmc1_output_clk.common.hw,
++		[CLK_MMC2]		= &amp;mmc1_clk.common.hw,
++		[CLK_MMC2_SAMPLE]	= &amp;mmc1_sample_clk.common.hw,
++		[CLK_MMC2_OUTPUT]	= &amp;mmc1_output_clk.common.hw,
++		[CLK_CE]		= &amp;ce_clk.common.hw,
++		[CLK_SPI0]		= &amp;spi0_clk.common.hw,
++		[CLK_I2S0]		= &amp;i2s0_clk.common.hw,
++		[CLK_USB_PHY0]		= &amp;usb_phy0_clk.common.hw,
++		[CLK_USB_OHCI0]		= &amp;usb_ohci0_clk.common.hw,
++		[CLK_DRAM]		= &amp;dram_clk.common.hw,
++		[CLK_DRAM_VE]		= &amp;dram_ve_clk.common.hw,
++		[CLK_DRAM_CSI]		= &amp;dram_csi_clk.common.hw,
++		[CLK_DRAM_EHCI]		= &amp;dram_ehci_clk.common.hw,
++		[CLK_DRAM_OHCI]		= &amp;dram_ohci_clk.common.hw,
++		[CLK_DE]		= &amp;de_clk.common.hw,
++		[CLK_TCON0]		= &amp;tcon_clk.common.hw,
++		[CLK_CSI_MISC]		= &amp;csi_misc_clk.common.hw,
++		[CLK_CSI0_MCLK]		= &amp;csi0_mclk_clk.common.hw,
++		[CLK_CSI1_SCLK]		= &amp;csi1_sclk_clk.common.hw,
++		[CLK_CSI1_MCLK]		= &amp;csi1_mclk_clk.common.hw,
++		[CLK_VE]		= &amp;ve_clk.common.hw,
++		[CLK_AC_DIG]		= &amp;ac_dig_clk.common.hw,
++		[CLK_AVS]		= &amp;avs_clk.common.hw,
++		[CLK_MBUS]		= &amp;mbus_clk.common.hw,
++		[CLK_MIPI_CSI]		= &amp;mipi_csi_clk.common.hw,
++	},
++	.num	= CLK_NUMBER,
++};
++
+ static struct ccu_reset_map sun8i_v3s_ccu_resets[] = {
+ 	[RST_USB_PHY0]		=  { 0x0cc, BIT(0) },
+ 
+@@ -575,6 +738,42 @@ static struct ccu_reset_map sun8i_v3s_ccu_resets[] = {
+ 	[RST_BUS_UART2]		=  { 0x2d8, BIT(18) },
+ };
+ 
++static struct ccu_reset_map sun8i_v3_ccu_resets[] = {
++	[RST_USB_PHY0]		=  { 0x0cc, BIT(0) },
++
++	[RST_MBUS]		=  { 0x0fc, BIT(31) },
++
++	[RST_BUS_CE]		=  { 0x2c0, BIT(5) },
++	[RST_BUS_DMA]		=  { 0x2c0, BIT(6) },
++	[RST_BUS_MMC0]		=  { 0x2c0, BIT(8) },
++	[RST_BUS_MMC1]		=  { 0x2c0, BIT(9) },
++	[RST_BUS_MMC2]		=  { 0x2c0, BIT(10) },
++	[RST_BUS_DRAM]		=  { 0x2c0, BIT(14) },
++	[RST_BUS_EMAC]		=  { 0x2c0, BIT(17) },
++	[RST_BUS_HSTIMER]	=  { 0x2c0, BIT(19) },
++	[RST_BUS_SPI0]		=  { 0x2c0, BIT(20) },
++	[RST_BUS_OTG]		=  { 0x2c0, BIT(24) },
++	[RST_BUS_EHCI0]		=  { 0x2c0, BIT(26) },
++	[RST_BUS_OHCI0]		=  { 0x2c0, BIT(29) },
++
++	[RST_BUS_VE]		=  { 0x2c4, BIT(0) },
++	[RST_BUS_TCON0]		=  { 0x2c4, BIT(4) },
++	[RST_BUS_CSI]		=  { 0x2c4, BIT(8) },
++	[RST_BUS_DE]		=  { 0x2c4, BIT(12) },
++	[RST_BUS_DBG]		=  { 0x2c4, BIT(31) },
++
++	[RST_BUS_EPHY]		=  { 0x2c8, BIT(2) },
++
++	[RST_BUS_CODEC]		=  { 0x2d0, BIT(0) },
++	[RST_BUS_I2S0]		=  { 0x2d0, BIT(12) },
++
++	[RST_BUS_I2C0]		=  { 0x2d8, BIT(0) },
++	[RST_BUS_I2C1]		=  { 0x2d8, BIT(1) },
++	[RST_BUS_UART0]		=  { 0x2d8, BIT(16) },
++	[RST_BUS_UART1]		=  { 0x2d8, BIT(17) },
++	[RST_BUS_UART2]		=  { 0x2d8, BIT(18) },
++};
++
+ static const struct sunxi_ccu_desc sun8i_v3s_ccu_desc = {
+ 	.ccu_clks	= sun8i_v3s_ccu_clks,
+ 	.num_ccu_clks	= ARRAY_SIZE(sun8i_v3s_ccu_clks),
+@@ -585,7 +784,18 @@ static const struct sunxi_ccu_desc sun8i_v3s_ccu_desc = {
+ 	.num_resets	= ARRAY_SIZE(sun8i_v3s_ccu_resets),
+ };
+ 
+-static void __init sun8i_v3s_ccu_setup(struct device_node *node)
++static const struct sunxi_ccu_desc sun8i_v3_ccu_desc = {
++	.ccu_clks	= sun8i_v3_ccu_clks,
++	.num_ccu_clks	= ARRAY_SIZE(sun8i_v3_ccu_clks),
++
++	.hw_clks	= &amp;sun8i_v3_hw_clks,
++
++	.resets		= sun8i_v3_ccu_resets,
++	.num_resets	= ARRAY_SIZE(sun8i_v3_ccu_resets),
++};
++
++static void __init sun8i_v3_v3s_ccu_init(struct device_node *node,
++					 const struct sunxi_ccu_desc *ccu_desc)
+ {
+ 	void __iomem *reg;
+ 	u32 val;
+@@ -601,7 +811,21 @@ static void __init sun8i_v3s_ccu_setup(struct device_node *node)
+ 	val &amp;= ~GENMASK(19, 16);
+ 	writel(val | (3 &lt;&lt; 16), reg + SUN8I_V3S_PLL_AUDIO_REG);
+ 
+-	sunxi_ccu_probe(node, reg, &amp;sun8i_v3s_ccu_desc);
++	sunxi_ccu_probe(node, reg, ccu_desc);
++}
++
++static void __init sun8i_v3s_ccu_setup(struct device_node *node)
++{
++	sun8i_v3_v3s_ccu_init(node, &amp;sun8i_v3s_ccu_desc);
++}
++
++static void __init sun8i_v3_ccu_setup(struct device_node *node)
++{
++	sun8i_v3_v3s_ccu_init(node, &amp;sun8i_v3_ccu_desc);
+ }
++
+ CLK_OF_DECLARE(sun8i_v3s_ccu, &quot;allwinner,sun8i-v3s-ccu&quot;,
+ 	       sun8i_v3s_ccu_setup);
++
++CLK_OF_DECLARE(sun8i_v3_ccu, &quot;allwinner,sun8i-v3-ccu&quot;,
++	       sun8i_v3_ccu_setup);
+diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-v3s.h b/drivers/clk/sunxi-ng/ccu-sun8i-v3s.h
+index 10af324bd6b1..b0160d305a67 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun8i-v3s.h
++++ b/drivers/clk/sunxi-ng/ccu-sun8i-v3s.h
+@@ -51,6 +51,6 @@
+ 
+ #define CLK_PLL_DDR1		74
+ 
+-#define CLK_NUMBER		(CLK_PLL_DDR1 + 1)
++#define CLK_NUMBER		(CLK_I2S0 + 1)
+ 
+ #endif /* _CCU_SUN8I_H3_H_ */
+diff --git a/include/dt-bindings/clock/sun8i-v3s-ccu.h b/include/dt-bindings/clock/sun8i-v3s-ccu.h
+index c0d5d5599c87..014ac6123d17 100644
+--- a/include/dt-bindings/clock/sun8i-v3s-ccu.h
++++ b/include/dt-bindings/clock/sun8i-v3s-ccu.h
+@@ -104,4 +104,8 @@
+ 
+ #define CLK_MIPI_CSI		73
+ 
++/* Clocks not available on V3s */
++#define CLK_BUS_I2S0		75
++#define CLK_I2S0		76
++
+ #endif /* _DT_BINDINGS_CLK_SUN8I_V3S_H_ */
+diff --git a/include/dt-bindings/reset/sun8i-v3s-ccu.h b/include/dt-bindings/reset/sun8i-v3s-ccu.h
+index b58ef21a2e18..b6790173afd6 100644
+--- a/include/dt-bindings/reset/sun8i-v3s-ccu.h
++++ b/include/dt-bindings/reset/sun8i-v3s-ccu.h
+@@ -75,4 +75,7 @@
+ #define RST_BUS_UART1		50
+ #define RST_BUS_UART2		51
+ 
++/* Reset lines not available on V3s */
++#define RST_BUS_I2S0		52
++
+ #endif /* _DT_BINDINGS_RST_SUN8I_H3_H_ */
+-- 
+2.21.0
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="740999" href="msg740999.html">[PATCH v4 0/8] Support for Allwinner V3/S3L and Sochip S3</a></strong>
+<ul><li><em>From:</em> Icenowy Zheng</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741003.html">[PATCH v4 4/8] clk: sunxi-ng: v3s: add missing clock slices for MMC2 module clocks</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741005.html">[PATCH v4 6/8] ARM: sunxi: dts: s3/s3l/v3: add DTSI files for S3/S3L/V3 SoCs</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741003.html">[PATCH v4 4/8] clk: sunxi-ng: v3s: add missing clock slices for MMC2 module clocks</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741005.html">[PATCH v4 6/8] ARM: sunxi: dts: s3/s3l/v3: add DTSI files for S3/S3L/V3 SoCs</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741004"><strong>Date</strong></a></li>
+<li><a href="threads.html#741004"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

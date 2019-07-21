@@ -1,0 +1,454 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 1/4] hid&#45;lenovo: Add support for X1 Tablet cover special keys -->
+<!--X-From-R13: Rraavf Inffraoret &#60;qraavf.jnffraoretNfrpharg.pbz> -->
+<!--X-Date: Fri, 9 Dec 2016 07:07:15 &#45;0800 -->
+<!--X-Message-Id: c1f11a2a&#45;caf7&#45;df32&#45;a649&#45;531875ab727b@secunet.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Sound: [PATCH 1/4] hid-lenovo: Add support for X1 Tablet cover special keys">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Sound &mdash; [PATCH 1/4] hid-lenovo: Add support for X1 Tablet cover special keys</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Sound" href="//feeds.feedburner.com/LinuxSound">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:6612422167" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 1/4] hid-lenovo: Add support for X1 Tablet cover special keys</h1>
+[<a href="msg00633.html">Date Prev</a>][<a href="msg00635.html">Date Next</a>][<a href="msg00627.html">Thread Prev</a>][<a href="msg00635.html">Thread Next</a>][<a href="maillist.html#00634">Date Index</a>][<a href="index.html#00634">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 1/4] hid-lenovo: Add support for X1 Tablet cover special keys</li>
+<li><em>From</em>: Dennis Wassenberg &lt;dennis.wassenberg@xxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 9 Dec 2016 16:04:35 +0100</li>
+<li><em>Organization</em>: secunet Security Networks</li>
+<li><em>User-agent</em>: Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Thunderbird/45.5.1</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The Lenovo X1 Tablet Cover is connected via USB. It constists of
+1 usb device with 3 usb interfaces. Interface 0 represents keyboard,
+interface 1 the function / special keys and LED control, interface 2
+is the Synaptics touchpad and pointing stick.
+
+This patch will introduce the function / special keys handling of
+USB interface 1.
+---
+ drivers/hid/hid-core.c   |   1 +
+ drivers/hid/hid-ids.h    |   1 +
+ drivers/hid/hid-lenovo.c | 160 +++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 162 insertions(+)
+
+diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
+index cff060b..5b38afc 100644
+--- a/drivers/hid/hid-core.c
++++ b/drivers/hid/hid-core.c
+@@ -1932,6 +1932,7 @@ void hid_disconnect(struct hid_device *hdev)
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_CUSBKBD) },
+ 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_CBTKBD) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_TPPRODOCK) },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_X1_COVER) },
+ #endif
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_MX3000_RECEIVER) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_S510_RECEIVER) },
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index ec277b9..961ee4f 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -623,6 +623,7 @@
+ #define USB_DEVICE_ID_LENOVO_CUSBKBD	0x6047
+ #define USB_DEVICE_ID_LENOVO_CBTKBD	0x6048
+ #define USB_DEVICE_ID_LENOVO_TPPRODOCK	0x6067
++#define USB_DEVICE_ID_LENOVO_X1_COVER	0x6085
+ 
+ #define USB_VENDOR_ID_LG		0x1fd2
+ #define USB_DEVICE_ID_LG_MULTITOUCH	0x0064
+diff --git a/drivers/hid/hid-lenovo.c b/drivers/hid/hid-lenovo.c
+index 1ac4ff4..4fc332c 100644
+--- a/drivers/hid/hid-lenovo.c
++++ b/drivers/hid/hid-lenovo.c
+@@ -3,9 +3,11 @@
+  *  - ThinkPad USB Keyboard with TrackPoint (tpkbd)
+  *  - ThinkPad Compact Bluetooth Keyboard with TrackPoint (cptkbd)
+  *  - ThinkPad Compact USB Keyboard with TrackPoint (cptkbd)
++ *  - ThinkPad X1 Cover USB Keyboard with TrackPoint and Touchpad (tpx1cover)
+  *
+  *  Copyright (c) 2012 Bernhard Seibold
+  *  Copyright (c) 2014 Jamie Lentin &lt;jm@xxxxxxxxxxxx&gt;
++ *  Copyright (c) 2016 Dennis Wassenberg &lt;dennis.wassenberg@xxxxxxxxxxx&gt;
+  */
+ 
+ /*
+@@ -86,6 +88,55 @@ static int lenovo_input_mapping_tpkbd(struct hid_device *hdev,
+ 	return 0;
+ }
+ 
++static int lenovo_input_mapping_tpx1cover(struct hid_device *hdev,
++		struct hid_input *hi, struct hid_field *field,
++		struct hid_usage *usage, unsigned long **bit, int *max)
++{
++	if (usage-&gt;hid == HID_CP_CONSUMERCONTROL) {
++		/* Unknown keys -&gt; Idenditied by usage index! */
++		switch (usage-&gt;usage_index) {
++		case 8:
++			// FNLock key
++			return -1;
++
++		case 9:
++			input_set_capability(hi-&gt;input, EV_KEY, KEY_MICMUTE);
++			map_key_clear(KEY_MICMUTE);
++			return 1;
++
++		case 10:
++			input_set_capability(hi-&gt;input, EV_KEY, KEY_CONFIG);
++			map_key_clear(KEY_CONFIG);
++			return 1;
++
++		case 11:
++			input_set_capability(hi-&gt;input, EV_KEY, KEY_SEARCH);
++			map_key_clear(KEY_SEARCH);
++			return 1;
++
++		case 12:
++			input_set_capability(hi-&gt;input, EV_KEY, KEY_SETUP);
++			map_key_clear(KEY_SETUP);
++			return 1;
++
++		case 13:
++			input_set_capability(hi-&gt;input, EV_KEY, KEY_SWITCHVIDEOMODE);
++			map_key_clear(KEY_SWITCHVIDEOMODE);
++			return 1;
++
++		case 14:
++			input_set_capability(hi-&gt;input, EV_KEY, KEY_RFKILL);
++			map_key_clear(KEY_RFKILL);
++			return 1;
++
++		}
++
++		return -1;
++	}
++
++	return 0;
++}
++
+ static int lenovo_input_mapping_cptkbd(struct hid_device *hdev,
+ 		struct hid_input *hi, struct hid_field *field,
+ 		struct hid_usage *usage, unsigned long **bit, int *max)
+@@ -172,6 +223,9 @@ static int lenovo_input_mapping(struct hid_device *hdev,
+ 	case USB_DEVICE_ID_LENOVO_CBTKBD:
+ 		return lenovo_input_mapping_cptkbd(hdev, hi, field,
+ 							usage, bit, max);
++	case USB_DEVICE_ID_LENOVO_X1_COVER:
++		return lenovo_input_mapping_tpx1cover(hdev, hi, field,
++							usage, bit, max);
+ 	default:
+ 		return 0;
+ 	}
+@@ -731,6 +785,107 @@ static int lenovo_probe_tpkbd(struct hid_device *hdev)
+ 	return ret;
+ }
+ 
++static int lenovo_probe_tpx1cover_configure(struct hid_device *hdev)
++{
++	struct hid_report *report = hdev-&gt;report_enum[HID_OUTPUT_REPORT].report_id_hash[9];
++
++	if (!report)
++		return -ENOENT;
++
++	report-&gt;field[0]-&gt;value[0] = 0x54;
++	report-&gt;field[0]-&gt;value[1] = 0x20;
++	hid_hw_request(hdev, report, HID_REQ_SET_REPORT);
++	hid_hw_wait(hdev);
++
++	report-&gt;field[0]-&gt;value[0] = 0x54;
++	report-&gt;field[0]-&gt;value[1] = 0x08;
++	hid_hw_request(hdev, report, HID_REQ_SET_REPORT);
++	hid_hw_wait(hdev);
++
++	report-&gt;field[0]-&gt;value[0] = 0xA0;
++	report-&gt;field[0]-&gt;value[1] = 0x02;
++	hid_hw_request(hdev, report, HID_REQ_SET_REPORT);
++	hid_hw_wait(hdev);
++
++	return 0;
++}
++
++static int lenovo_probe_tpx1cover_special_functions(struct hid_device *hdev)
++{
++	struct hid_report *report;
++	bool report_match = 1;
++
++	/* Used for LED control */
++	report = hid_validate_values(hdev, HID_INPUT_REPORT, 3, 0, 16);
++	report_match &amp;= report ? 1 : 0;
++	/* Identify USB Intf 1 which is the only one with HID_FEATURE_REPORT 100 */
++	report = hid_validate_values(hdev, HID_FEATURE_REPORT, 100, 0, 1);
++	report_match &amp;= report ? 1 : 0;
++
++	if (!report_match)
++		return -ENODEV;
++
++	return lenovo_probe_tpx1cover_configure(hdev);
++}
++
++static int lenovo_probe_tpx1cover_touch(struct hid_device *hdev)
++{
++	struct hid_report *report;
++	bool report_match = 1;
++	int ret = 0;
++
++	/* Identify USB Intf 2 which is the only one with HID_FEATURE_REPORT 15 */
++	report = hid_validate_values(hdev, HID_FEATURE_REPORT, 15, 0, 3);
++	report_match &amp;= report ? 1 : 0;
++
++	if (!report_match)
++		ret = -ENODEV;
++
++	return ret;
++}
++
++static int lenovo_probe_tpx1cover_keyboard(struct hid_device *hdev)
++{
++	struct hid_report *report;
++	bool report_match = 1;
++	int ret = 0;
++
++	/* Identify USB Intf0 which is the only one with HID_INPUT_REPORT 0
++	 * and HID_OUTPUT_REPORT 0 */
++	report = hid_validate_values(hdev, HID_INPUT_REPORT, 0, 0, 1);
++	report_match &amp;= report ? 1 : 0;
++	report = hid_validate_values(hdev, HID_OUTPUT_REPORT, 0, 0, 1);
++	report_match &amp;= report ? 1 : 0;
++
++	if (!report_match)
++		ret = -ENODEV;
++
++	return ret;
++}
++
++static int lenovo_probe_tpx1cover(struct hid_device *hdev)
++{
++	int ret = 0;
++
++	/*
++	 * Probing for special function keys and LED control -&gt; usb intf 1
++	 * Probing for touch input -&gt; usb intf 2 (handled by rmi4 driver)
++	 * Other (keyboard) -&gt; usb intf 0
++	 */
++	if (!lenovo_probe_tpx1cover_special_functions(hdev)) {
++		/* special function keys and LED control */
++		ret = 0;
++	} else if (!lenovo_probe_tpx1cover_touch(hdev)) {
++		/* handled by rmi */
++		ret = -ENODEV;
++	} else {
++		/* keyboard */
++		ret = lenovo_probe_tpx1cover_keyboard(hdev);
++	}
++
++	return ret;
++}
++
+ static int lenovo_probe_cptkbd(struct hid_device *hdev)
+ {
+ 	int ret;
+@@ -803,6 +958,9 @@ static int lenovo_probe(struct hid_device *hdev,
+ 	case USB_DEVICE_ID_LENOVO_CBTKBD:
+ 		ret = lenovo_probe_cptkbd(hdev);
+ 		break;
++	case USB_DEVICE_ID_LENOVO_X1_COVER:
++		ret = lenovo_probe_tpx1cover(hdev);
++		break;
+ 	default:
+ 		ret = 0;
+ 		break;
+@@ -883,6 +1041,7 @@ static int lenovo_input_configured(struct hid_device *hdev,
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_CUSBKBD) },
+ 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_CBTKBD) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_TPPRODOCK) },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_X1_COVER) },
+ 	{ }
+ };
+ 
+@@ -902,3 +1061,4 @@ static int lenovo_input_configured(struct hid_device *hdev,
+ module_hid_driver(lenovo_driver);
+ 
+ MODULE_LICENSE(&quot;GPL&quot;);
++
+-- 
+1.9.1
+--
+To unsubscribe from this list: send the line &quot;unsubscribe linux-sound&quot; in
+the body of a message to majordomo@xxxxxxxxxxxxxxx
+More majordomo info at  <a  rel="nofollow" href="http://vger.kernel.org/majordomo-info.html">http://vger.kernel.org/majordomo-info.html</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00633.html">Re: [PATCH v2 1/2] hid-lenovo: Add support for X1 Tablet special keys and LED control</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00635.html">[PATCH 2/4] hid-lenovo: Add support for X1 Tablet cover LED control</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00627.html">[PATCH v2 2/2] hda: thinkpad_helper: Add support for hid-lenovo LED control</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00635.html">[PATCH 2/4] hid-lenovo: Add support for X1 Tablet cover LED control</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00634"><strong>Date</strong></a></li>
+<li><a href="index.html#00634"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/Pulseaudio/>[Pulseaudio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/alsa-devel/>[ALSA&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td valign=top align=left>&nbsp;</td>
+<td valign=top align=right>
+<a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

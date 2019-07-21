@@ -1,0 +1,602 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 27/29] remote: switch to connect to per&#45;driver	daemons by default -->
+<!--X-From-R13: =?GFT&#45;8?d?Rnavry=20B=2S=20Preenat=Q3=O9?= &#60;oreenatrNerqung.pbz> -->
+<!--X-Date: Thu, 11 Jul 2019 09:06:14 &#45;0700 -->
+<!--X-Message-Id: 20190711160516.2130&#45;28&#45;berrange@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190711160516.2130&#45;1&#45;berrange@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 27/29] remote: switch to connect to per-driver	daemons by default</title>
+<meta name="description" content="libvirt: [PATCH 27/29] remote: switch to connect to per-driver	daemons by default">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 27/29] remote: switch to connect to per-driver	daemons by default</h1>
+[<a href="msg187226.html">Date Prev</a>][<a href="msg187228.html">Date Next</a>][<a href="msg187226.html">Thread Prev</a>][<a href="msg187285.html">Thread Next</a>][<a href="maillist.html#187227">Date Index</a>][<a href="index.html#187227">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 27/29] remote: switch to connect to per-driver	daemons by default</li>
+<li><em>From</em>: Daniel P. Berrang&#xE9; &lt;berrange@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 11 Jul 2019 17:05:14 +0100</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187198.html">20190711160516.2130-1-berrange@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187198.html">20190711160516.2130-1-berrange@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Historically URIs handled by the remote driver will always connect to
+the libvirtd UNIX socket. There will now be one daemon per driver, and
+each of these has its own UNIX sockets to connect to.
+
+It will still be possible to run the traditional monolithic libvirtd too
+which will have the original UNIX socket path.
+
+In addition there is a virproxyd daemon that doesn't run any drivers,
+but provides proxying for clients accessing libvirt over IP sockets, or
+tunnelling to the legacy libvirtd UNIX socket path.
+
+Finally when running inside a daemon, the remote driver must not reject
+connections unconditionally. For example, the QEMU driver needs to be
+able to connect to the network driver. The remote driver must thus be
+willing to handle connections even when inside the daemon, provided no
+local driver is registered.
+
+This refactoring causes the remote driver to prefer connecting to the
+per-driver daemons. The URI parameter &quot;no_direct=1&quot; can be used to
+force connecting to the legacy libvirtd UNIX socket.
+
+The remote driver will only ever spawn the per-driver daemons, or
+the legacy libvirtd. It won't ever try to spawn virtproxyd, as
+that is only there for IP based connectivity, or for access from
+legacy remote clients.
+
+The $HOME/.config/libvirt/libvirt.conf can also be set to have a
+parameter 'remote_direct=0|1' to hardcode the behaviour for all
+clients.
+
+Signed-off-by: Daniel P. Berrang&#xE9; &lt;berrange@xxxxxxxxxx&gt;
+---
+ src/driver.h               |   2 +
+ src/libvirt.c              |  24 +++++
+ src/remote/remote_driver.c | 202 +++++++++++++++++++++++++++++++++----
+ src/remote/remote_driver.h |   3 -
+ 4 files changed, 207 insertions(+), 24 deletions(-)
+
+diff --git a/src/driver.h b/src/driver.h
+index 898fb96df4..f7d667a03c 100644
+--- a/src/driver.h
++++ b/src/driver.h
+@@ -108,6 +108,8 @@ int virSetSharedNWFilterDriver(virNWFilterDriverPtr driver) ATTRIBUTE_RETURN_CHE
+ int virSetSharedSecretDriver(virSecretDriverPtr driver) ATTRIBUTE_RETURN_CHECK;
+ int virSetSharedStorageDriver(virStorageDriverPtr driver) ATTRIBUTE_RETURN_CHECK;
+ 
++bool virHasDriverForURIScheme(const char *scheme);
++
+ int virDriverLoadModule(const char *name,
+                         const char *regfunc,
+                         bool required);
+diff --git a/src/libvirt.c b/src/libvirt.c
+index 7e665b6cba..e21cad0e2e 100644
+--- a/src/libvirt.c
++++ b/src/libvirt.c
+@@ -601,6 +601,30 @@ virRegisterConnectDriver(virConnectDriverPtr driver,
+ }
+ 
+ 
++/**
++ * virHasDriverForURIScheme:
++ * @scheme: the URI scheme
++ *
++ * Determine if there is a driver registered that explicitly
++ * handles URIs with the scheme @scheme.
++ *
++ * Returns: true if a driver is registered
++ */
++bool virHasDriverForURIScheme(const char *scheme)
++{
++    size_t i, j;
++    for (i = 0; i &lt; virConnectDriverTabCount; i++) {
++        if (!virConnectDriverTab[i]-&gt;uriSchemes)
++            continue;
++        for (j = 0; virConnectDriverTab[i]-&gt;uriSchemes[j]; j++) {
++            if (STREQ(virConnectDriverTab[i]-&gt;uriSchemes[j], scheme))
++                return true;
++        }
++    }
++
++    return false;
++}
++
+ /**
+  * virRegisterStateDriver:
+  * @driver: pointer to a driver block
+diff --git a/src/remote/remote_driver.c b/src/remote/remote_driver.c
+index c6905dffff..98a165e163 100644
+--- a/src/remote/remote_driver.c
++++ b/src/remote/remote_driver.c
+@@ -72,6 +72,22 @@ VIR_ENUM_IMPL(remoteDriverTransport,
+               REMOTE_DRIVER_TRANSPORT_LAST,
+               &quot;tls&quot;, &quot;unix&quot;, &quot;ssh&quot;, &quot;libssh2&quot;, &quot;ext&quot;, &quot;tcp&quot;, &quot;libssh&quot;);
+ 
++typedef enum {
++    /* Prefer per-driver virt*d daemons, but fallback to legacy libvirtd */
++    REMOTE_DRIVER_MODE_AUTO,
++    /* Always use the legacy libvirtd */
++    REMOTE_DRIVER_MODE_LEGACY,
++    /* Always use the per-driver virt*d daemons */
++    REMOTE_DRIVER_MODE_DIRECT,
++
++    REMOTE_DRIVER_MODE_LAST
++} remoteDriverMode;
++
++VIR_ENUM_DECL(remoteDriverMode);
++VIR_ENUM_IMPL(remoteDriverMode,
++              REMOTE_DRIVER_MODE_LAST,
++              &quot;auto&quot;, &quot;legacy&quot;, &quot;direct&quot;);
++
+ #if SIZEOF_LONG &lt; 8
+ # define HYPER_TO_TYPE(_type, _to, _from) \
+     do { \
+@@ -92,6 +108,7 @@ VIR_ENUM_IMPL(remoteDriverTransport,
+ 
+ static bool inside_daemon;
+ 
++
+ struct private_data {
+     virMutex lock;
+ 
+@@ -740,8 +757,9 @@ remoteConnectSupportsFeatureUnlocked(virConnectPtr conn,
+ 
+ 
+ static char *
+-remoteGetUNIXSocket(remoteDriverTransport transport,
+-                    unsigned int flags)
++remoteGetUNIXSocketHelper(remoteDriverTransport transport,
++                          const char *sock_prefix,
++                          unsigned int flags)
+ {
+     char *sockname = NULL;
+     VIR_AUTOFREE(char *userdir);
+@@ -758,21 +776,125 @@ remoteGetUNIXSocket(remoteDriverTransport transport,
+         if (!(userdir = virGetUserRuntimeDirectory()))
+             return NULL;
+ 
+-        if (virAsprintf(&amp;sockname,
+-                        &quot;%s/&quot; LIBVIRTD_USER_UNIX_SOCKET, userdir) &lt; 0)
++        if (virAsprintf(&amp;sockname, &quot;%s/%s-sock&quot;,
++                        userdir, sock_prefix) &lt; 0)
+             return NULL;
+     } else {
+-        if (VIR_STRDUP(sockname,
+-                       flags &amp; VIR_DRV_OPEN_REMOTE_RO ?
+-                       LIBVIRTD_PRIV_UNIX_SOCKET_RO :
+-                       LIBVIRTD_PRIV_UNIX_SOCKET) &lt; 0)
++        if (virAsprintf(&amp;sockname, &quot;%s/run/libvirt/%s-%s&quot;,
++                        LOCALSTATEDIR, sock_prefix,
++                        flags &amp; VIR_DRV_OPEN_REMOTE_RO ?
++                        &quot;sock-ro&quot; : &quot;sock&quot;) &lt; 0)
+             return NULL;
+     }
+ 
+-    VIR_DEBUG(&quot;Chosen UNIX sockname %s&quot;, sockname);
++    VIR_DEBUG(&quot;Built UNIX sockname %s for transport %s prefix %s flags=0x%x&quot;,
++              sockname, remoteDriverTransportTypeToString(transport),
++              sock_prefix, flags);
+     return sockname;
+ }
+ 
++
++#define DRIVER_SCHEME_CHRS &quot;abcdefghijklmnopqrstuvwxyz&quot;
++static char *
++remoteGetUNIXSocket(remoteDriverTransport transport,
++                    remoteDriverMode mode,
++                    const char *driver,
++                    char **daemon,
++                    unsigned int flags)
++{
++    char *sock_name = NULL;
++    VIR_AUTOFREE(char *) direct_daemon = NULL;
++    VIR_AUTOFREE(char *) legacy_daemon = NULL;
++    VIR_AUTOFREE(char *) direct_sock_name = NULL;
++    VIR_AUTOFREE(char *) legacy_sock_name = NULL;
++
++    if (strspn(driver, DRIVER_SCHEME_CHRS) &lt; strlen(driver)) {
++        virReportError(VIR_ERR_INVALID_ARG,
++                       _(&quot;Invalid character in driver '%s'&quot;), driver);
++        return NULL;
++    }
++
++    switch (mode) {
++    case REMOTE_DRIVER_MODE_AUTO:
++        if (virAsprintf(&amp;direct_daemon, &quot;virt%sd&quot;, driver) &lt; 0)
++            return NULL;
++
++        if (VIR_STRDUP(legacy_daemon, &quot;libvirtd&quot;) &lt; 0)
++            return NULL;
++
++        if (!(direct_sock_name = remoteGetUNIXSocketHelper(transport, direct_daemon, flags)))
++            return NULL;
++
++        if (!(legacy_sock_name = remoteGetUNIXSocketHelper(transport, &quot;libvirt&quot;, flags)))
++            return NULL;
++
++        if (!virFileExists(direct_sock_name) &amp;&amp;
++            virFileExists(legacy_sock_name)) {
++            sock_name = legacy_sock_name;
++            legacy_sock_name = NULL;
++            *daemon = legacy_daemon;
++            legacy_daemon = NULL;
++        } else {
++            sock_name = direct_sock_name;
++            direct_sock_name = NULL;
++            *daemon = direct_daemon;
++            direct_daemon = NULL;
++        }
++        break;
++
++    case REMOTE_DRIVER_MODE_DIRECT:
++        if (virAsprintf(&amp;direct_daemon, &quot;virt%sd&quot;, driver) &lt; 0)
++            return NULL;
++
++        if (!(sock_name = remoteGetUNIXSocketHelper(transport, direct_daemon, flags)))
++            return NULL;
++
++        *daemon = direct_daemon;
++        direct_daemon = NULL;
++        break;
++
++    case REMOTE_DRIVER_MODE_LEGACY:
++        if (VIR_STRDUP(legacy_daemon, &quot;libvirtd&quot;) &lt; 0)
++            return NULL;
++
++        if (!(sock_name = remoteGetUNIXSocketHelper(transport, &quot;libvirt&quot;, flags)))
++            return NULL;
++
++        *daemon = legacy_daemon;
++        legacy_daemon = NULL;
++        break;
++
++    case REMOTE_DRIVER_MODE_LAST:
++    default:
++        virReportEnumRangeError(remoteDriverMode, mode);
++        return NULL;
++    }
++
++    VIR_DEBUG(&quot;Chosen UNIX sockname %s daemon %s &quot;
++              &quot;for mode %s transport %s flags=0x%x&quot;,
++              sock_name, NULLSTR(*daemon),
++              remoteDriverModeTypeToString(mode),
++              remoteDriverTransportTypeToString(transport),
++              flags);
++    return sock_name;
++}
++
++
++static const char *
++remoteGetDaemonPathEnv(void)
++{
++    /* We prefer a VIRTD_PATH env var to use for all daemons,
++     * but if it is not set we will fallback to LIBVIRTD_PATH
++     * for previous behaviour
++     */
++    if (virGetEnvBlockSUID(&quot;VIRTD_PATH&quot;) != NULL) {
++        return &quot;VIRTD_PATH&quot;;
++    } else {
++        return &quot;LIBVIRTD_PATH&quot;;
++    }
++}
++
++
+ /*
+  * URIs that this driver needs to handle:
+  *
+@@ -819,11 +941,20 @@ doRemoteOpen(virConnectPtr conn,
+     VIR_AUTOFREE(char *) sshauth = NULL;
+     VIR_AUTOFREE(char *) knownHostsVerify = NULL;
+     VIR_AUTOFREE(char *) knownHosts = NULL;
++    VIR_AUTOFREE(char *) mode_str = NULL;
++    VIR_AUTOFREE(char *) daemon_name = NULL;
+     bool sanity = true;
+     bool verify = true;
+ #ifndef WIN32
+     bool tty = true;
+ #endif
++    int mode;
++
++    if (inside_daemon &amp;&amp; !conn-&gt;uri-&gt;server) {
++        mode = REMOTE_DRIVER_MODE_DIRECT;
++    } else {
++        mode = REMOTE_DRIVER_MODE_AUTO;
++    }
+ 
+     /* We handle *ALL* URIs here. The caller has rejected any
+      * URIs we don't care about */
+@@ -908,7 +1039,7 @@ doRemoteOpen(virConnectPtr conn,
+             EXTRACT_URI_ARG_STR(&quot;known_hosts&quot;, knownHosts);
+             EXTRACT_URI_ARG_STR(&quot;known_hosts_verify&quot;, knownHostsVerify);
+             EXTRACT_URI_ARG_STR(&quot;tls_priority&quot;, tls_priority);
+-
++            EXTRACT_URI_ARG_STR(&quot;mode&quot;, mode_str);
+             EXTRACT_URI_ARG_BOOL(&quot;no_sanity&quot;, sanity);
+             EXTRACT_URI_ARG_BOOL(&quot;no_verify&quot;, verify);
+ #ifndef WIN32
+@@ -955,6 +1086,21 @@ doRemoteOpen(virConnectPtr conn,
+             goto failed;
+     }
+ 
++    if (conf &amp;&amp; !mode_str &amp;&amp;
++        virConfGetValueString(conf, &quot;remote_mode&quot;, &amp;mode_str) &lt; 0)
++        goto failed;
++
++    if (mode_str &amp;&amp;
++        (mode = remoteDriverModeTypeFromString(mode_str)) &lt; 0)
++        goto failed;
++
++    /* Sanity check that nothing requested !direct mode by mistake */
++    if (inside_daemon &amp;&amp; !conn-&gt;uri-&gt;server &amp;&amp; mode != REMOTE_DRIVER_MODE_DIRECT) {
++        virReportError(VIR_ERR_INVALID_ARG, &quot;%s&quot;,
++                       _(&quot;Connections from inside daemon must be direct&quot;));
++        return VIR_DRV_OPEN_ERROR;
++    }
++
+     VIR_DEBUG(&quot;proceeding with name = %s&quot;, name);
+ 
+     /* For ext transport, command is required. */
+@@ -971,7 +1117,8 @@ doRemoteOpen(virConnectPtr conn,
+          transport == REMOTE_DRIVER_TRANSPORT_LIBSSH ||
+          transport == REMOTE_DRIVER_TRANSPORT_LIBSSH2) &amp;&amp;
+         !sockname &amp;&amp;
+-        !(sockname = remoteGetUNIXSocket(transport, flags)))
++        !(sockname = remoteGetUNIXSocket(transport, mode, driver_str,
++                                         &amp;daemon_name, flags)))
+         goto failed;
+ 
+     VIR_DEBUG(&quot;Chosen UNIX socket %s&quot;, NULLSTR(sockname));
+@@ -1060,13 +1207,15 @@ doRemoteOpen(virConnectPtr conn,
+ 
+ #ifndef WIN32
+     case REMOTE_DRIVER_TRANSPORT_UNIX:
+-        if ((flags &amp; VIR_DRV_OPEN_REMOTE_AUTOSTART) &amp;&amp;
+-            !(daemonPath = virFileFindResourceFull(&quot;libvirtd&quot;,
+-                                                   NULL, NULL,
+-                                                   abs_top_builddir &quot;/src&quot;,
+-                                                   SBINDIR,
+-                                                   &quot;LIBVIRTD_PATH&quot;)))
+-            goto failed;
++        if (flags &amp; VIR_DRV_OPEN_REMOTE_AUTOSTART) {
++            const char *env_name = remoteGetDaemonPathEnv();
++            if (!(daemonPath = virFileFindResourceFull(daemon_name,
++                                                       NULL, NULL,
++                                                       abs_top_builddir &quot;/src&quot;,
++                                                       SBINDIR,
++                                                       env_name)))
++                goto failed;
++        }
+ 
+         if (!(priv-&gt;client = virNetClientNewUNIX(sockname,
+                                                  flags &amp; VIR_DRV_OPEN_REMOTE_AUTOSTART,
+@@ -1279,9 +1428,20 @@ remoteConnectOpen(virConnectPtr conn,
+         remoteSplitURIScheme(conn-&gt;uri, &amp;driver, &amp;transport) &lt; 0)
+         goto cleanup;
+ 
+-    if (inside_daemon &amp;&amp; (!conn-&gt;uri || !conn-&gt;uri-&gt;server)) {
+-        ret = VIR_DRV_OPEN_DECLINED;
+-        goto cleanup;
++    if (inside_daemon) {
++        if (!conn-&gt;uri) {
++            ret = VIR_DRV_OPEN_DECLINED;
++            goto cleanup;
++        }
++
++        /* If there's a driver registered we must defer to that.
++         * If there isn't a driver, we must connect in &quot;direct&quot;
++         * mode - see doRemoteOpen */
++        if (!conn-&gt;uri-&gt;server &amp;&amp;
++            virHasDriverForURIScheme(driver)) {
++            ret = VIR_DRV_OPEN_DECLINED;
++            goto cleanup;
++        }
+     }
+ 
+     if (!(priv = remoteAllocPrivateData()))
+diff --git a/src/remote/remote_driver.h b/src/remote/remote_driver.h
+index 132e478ef3..1fab5a6cc4 100644
+--- a/src/remote/remote_driver.h
++++ b/src/remote/remote_driver.h
+@@ -31,9 +31,6 @@ unsigned long remoteVersion(void);
+ #define LIBVIRTD_LISTEN_ADDR NULL
+ #define LIBVIRTD_TLS_PORT &quot;16514&quot;
+ #define LIBVIRTD_TCP_PORT &quot;16509&quot;
+-#define LIBVIRTD_PRIV_UNIX_SOCKET LOCALSTATEDIR &quot;/run/libvirt/libvirt-sock&quot;
+-#define LIBVIRTD_PRIV_UNIX_SOCKET_RO LOCALSTATEDIR &quot;/run/libvirt/libvirt-sock-ro&quot;
+-#define LIBVIRTD_USER_UNIX_SOCKET &quot;libvirt-sock&quot;
+ 
+ /* Defaults for PKI directory. */
+ #define LIBVIRT_PKI_DIR SYSCONFDIR &quot;/pki&quot;
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187226.html">[PATCH 20/29] vbox: introduce virtvboxd daemon</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187228.html">[PATCH 28/29] all: don't wait for driver lock during	startup</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187226.html">[PATCH 20/29] vbox: introduce virtvboxd daemon</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187285.html">Re:  [PATCH 27/29] remote: switch to connect to per-driver daemons by default</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187227"><strong>Date</strong></a></li>
+<li><a href="index.html#187227"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

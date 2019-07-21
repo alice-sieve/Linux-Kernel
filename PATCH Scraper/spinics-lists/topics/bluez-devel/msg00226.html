@@ -1,0 +1,381 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Support translations in bluez&#45;utils -->
+<!--X-From-R13: [vpunry Freel &#60;zvpunry.greelNhohagh.pbz> -->
+<!--X-Date: Wed, 21 May 2008 05:57:50 &#45;0700 -->
+<!--X-Message-Id: 1211374622.5826.18.camel@bongo -->
+<!--X-Content-Type: multipart/mixed -->
+<!--X-Derived: pgp8J3xlIIbzU.pgp -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Bluez Devel: [PATCH] Support translations in bluez-utils">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH] Support translations in bluez-utils &mdash; Bluez Devel</title>
+<link rel="alternate" type="application/rss+xml" title="Bluez Devel" href="maillist.rdf">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] Support translations in bluez-utils</h1>
+[<a href="msg00225.html">Date Prev</a>][<a href="msg00227.html">Date Next</a>][<a href="msg00225.html">Thread Prev</a>][<a href="msg00227.html">Thread Next</a>][<a href="maillist.html#00226">Date Index</a>][<a href="index.html#00226">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Support translations in bluez-utils</li>
+<li><em>From</em>: Michael Terry &lt;<a href="mailto:michael.terry@DOMAIN.HIDDEN">michael.terry@xxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Wed, 21 May 2008 08:57:02 -0400</li>
+<li><em>Reply-to</em>: BlueZ development &lt;<a href="mailto:bluez-devel@DOMAIN.HIDDEN">bluez-devel@xxxxxxxxxxxxxxxxxxxxx</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Hello!
+
+I am attaching a patch and some files that all together allow gettext
+translations for bluez-utils.  I'd appreciate a review/commit.
+
+The particular strings motivating this patch were the service names in
+hcid/dbus-service.c.  There may be other good candidates for
+translation, but I only marked those few strings.
+
+I noted there was an audio/audio.service file which would also be a
+candidate for translation, but I didn't see it being used anywhere?  I
+can provide a further patch for that if it's used.
+
+Files:
+bluez-utils-po.diff
+gi18n.h (add as eglib/glib/gi18n.h - this is a simplified copy from
+glib; it goes in the redundant glib subdirectory to match glib's include
+layout)
+Makevars (add as po/Makevars - this is like a config file for gettext)
+POTFILES.in (add as po/POTFILES.in - this lists any files to scan for
+marked strings)
+
+&#xFEFF;Also, you'll need to add a blank LINGUAS file in the po directory in
+which to add language codes as they come in.
+
+Finally, you should add a blank ChangeLog file in the po directory for
+translators (or whoever cvs commits) to note new/updated translations.
+
+Thank you!
+-mt
+</pre><pre>/* GLIB - Library of useful routines for C programming
+ * Copyright (C) 1995-1997, 2002  Peter Mattis, Red Hat, Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+#ifndef __G_I18N_H__
+#define __G_I18N_H__
+
+/*#include &lt;glib/gstrfuncs.h&gt;*/
+#include &lt;libintl.h&gt;
+
+#define  _(String) gettext (String)
+/*#define Q_(String) g_dpgettext (NULL, String, 0)*/
+#define N_(String) (String)
+/*#define C_(Context,String) g_dpgettext (NULL, Context &quot;\004&quot; String, strlen (Context) + 1)*/
+
+
+#endif  /* __G_I18N_H__ */
+
+
+</pre><pre># Makefile variables for PO directory in any package using GNU gettext.
+
+# Usually the message domain is the same as the package name.
+DOMAIN = bluez-utils
+
+# These two variables depend on the location of this directory.
+subdir = po
+top_builddir = ..
+
+# These options get passed to xgettext.
+XGETTEXT_OPTIONS = --keyword=_ --keyword=N_
+
+# This is the copyright holder that gets inserted into the header of the
+# $(DOMAIN).pot file.  Set this to the copyright holder of the surrounding
+# package.  (Note that the msgstr strings, extracted from the package's
+# sources, belong to the copyright holder of the package.)  Translators are
+# expected to transfer the copyright for their translations to this person
+# or entity, or to disclaim their copyright.  The empty string stands for
+# the public domain; in this case the translators are expected to disclaim
+# their copyright.
+COPYRIGHT_HOLDER = Marcel Holtmann
+
+# This is the email address or URL to which the translators shall report
+# bugs in the untranslated strings:
+# - Strings which are not entire sentences, see the maintainer guidelines
+#   in the GNU gettext documentation, section 'Preparing Strings'.
+# - Strings which use unclear terms or require additional context to be
+#   understood.
+# - Strings which make invalid assumptions about notation of date, time or
+#   money.
+# - Pluralisation problems.
+# - Incorrect English spelling.
+# - Incorrect formatting.
+# It can be your email address, or a mailing list address where translators
+# can write to without being subscribed, or the URL of a web page through
+# which the translators can contact you.
+MSGID_BUGS_ADDRESS = bluez-devel@xxxxxxxxxxxx
+
+# This is the list of locale categories, beyond LC_MESSAGES, for which the
+# message catalogs shall be used.  It is usually empty.
+EXTRA_LOCALE_CATEGORIES =
+</pre><pre>hcid/dbus-service.c
+</pre><pre>Index: Makefile.am
+===================================================================
+RCS file: /cvsroot/bluez/utils/Makefile.am,v
+retrieving revision 1.42
+diff -r1.42 Makefile.am
+5c5,9
+&lt; 		cups test scripts
+---
+&gt;<i> 		cups test scripts po</i>
+&gt;<i> </i>
+&gt;<i> ACLOCAL_AMFLAGS = -I m4</i>
+&gt;<i> </i>
+&gt;<i> EXTRA_DIST = config.rpath</i>
+Index: bootstrap
+===================================================================
+RCS file: /cvsroot/bluez/utils/bootstrap,v
+retrieving revision 1.7
+diff -r1.7 bootstrap
+3a4
+&gt;<i>     autopoint --force &amp;&amp; \</i>
+Index: configure.in
+===================================================================
+RCS file: /cvsroot/bluez/utils/configure.in,v
+retrieving revision 1.142
+diff -r1.142 configure.in
+4c4,5
+&lt; AM_INIT_AUTOMAKE(bluez-utils, 3.31)
+---
+&gt;<i> PACKAGE=bluez-utils</i>
+&gt;<i> AM_INIT_AUTOMAKE($PACKAGE, 3.31)</i>
+38a40,45
+&gt;<i> GETTEXT_PACKAGE=$PACKAGE</i>
+&gt;<i> AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, [&quot;$GETTEXT_PACKAGE&quot;], [Define to the Gettext package name])</i>
+&gt;<i> AC_SUBST(GETTEXT_PACKAGE)</i>
+&gt;<i> AM_GNU_GETTEXT([external])</i>
+&gt;<i> AM_GNU_GETTEXT_VERSION([0.17])</i>
+&gt;<i> </i>
+62a70
+&gt;<i> 	po/Makefile.in</i>
+Index: eglib/Makefile.am
+===================================================================
+RCS file: /cvsroot/bluez/utils/eglib/Makefile.am,v
+retrieving revision 1.3
+diff -r1.3 Makefile.am
+1d0
+&lt; 
+5a5
+&gt;<i> EXTRA_DIST = glib/gi18n.h</i>
+Index: hcid/dbus-service.c
+===================================================================
+RCS file: /cvsroot/bluez/utils/hcid/dbus-service.c,v
+retrieving revision 1.156
+diff -r1.156 dbus-service.c
+44a45
+&gt;<i> #include &lt;glib/gi18n.h&gt;</i>
+586c587
+&lt; 		name = &quot;Input service&quot;;
+---
+&gt;<i> 		name = _(&quot;Input service&quot;);</i>
+588c589
+&lt; 		name = &quot;Audio service&quot;;
+---
+&gt;<i> 		name = _(&quot;Audio service&quot;);</i>
+590c591
+&lt; 		name = &quot;Network service&quot;;
+---
+&gt;<i> 		name = _(&quot;Network service&quot;);</i>
+592c593
+&lt; 		name = &quot;Serial service&quot;;
+---
+&gt;<i> 		name = _(&quot;Serial service&quot;);</i>
+</pre><p><strong>Attachment:
+<a href="pgp8J3xlIIbzU.pgp" ><tt>signature.asc</tt></a></strong><br>
+<em>Description:</em> This is a digitally signed message part</p>
+<pre>-------------------------------------------------------------------------
+This SF.net email is sponsored by: Microsoft 
+Defy all challenges. Microsoft(R) Visual Studio 2008. 
+<a  rel="nofollow" href="http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/">http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/</a></pre><pre>_______________________________________________
+Bluez-devel mailing list
+Bluez-devel@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.sourceforge.net/lists/listinfo/bluez-devel">https://lists.sourceforge.net/lists/listinfo/bluez-devel</a>
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="00227" href="msg00227.html">Re:  [PATCH] Support translations in bluez-utils</a></strong>
+<ul><li><em>From:</em> Marcel Holtmann</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00225.html">Back to some bluez-related work</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00227.html">Re:  [PATCH] Support translations in bluez-utils</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00225.html">Back to some bluez-related work</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00227.html">Re:  [PATCH] Support translations in bluez-utils</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00226"><strong>Date</strong></a></li>
+<li><a href="index.html#00226"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-bluetooth/>[Linux&nbsp;Bluetooth&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/netdev/>[Network&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

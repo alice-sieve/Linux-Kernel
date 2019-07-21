@@ -1,0 +1,342 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] virtinst: Use openAuth to support SASL and	PolicyKit -->
+<!--X-From-R13: Qbyr Dbovafba &#60;pebovafbNerqung.pbz> -->
+<!--X-Date: Thu, 7 May 2009 13:29:49 &#45;0700 -->
+<!--X-Message-Id: 4A0344B8.8090304@redhat.com -->
+<!--X-Content-Type: multipart/mixed -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Management Tools, [PATCH] virtinst: Use openAuth to support SASL and	PolicyKit">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="Fedora Management Tools" href="//feedproxy.google.com/Fedora/linuxManagementTools">
+<title>Fedora Management Tools -- [PATCH] virtinst: Use openAuth to support SASL and	PolicyKit</title>
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] virtinst: Use openAuth to support SASL and	PolicyKit</h1>
+[<a href="msg04873.html">Date Prev</a>][<a href="msg04875.html">Date Next</a>][<a href="msg04873.html">Thread Prev</a>][<a href="msg04875.html">Thread Next</a>][<a href="maillist.html#04874">Date Index</a>][<a href="index.html#04874">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] virtinst: Use openAuth to support SASL and	PolicyKit</li>
+<li><em>From</em>: Cole Robinson &lt;<a href="mailto:crobinso@DOMAIN.HIDDEN">crobinso@xxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Thu, 07 May 2009 16:29:44 -0400</li>
+<li><em>Cc</em>: </li>
+<li><em>Reply-to</em>: Fedora/Linux Management Tools &lt;<a href="mailto:et-mgmt-tools@DOMAIN.HIDDEN">et-mgmt-tools@xxxxxxxxxx</a>&gt;</li>
+<li><em>User-agent</em>: Thunderbird 2.0.0.19 (X11/20090105)</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The attached patch changes the virt-* cli tools to use the libvirt
+openAuth function for opening connections. This allows using PolicyKit
+and SASL auth with the tools.
+
+polkit-auth is forced to run in cli mode, so no graphical dialog will be
+launched. I've thought about having the --prompt flag play a role here,
+but since the use cases this fulfills did not previously work, there
+shouldn't be any chance of breaking existing uses.
+
+Thanks,
+Cole
+</pre><pre># HG changeset patch
+# User Cole Robinson &lt;crobinso@xxxxxxxxxx&gt;
+# Date 1241723712 14400
+# Node ID 0c58ccf22773e2906853f3ac95fb3cc9ceaa158d
+# Parent  2ac98205eb469857ea4110125502eab23dd8e24f
+Allow PolicyKit and SASL authentication.
+
+Use openAuth when opening the initial connection: allows PolicyKit and
+SASA username/password auth.
+
+diff -r 2ac98205eb46 -r 0c58ccf22773 virtinst/cli.py
+--- a/virtinst/cli.py	Thu May 07 13:47:49 2009 -0400
++++ b/virtinst/cli.py	Thu May 07 15:15:12 2009 -0400
+@@ -117,6 +117,7 @@
+     print _(&quot;Exiting at user request.&quot;)
+     sys.exit(0)
+ 
++# Connection opening helper functions
+ def getConnection(connect):
+     if not User.current().has_priv(User.PRIV_CREATE_DOMAIN, connect):
+         fail(_(&quot;Must be root to create Xen guests&quot;))
+@@ -124,7 +125,105 @@
+         fail(_(&quot;Could not find usable default libvirt connection.&quot;))
+ 
+     logging.debug(&quot;Using libvirt URI '%s'&quot; % connect)
+-    return libvirt.open(connect)
++    return open_connection(connect)
++
++def open_connection(uri):
++    open_flags = 0
++    valid_auth_options = [libvirt.VIR_CRED_AUTHNAME,
++                          libvirt.VIR_CRED_PASSPHRASE,
++                          libvirt.VIR_CRED_EXTERNAL]
++    authcb = do_creds
++    authcb_data = None
++
++    return libvirt.openAuth(uri, [valid_auth_options, authcb, authcb_data],
++                            open_flags)
++
++def do_creds(creds, cbdata):
++    try:
++        return _do_creds(creds, cbdata)
++    except:
++        _util.log_exception(&quot;Error in creds callback.&quot;)
++        raise
++
++def _do_creds(creds, cbdata_ignore):
++
++    if (len(creds) == 1 and
++        creds[0][0] == libvirt.VIR_CRED_EXTERNAL and
++        creds[0][2] == &quot;PolicyKit&quot;):
++        return _do_creds_polkit(creds[0][1])
++
++    for cred in creds:
++        if cred[0] == libvirt.VIR_CRED_EXTERNAL:
++            return -1
++
++    return _do_creds_authname(creds)
++
++# PolicyKit auth
++def _do_creds_polkit(action):
++    if os.getuid() == 0:
++        logging.debug(&quot;Skipping policykit check as root&quot;)
++        return 0 # Success
++    logging.debug(&quot;Doing policykit for %s&quot; % action)
++
++    import subprocess
++    import commands
++
++    bin_path = &quot;/usr/bin/polkit-auth&quot;
++
++    if not os.path.exists(bin_path):
++        logging.debug(&quot;%s not present, skipping polkit auth.&quot; % bin_path)
++        return 0
++
++    cmdstr = &quot;%s %s&quot; % (bin_path, &quot;--explicit&quot;)
++    output = commands.getstatusoutput(cmdstr)
++    if output[1].count(action):
++        logging.debug(&quot;User already authorized for %s.&quot; % action)
++        # Hide spurious output from polkit-auth
++        popen_stdout = subprocess.PIPE
++        popen_stderr = subprocess.PIPE
++    else:
++        popen_stdout = None
++        popen_stderr = None
++
++    # Force polkit prompting to be text mode. Not strictly required, but
++    # launching a dialog is overkill.
++    env = os.environ.copy()
++    env[&quot;POLKIT_AUTH_FORCE_TEXT&quot;] = &quot;set&quot;
++
++    cmd = [bin_path, &quot;--obtain&quot;, action]
++    proc = subprocess.Popen(cmd, env=env, stdout=popen_stdout,
++                            stderr=popen_stderr)
++    out, err = proc.communicate()
++
++    if out and popen_stdout:
++        logging.debug(&quot;polkit-auth stdout: %s&quot; % out)
++    if err and popen_stderr:
++        logging.debug(&quot;polkit-auth stderr: %s&quot; % err)
++
++    return 0
++
++# SASL username/pass auth
++def _do_creds_authname(creds):
++    retindex = 4
++
++    for cred in creds:
++        credtype, prompt, ignore, ignore, ignore = cred
++        prompt += &quot;: &quot;
++
++        res = cred[retindex]
++        if credtype == libvirt.VIR_CRED_AUTHNAME:
++            res = raw_input(prompt)
++        elif credtype == libvirt.VIR_CRED_PASSPHRASE:
++            import getpass
++            res = getpass.getpass(prompt)
++        else:
++            logging.debug(&quot;Unknown auth type in creds callback: %d&quot; %
++                          credtype)
++            return -1
++
++        cred[retindex] = res
++
++    return 0
+ 
+ #
+ # Prompting
+</pre><pre>_______________________________________________
+et-mgmt-tools mailing list
+et-mgmt-tools@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/et-mgmt-tools">https://www.redhat.com/mailman/listinfo/et-mgmt-tools</a></pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg04873.html">user questions - iscsi and nfs storage</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg04875.html">[PATCH] virt-install: allow to set nic model</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg04873.html">user questions - iscsi and nfs storage</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg04875.html">[PATCH] virt-install: allow to set nic model</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#04874"><strong>Date</strong></a></li>
+<li><a href="index.html#04874"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fll/>[Fedora&nbsp;Legacy&nbsp;List]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

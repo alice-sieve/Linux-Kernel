@@ -1,0 +1,397 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v21 17/28] x86/sgx: Add provisioning -->
+<!--X-From-R13: Xnexxb Enxxvara &#60;wnexxb.fnxxvaraNyvahk.vagry.pbz> -->
+<!--X-Date: Sat, 13 Jul 2019 10:11:51 &#45;0700 -->
+<!--X-Message-Id: 20190713170804.2340&#45;18&#45;jarkko.sakkinen@linux.intel.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190713170804.2340&#45;1&#45;jarkko.sakkinen@linux.intel.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, [PATCH v21 17/28] x86/sgx: Add provisioning">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- [PATCH v21 17/28] x86/sgx: Add provisioning</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v21 17/28] x86/sgx: Add provisioning</h1>
+[<a href="msg29904.html">Date Prev</a>][<a href="msg29906.html">Date Next</a>][<a href="msg29891.html">Thread Prev</a>][<a href="msg29907.html">Thread Next</a>][<a href="maillist.html#29905">Date Index</a>][<a href="index.html#29905">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v21 17/28] x86/sgx: Add provisioning</li>
+<li><em>From</em>: Jarkko Sakkinen &lt;jarkko.sakkinen@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Sat, 13 Jul 2019 20:07:53 +0300</li>
+<li><em>Cc</em>: akpm@xxxxxxxxxxxxxxxxxxxx, dave.hansen@xxxxxxxxx,        sean.j.christopherson@xxxxxxxxx, nhorman@xxxxxxxxxx,        npmccallum@xxxxxxxxxx, serge.ayoun@xxxxxxxxx,        shay.katz-zamir@xxxxxxxxx, haitao.huang@xxxxxxxxx,        andriy.shevchenko@xxxxxxxxxxxxxxx, tglx@xxxxxxxxxxxxx,        kai.svahn@xxxxxxxxx, bp@xxxxxxxxx, josh@xxxxxxxxxxxxxxxx,        luto@xxxxxxxxxx, kai.huang@xxxxxxxxx, rientjes@xxxxxxxxxx,        cedric.xing@xxxxxxxxx,        Jarkko Sakkinen &lt;jarkko.sakkinen@xxxxxxxxxxxxxxx&gt;,        James Morris &lt;jmorris@xxxxxxxxx&gt;,        &quot;Serge E . Hallyn&quot; &lt;serge@xxxxxxxxxx&gt;,        linux-security-module@xxxxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;20190713170804.2340-1-jarkko.sakkinen@linux.intel.com&gt;</li>
+<li><em>References</em>: &lt;20190713170804.2340-1-jarkko.sakkinen@linux.intel.com&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>In order to provide a mechanism for devilering provisoning rights:
+
+1. Add a new device file /dev/sgx/provision that works as a token for
+   allowing an enclave to have the provisioning privileges.
+2. Add a new ioctl called SGX_IOC_ENCLAVE_SET_ATTRIBUTE that accepts the
+   following data structure:
+
+   struct sgx_enclave_set_attribute {
+           __u64 addr;
+           __u64 attribute_fd;
+   };
+
+A daemon could sit on top of /dev/sgx/provision and send a file
+descriptor of this file to a process that needs to be able to provision
+enclaves.
+
+The way this API is used is straight-forward. Lets assume that dev_fd is
+a handle to /dev/sgx/enclave and prov_fd is a handle to
+/dev/sgx/provision.  You would allow SGX_IOC_ENCLAVE_CREATE to
+initialize an enclave with the PROVISIONKEY attribute by
+
+params.addr = &lt;enclave address&gt;;
+params.token_fd = prov_fd;
+
+ioctl(dev_fd, SGX_IOC_ENCLAVE_SET_ATTRIBUTE, &amp;params);
+
+Cc: James Morris &lt;jmorris@xxxxxxxxx&gt;
+Cc: Serge E. Hallyn &lt;serge@xxxxxxxxxx&gt;
+Cc: linux-security-module@xxxxxxxxxxxxxxx
+Suggested-by: Andy Lutomirski &lt;luto@xxxxxxxxxx&gt;
+Signed-off-by: Jarkko Sakkinen &lt;jarkko.sakkinen@xxxxxxxxxxxxxxx&gt;
+---
+ arch/x86/include/uapi/asm/sgx.h         | 11 ++++++
+ arch/x86/kernel/cpu/sgx/driver/driver.h |  2 +-
+ arch/x86/kernel/cpu/sgx/driver/ioctl.c  | 45 +++++++++++++++++++++++++
+ arch/x86/kernel/cpu/sgx/driver/main.c   | 23 ++++++++++++-
+ 4 files changed, 79 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
+index 37d6770a654b..f17d37ca3496 100644
+--- a/arch/x86/include/uapi/asm/sgx.h
++++ b/arch/x86/include/uapi/asm/sgx.h
+@@ -16,6 +16,8 @@
+ 	_IOW(SGX_MAGIC, 0x01, struct sgx_enclave_add_page)
+ #define SGX_IOC_ENCLAVE_INIT \
+ 	_IOW(SGX_MAGIC, 0x02, struct sgx_enclave_init)
++#define SGX_IOC_ENCLAVE_SET_ATTRIBUTE \
++	_IOW(SGX_MAGIC, 0x03, struct sgx_enclave_set_attribute)
+ 
+ /**
+  * struct sgx_enclave_create - parameter structure for the
+@@ -52,4 +54,13 @@ struct sgx_enclave_init {
+ 	__u64 sigstruct;
+ };
+ 
++/**
++ * struct sgx_enclave_set_attribute - parameter structure for the
++ *				      %SGX_IOC_ENCLAVE_SET_ATTRIBUTE ioctl
++ * @attribute_fd:	file handle of the attribute file in the securityfs
++ */
++struct sgx_enclave_set_attribute {
++	__u64 attribute_fd;
++};
++
+ #endif /* _UAPI_ASM_X86_SGX_H */
+diff --git a/arch/x86/kernel/cpu/sgx/driver/driver.h b/arch/x86/kernel/cpu/sgx/driver/driver.h
+index 52f41426434b..da60839b133a 100644
+--- a/arch/x86/kernel/cpu/sgx/driver/driver.h
++++ b/arch/x86/kernel/cpu/sgx/driver/driver.h
+@@ -28,7 +28,7 @@ extern u64 sgx_attributes_reserved_mask;
+ extern u64 sgx_xfrm_reserved_mask;
+ extern u32 sgx_xsave_size_tbl[64];
+ 
+-extern const struct file_operations sgx_fs_provision_fops;
++extern const struct file_operations sgx_provision_fops;
+ 
+ long sgx_ioctl(struct file *filep, unsigned int cmd, unsigned long arg);
+ 
+diff --git a/arch/x86/kernel/cpu/sgx/driver/ioctl.c b/arch/x86/kernel/cpu/sgx/driver/ioctl.c
+index 1cbebcd3f397..958c1dbc02e7 100644
+--- a/arch/x86/kernel/cpu/sgx/driver/ioctl.c
++++ b/arch/x86/kernel/cpu/sgx/driver/ioctl.c
+@@ -718,6 +718,49 @@ static long sgx_ioc_enclave_init(struct file *filep, void __user *arg)
+ 	return ret;
+ }
+ 
++/**
++ * sgx_ioc_enclave_set_attribute - handler for %SGX_IOC_ENCLAVE_SET_ATTRIBUTE
++ * @filep:	open file to /dev/sgx
++ * @arg:	userspace pointer to a struct sgx_enclave_set_attribute instance
++ *
++ * Mark the enclave as being allowed to access a restricted attribute bit.
++ * The requested attribute is specified via the attribute_fd field in the
++ * provided struct sgx_enclave_set_attribute.  The attribute_fd must be a
++ * handle to an SGX attribute file, e.g. “/dev/sgx/provision&quot;.
++ *
++ * Failure to explicitly request access to a restricted attribute will cause
++ * sgx_ioc_enclave_init() to fail.  Currently, the only restricted attribute
++ * is access to the PROVISION_KEY.
++ *
++ * Note, access to the EINITTOKEN_KEY is disallowed entirely.
++ *
++ * Return: 0 on success, -errno otherwise
++ */
++static long sgx_ioc_enclave_set_attribute(struct file *filep, void __user *arg)
++{
++	struct sgx_encl *encl = filep-&gt;private_data;
++	struct sgx_enclave_set_attribute params;
++	struct file *attribute_file;
++	int ret;
++
++	if (copy_from_user(&amp;params, arg, sizeof(params)))
++		return -EFAULT;
++
++	attribute_file = fget(params.attribute_fd);
++	if (!attribute_file-&gt;f_op)
++		return -EINVAL;
++
++	if (attribute_file-&gt;f_op != &amp;sgx_provision_fops) {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	encl-&gt;allowed_attributes |= SGX_ATTR_PROVISIONKEY;
++
++out:
++	fput(attribute_file);
++	return ret;
++}
+ 
+ long sgx_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
+ {
+@@ -728,6 +771,8 @@ long sgx_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
+ 		return sgx_ioc_enclave_add_page(filep, (void __user *)arg);
+ 	case SGX_IOC_ENCLAVE_INIT:
+ 		return sgx_ioc_enclave_init(filep, (void __user *)arg);
++	case SGX_IOC_ENCLAVE_SET_ATTRIBUTE:
++		return sgx_ioc_enclave_set_attribute(filep, (void __user *)arg);
+ 	default:
+ 		return -ENOIOCTLCMD;
+ 	}
+diff --git a/arch/x86/kernel/cpu/sgx/driver/main.c b/arch/x86/kernel/cpu/sgx/driver/main.c
+index 1ccc160020d1..5defd1ed3de5 100644
+--- a/arch/x86/kernel/cpu/sgx/driver/main.c
++++ b/arch/x86/kernel/cpu/sgx/driver/main.c
+@@ -153,12 +153,18 @@ static const struct file_operations sgx_encl_fops = {
+ 	.get_unmapped_area	= sgx_get_unmapped_area,
+ };
+ 
++const struct file_operations sgx_provision_fops = {
++	.owner			= THIS_MODULE,
++};
++
+ static struct bus_type sgx_bus_type = {
+ 	.name	= &quot;sgx&quot;,
+ };
+ 
+ static struct device sgx_encl_dev;
+ static struct cdev sgx_encl_cdev;
++static struct device sgx_provision_dev;
++static struct cdev sgx_provision_cdev;
+ static dev_t sgx_devt;
+ 
+ static void sgx_dev_release(struct device *dev)
+@@ -235,22 +241,37 @@ int __init sgx_drv_init(void)
+ 	if (ret)
+ 		goto err_chrdev_region;
+ 
++	ret = sgx_dev_init(&quot;sgx/provision&quot;, &amp;sgx_provision_dev,
++			   &amp;sgx_provision_cdev, &amp;sgx_provision_fops, 1);
++	if (ret)
++		goto err_encl_dev;
++
+ 	sgx_encl_wq = alloc_workqueue(&quot;sgx-encl-wq&quot;,
+ 				      WQ_UNBOUND | WQ_FREEZABLE, 1);
+ 	if (!sgx_encl_wq) {
+ 		ret = -ENOMEM;
+-		goto err_encl_dev;
++		goto err_provision_dev;
+ 	}
+ 
+ 	ret = cdev_device_add(&amp;sgx_encl_cdev, &amp;sgx_encl_dev);
+ 	if (ret)
+ 		goto err_encl_wq;
+ 
++	ret = cdev_device_add(&amp;sgx_provision_cdev, &amp;sgx_provision_dev);
++	if (ret)
++		goto err_encl_cdev;
++
+ 	return 0;
+ 
++err_encl_cdev:
++	cdev_device_del(&amp;sgx_encl_cdev, &amp;sgx_encl_dev);
++
+ err_encl_wq:
+ 	destroy_workqueue(sgx_encl_wq);
+ 
++err_provision_dev:
++	put_device(&amp;sgx_provision_dev);
++
+ err_encl_dev:
+ 	put_device(&amp;sgx_encl_dev);
+ 
+-- 
+2.20.1
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29904.html">Re: Preferred subj= with multiple LSMs</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29906.html">Re: [RFC PATCH] security, capability: pass object information to security_capable</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29891.html">[RFC PATCH] security,capability: pass object information to security_capable</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29907.html">[PATCH AUTOSEL 5.2 116/249] integrity: Fix __integrity_init_keyring() section mismatch</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29905"><strong>Date</strong></a></li>
+<li><a href="index.html#29905"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

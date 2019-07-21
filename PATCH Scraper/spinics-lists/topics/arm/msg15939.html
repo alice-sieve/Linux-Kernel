@@ -1,0 +1,248 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 2/2 v2] imx27: pinctrl: fix offset calculation in imx_read_2bit -->
+<!--X-From-R13: Quevf Dhruy &#60;puevf.ehruyNtgflf.pbz.ux> -->
+<!--X-Date: Tue, 21 Jan 2014 19:54:43 &#45;0800 -->
+<!--X-Message-Id: 1390360492&#45;29126&#45;2&#45;git&#45;send&#45;email&#45;chris.ruehl@gtsys.com.hk -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1390360492&#45;29126&#45;1&#45;git&#45;send&#45;email&#45;chris.ruehl@gtsys.com.hk -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux ARM: [PATCH 2/2 v2] imx27: pinctrl: fix offset calculation in imx_read_2bit">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux ARM, Xscale &mdash; [PATCH 2/2 v2] imx27: pinctrl: fix offset calculation in imx_read_2bit</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:1790192168" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 2/2 v2] imx27: pinctrl: fix offset calculation in imx_read_2bit</h1>
+[<a href="msg15938.html">Date Prev</a>][<a href="msg15940.html">Date Next</a>][<a href="msg15938.html">Thread Prev</a>][<a href="msg15952.html">Thread Next</a>][<a href="maillist.html#15939">Date Index</a>][<a href="threads.html#15939">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: <a href="mailto:linus.walleij@DOMAIN.HIDDEN">linus.walleij@xxxxxxxxxx</a></li>
+<li><em>Subject</em>: [PATCH 2/2 v2] imx27: pinctrl: fix offset calculation in imx_read_2bit</li>
+<li><em>From</em>: Chris Ruehl &lt;<a href="mailto:chris.ruehl@DOMAIN.HIDDEN">chris.ruehl@xxxxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Wed, 22 Jan 2014 11:14:52 +0800</li>
+<li><em>Cc</em>: <a href="mailto:mpa@DOMAIN.HIDDEN">mpa@xxxxxxxxxxxxxx</a>, Chris Ruehl &lt;<a href="mailto:chris.ruehl@DOMAIN.HIDDEN">chris.ruehl@xxxxxxxxxxxx</a>&gt;,        <a href="mailto:linux-kernel@DOMAIN.HIDDEN">linux-kernel@xxxxxxxxxxxxxxx</a>, <a href="mailto:linux-arm@DOMAIN.HIDDEN">linux-arm@xxxxxxxxxxxxxxxxxxx</a></li>
+<li><em>In-reply-to</em>: &lt;<a href="msg15938.html">1390360492-29126-1-git-send-email-chris.ruehl@gtsys.com.hk</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The offset for the 2bit register calculate wrong, this patch
+fixes the problem. The debugfs printout for oconf, iconfa, iconfb
+now shows the real values.
+
+Signed-off-by: Chris Ruehl &lt;chris.ruehl@xxxxxxxxxxxx&gt;
+---
+ drivers/pinctrl/pinctrl-imx1-core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/pinctrl/pinctrl-imx1-core.c b/drivers/pinctrl/pinctrl-imx1-core.c
+index 8dfc3dc..59a16b6 100644
+--- a/drivers/pinctrl/pinctrl-imx1-core.c
++++ b/drivers/pinctrl/pinctrl-imx1-core.c
+@@ -139,7 +139,7 @@ static int imx1_read_2bit(struct imx1_pinctrl *ipctl, unsigned int pin_id,
+ 		u32 reg_offset)
+ {
+ 	void __iomem *reg = imx1_mem(ipctl, pin_id) + reg_offset;
+-	int offset = pin_id % 16;
++	int offset = (pin_id % 16) * 2;
+ 
+ 	/* Use the next register if the pin's port pin number is &gt;=16 */
+ 	if (pin_id % 32 &gt;= 16)
+-- 
+1.7.10.4
+
+
+_______________________________________________
+linux-arm mailing list
+linux-arm@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm">http://lists.infradead.org/mailman/listinfo/linux-arm</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="15959" href="msg15959.html">Re: [PATCH 2/2 v2] imx27: pinctrl: fix offset calculation in imx_read_2bit</a></strong>
+<ul><li><em>From:</em> Linus Walleij</li></ul></li>
+<li><strong><a name="15952" href="msg15952.html">Re: [PATCH 2/2 v2] imx27: pinctrl: fix offset calculation in imx_read_2bit</a></strong>
+<ul><li><em>From:</em> Linus Walleij</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="15938" href="msg15938.html">[PATCH 1/2 v2] imx27: pinctrl: fix wrong offset to ICONFB</a></strong>
+<ul><li><em>From:</em> Chris Ruehl</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg15938.html">[PATCH 1/2 v2] imx27: pinctrl: fix wrong offset to ICONFB</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg15940.html">Re: imx27: pinctrl: GPIO set output value failed</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg15938.html">[PATCH 1/2 v2] imx27: pinctrl: fix wrong offset to ICONFB</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg15952.html">Re: [PATCH 2/2 v2] imx27: pinctrl: fix offset calculation in imx_read_2bit</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#15939"><strong>Date</strong></a></li>
+<li><a href="threads.html#15939"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

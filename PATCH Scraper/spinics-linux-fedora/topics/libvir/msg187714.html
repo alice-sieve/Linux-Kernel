@@ -1,0 +1,996 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 03/14] tools: Separate domain related completers	into a file -->
+<!--X-From-R13: [vpuny Bevibmavx &#60;zcevibmaNerqung.pbz> -->
+<!--X-Date: Fri, 19 Jul 2019 01:48:50 &#45;0700 -->
+<!--X-Message-Id: 847a3bac6740447d94a17fa9f5b8e170537c23fa.1563525985.git.mprivozn@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1563525985.git.mprivozn@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 03/14] tools: Separate domain related completers	into a file</title>
+<meta name="description" content="libvirt: [PATCH 03/14] tools: Separate domain related completers	into a file">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 03/14] tools: Separate domain related completers	into a file</h1>
+[<a href="msg187713.html">Date Prev</a>][<a href="msg187715.html">Date Next</a>][<a href="msg187713.html">Thread Prev</a>][<a href="msg187715.html">Thread Next</a>][<a href="maillist.html#187714">Date Index</a>][<a href="index.html#187714">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 03/14] tools: Separate domain related completers	into a file</li>
+<li><em>From</em>: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 19 Jul 2019 10:48:27 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187713.html">cover.1563525985.git.mprivozn@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187713.html">cover.1563525985.git.mprivozn@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Mixing all completers in one file does not support
+maintainability. Separate those completers which relate to
+domains (e.g. they complete various domain aspects) into
+virsh-completer-domain.c.
+
+Signed-off-by: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;
+---
+ tools/Makefile.am              |   1 +
+ tools/virsh-completer-domain.c | 314 +++++++++++++++++++++++++++++++++
+ tools/virsh-completer-domain.h |  55 ++++++
+ tools/virsh-completer.c        | 285 ------------------------------
+ tools/virsh-completer.h        |  32 +---
+ 5 files changed, 371 insertions(+), 316 deletions(-)
+ create mode 100644 tools/virsh-completer-domain.c
+ create mode 100644 tools/virsh-completer-domain.h
+
+diff --git a/tools/Makefile.am b/tools/Makefile.am
+index c6064dee08..8dbfba700a 100644
+--- a/tools/Makefile.am
++++ b/tools/Makefile.am
+@@ -217,6 +217,7 @@ virt_login_shell_CFLAGS = \
+ virsh_SOURCES = \
+ 		virsh.c virsh.h \
+ 		virsh-completer.c virsh-completer.h \
++		virsh-completer-domain.c virsh-completer-domain.h \
+ 		virsh-console.c virsh-console.h \
+ 		virsh-domain.c virsh-domain.h \
+ 		virsh-domain-monitor.c virsh-domain-monitor.h \
+diff --git a/tools/virsh-completer-domain.c b/tools/virsh-completer-domain.c
+new file mode 100644
+index 0000000000..9c10e38aba
+--- /dev/null
++++ b/tools/virsh-completer-domain.c
+@@ -0,0 +1,314 @@
++/*
++ * virsh-completer-domain.c: virsh completer callbacks related to domains
++ *
++ * Copyright (C) 2019 Red Hat, Inc.
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library.  If not, see
++ * &lt;<a  rel="nofollow" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.
++ */
++
++#include &lt;config.h&gt;
++
++#include &quot;virsh-completer-domain.h&quot;
++#include &quot;viralloc.h&quot;
++#include &quot;virmacaddr.h&quot;
++#include &quot;virsh-domain.h&quot;
++#include &quot;virsh-util.h&quot;
++#include &quot;virsh.h&quot;
++#include &quot;virstring.h&quot;
++#include &quot;virxml.h&quot;
++
++char **
++virshDomainNameCompleter(vshControl *ctl,
++                         const vshCmd *cmd ATTRIBUTE_UNUSED,
++                         unsigned int flags)
++{
++    virshControlPtr priv = ctl-&gt;privData;
++    virDomainPtr *domains = NULL;
++    int ndomains = 0;
++    size_t i = 0;
++    char **ret = NULL;
++    VIR_AUTOSTRINGLIST tmp = NULL;
++
++    virCheckFlags(VIR_CONNECT_LIST_DOMAINS_ACTIVE |
++                  VIR_CONNECT_LIST_DOMAINS_INACTIVE |
++                  VIR_CONNECT_LIST_DOMAINS_OTHER |
++                  VIR_CONNECT_LIST_DOMAINS_PAUSED |
++                  VIR_CONNECT_LIST_DOMAINS_PERSISTENT |
++                  VIR_CONNECT_LIST_DOMAINS_RUNNING |
++                  VIR_CONNECT_LIST_DOMAINS_SHUTOFF,
++                  NULL);
++
++    if (!priv-&gt;conn || virConnectIsAlive(priv-&gt;conn) &lt;= 0)
++        return NULL;
++
++    if ((ndomains = virConnectListAllDomains(priv-&gt;conn, &amp;domains, flags)) &lt; 0)
++        return NULL;
++
++    if (VIR_ALLOC_N(tmp, ndomains + 1) &lt; 0)
++        goto cleanup;
++
++    for (i = 0; i &lt; ndomains; i++) {
++        const char *name = virDomainGetName(domains[i]);
++
++        if (VIR_STRDUP(tmp[i], name) &lt; 0)
++            goto cleanup;
++    }
++
++    VIR_STEAL_PTR(ret, tmp);
++
++ cleanup:
++    for (i = 0; i &lt; ndomains; i++)
++        virshDomainFree(domains[i]);
++    VIR_FREE(domains);
++    return ret;
++}
++
++
++char **
++virshDomainInterfaceCompleter(vshControl *ctl,
++                              const vshCmd *cmd,
++                              unsigned int flags)
++{
++    virshControlPtr priv = ctl-&gt;privData;
++    VIR_AUTOPTR(xmlDoc) xmldoc = NULL;
++    VIR_AUTOPTR(xmlXPathContext) ctxt = NULL;
++    int ninterfaces;
++    VIR_AUTOFREE(xmlNodePtr *) interfaces = NULL;
++    size_t i;
++    unsigned int domainXMLFlags = 0;
++    char **ret = NULL;
++    VIR_AUTOSTRINGLIST tmp = NULL;
++
++    virCheckFlags(VIRSH_DOMAIN_INTERFACE_COMPLETER_MAC, NULL);
++
++    if (!priv-&gt;conn || virConnectIsAlive(priv-&gt;conn) &lt;= 0)
++        return NULL;
++
++    if (vshCommandOptBool(cmd, &quot;config&quot;))
++        domainXMLFlags = VIR_DOMAIN_XML_INACTIVE;
++
++    if (virshDomainGetXML(ctl, cmd, domainXMLFlags, &amp;xmldoc, &amp;ctxt) &lt; 0)
++        return NULL;
++
++    ninterfaces = virXPathNodeSet(&quot;./devices/interface&quot;, ctxt, &amp;interfaces);
++    if (ninterfaces &lt; 0)
++        return NULL;
++
++    if (VIR_ALLOC_N(tmp, ninterfaces + 1) &lt; 0)
++        return NULL;
++
++    for (i = 0; i &lt; ninterfaces; i++) {
++        ctxt-&gt;node = interfaces[i];
++
++        if (!(flags &amp; VIRSH_DOMAIN_INTERFACE_COMPLETER_MAC) &amp;&amp;
++            (tmp[i] = virXPathString(&quot;string(./target/@dev)&quot;, ctxt)))
++            continue;
++
++        /* In case we are dealing with inactive domain XML there's no
++         * &lt;target dev=''/&gt;. Offer MAC addresses then. */
++        if (!(tmp[i] = virXPathString(&quot;string(./mac/@address)&quot;, ctxt)))
++            return NULL;
++    }
++
++    VIR_STEAL_PTR(ret, tmp);
++    return ret;
++}
++
++
++char **
++virshDomainDiskTargetCompleter(vshControl *ctl,
++                               const vshCmd *cmd,
++                               unsigned int flags)
++{
++    virshControlPtr priv = ctl-&gt;privData;
++    VIR_AUTOPTR(xmlDoc) xmldoc = NULL;
++    VIR_AUTOPTR(xmlXPathContext) ctxt = NULL;
++    VIR_AUTOFREE(xmlNodePtr *) disks = NULL;
++    int ndisks;
++    size_t i;
++    VIR_AUTOSTRINGLIST tmp = NULL;
++    char **ret = NULL;
++
++    virCheckFlags(0, NULL);
++
++    if (!priv-&gt;conn || virConnectIsAlive(priv-&gt;conn) &lt;= 0)
++        return NULL;
++
++    if (virshDomainGetXML(ctl, cmd, 0, &amp;xmldoc, &amp;ctxt) &lt; 0)
++        return NULL;
++
++    ndisks = virXPathNodeSet(&quot;./devices/disk&quot;, ctxt, &amp;disks);
++    if (ndisks &lt; 0)
++        return NULL;
++
++    if (VIR_ALLOC_N(tmp, ndisks + 1) &lt; 0)
++        return NULL;
++
++    for (i = 0; i &lt; ndisks; i++) {
++        ctxt-&gt;node = disks[i];
++        if (!(tmp[i] = virXPathString(&quot;string(./target/@dev)&quot;, ctxt)))
++            return NULL;
++    }
++
++    VIR_STEAL_PTR(ret, tmp);
++    return ret;
++}
++
++
++char **
++virshDomainEventNameCompleter(vshControl *ctl ATTRIBUTE_UNUSED,
++                              const vshCmd *cmd ATTRIBUTE_UNUSED,
++                              unsigned int flags)
++{
++    size_t i = 0;
++    char **ret = NULL;
++    VIR_AUTOSTRINGLIST tmp = NULL;
++
++    virCheckFlags(0, NULL);
++
++    if (VIR_ALLOC_N(tmp, VIR_DOMAIN_EVENT_ID_LAST + 1) &lt; 0)
++        return NULL;
++
++    for (i = 0; i &lt; VIR_DOMAIN_EVENT_ID_LAST; i++) {
++        if (VIR_STRDUP(tmp[i], virshDomainEventCallbacks[i].name) &lt; 0)
++            return NULL;
++    }
++
++    VIR_STEAL_PTR(ret, tmp);
++    return ret;
++}
++
++
++char **
++virshDomainInterfaceStateCompleter(vshControl *ctl,
++                                   const vshCmd *cmd,
++                                   unsigned int flags)
++{
++    virshControlPtr priv = ctl-&gt;privData;
++    const char *iface = NULL;
++    char **ret = NULL;
++    VIR_AUTOPTR(xmlDoc) xml = NULL;
++    VIR_AUTOPTR(xmlXPathContext) ctxt = NULL;
++    virMacAddr macaddr;
++    char macstr[VIR_MAC_STRING_BUFLEN] = &quot;&quot;;
++    int ninterfaces;
++    VIR_AUTOFREE(xmlNodePtr *) interfaces = NULL;
++    VIR_AUTOFREE(char *) xpath = NULL;
++    VIR_AUTOFREE(char *) state = NULL;
++    VIR_AUTOSTRINGLIST tmp = NULL;
++
++    virCheckFlags(0, NULL);
++
++    if (!priv-&gt;conn || virConnectIsAlive(priv-&gt;conn) &lt;= 0)
++        return NULL;
++
++    if (virshDomainGetXML(ctl, cmd, flags, &amp;xml, &amp;ctxt) &lt; 0)
++        return NULL;
++
++    if (vshCommandOptStringReq(ctl, cmd, &quot;interface&quot;, &amp;iface) &lt; 0)
++        return NULL;
++
++    /* normalize the mac addr */
++    if (virMacAddrParse(iface, &amp;macaddr) == 0)
++        virMacAddrFormat(&amp;macaddr, macstr);
++
++    if (virAsprintf(&amp;xpath, &quot;/domain/devices/interface[(mac/@address = '%s') or &quot;
++                            &quot;                          (target/@dev = '%s')]&quot;,
++                           macstr, iface) &lt; 0)
++        return NULL;
++
++    if ((ninterfaces = virXPathNodeSet(xpath, ctxt, &amp;interfaces)) &lt; 0)
++        return NULL;
++
++    if (ninterfaces != 1)
++        return NULL;
++
++    ctxt-&gt;node = interfaces[0];
++
++    if (VIR_ALLOC_N(tmp, 2) &lt; 0)
++        return NULL;
++
++    if ((state = virXPathString(&quot;string(./link/@state)&quot;, ctxt)) &amp;&amp;
++        STREQ(state, &quot;down&quot;)) {
++        if (VIR_STRDUP(tmp[0], &quot;up&quot;) &lt; 0)
++            return NULL;
++    } else {
++        if (VIR_STRDUP(tmp[0], &quot;down&quot;) &lt; 0)
++            return NULL;
++    }
++
++    VIR_STEAL_PTR(ret, tmp);
++    return ret;
++}
++
++
++char **
++virshDomainDeviceAliasCompleter(vshControl *ctl,
++                                const vshCmd *cmd,
++                                unsigned int flags)
++{
++    virshControlPtr priv = ctl-&gt;privData;
++    VIR_AUTOPTR(xmlDoc) xmldoc = NULL;
++    VIR_AUTOPTR(xmlXPathContext) ctxt = NULL;
++    int naliases;
++    VIR_AUTOFREE(xmlNodePtr *) aliases = NULL;
++    size_t i;
++    unsigned int domainXMLFlags = 0;
++    char **ret = NULL;
++    VIR_AUTOSTRINGLIST tmp = NULL;
++
++    virCheckFlags(0, NULL);
++
++    if (!priv-&gt;conn || virConnectIsAlive(priv-&gt;conn) &lt;= 0)
++        return NULL;
++
++    if (vshCommandOptBool(cmd, &quot;config&quot;))
++        domainXMLFlags = VIR_DOMAIN_XML_INACTIVE;
++
++    if (virshDomainGetXML(ctl, cmd, domainXMLFlags, &amp;xmldoc, &amp;ctxt) &lt; 0)
++        return NULL;
++
++    naliases = virXPathNodeSet(&quot;./devices//alias/@name&quot;, ctxt, &amp;aliases);
++    if (naliases &lt; 0)
++        return NULL;
++
++    if (VIR_ALLOC_N(tmp, naliases + 1) &lt; 0)
++        return NULL;
++
++    for (i = 0; i &lt; naliases; i++) {
++        if (!(tmp[i] = virXMLNodeContentString(aliases[i])))
++            return NULL;
++    }
++
++    VIR_STEAL_PTR(ret, tmp);
++    return ret;
++}
++
++
++char **
++virshDomainShutdownModeCompleter(vshControl *ctl,
++                                 const vshCmd *cmd,
++                                 unsigned int flags)
++{
++    const char *modes[] = {&quot;acpi&quot;, &quot;agent&quot;, &quot;initctl&quot;, &quot;signal&quot;, &quot;paravirt&quot;, NULL};
++    const char *mode = NULL;
++
++    virCheckFlags(0, NULL);
++
++    if (vshCommandOptStringQuiet(ctl, cmd, &quot;mode&quot;, &amp;mode) &lt; 0)
++        return NULL;
++
++    return virshCommaStringListComplete(mode, modes);
++}
+diff --git a/tools/virsh-completer-domain.h b/tools/virsh-completer-domain.h
+new file mode 100644
+index 0000000000..083ab327cc
+--- /dev/null
++++ b/tools/virsh-completer-domain.h
+@@ -0,0 +1,55 @@
++/*
++ * virsh-completer-domain.h: virsh completer callbacks related to domains
++ *
++ * Copyright (C) 2019 Red Hat, Inc.
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library.  If not, see
++ * &lt;<a  rel="nofollow" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.
++ */
++
++#pragma once
++
++#include &quot;vsh.h&quot;
++
++char ** virshDomainNameCompleter(vshControl *ctl,
++                                 const vshCmd *cmd,
++                                 unsigned int flags);
++
++enum {
++    VIRSH_DOMAIN_INTERFACE_COMPLETER_MAC = 1 &lt;&lt; 0, /* Return just MACs */
++};
++
++char ** virshDomainInterfaceCompleter(vshControl *ctl,
++                                      const vshCmd *cmd,
++                                      unsigned int flags);
++
++char ** virshDomainDiskTargetCompleter(vshControl *ctl,
++                                       const vshCmd *cmd,
++                                       unsigned int flags);
++
++char ** virshDomainEventNameCompleter(vshControl *ctl,
++                                      const vshCmd *cmd,
++                                      unsigned int flags);
++
++char ** virshDomainInterfaceStateCompleter(vshControl *ctl,
++                                           const vshCmd *cmd,
++                                           unsigned int flags);
++
++char ** virshDomainDeviceAliasCompleter(vshControl *ctl,
++                                        const vshCmd *cmd,
++                                        unsigned int flags);
++
++char ** virshDomainShutdownModeCompleter(vshControl *ctl,
++                                         const vshCmd *cmd,
++                                         unsigned int flags);
+diff --git a/tools/virsh-completer.c b/tools/virsh-completer.c
+index f97bad75de..71796182b0 100644
+--- a/tools/virsh-completer.c
++++ b/tools/virsh-completer.c
+@@ -143,144 +143,6 @@ virshCommaStringListComplete(const char *input,
+ }
+ 
+ 
+-char **
+-virshDomainNameCompleter(vshControl *ctl,
+-                         const vshCmd *cmd ATTRIBUTE_UNUSED,
+-                         unsigned int flags)
+-{
+-    virshControlPtr priv = ctl-&gt;privData;
+-    virDomainPtr *domains = NULL;
+-    int ndomains = 0;
+-    size_t i = 0;
+-    char **ret = NULL;
+-    VIR_AUTOSTRINGLIST tmp = NULL;
+-
+-    virCheckFlags(VIR_CONNECT_LIST_DOMAINS_ACTIVE |
+-                  VIR_CONNECT_LIST_DOMAINS_INACTIVE |
+-                  VIR_CONNECT_LIST_DOMAINS_OTHER |
+-                  VIR_CONNECT_LIST_DOMAINS_PAUSED |
+-                  VIR_CONNECT_LIST_DOMAINS_PERSISTENT |
+-                  VIR_CONNECT_LIST_DOMAINS_RUNNING |
+-                  VIR_CONNECT_LIST_DOMAINS_SHUTOFF,
+-                  NULL);
+-
+-    if (!priv-&gt;conn || virConnectIsAlive(priv-&gt;conn) &lt;= 0)
+-        return NULL;
+-
+-    if ((ndomains = virConnectListAllDomains(priv-&gt;conn, &amp;domains, flags)) &lt; 0)
+-        return NULL;
+-
+-    if (VIR_ALLOC_N(tmp, ndomains + 1) &lt; 0)
+-        goto cleanup;
+-
+-    for (i = 0; i &lt; ndomains; i++) {
+-        const char *name = virDomainGetName(domains[i]);
+-
+-        if (VIR_STRDUP(tmp[i], name) &lt; 0)
+-            goto cleanup;
+-    }
+-
+-    VIR_STEAL_PTR(ret, tmp);
+-
+- cleanup:
+-    for (i = 0; i &lt; ndomains; i++)
+-        virshDomainFree(domains[i]);
+-    VIR_FREE(domains);
+-    return ret;
+-}
+-
+-
+-char **
+-virshDomainInterfaceCompleter(vshControl *ctl,
+-                              const vshCmd *cmd,
+-                              unsigned int flags)
+-{
+-    virshControlPtr priv = ctl-&gt;privData;
+-    VIR_AUTOPTR(xmlDoc) xmldoc = NULL;
+-    VIR_AUTOPTR(xmlXPathContext) ctxt = NULL;
+-    int ninterfaces;
+-    VIR_AUTOFREE(xmlNodePtr *) interfaces = NULL;
+-    size_t i;
+-    unsigned int domainXMLFlags = 0;
+-    char **ret = NULL;
+-    VIR_AUTOSTRINGLIST tmp = NULL;
+-
+-    virCheckFlags(VIRSH_DOMAIN_INTERFACE_COMPLETER_MAC, NULL);
+-
+-    if (!priv-&gt;conn || virConnectIsAlive(priv-&gt;conn) &lt;= 0)
+-        return NULL;
+-
+-    if (vshCommandOptBool(cmd, &quot;config&quot;))
+-        domainXMLFlags = VIR_DOMAIN_XML_INACTIVE;
+-
+-    if (virshDomainGetXML(ctl, cmd, domainXMLFlags, &amp;xmldoc, &amp;ctxt) &lt; 0)
+-        return NULL;
+-
+-    ninterfaces = virXPathNodeSet(&quot;./devices/interface&quot;, ctxt, &amp;interfaces);
+-    if (ninterfaces &lt; 0)
+-        return NULL;
+-
+-    if (VIR_ALLOC_N(tmp, ninterfaces + 1) &lt; 0)
+-        return NULL;
+-
+-    for (i = 0; i &lt; ninterfaces; i++) {
+-        ctxt-&gt;node = interfaces[i];
+-
+-        if (!(flags &amp; VIRSH_DOMAIN_INTERFACE_COMPLETER_MAC) &amp;&amp;
+-            (tmp[i] = virXPathString(&quot;string(./target/@dev)&quot;, ctxt)))
+-            continue;
+-
+-        /* In case we are dealing with inactive domain XML there's no
+-         * &lt;target dev=''/&gt;. Offer MAC addresses then. */
+-        if (!(tmp[i] = virXPathString(&quot;string(./mac/@address)&quot;, ctxt)))
+-            return NULL;
+-    }
+-
+-    VIR_STEAL_PTR(ret, tmp);
+-    return ret;
+-}
+-
+-
+-char **
+-virshDomainDiskTargetCompleter(vshControl *ctl,
+-                               const vshCmd *cmd,
+-                               unsigned int flags)
+-{
+-    virshControlPtr priv = ctl-&gt;privData;
+-    VIR_AUTOPTR(xmlDoc) xmldoc = NULL;
+-    VIR_AUTOPTR(xmlXPathContext) ctxt = NULL;
+-    VIR_AUTOFREE(xmlNodePtr *) disks = NULL;
+-    int ndisks;
+-    size_t i;
+-    VIR_AUTOSTRINGLIST tmp = NULL;
+-    char **ret = NULL;
+-
+-    virCheckFlags(0, NULL);
+-
+-    if (!priv-&gt;conn || virConnectIsAlive(priv-&gt;conn) &lt;= 0)
+-        return NULL;
+-
+-    if (virshDomainGetXML(ctl, cmd, 0, &amp;xmldoc, &amp;ctxt) &lt; 0)
+-        return NULL;
+-
+-    ndisks = virXPathNodeSet(&quot;./devices/disk&quot;, ctxt, &amp;disks);
+-    if (ndisks &lt; 0)
+-        return NULL;
+-
+-    if (VIR_ALLOC_N(tmp, ndisks + 1) &lt; 0)
+-        return NULL;
+-
+-    for (i = 0; i &lt; ndisks; i++) {
+-        ctxt-&gt;node = disks[i];
+-        if (!(tmp[i] = virXPathString(&quot;string(./target/@dev)&quot;, ctxt)))
+-            return NULL;
+-    }
+-
+-    VIR_STEAL_PTR(ret, tmp);
+-    return ret;
+-}
+-
+-
+ char **
+ virshStoragePoolNameCompleter(vshControl *ctl,
+                               const vshCmd *cmd ATTRIBUTE_UNUSED,
+@@ -841,30 +703,6 @@ virshSecretEventNameCompleter(vshControl *ctl ATTRIBUTE_UNUSED,
+ }
+ 
+ 
+-char **
+-virshDomainEventNameCompleter(vshControl *ctl ATTRIBUTE_UNUSED,
+-                              const vshCmd *cmd ATTRIBUTE_UNUSED,
+-                              unsigned int flags)
+-{
+-    size_t i = 0;
+-    char **ret = NULL;
+-    VIR_AUTOSTRINGLIST tmp = NULL;
+-
+-    virCheckFlags(0, NULL);
+-
+-    if (VIR_ALLOC_N(tmp, VIR_DOMAIN_EVENT_ID_LAST + 1) &lt; 0)
+-        return NULL;
+-
+-    for (i = 0; i &lt; VIR_DOMAIN_EVENT_ID_LAST; i++) {
+-        if (VIR_STRDUP(tmp[i], virshDomainEventCallbacks[i].name) &lt; 0)
+-            return NULL;
+-    }
+-
+-    VIR_STEAL_PTR(ret, tmp);
+-    return ret;
+-}
+-
+-
+ char **
+ virshPoolEventNameCompleter(vshControl *ctl ATTRIBUTE_UNUSED,
+                             const vshCmd *cmd ATTRIBUTE_UNUSED,
+@@ -889,69 +727,6 @@ virshPoolEventNameCompleter(vshControl *ctl ATTRIBUTE_UNUSED,
+ }
+ 
+ 
+-char **
+-virshDomainInterfaceStateCompleter(vshControl *ctl,
+-                                   const vshCmd *cmd,
+-                                   unsigned int flags)
+-{
+-    virshControlPtr priv = ctl-&gt;privData;
+-    const char *iface = NULL;
+-    char **ret = NULL;
+-    VIR_AUTOPTR(xmlDoc) xml = NULL;
+-    VIR_AUTOPTR(xmlXPathContext) ctxt = NULL;
+-    virMacAddr macaddr;
+-    char macstr[VIR_MAC_STRING_BUFLEN] = &quot;&quot;;
+-    int ninterfaces;
+-    VIR_AUTOFREE(xmlNodePtr *) interfaces = NULL;
+-    VIR_AUTOFREE(char *) xpath = NULL;
+-    VIR_AUTOFREE(char *) state = NULL;
+-    VIR_AUTOSTRINGLIST tmp = NULL;
+-
+-    virCheckFlags(0, NULL);
+-
+-    if (!priv-&gt;conn || virConnectIsAlive(priv-&gt;conn) &lt;= 0)
+-        return NULL;
+-
+-    if (virshDomainGetXML(ctl, cmd, flags, &amp;xml, &amp;ctxt) &lt; 0)
+-        return NULL;
+-
+-    if (vshCommandOptStringReq(ctl, cmd, &quot;interface&quot;, &amp;iface) &lt; 0)
+-        return NULL;
+-
+-    /* normalize the mac addr */
+-    if (virMacAddrParse(iface, &amp;macaddr) == 0)
+-        virMacAddrFormat(&amp;macaddr, macstr);
+-
+-    if (virAsprintf(&amp;xpath, &quot;/domain/devices/interface[(mac/@address = '%s') or &quot;
+-                            &quot;                          (target/@dev = '%s')]&quot;,
+-                           macstr, iface) &lt; 0)
+-        return NULL;
+-
+-    if ((ninterfaces = virXPathNodeSet(xpath, ctxt, &amp;interfaces)) &lt; 0)
+-        return NULL;
+-
+-    if (ninterfaces != 1)
+-        return NULL;
+-
+-    ctxt-&gt;node = interfaces[0];
+-
+-    if (VIR_ALLOC_N(tmp, 2) &lt; 0)
+-        return NULL;
+-
+-    if ((state = virXPathString(&quot;string(./link/@state)&quot;, ctxt)) &amp;&amp;
+-        STREQ(state, &quot;down&quot;)) {
+-        if (VIR_STRDUP(tmp[0], &quot;up&quot;) &lt; 0)
+-            return NULL;
+-    } else {
+-        if (VIR_STRDUP(tmp[0], &quot;down&quot;) &lt; 0)
+-            return NULL;
+-    }
+-
+-    VIR_STEAL_PTR(ret, tmp);
+-    return ret;
+-}
+-
+-
+ char **
+ virshNodeDeviceEventNameCompleter(vshControl *ctl ATTRIBUTE_UNUSED,
+                                   const vshCmd *cmd ATTRIBUTE_UNUSED,
+@@ -1043,63 +818,3 @@ virshCellnoCompleter(vshControl *ctl,
+     VIR_STEAL_PTR(ret, tmp);
+     return ret;
+ }
+-
+-
+-char **
+-virshDomainDeviceAliasCompleter(vshControl *ctl,
+-                                const vshCmd *cmd,
+-                                unsigned int flags)
+-{
+-    virshControlPtr priv = ctl-&gt;privData;
+-    VIR_AUTOPTR(xmlDoc) xmldoc = NULL;
+-    VIR_AUTOPTR(xmlXPathContext) ctxt = NULL;
+-    int naliases;
+-    VIR_AUTOFREE(xmlNodePtr *) aliases = NULL;
+-    size_t i;
+-    unsigned int domainXMLFlags = 0;
+-    char **ret = NULL;
+-    VIR_AUTOSTRINGLIST tmp = NULL;
+-
+-    virCheckFlags(0, NULL);
+-
+-    if (!priv-&gt;conn || virConnectIsAlive(priv-&gt;conn) &lt;= 0)
+-        return NULL;
+-
+-    if (vshCommandOptBool(cmd, &quot;config&quot;))
+-        domainXMLFlags = VIR_DOMAIN_XML_INACTIVE;
+-
+-    if (virshDomainGetXML(ctl, cmd, domainXMLFlags, &amp;xmldoc, &amp;ctxt) &lt; 0)
+-        return NULL;
+-
+-    naliases = virXPathNodeSet(&quot;./devices//alias/@name&quot;, ctxt, &amp;aliases);
+-    if (naliases &lt; 0)
+-        return NULL;
+-
+-    if (VIR_ALLOC_N(tmp, naliases + 1) &lt; 0)
+-        return NULL;
+-
+-    for (i = 0; i &lt; naliases; i++) {
+-        if (!(tmp[i] = virXMLNodeContentString(aliases[i])))
+-            return NULL;
+-    }
+-
+-    VIR_STEAL_PTR(ret, tmp);
+-    return ret;
+-}
+-
+-
+-char **
+-virshDomainShutdownModeCompleter(vshControl *ctl,
+-                                 const vshCmd *cmd,
+-                                 unsigned int flags)
+-{
+-    const char *modes[] = {&quot;acpi&quot;, &quot;agent&quot;, &quot;initctl&quot;, &quot;signal&quot;, &quot;paravirt&quot;, NULL};
+-    const char *mode = NULL;
+-
+-    virCheckFlags(0, NULL);
+-
+-    if (vshCommandOptStringQuiet(ctl, cmd, &quot;mode&quot;, &amp;mode) &lt; 0)
+-        return NULL;
+-
+-    return virshCommaStringListComplete(mode, modes);
+-}
+diff --git a/tools/virsh-completer.h b/tools/virsh-completer.h
+index 2b51d5d84d..0c6d993f8f 100644
+--- a/tools/virsh-completer.h
++++ b/tools/virsh-completer.h
+@@ -22,21 +22,7 @@
+ 
+ #include &quot;vsh.h&quot;
+ 
+-char ** virshDomainNameCompleter(vshControl *ctl,
+-                                 const vshCmd *cmd,
+-                                 unsigned int flags);
+-
+-enum {
+-    VIRSH_DOMAIN_INTERFACE_COMPLETER_MAC = 1 &lt;&lt; 0, /* Return just MACs */
+-};
+-
+-char ** virshDomainInterfaceCompleter(vshControl *ctl,
+-                                      const vshCmd *cmd,
+-                                      unsigned int flags);
+-
+-char ** virshDomainDiskTargetCompleter(vshControl *ctl,
+-                                       const vshCmd *cmd,
+-                                       unsigned int flags);
++#include &quot;virsh-completer-domain.h&quot;
+ 
+ char ** virshCommaStringListComplete(const char *input,
+                                      const char **options);
+@@ -93,18 +79,10 @@ char ** virshSecretEventNameCompleter(vshControl *ctl,
+                                       const vshCmd *cmd,
+                                       unsigned int flags);
+ 
+-char ** virshDomainEventNameCompleter(vshControl *ctl,
+-                                      const vshCmd *cmd,
+-                                      unsigned int flags);
+-
+ char ** virshPoolEventNameCompleter(vshControl *ctl,
+                                     const vshCmd *cmd,
+                                     unsigned int flags);
+ 
+-char ** virshDomainInterfaceStateCompleter(vshControl *ctl,
+-                                           const vshCmd *cmd,
+-                                           unsigned int flags);
+-
+ char ** virshNodeDeviceEventNameCompleter(vshControl *ctl,
+                                           const vshCmd *cmd,
+                                           unsigned int flags);
+@@ -113,14 +91,6 @@ char ** virshNodeDeviceCapabilityNameCompleter(vshControl *ctl,
+                                                const vshCmd *cmd,
+                                                unsigned int flags);
+ 
+-char ** virshDomainDeviceAliasCompleter(vshControl *ctl,
+-                                        const vshCmd *cmd,
+-                                        unsigned int flags);
+-
+ char ** virshCellnoCompleter(vshControl *ctl,
+                              const vshCmd *cmd,
+                              unsigned int flags);
+-
+-char ** virshDomainShutdownModeCompleter(vshControl *ctl,
+-                                         const vshCmd *cmd,
+-                                         unsigned int flags);
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187713.html">[PATCH 00/14] Split and enhancement of virsh completer</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187715.html">[PATCH 10/14] tools: Separate secret related completers	into a file</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187713.html">[PATCH 00/14] Split and enhancement of virsh completer</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187715.html">[PATCH 10/14] tools: Separate secret related completers	into a file</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187714"><strong>Date</strong></a></li>
+<li><a href="index.html#187714"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,375 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] a2dp_write patch -->
+<!--X-From-R13: "xrvgu cerfgba" &#60;xrvgucerNtznvy.pbz> -->
+<!--X-Date: Thu, 24 Jul 2008 12:38:51 &#45;0700 -->
+<!--X-Message-Id: 3837d8b10807241238r3284fdb6q60f4c86265146756@mail.gmail.com -->
+<!--X-Content-Type: multipart/mixed -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Bluez Devel: [PATCH] a2dp_write patch">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH] a2dp_write patch &mdash; Bluez Devel</title>
+<link rel="alternate" type="application/rss+xml" title="Bluez Devel" href="maillist.rdf">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] a2dp_write patch</h1>
+[<a href="msg00457.html">Date Prev</a>][<a href="msg00459.html">Date Next</a>][<a href="msg00455.html">Thread Prev</a>][<a href="msg00459.html">Thread Next</a>][<a href="maillist.html#00458">Date Index</a>][<a href="index.html#00458">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] a2dp_write patch</li>
+<li><em>From</em>: &quot;keith preston&quot; &lt;<a href="mailto:keithpre@DOMAIN.HIDDEN">keithpre@xxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Thu, 24 Jul 2008 14:38:47 -0500</li>
+<li><em>Reply-to</em>: BlueZ development &lt;<a href="mailto:bluez-devel@DOMAIN.HIDDEN">bluez-devel@xxxxxxxxxxxxxxxxxxxxx</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This is a patch to rewrite a2dp_write to avoid memory copies.   It
+does this by only using the temporary buffer if we are dealing with
+partial buffers.  I see a little bit of a speedup with my embedded
+device, however sbc encoding usually takes the most time.
+
+This also fixes a small bug in pcm_bluetooth.c.   Typically in an alsa
+write call you return the number of samples(frames) that you have
+processed.  However in this case where we don't have a full block to
+encode in SBC, we return basically return (incoming_buffer_size) %
+(SBC_Encode_Block_size).   This is correct in the case where
+(incoming_buffer_size) &lt; (SBC_Encode_Block_size), however is wrong
+when (incoming_buffer_size) &gt; (SBC_Encode_Block_size), because this
+statement ignores previously processed blocks.
+
+Keith Preston
+</pre><pre>--- bluez-utils-3.36.orig/audio/pcm_bluetooth.c	2008-07-23 17:13:13.000000000 -0500
++++ bluez-utils-3.36/audio/pcm_bluetooth.c	2008-07-24 13:50:31.000000000 -0500
+@@ -974,21 +974,25 @@
+ 	struct bluetooth_data *data = io-&gt;private_data;
+ 	struct bluetooth_a2dp *a2dp = &amp;data-&gt;a2dp;
+ 	snd_pcm_sframes_t ret = 0;
+-	snd_pcm_uframes_t frames_to_read, frames_left = size;
+-	int frame_size, encoded, written;
++	int frame_size, encoded, written, bytes_left;
+ 	uint8_t *buff;
+-
+ 	DBG(&quot;areas-&gt;step=%u areas-&gt;first=%u offset=%lu size=%lu&quot;,
+ 				areas-&gt;step, areas-&gt;first, offset, size);
+ 	DBG(&quot;hw_ptr=%lu appl_ptr=%lu diff=%lu&quot;, io-&gt;hw_ptr, io-&gt;appl_ptr,
+ 			io-&gt;appl_ptr - io-&gt;hw_ptr);
+ 
++	/* Calutate starting pointers */
++	frame_size = areas-&gt;step / 8;
++	bytes_left = size * frame_size;
++	buff = (uint8_t *) areas-&gt;addr +
++		(areas-&gt;first + areas-&gt;step * (offset)) / 8;
++	/* Check for underrun */
+ 	if (io-&gt;hw_ptr &gt; io-&gt;appl_ptr) {
+ 		ret = bluetooth_playback_stop(io);
+ 		if (ret == 0)
+ 			ret = -EPIPE;
+ 		data-&gt;reset = 1;
+-		goto done;
++		return ret;
+ 	}
+ 
+ 	/* Check if we should autostart */
+@@ -1003,39 +1007,18 @@
+ 			if (io-&gt;appl_ptr &gt;= threshold) {
+ 				ret = snd_pcm_start(io-&gt;pcm);
+ 				if (ret != 0)
+-					goto done;
++					return ret;
+ 			}
+ 		}
+ 
+ 		snd_pcm_sw_params_free(swparams);
+ 	}
+ 
+-	while (frames_left &gt; 0) {
+-		frame_size = areas-&gt;step / 8;
+-
+-		if ((data-&gt;count + frames_left * frame_size) &lt;= a2dp-&gt;codesize)
+-			frames_to_read = frames_left;
+-		else
+-			frames_to_read = (a2dp-&gt;codesize - data-&gt;count) / frame_size;
+-
+-		DBG(&quot;count=%d frames_to_read=%lu&quot;, data-&gt;count, frames_to_read);
+-		DBG(&quot;a2dp.count=%d data.link_mtu=%d&quot;, a2dp-&gt;count, data-&gt;link_mtu);
+-
+-		/* FIXME: If state is not streaming then return */
+-
+-		/* Ready for more data */
+-		buff = (uint8_t *) areas-&gt;addr +
+-			(areas-&gt;first + areas-&gt;step * (offset + ret)) / 8;
++	/* Check if we have any left over data from the last write */
++	if(data-&gt;count &gt; 0 &amp;&amp; ((bytes_left - data-&gt;count) &gt;= a2dp-&gt;codesize)) {
++		int additional_bytes_needed = a2dp-&gt;codesize - data-&gt;count;
+ 		memcpy(data-&gt;buffer + data-&gt;count, buff,
+-				frame_size * frames_to_read);
+-
+-		/* Remember we have some frames in the pipe now */
+-		data-&gt;count += frames_to_read * frame_size;
+-		if (data-&gt;count != a2dp-&gt;codesize) {
+-			ret = frames_to_read;
+-			goto done;
+-		}
+-
++				additional_bytes_needed);
+ 		/* Enough data to encode (sbc wants 1k blocks) */
+ 		encoded = sbc_encode(&amp;(a2dp-&gt;sbc), data-&gt;buffer, a2dp-&gt;codesize,
+ 					a2dp-&gt;buffer + a2dp-&gt;count,
+@@ -1045,35 +1028,65 @@
+ 			DBG(&quot;Encoding error %d&quot;, encoded);
+ 			goto done;
+ 		}
+-
+-		data-&gt;count -= encoded;
++		/* Increment a2dp buffers */
+ 		a2dp-&gt;count += written;
+ 		a2dp-&gt;frame_count++;
+ 		a2dp-&gt;samples += encoded / frame_size;
+ 		a2dp-&gt;nsamples += encoded / frame_size;
+-
+-		DBG(&quot;encoded=%d  written=%d count=%d&quot;, encoded,
+-				written, a2dp-&gt;count);
+-
+ 		/* No space left for another frame then send */
+ 		if (a2dp-&gt;count + written &gt;= data-&gt;link_mtu) {
+ 			avdtp_write(data);
+ 			DBG(&quot;sending packet %d, count %d, link_mtu %u&quot;,
+ 					a2dp-&gt;seq_num, a2dp-&gt;count,
+ 					data-&gt;link_mtu);
+-		}
+-
+-		ret += frames_to_read;
+-		frames_left -= frames_to_read;
++		}		
++		/* Increment up buff pointer to take into account the data processed */
++		buff += additional_bytes_needed;
++		bytes_left -= additional_bytes_needed;
++		/* Since data has been process mark it as zero */
++		data-&gt;count = 0;
+ 	}
+ 
+-	/* note: some ALSA apps will get confused otherwise */
+-	if (ret &gt; size)
+-		ret = size;
++
++	/* Process this buffer in full chunks */
++	while( bytes_left &gt;= a2dp-&gt;codesize)
++	{
++		/* Enough data to encode (sbc wants 1k blocks) */
++		encoded = sbc_encode(&amp;(a2dp-&gt;sbc), buff, a2dp-&gt;codesize,
++					a2dp-&gt;buffer + a2dp-&gt;count,
++					sizeof(a2dp-&gt;buffer) - a2dp-&gt;count,
++					&amp;written);
++		if (encoded &lt;= 0) {
++			DBG(&quot;Encoding error %d&quot;, encoded);
++			goto done;
++		}
++		/* Increment up buff pointer to take into account the data processed */
++		buff += a2dp-&gt;codesize;
++		bytes_left -= a2dp-&gt;codesize;
++		/* Increment a2dp buffers */
++		a2dp-&gt;count += written;
++		a2dp-&gt;frame_count++;
++		a2dp-&gt;samples += encoded / frame_size;
++		a2dp-&gt;nsamples += encoded / frame_size;
++		/* No space left for another frame then send */
++		if (a2dp-&gt;count + written &gt;= data-&gt;link_mtu) {
++			avdtp_write(data);
++			printf(&quot;sending packet %d, count %d, link_mtu %u&quot;,
++					a2dp-&gt;seq_num, a2dp-&gt;count,
++					data-&gt;link_mtu);
++		}		
++	}
++	/* Copy the extra to our temp buffer for the next write */
++	if(bytes_left &gt; 0) {
++		memcpy(data-&gt;buffer + data-&gt;count, buff,
++				bytes_left);
++		data-&gt;count += bytes_left;
++		bytes_left = 0;
++	}
+ 
+ done:
+-	DBG(&quot;returning %ld&quot;, ret);
+-	return ret;
++	DBG(&quot;returning %ld&quot;, size - bytes_left / frame_size);
++	return size - bytes_left / frame_size;
+ }
+ 
+ static int bluetooth_playback_delay(snd_pcm_ioplug_t *io,
+</pre><pre>-------------------------------------------------------------------------
+This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
+Build the coolest Linux based applications with Moblin SDK &amp; win great prizes
+Grand prize is a trip for two to an Open Source event anywhere in the world
+<a  rel="nofollow" href="http://moblin-contest.org/redirect.php?banner_id=100&amp;url=/">http://moblin-contest.org/redirect.php?banner_id=100&amp;url=/</a></pre><pre>_______________________________________________
+Bluez-devel mailing list
+Bluez-devel@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.sourceforge.net/lists/listinfo/bluez-devel">https://lists.sourceforge.net/lists/listinfo/bluez-devel</a>
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="00459" href="msg00459.html">Re:  [PATCH] a2dp_write patch</a></strong>
+<ul><li><em>From:</em> Luiz Augusto von Dentz</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00457.html">Re:  About socket interface</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00459.html">Re:  [PATCH] a2dp_write patch</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00455.html">About socket interface</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00459.html">Re:  [PATCH] a2dp_write patch</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00458"><strong>Date</strong></a></li>
+<li><a href="index.html#00458"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-bluetooth/>[Linux&nbsp;Bluetooth&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/netdev/>[Network&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

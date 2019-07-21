@@ -1,0 +1,1034 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] virt&#45;manager: specify 'model' attr when	adding net device -->
+<!--X-From-R13: Qbyr Dbovafba &#60;pebovafbNerqung.pbz> -->
+<!--X-Date: Mon, 19 Jan 2009 08:40:20 &#45;0800 -->
+<!--X-Message-Id: 4974ACEF.6000103@redhat.com -->
+<!--X-Content-Type: multipart/mixed -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Management Tools, [PATCH] virt-manager: specify 'model' attr when	adding net device">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="Fedora Management Tools" href="//feedproxy.google.com/Fedora/linuxManagementTools">
+<title>Fedora Management Tools -- [PATCH] virt-manager: specify 'model' attr when	adding net device</title>
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] virt-manager: specify 'model' attr when	adding net device</h1>
+[<a href="msg04574.html">Date Prev</a>][<a href="msg04576.html">Date Next</a>][<a href="msg04573.html">Thread Prev</a>][<a href="msg04578.html">Thread Next</a>][<a href="maillist.html#04575">Date Index</a>][<a href="index.html#04575">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] virt-manager: specify 'model' attr when	adding net device</li>
+<li><em>From</em>: Cole Robinson &lt;<a href="mailto:crobinso@DOMAIN.HIDDEN">crobinso@xxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Mon, 19 Jan 2009 11:40:15 -0500</li>
+<li><em>Reply-to</em>: Fedora/Linux Management Tools &lt;<a href="mailto:et-mgmt-tools@DOMAIN.HIDDEN">et-mgmt-tools@xxxxxxxxxx</a>&gt;</li>
+<li><em>User-agent</em>: Thunderbird 2.0.0.19 (X11/20090105)</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The attached patch allows specifying a device model when adding a
+network device to an existing VM (ex. 'virtio', 'e1000', 'pcnet', etc.
+depending on the emulator).
+
+A screenshot of the new UI:
+
+<a  rel="nofollow" href="http://fedorapeople.org/~crobinso/virt-manager/vmm-net-model.png">http://fedorapeople.org/~crobinso/virt-manager/vmm-net-model.png</a>
+
+Thanks,
+Cole
+</pre><pre># HG changeset patch
+# User Cole Robinson &lt;crobinso@xxxxxxxxxx&gt;
+# Date 1232381144 18000
+# Node ID 2c2afef412d9c7e7785830a811efe8e77bed089e
+# Parent  77609375e4d998186790818880cf26380d22ce0d
+Allow specifying 'model' when adding a net device to an existing VM.
+
+diff -r 77609375e4d9 -r 2c2afef412d9 src/virtManager/addhardware.py
+--- a/src/virtManager/addhardware.py	Thu Jan 15 11:17:30 2009 -0500
++++ b/src/virtManager/addhardware.py	Mon Jan 19 11:05:44 2009 -0500
+@@ -127,6 +127,13 @@
+         device_list.add_attribute(text, 'text', 1)
+         device_list.add_attribute(text, 'sensitive', 2)
+ 
++        netmodel_list  = self.window.get_widget(&quot;net-model&quot;)
++        netmodel_model = gtk.ListStore(str, str)
++        netmodel_list.set_model(netmodel_model)
++        text = gtk.CellRendererText()
++        netmodel_list.pack_start(text, True)
++        netmodel_list.add_attribute(text, 'text', 1)
++
+         target_list = self.window.get_widget(&quot;target-device&quot;)
+         target_model = gtk.ListStore(str, str, str, str)
+         target_list.set_model(target_model)
+@@ -192,6 +199,8 @@
+         else:
+             dev_box.set_active(-1)
+ 
++        self.window.get_widget(&quot;net-model&quot;).set_active(0)
++
+         target_list = self.window.get_widget(&quot;target-device&quot;)
+         target_list.set_active(-1)
+ 
+@@ -351,6 +360,12 @@
+             model = dev.get_model()
+             return [&quot;bridge&quot;, model.get_value(dev.get_active_iter(), 0)]
+ 
++    def get_config_net_model(self):
++        model = self.window.get_widget(&quot;net-model&quot;)
++        modelxml = model.get_model().get_value(model.get_active_iter(), 0)
++        modelstr = model.get_model().get_value(model.get_active_iter(), 1)
++        return modelxml, modelstr
++
+     def get_config_macaddr(self):
+         macaddr = None
+         if self.window.get_widget(&quot;mac-address&quot;).get_active():
+@@ -370,6 +385,11 @@
+             self.window.get_widget(&quot;storage-file-address-browse&quot;).set_sensitive(not remote)
+ 
+         elif page_number == PAGE_NETWORK:
++            netmodel = self.window.get_widget(&quot;net-model&quot;)
++            if netmodel.get_active() == -1:
++                self.populate_network_model_model(netmodel.get_model())
++                netmodel.set_active(0)
++
+             if remote:
+                 self.window.get_widget(&quot;net-type-network&quot;).set_active(True)
+                 self.window.get_widget(&quot;net-type-device&quot;).set_active(False)
+@@ -412,6 +432,8 @@
+                     self.window.get_widget(&quot;summary-mac-address&quot;).set_text(macaddr)
+                 else:
+                     self.window.get_widget(&quot;summary-mac-address&quot;).set_text(&quot;-&quot;)
++                model = self.get_config_net_model()[1]
++                self.window.get_widget(&quot;summary-net-model&quot;).set_text(model)
+             elif hwpage == PAGE_INPUT:
+                 self.window.get_widget(&quot;summary-input&quot;).show()
+                 inp = self.get_config_input()
+@@ -775,23 +797,25 @@
+                     return self.err.val_err(_(&quot;Invalid MAC address&quot;), \
+                                             _(&quot;No MAC address was entered. Please enter a valid MAC address.&quot;))
+ 
+-                try:     
++                try:
+                     self._dev = virtinst.VirtualNetworkInterface(macaddr=mac)
+                 except ValueError, e:
+                     return self.err.val_err(_(&quot;Invalid MAC address&quot;), str(e))
+-                    
+ 
++            model = self.get_config_net_model()[0]
+             try:
+                 if net[0] == &quot;bridge&quot;:
+-                    self._dev = virtinst.VirtualNetworkInterface(macaddr=mac, 
+-                                                                 type=net[0], 
++                    self._dev = virtinst.VirtualNetworkInterface(macaddr=mac,
++                                                                 type=net[0],
+                                                                  bridge=net[1])
+                 elif net[0] == &quot;network&quot;:
+-                    self._dev = virtinst.VirtualNetworkInterface(macaddr=mac, 
+-                                                                 type=net[0], 
++                    self._dev = virtinst.VirtualNetworkInterface(macaddr=mac,
++                                                                 type=net[0],
+                                                                  network=net[1])
+                 else:
+                     raise ValueError, _(&quot;Unsupported networking type&quot;) + net[0]
++
++                self._dev.model = model
+             except ValueError, e:
+                 return self.err.val_err(_(&quot;Invalid Network Parameter&quot;), \
+                                         str(e))
+@@ -842,6 +866,21 @@
+                 model.append([net.get_bridge(), &quot;%s (%s)&quot; % (net.get_name(), _(&quot;Not bridged&quot;)), False])
+         return (hasShared, brIndex)
+ 
++    def populate_network_model_model(self, model):
++        model.clear()
++
++        # [xml value, label]
++        model.append([None, _(&quot;Hypervisor default&quot;)])
++        if self.vm.is_hvm():
++            mod_list = [ &quot;rtl8139&quot;, &quot;ne2k_pci&quot;, &quot;pcnet&quot; ]
++            if self.vm.get_type().lower() == &quot;kvm&quot;:
++                mod_list.append(&quot;e1000&quot;)
++                mod_list.append(&quot;virtio&quot;)
++            mod_list.sort()
++
++            for m in mod_list:
++                model.append([m, m])
++
+     def populate_target_device_model(self, model):
+         model.clear()
+         #[bus, device, icon, desc]
+diff -r 77609375e4d9 -r 2c2afef412d9 src/vmm-add-hardware.glade
+--- a/src/vmm-add-hardware.glade	Thu Jan 15 11:17:30 2009 -0500
++++ b/src/vmm-add-hardware.glade	Mon Jan 19 11:05:44 2009 -0500
+@@ -753,10 +753,33 @@
+                         &lt;child&gt;
+                           &lt;widget class=&quot;GtkTable&quot; id=&quot;table31&quot;&gt;
+                             &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                            &lt;property name=&quot;n_rows&quot;&gt;8&lt;/property&gt;
++                            &lt;property name=&quot;n_rows&quot;&gt;9&lt;/property&gt;
+                             &lt;property name=&quot;n_columns&quot;&gt;2&lt;/property&gt;
+                             &lt;property name=&quot;row_spacing&quot;&gt;6&lt;/property&gt;
+                             &lt;child&gt;
++                              &lt;widget class=&quot;GtkComboBox&quot; id=&quot;net-model&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;8&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;9&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label6&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Device Model:&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;8&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;9&lt;/property&gt;
++                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
+                               &lt;widget class=&quot;GtkEntry&quot; id=&quot;create-mac-address&quot;&gt;
+                                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+                                 &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+@@ -1689,15 +1712,47 @@
+                               &lt;placeholder/&gt;
+                             &lt;/child&gt;
+                             &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label377&quot;&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-disk-size&quot;&gt;
+                                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+                                 &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-                                &lt;property name=&quot;ypad&quot;&gt;5&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;&amp;lt;b&amp;gt;Storage&amp;lt;/b&amp;gt;&lt;/property&gt;
++                                &lt;property name=&quot;label&quot;&gt;5 GB&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-disk-image&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
++                                &lt;property name=&quot;label&quot;&gt;/xen/demo.img&lt;/property&gt;
++                                &lt;property name=&quot;ellipsize&quot;&gt;PANGO_ELLIPSIZE_MIDDLE&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
++                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label314&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Disk image:&lt;/property&gt;
+                                 &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
+                               &lt;/widget&gt;
+                               &lt;packing&gt;
+-                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
+                                 &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+                                 &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+                               &lt;/packing&gt;
+@@ -1719,27 +1774,88 @@
+                               &lt;/packing&gt;
+                             &lt;/child&gt;
+                             &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label314&quot;&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label377&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
++                                &lt;property name=&quot;ypad&quot;&gt;5&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;&amp;lt;b&amp;gt;Storage&amp;lt;/b&amp;gt;&lt;/property&gt;
++                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
++                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                          &lt;/widget&gt;
++                        &lt;/child&gt;
++                        &lt;child&gt;
++                          &lt;widget class=&quot;GtkTable&quot; id=&quot;summary-network&quot;&gt;
++                            &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                            &lt;property name=&quot;border_width&quot;&gt;6&lt;/property&gt;
++                            &lt;property name=&quot;n_rows&quot;&gt;5&lt;/property&gt;
++                            &lt;property name=&quot;n_columns&quot;&gt;3&lt;/property&gt;
++                            &lt;property name=&quot;column_spacing&quot;&gt;3&lt;/property&gt;
++                            &lt;property name=&quot;row_spacing&quot;&gt;3&lt;/property&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-net-model&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
++                                &lt;property name=&quot;label&quot;&gt;-&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;4&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;5&lt;/property&gt;
++                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label7&quot;&gt;
+                                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+                                 &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Disk image:&lt;/property&gt;
+-                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Model:&lt;/property&gt;
+                               &lt;/widget&gt;
+                               &lt;packing&gt;
+                                 &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+                                 &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;4&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;5&lt;/property&gt;
++                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;placeholder/&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;placeholder/&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;placeholder/&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;placeholder/&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label378&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
++                                &lt;property name=&quot;ypad&quot;&gt;5&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;&amp;lt;b&amp;gt;Network&amp;lt;/b&amp;gt;&lt;/property&gt;
++                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
+                                 &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+                                 &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+                               &lt;/packing&gt;
+                             &lt;/child&gt;
+                             &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-disk-image&quot;&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-net-type&quot;&gt;
+                                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+                                 &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot;&gt;/xen/demo.img&lt;/property&gt;
+-                                &lt;property name=&quot;ellipsize&quot;&gt;PANGO_ELLIPSIZE_MIDDLE&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Shared Physical Device&lt;/property&gt;
+                               &lt;/widget&gt;
+                               &lt;packing&gt;
+                                 &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
+@@ -1751,81 +1867,16 @@
+                               &lt;/packing&gt;
+                             &lt;/child&gt;
+                             &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-disk-size&quot;&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-net-target&quot;&gt;
+                                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+                                 &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot;&gt;5 GB&lt;/property&gt;
++                                &lt;property name=&quot;label&quot;&gt;eth0&lt;/property&gt;
+                               &lt;/widget&gt;
+                               &lt;packing&gt;
+                                 &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
+                                 &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
+                                 &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
+                                 &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
+-                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+-                              &lt;/packing&gt;
+-                            &lt;/child&gt;
+-                          &lt;/widget&gt;
+-                        &lt;/child&gt;
+-                        &lt;child&gt;
+-                          &lt;widget class=&quot;GtkTable&quot; id=&quot;summary-network&quot;&gt;
+-                            &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                            &lt;property name=&quot;border_width&quot;&gt;6&lt;/property&gt;
+-                            &lt;property name=&quot;n_rows&quot;&gt;4&lt;/property&gt;
+-                            &lt;property name=&quot;n_columns&quot;&gt;3&lt;/property&gt;
+-                            &lt;property name=&quot;column_spacing&quot;&gt;3&lt;/property&gt;
+-                            &lt;property name=&quot;row_spacing&quot;&gt;3&lt;/property&gt;
+-                            &lt;child&gt;
+-                              &lt;placeholder/&gt;
+-                            &lt;/child&gt;
+-                            &lt;child&gt;
+-                              &lt;placeholder/&gt;
+-                            &lt;/child&gt;
+-                            &lt;child&gt;
+-                              &lt;placeholder/&gt;
+-                            &lt;/child&gt;
+-                            &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-mac-address&quot;&gt;
+-                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot;&gt;-&lt;/property&gt;
+-                              &lt;/widget&gt;
+-                              &lt;packing&gt;
+-                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
+-                                &lt;property name=&quot;top_attach&quot;&gt;3&lt;/property&gt;
+-                                &lt;property name=&quot;bottom_attach&quot;&gt;4&lt;/property&gt;
+-                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+-                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+-                              &lt;/packing&gt;
+-                            &lt;/child&gt;
+-                            &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label387&quot;&gt;
+-                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                                &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;MAC address:&lt;/property&gt;
+-                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
+-                              &lt;/widget&gt;
+-                              &lt;packing&gt;
+-                                &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;top_attach&quot;&gt;3&lt;/property&gt;
+-                                &lt;property name=&quot;bottom_attach&quot;&gt;4&lt;/property&gt;
+-                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+-                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+-                              &lt;/packing&gt;
+-                            &lt;/child&gt;
+-                            &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label381&quot;&gt;
+-                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                                &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Target:&lt;/property&gt;
+-                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
+-                              &lt;/widget&gt;
+-                              &lt;packing&gt;
+-                                &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
+                                 &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+                                 &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+                               &lt;/packing&gt;
+@@ -1847,14 +1898,15 @@
+                               &lt;/packing&gt;
+                             &lt;/child&gt;
+                             &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-net-target&quot;&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label381&quot;&gt;
+                                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot;&gt;eth0&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Target:&lt;/property&gt;
++                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
+                               &lt;/widget&gt;
+                               &lt;packing&gt;
+-                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
+                                 &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
+                                 &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
+                                 &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+@@ -1862,30 +1914,32 @@
+                               &lt;/packing&gt;
+                             &lt;/child&gt;
+                             &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-net-type&quot;&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label387&quot;&gt;
+                                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Shared Physical Device&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;MAC address:&lt;/property&gt;
++                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
+                               &lt;/widget&gt;
+                               &lt;packing&gt;
+-                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
+-                                &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;4&lt;/property&gt;
+                                 &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+                                 &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+                               &lt;/packing&gt;
+                             &lt;/child&gt;
+                             &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label378&quot;&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-mac-address&quot;&gt;
+                                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+                                 &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-                                &lt;property name=&quot;ypad&quot;&gt;5&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;&amp;lt;b&amp;gt;Network&amp;lt;/b&amp;gt;&lt;/property&gt;
+-                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;label&quot;&gt;-&lt;/property&gt;
+                               &lt;/widget&gt;
+                               &lt;packing&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
+                                 &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;4&lt;/property&gt;
+                                 &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+                                 &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+                               &lt;/packing&gt;
+@@ -1910,15 +1964,43 @@
+                               &lt;placeholder/&gt;
+                             &lt;/child&gt;
+                             &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label400&quot;&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label396&quot;&gt;
+                                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                                &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Mode:&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
++                                &lt;property name=&quot;ypad&quot;&gt;5&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;&amp;lt;b&amp;gt;Pointer&amp;lt;/b&amp;gt;&lt;/property&gt;
+                                 &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
+                               &lt;/widget&gt;
+                               &lt;packing&gt;
+-                                &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
++                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-input-type&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;EvTouch Tablet&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
++                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-input-mode&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Absolute&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
+                                 &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
+                                 &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
+                                 &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+@@ -1942,45 +2024,17 @@
+                               &lt;/packing&gt;
+                             &lt;/child&gt;
+                             &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-input-mode&quot;&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label400&quot;&gt;
+                                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Absolute&lt;/property&gt;
+-                              &lt;/widget&gt;
+-                              &lt;packing&gt;
+-                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
+-                                &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
+-                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+-                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+-                              &lt;/packing&gt;
+-                            &lt;/child&gt;
+-                            &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-input-type&quot;&gt;
+-                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;EvTouch Tablet&lt;/property&gt;
+-                              &lt;/widget&gt;
+-                              &lt;packing&gt;
+-                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
+-                                &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+-                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+-                              &lt;/packing&gt;
+-                            &lt;/child&gt;
+-                            &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label396&quot;&gt;
+-                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-                                &lt;property name=&quot;ypad&quot;&gt;5&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;&amp;lt;b&amp;gt;Pointer&amp;lt;/b&amp;gt;&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Mode:&lt;/property&gt;
+                                 &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
+                               &lt;/widget&gt;
+                               &lt;packing&gt;
+-                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
+                                 &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+                                 &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+                               &lt;/packing&gt;
+@@ -2014,59 +2068,91 @@
+                               &lt;placeholder/&gt;
+                             &lt;/child&gt;
+                             &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-graphics-keymap&quot;&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label419&quot;&gt;
+                                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                                &lt;property name=&quot;events&quot;&gt;GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK&lt;/property&gt;
+                                 &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;keylabel&lt;/property&gt;
++                                &lt;property name=&quot;ypad&quot;&gt;5&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;&amp;lt;b&amp;gt;Graphics&amp;lt;/b&amp;gt;&lt;/property&gt;
++                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
+                               &lt;/widget&gt;
+                               &lt;packing&gt;
+-                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
+                                 &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
+-                                &lt;property name=&quot;top_attach&quot;&gt;5&lt;/property&gt;
+-                                &lt;property name=&quot;bottom_attach&quot;&gt;6&lt;/property&gt;
+-                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+-                              &lt;/packing&gt;
+-                            &lt;/child&gt;
+-                            &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label5&quot;&gt;
+-                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                                &lt;property name=&quot;events&quot;&gt;GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK&lt;/property&gt;
+-                                &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Keymap:&lt;/property&gt;
+-                              &lt;/widget&gt;
+-                              &lt;packing&gt;
+-                                &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;top_attach&quot;&gt;5&lt;/property&gt;
+-                                &lt;property name=&quot;bottom_attach&quot;&gt;6&lt;/property&gt;
+-                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+-                              &lt;/packing&gt;
+-                            &lt;/child&gt;
+-                            &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-graphics-password&quot;&gt;
+-                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;No&lt;/property&gt;
+-                              &lt;/widget&gt;
+-                              &lt;packing&gt;
+-                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
+-                                &lt;property name=&quot;top_attach&quot;&gt;4&lt;/property&gt;
+-                                &lt;property name=&quot;bottom_attach&quot;&gt;5&lt;/property&gt;
+                                 &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+                                 &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+                               &lt;/packing&gt;
+                             &lt;/child&gt;
+                             &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-graphics-port&quot;&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-graphics-type&quot;&gt;
+                                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+                                 &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Automatically allocated&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;VNC&lt;/property&gt;
+                               &lt;/widget&gt;
+                               &lt;packing&gt;
+                                 &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
+                                 &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
++                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-graphics-address&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
++                                &lt;property name=&quot;label&quot;&gt;127.0.0.1&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
++                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label422&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Type:&lt;/property&gt;
++                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
++                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label423&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Address:&lt;/property&gt;
++                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
++                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label424&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Port:&lt;/property&gt;
++                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
+                                 &lt;property name=&quot;top_attach&quot;&gt;3&lt;/property&gt;
+                                 &lt;property name=&quot;bottom_attach&quot;&gt;4&lt;/property&gt;
+                                 &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+@@ -2090,15 +2176,14 @@
+                               &lt;/packing&gt;
+                             &lt;/child&gt;
+                             &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label424&quot;&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-graphics-port&quot;&gt;
+                                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                                &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Port:&lt;/property&gt;
+-                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Automatically allocated&lt;/property&gt;
+                               &lt;/widget&gt;
+                               &lt;packing&gt;
+-                                &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
+                                 &lt;property name=&quot;top_attach&quot;&gt;3&lt;/property&gt;
+                                 &lt;property name=&quot;bottom_attach&quot;&gt;4&lt;/property&gt;
+                                 &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+@@ -2106,79 +2191,48 @@
+                               &lt;/packing&gt;
+                             &lt;/child&gt;
+                             &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label423&quot;&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-graphics-password&quot;&gt;
+                                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                                &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Address:&lt;/property&gt;
+-                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;No&lt;/property&gt;
+                               &lt;/widget&gt;
+                               &lt;packing&gt;
+-                                &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;4&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;5&lt;/property&gt;
+                                 &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+                                 &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+                               &lt;/packing&gt;
+                             &lt;/child&gt;
+                             &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label422&quot;&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label5&quot;&gt;
+                                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;events&quot;&gt;GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK&lt;/property&gt;
+                                 &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Type:&lt;/property&gt;
+-                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Keymap:&lt;/property&gt;
+                               &lt;/widget&gt;
+                               &lt;packing&gt;
+                                 &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+                                 &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;5&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;6&lt;/property&gt;
+                                 &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+-                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+                               &lt;/packing&gt;
+                             &lt;/child&gt;
+                             &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-graphics-address&quot;&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-graphics-keymap&quot;&gt;
+                                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;events&quot;&gt;GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK&lt;/property&gt;
+                                 &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot;&gt;127.0.0.1&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;keylabel&lt;/property&gt;
+                               &lt;/widget&gt;
+                               &lt;packing&gt;
+                                 &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
+                                 &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
+-                                &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
++                                &lt;property name=&quot;top_attach&quot;&gt;5&lt;/property&gt;
++                                &lt;property name=&quot;bottom_attach&quot;&gt;6&lt;/property&gt;
+                                 &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+-                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+-                              &lt;/packing&gt;
+-                            &lt;/child&gt;
+-                            &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;summary-graphics-type&quot;&gt;
+-                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;VNC&lt;/property&gt;
+-                              &lt;/widget&gt;
+-                              &lt;packing&gt;
+-                                &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
+-                                &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
+-                                &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
+-                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+-                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+-                              &lt;/packing&gt;
+-                            &lt;/child&gt;
+-                            &lt;child&gt;
+-                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label419&quot;&gt;
+-                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                                &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-                                &lt;property name=&quot;ypad&quot;&gt;5&lt;/property&gt;
+-                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;&amp;lt;b&amp;gt;Graphics&amp;lt;/b&amp;gt;&lt;/property&gt;
+-                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
+-                              &lt;/widget&gt;
+-                              &lt;packing&gt;
+-                                &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
+-                                &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
+-                                &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+                               &lt;/packing&gt;
+                             &lt;/child&gt;
+                           &lt;/widget&gt;
+@@ -2201,7 +2255,7 @@
+             &lt;child&gt;
+               &lt;widget class=&quot;GtkLabel&quot; id=&quot;step6&quot;&gt;
+                 &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-                &lt;property name=&quot;label&quot; translatable=&quot;no&quot;&gt;Finish&lt;/property&gt;
++                &lt;property name=&quot;label&quot;&gt;Finish&lt;/property&gt;
+               &lt;/widget&gt;
+               &lt;packing&gt;
+                 &lt;property name=&quot;type&quot;&gt;tab&lt;/property&gt;
+</pre><pre>_______________________________________________
+et-mgmt-tools mailing list
+et-mgmt-tools@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/et-mgmt-tools">https://www.redhat.com/mailman/listinfo/et-mgmt-tools</a></pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="04592" href="msg04592.html">Re:  [PATCH] virt-manager: specify 'model' attr when	adding net device</a></strong>
+<ul><li><em>From:</em> Cole Robinson</li></ul></li>
+<li><strong><a name="04578" href="msg04578.html">Re:  [PATCH] virt-manager: specify 'model' attr	when adding net device</a></strong>
+<ul><li><em>From:</em> Guido G&#xFC;nther</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg04574.html">Re:  [PATCH] Fix virt-install of PV Solaris without	extra args</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg04576.html">[PATCH] virt-manager: 'Add Sound Device' wizard</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg04573.html">[PATCH] Fix virt-install of PV Solaris without	extra args</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg04578.html">Re:  [PATCH] virt-manager: specify 'model' attr	when adding net device</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#04575"><strong>Date</strong></a></li>
+<li><a href="index.html#04575"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fll/>[Fedora&nbsp;Legacy&nbsp;List]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

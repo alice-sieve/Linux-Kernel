@@ -1,0 +1,418 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 5/9] autofs&#45;5.1.5 &#45; add mount_verbose configuration option -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Sun, 3 Feb 2019 16:59:38 &#45;0800 -->
+<!--X-Message-Id: 154924196513.28142.17449468978979927210.stgit@pluto&#45;themaw&#45;net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 154924186835.28142.15972769859928348674.stgit@pluto&#45;themaw&#45;net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 5/9] autofs-5.1.5 - add mount_verbose configuration option &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 5/9] autofs-5.1.5 - add mount_verbose configuration option &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 5/9] autofs-5.1.5 - add mount_verbose configuration option</h1>
+[<a href="msg02059.html">Date Prev</a>][<a href="msg02061.html">Date Next</a>][<a href="msg02059.html">Thread Prev</a>][<a href="msg02061.html">Thread Next</a>][<a href="maillist.html#02060">Date Index</a>][<a href="index.html#02060">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 5/9] autofs-5.1.5 - add mount_verbose configuration option</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 04 Feb 2019 08:59:25 +0800</li>
+<li><em>In-reply-to</em>: &lt;154924186835.28142.15972769859928348674.stgit@pluto-themaw-net&gt;</li>
+<li><em>References</em>: &lt;154924186835.28142.15972769859928348674.stgit@pluto-themaw-net&gt;</li>
+<li><em>User-agent</em>: StGit/unknown-version</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Lars R. Damerow &lt;lars@xxxxxxxxx&gt;
+
+This option makes automount pass the -v flag to mount(8).
+
+Signed-off-by: Lars R.  Damerow &lt;lars@xxxxxxxxx&gt;
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ CHANGELOG                      |    1 +
+ daemon/spawn.c                 |   20 ++++++++++++--------
+ include/defaults.h             |    2 ++
+ lib/defaults.c                 |   17 +++++++++++++++++
+ man/autofs.conf.5.in           |    4 ++++
+ redhat/autofs.conf.default.in  |    4 ++++
+ samples/autofs.conf.default.in |    4 ++++
+ 7 files changed, 44 insertions(+), 8 deletions(-)
+
+diff --git a/CHANGELOG b/CHANGELOG
+index b3c3b3b9..c2a0c7f1 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -3,6 +3,7 @@ xx/xx/2019 autofs-5.1.6
+ - fix hesiod string check in master_parse().
+ - add NULL check for get_addr_string() return.
+ - use malloc(3) in spawn.c.
++- add mount_verbose configuration option.
+ 
+ 30/10/2018 autofs-5.1.5
+ - fix flag file permission.
+diff --git a/daemon/spawn.c b/daemon/spawn.c
+index 2ab5c46f..4eb268ab 100644
+--- a/daemon/spawn.c
++++ b/daemon/spawn.c
+@@ -558,12 +558,14 @@ int spawn_mount(unsigned logopt, ...)
+ 	char prog[] = PATH_MOUNT;
+ 	char arg0[] = PATH_MOUNT;
+ 	char argn[] = &quot;-n&quot;;
++	char argvr[] = &quot;-v&quot;;
+ 	/* In case we need to use the fake option to mount */
+ 	char arg_fake[] = &quot;-f&quot;;
+ 	unsigned int options;
+ 	unsigned int retries = MTAB_LOCK_RETRIES;
+ 	int update_mtab = 1, ret, printed = 0;
+ 	unsigned int wait = defaults_get_mount_wait();
++	int verbose = defaults_get_mount_verbose();
+ 	char buf[PATH_MAX + 1];
+ 	unsigned int argv_len;
+ 
+@@ -590,8 +592,10 @@ int spawn_mount(unsigned logopt, ...)
+ 		}
+ 	}
+ 
+-	/* Alloc 1 extra slot in case we need to use the &quot;-f&quot; option */
+-	argv_len = sizeof(char *) * (argc + 2);
++	/* Alloc 2 extra slots in case we need to use the &quot;-f&quot; or &quot;-v&quot; options
++	 * plus the NULL slot for end of args.
++	 */
++	argv_len = sizeof(char *) * (argc + 3);
+ 	argv = malloc(argv_len);
+ 	if (!argv) {
+ 		char buf[MAX_ERR_BUF];
+@@ -604,12 +608,12 @@ int spawn_mount(unsigned logopt, ...)
+ 	argv[0] = arg0;
+ 
+ 	va_start(arg, logopt);
+-	if (update_mtab)
+-		p = argv + 1;
+-	else {
+-		argv[1] = argn;
+-		p = argv + 2;
+-	}
++	p = argv + 1;
++	if (!update_mtab)
++		*(p++) = argn;
++	if (verbose)
++		*(p++) = argvr;
++
+ 	while ((*p = va_arg(arg, char *))) {
+ 		if (options == SPAWN_OPT_OPEN &amp;&amp; !strcmp(*p, &quot;-t&quot;)) {
+ 			*(++p) = va_arg(arg, char *);
+diff --git a/include/defaults.h b/include/defaults.h
+index b28fde34..baa4b4c9 100644
+--- a/include/defaults.h
++++ b/include/defaults.h
+@@ -27,6 +27,7 @@
+ #define DEFAULT_TIMEOUT			&quot;600&quot;
+ #define DEFAULT_MASTER_WAIT		&quot;10&quot;
+ #define DEFAULT_NEGATIVE_TIMEOUT	&quot;60&quot;
++#define DEFAULT_MOUNT_VERBOSE		&quot;0&quot;
+ #define DEFAULT_MOUNT_WAIT		&quot;-1&quot;
+ #define DEFAULT_UMOUNT_WAIT		&quot;12&quot;
+ #define DEFAULT_BROWSE_MODE		&quot;1&quot;
+@@ -166,6 +167,7 @@ unsigned int defaults_get_ldap_timeout(void);
+ unsigned int defaults_get_ldap_network_timeout(void);
+ unsigned int defaults_get_mount_nfs_default_proto(void);
+ unsigned int defaults_get_append_options(void);
++unsigned int defaults_get_mount_verbose(void);
+ unsigned int defaults_get_mount_wait(void);
+ unsigned int defaults_get_umount_wait(void);
+ const char *defaults_get_auth_conf_file(void);
+diff --git a/lib/defaults.c b/lib/defaults.c
+index ae4d27c1..4ac5a180 100644
+--- a/lib/defaults.c
++++ b/lib/defaults.c
+@@ -68,6 +68,7 @@
+ 
+ #define NAME_MOUNT_NFS_DEFAULT_PROTOCOL	&quot;mount_nfs_default_protocol&quot;
+ #define NAME_APPEND_OPTIONS		&quot;append_options&quot;
++#define NAME_MOUNT_VERBOSE		&quot;mount_verbose&quot;
+ #define NAME_MOUNT_WAIT			&quot;mount_wait&quot;
+ #define NAME_UMOUNT_WAIT		&quot;umount_wait&quot;
+ #define NAME_AUTH_CONF_FILE		&quot;auth_conf_file&quot;
+@@ -328,6 +329,11 @@ static int conf_load_autofs_defaults(void)
+ 	if (ret == CFG_FAIL)
+ 		goto error;
+ 
++	ret = conf_update(sec, NAME_MOUNT_VERBOSE,
++			  DEFAULT_MOUNT_VERBOSE, CONF_ENV);
++	if (ret == CFG_FAIL)
++		goto error;
++
+ 	ret = conf_update(sec, NAME_MOUNT_WAIT,
+ 			  DEFAULT_MOUNT_WAIT, CONF_ENV);
+ 	if (ret == CFG_FAIL)
+@@ -1781,6 +1787,17 @@ unsigned int defaults_get_append_options(void)
+ 	return res;
+ }
+ 
++unsigned int defaults_get_mount_verbose(void)
++{
++	long res;
++
++	res = conf_get_yesno(autofs_gbl_sec, NAME_MOUNT_VERBOSE);
++	if (res &lt; 0)
++		res = atoi(DEFAULT_MOUNT_VERBOSE);
++
++	return res;
++}
++
+ unsigned int defaults_get_mount_wait(void)
+ {
+ 	long wait;
+diff --git a/man/autofs.conf.5.in b/man/autofs.conf.5.in
+index cd7fc2f2..31136e2e 100644
+--- a/man/autofs.conf.5.in
++++ b/man/autofs.conf.5.in
+@@ -41,6 +41,10 @@ Set the default timeout for caching failed key lookups (program default
+ 60). If the equivalent command line option is given it will override this
+ setting.
+ .TP
++.B mount_verbose
++.br
++Use the verbose flag when spawning mount(8) (program default &quot;no&quot;).
++.TP
+ .B mount_wait
+ .br
+ Set the default time to wait for a response from a spawned mount(8)
+diff --git a/redhat/autofs.conf.default.in b/redhat/autofs.conf.default.in
+index a72a79f6..7949f51a 100644
+--- a/redhat/autofs.conf.default.in
++++ b/redhat/autofs.conf.default.in
+@@ -26,6 +26,10 @@ timeout = 300
+ #
+ #negative_timeout = 60
+ #
++# mount_verbose - use the -v flag when calling mount(8).
++#
++#mount_verbose = no
++#
+ # mount_wait - time to wait for a response from mount(8).
+ # 	       Setting this timeout can cause problems when
+ # 	       mount would otherwise wait for a server that
+diff --git a/samples/autofs.conf.default.in b/samples/autofs.conf.default.in
+index 2693a975..d33625f1 100644
+--- a/samples/autofs.conf.default.in
++++ b/samples/autofs.conf.default.in
+@@ -26,6 +26,10 @@ timeout = 300
+ #
+ #negative_timeout = 60
+ #
++# mount_verbose - use the -v flag when calling mount(8).
++#
++#mount_verbose = no
++#
+ # mount_wait - time to wait for a response from mount(8).
+ # 	       Setting this timeout can cause problems when
+ # 	       mount would otherwise wait for a server that
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="02055" href="msg02055.html">[PATCH 0/9] A few updates to commit</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg02059.html">[PATCH 4/9] autofs-5.1.5 - use malloc(3) in spawn.c</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg02061.html">[PATCH 6/9] autofs-5.1.5 - optionally log mount requestor process info</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg02059.html">[PATCH 4/9] autofs-5.1.5 - use malloc(3) in spawn.c</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg02061.html">[PATCH 6/9] autofs-5.1.5 - optionally log mount requestor process info</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#02060"><strong>Date</strong></a></li>
+<li><a href="index.html#02060"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

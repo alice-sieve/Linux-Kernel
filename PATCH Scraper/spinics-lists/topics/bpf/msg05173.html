@@ -1,0 +1,448 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH RFC 1/4] Move bpf_raw_tracepoint functionality into bpf_trace.c -->
+<!--X-From-R13: "Xbry Treanaqrf (Ubbtyr)" &#60;wbryNwbrysreanaqrf.bet> -->
+<!--X-Date: Wed, 10 Jul 2019 07:17:39 &#45;0700 -->
+<!--X-Message-Id: 20190710141548.132193&#45;2&#45;joel@joelfernandes.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190710141548.132193&#45;1&#45;joel@joelfernandes.org -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BPF: [PATCH RFC 1/4] Move bpf_raw_tracepoint functionality into bpf_trace.c">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH RFC 1/4] Move bpf_raw_tracepoint functionality into bpf_trace.c &mdash; BPF</title>
+<link rel="alternate" type="application/rss+xml" title="BPF" href="//feeds.feedburner.com/packetfilters">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH RFC 1/4] Move bpf_raw_tracepoint functionality into bpf_trace.c</h1>
+[<a href="msg05170.html">Date Prev</a>][<a href="msg05174.html">Date Next</a>][<a href="msg05170.html">Thread Prev</a>][<a href="msg05174.html">Thread Next</a>][<a href="maillist.html#05173">Date Index</a>][<a href="index.html#05173">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH RFC 1/4] Move bpf_raw_tracepoint functionality into bpf_trace.c</li>
+<li><em>From</em>: &quot;Joel Fernandes (Google)&quot; &lt;joel@xxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 10 Jul 2019 10:15:45 -0400</li>
+<li><em>Cc</em>: &quot;Joel Fernandes (Google)&quot; &lt;joel@xxxxxxxxxxxxxxxxx&gt;,        Adrian Ratiu &lt;adrian.ratiu@xxxxxxxxxxxxx&gt;,        Alexei Starovoitov &lt;ast@xxxxxxxxxx&gt;, bpf@xxxxxxxxxxxxxxx,        Brendan Gregg &lt;brendan.d.gregg@xxxxxxxxx&gt;, connoro@xxxxxxxxxx,        Daniel Borkmann &lt;daniel@xxxxxxxxxxxxx&gt;,        duyuchao &lt;yuchao.du@xxxxxxxxxx&gt;, Ingo Molnar &lt;mingo@xxxxxxxxxx&gt;,        jeffv@xxxxxxxxxx, Karim Yaghmour &lt;karim.yaghmour@xxxxxxxxxxx&gt;,        kernel-team@xxxxxxxxxxx, linux-kselftest@xxxxxxxxxxxxxxx,        Manali Shukla &lt;manalishukla14@xxxxxxxxx&gt;,        Manjo Raja Rao &lt;linux@xxxxxxxxxxxxxxxx&gt;,        Martin KaFai Lau &lt;kafai@xxxxxx&gt;,        Masami Hiramatsu &lt;mhiramat@xxxxxxxxxx&gt;, Matt Mullins &lt;mmullins@xxxxxx&gt;,        Michal Gregorczyk &lt;michalgr@xxxxxx&gt;,        Michal Gregorczyk &lt;michalgr@xxxxxxxx&gt;,        Mohammad Husain &lt;russoue@xxxxxxxxx&gt;, namhyung@xxxxxxxxxx,        namhyung@xxxxxxxxxx, netdev@xxxxxxxxxxxxxxx, paul.chaignon@xxxxxxxxx,        primiano@xxxxxxxxxx, Qais Yousef &lt;qais.yousef@xxxxxxx&gt;,        Shuah Khan &lt;shuah@xxxxxxxxxx&gt;, Song Liu &lt;songliubraving@xxxxxx&gt;,        Srinivas Ramana &lt;sramana@xxxxxxxxxxxxxx&gt;,        Steven Rostedt &lt;rostedt@xxxxxxxxxxx&gt;,        Tamir Carmeli &lt;carmeli.tamir@xxxxxxxxx&gt;, Yonghong Song &lt;yhs@xxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg05170.html">20190710141548.132193-1-joel@joelfernandes.org</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>In preparation to use raw tracepoints for BPF directly from ftrace, move
+the bpf_raw_tracepoint functionality into bpf_trace.c
+
+Signed-off-by: Joel Fernandes (Google) &lt;joel@xxxxxxxxxxxxxxxxx&gt;
+---
+ include/linux/bpf_trace.h   | 10 ++++++
+ kernel/bpf/syscall.c        | 69 ++++++-------------------------------
+ kernel/trace/bpf_trace.c    | 56 ++++++++++++++++++++++++++++++
+ kernel/trace/trace_events.c |  3 ++
+ 4 files changed, 80 insertions(+), 58 deletions(-)
+
+diff --git a/include/linux/bpf_trace.h b/include/linux/bpf_trace.h
+index ddf896abcfb6..4a593827fd87 100644
+--- a/include/linux/bpf_trace.h
++++ b/include/linux/bpf_trace.h
+@@ -4,4 +4,14 @@
+ 
+ #include &lt;trace/events/xdp.h&gt;
+ 
++#define BPF_RAW_TRACEPOINT_OPEN_LAST_FIELD raw_tracepoint.prog_fd
++
++struct bpf_raw_tracepoint {
++	struct bpf_raw_event_map *btp;
++	struct bpf_prog *prog;
++};
++
++struct bpf_raw_tracepoint *bpf_raw_tracepoint_open(char *tp_name, int prog_fd);
++void bpf_raw_tracepoint_close(struct bpf_raw_tracepoint *tp);
++
+ #endif /* __LINUX_BPF_TRACE_H__ */
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 42d17f730780..2001949b33f1 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1737,21 +1737,11 @@ static int bpf_obj_get(const union bpf_attr *attr)
+ 				attr-&gt;file_flags);
+ }
+ 
+-struct bpf_raw_tracepoint {
+-	struct bpf_raw_event_map *btp;
+-	struct bpf_prog *prog;
+-};
+-
+ static int bpf_raw_tracepoint_release(struct inode *inode, struct file *filp)
+ {
+ 	struct bpf_raw_tracepoint *raw_tp = filp-&gt;private_data;
+ 
+-	if (raw_tp-&gt;prog) {
+-		bpf_probe_unregister(raw_tp-&gt;btp, raw_tp-&gt;prog);
+-		bpf_prog_put(raw_tp-&gt;prog);
+-	}
+-	bpf_put_raw_tracepoint(raw_tp-&gt;btp);
+-	kfree(raw_tp);
++	bpf_raw_tracepoint_close(raw_tp);
+ 	return 0;
+ }
+ 
+@@ -1761,64 +1751,27 @@ static const struct file_operations bpf_raw_tp_fops = {
+ 	.write		= bpf_dummy_write,
+ };
+ 
+-#define BPF_RAW_TRACEPOINT_OPEN_LAST_FIELD raw_tracepoint.prog_fd
+-
+-static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
++static int bpf_raw_tracepoint_open_syscall(const union bpf_attr *attr)
+ {
+-	struct bpf_raw_tracepoint *raw_tp;
+-	struct bpf_raw_event_map *btp;
+-	struct bpf_prog *prog;
++	int tp_fd;
+ 	char tp_name[128];
+-	int tp_fd, err;
++	struct bpf_raw_tracepoint *raw_tp;
+ 
+ 	if (strncpy_from_user(tp_name, u64_to_user_ptr(attr-&gt;raw_tracepoint.name),
+ 			      sizeof(tp_name) - 1) &lt; 0)
+ 		return -EFAULT;
+ 	tp_name[sizeof(tp_name) - 1] = 0;
+ 
+-	btp = bpf_get_raw_tracepoint(tp_name);
+-	if (!btp)
+-		return -ENOENT;
+-
+-	raw_tp = kzalloc(sizeof(*raw_tp), GFP_USER);
+-	if (!raw_tp) {
+-		err = -ENOMEM;
+-		goto out_put_btp;
+-	}
+-	raw_tp-&gt;btp = btp;
+-
+-	prog = bpf_prog_get(attr-&gt;raw_tracepoint.prog_fd);
+-	if (IS_ERR(prog)) {
+-		err = PTR_ERR(prog);
+-		goto out_free_tp;
+-	}
+-	if (prog-&gt;type != BPF_PROG_TYPE_RAW_TRACEPOINT &amp;&amp;
+-	    prog-&gt;type != BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE) {
+-		err = -EINVAL;
+-		goto out_put_prog;
+-	}
+-
+-	err = bpf_probe_register(raw_tp-&gt;btp, prog);
+-	if (err)
+-		goto out_put_prog;
++	raw_tp = bpf_raw_tracepoint_open(tp_name, attr-&gt;raw_tracepoint.prog_fd);
++	if (IS_ERR(raw_tp))
++		return PTR_ERR(raw_tp);
+ 
+-	raw_tp-&gt;prog = prog;
+ 	tp_fd = anon_inode_getfd(&quot;bpf-raw-tracepoint&quot;, &amp;bpf_raw_tp_fops, raw_tp,
+ 				 O_CLOEXEC);
+-	if (tp_fd &lt; 0) {
+-		bpf_probe_unregister(raw_tp-&gt;btp, prog);
+-		err = tp_fd;
+-		goto out_put_prog;
+-	}
+-	return tp_fd;
++	if (tp_fd &lt; 0)
++		bpf_probe_unregister(raw_tp-&gt;btp, raw_tp-&gt;prog);
+ 
+-out_put_prog:
+-	bpf_prog_put(prog);
+-out_free_tp:
+-	kfree(raw_tp);
+-out_put_btp:
+-	bpf_put_raw_tracepoint(btp);
+-	return err;
++	return tp_fd;
+ }
+ 
+ static int bpf_prog_attach_check_attach_type(const struct bpf_prog *prog,
+@@ -2848,7 +2801,7 @@ SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, siz
+ 		err = bpf_obj_get_info_by_fd(&amp;attr, uattr);
+ 		break;
+ 	case BPF_RAW_TRACEPOINT_OPEN:
+-		err = bpf_raw_tracepoint_open(&amp;attr);
++		err = bpf_raw_tracepoint_open_syscall(&amp;attr);
+ 		break;
+ 	case BPF_BTF_LOAD:
+ 		err = bpf_btf_load(&amp;attr);
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 1c9a4745e596..c4b543bc617f 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -7,6 +7,7 @@
+ #include &lt;linux/slab.h&gt;
+ #include &lt;linux/bpf.h&gt;
+ #include &lt;linux/bpf_perf_event.h&gt;
++#include &lt;linux/bpf_trace.h&gt;
+ #include &lt;linux/filter.h&gt;
+ #include &lt;linux/uaccess.h&gt;
+ #include &lt;linux/ctype.h&gt;
+@@ -1413,3 +1414,58 @@ static int __init bpf_event_init(void)
+ 
+ fs_initcall(bpf_event_init);
+ #endif /* CONFIG_MODULES */
++
++void bpf_raw_tracepoint_close(struct bpf_raw_tracepoint *raw_tp)
++{
++	if (raw_tp-&gt;prog) {
++		bpf_probe_unregister(raw_tp-&gt;btp, raw_tp-&gt;prog);
++		bpf_prog_put(raw_tp-&gt;prog);
++	}
++	bpf_put_raw_tracepoint(raw_tp-&gt;btp);
++	kfree(raw_tp);
++}
++
++struct bpf_raw_tracepoint *bpf_raw_tracepoint_open(char *tp_name, int prog_fd)
++{
++	struct bpf_raw_tracepoint *raw_tp;
++	struct bpf_raw_event_map *btp;
++	struct bpf_prog *prog;
++	int err;
++
++	btp = bpf_get_raw_tracepoint(tp_name);
++	if (!btp)
++		return ERR_PTR(-ENOENT);
++
++	raw_tp = kzalloc(sizeof(*raw_tp), GFP_USER);
++	if (!raw_tp) {
++		err = -ENOMEM;
++		goto out_put_btp;
++	}
++	raw_tp-&gt;btp = btp;
++
++	prog = bpf_prog_get(prog_fd);
++	if (IS_ERR(prog)) {
++		err = PTR_ERR(prog);
++		goto out_free_tp;
++	}
++	if (prog-&gt;type != BPF_PROG_TYPE_RAW_TRACEPOINT &amp;&amp;
++	    prog-&gt;type != BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE) {
++		err = -EINVAL;
++		goto out_put_prog;
++	}
++
++	err = bpf_probe_register(raw_tp-&gt;btp, prog);
++	if (err)
++		goto out_put_prog;
++
++	raw_tp-&gt;prog = prog;
++	return raw_tp;
++
++out_put_prog:
++	bpf_prog_put(prog);
++out_free_tp:
++	kfree(raw_tp);
++out_put_btp:
++	bpf_put_raw_tracepoint(btp);
++	return ERR_PTR(err);
++}
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 0ce3db67f556..67851fb66b6b 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -2017,6 +2017,9 @@ event_create_dir(struct dentry *parent, struct trace_event_file *file)
+ 
+ 		trace_create_file(&quot;trigger&quot;, 0644, file-&gt;dir, file,
+ 				  &amp;event_trigger_fops);
++
++		trace_create_file(&quot;bpf_attach&quot;, 0644, file-&gt;dir, file,
++				  &amp;bpf_attach_trigger_fops);
+ 	}
+ 
+ #ifdef CONFIG_HIST_TRIGGERS
+-- 
+2.22.0.410.gd8fdbe21b5-goog
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="05170" href="msg05170.html">[PATCH RFC 0/4] Add support to directly attach BPF program to ftrace</a></strong>
+<ul><li><em>From:</em> Joel Fernandes (Google)</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05170.html">[PATCH RFC 0/4] Add support to directly attach BPF program to ftrace</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05174.html">[PATCH RFC 2/4] trace/bpf: Add support for attach/detach of ftrace events to BPF</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05170.html">[PATCH RFC 0/4] Add support to directly attach BPF program to ftrace</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05174.html">[PATCH RFC 2/4] trace/bpf: Add support for attach/detach of ftrace events to BPF</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05173"><strong>Date</strong></a></li>
+<li><a href="index.html#05173"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;Samsung&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-rockchip/>[Linux&nbsp;Rockchip&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-actions/>[Linux&nbsp;Actions&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-snps-arc/>[Linux&nbsp;for&nbsp;Synopsys&nbsp;ARC&nbsp;Processors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nfs/>[Linux&nbsp;NFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nilfs/>[Linux&nbsp;NILFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/vfl/>[Video&nbsp;for&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<p>
+<hr>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

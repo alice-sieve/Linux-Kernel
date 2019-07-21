@@ -1,0 +1,315 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 1/3] ASoC: sam9g20&#45;wm8731: convert to use snd_soc_register_card() -->
+<!--X-From-R13: Pb Eura &#60;ibvpr.furaNngzry.pbz> -->
+<!--X-Date: Wed, 10 Oct 2012 19:40:35 &#45;0700 -->
+<!--X-Message-Id: 1349923097&#45;14115&#45;2&#45;git&#45;send&#45;email&#45;voice.shen@atmel.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1349923097&#45;14115&#45;1&#45;git&#45;send&#45;email&#45;voice.shen@atmel.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Sound: [PATCH 1/3] ASoC: sam9g20-wm8731: convert to use snd_soc_register_card()">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Sound &mdash; [PATCH 1/3] ASoC: sam9g20-wm8731: convert to use snd_soc_register_card()</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Sound" href="//feeds.feedburner.com/LinuxSound">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:6612422167" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 1/3] ASoC: sam9g20-wm8731: convert to use snd_soc_register_card()</h1>
+[<a href="msg00146.html">Date Prev</a>][<a href="msg00148.html">Date Next</a>][<a href="msg00149.html">Thread Prev</a>][<a href="msg00162.html">Thread Next</a>][<a href="maillist.html#00147">Date Index</a>][<a href="index.html#00147">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 1/3] ASoC: sam9g20-wm8731: convert to use snd_soc_register_card()</li>
+<li><em>From</em>: Bo Shen &lt;<a href="mailto:voice.shen@DOMAIN.HIDDEN">voice.shen@xxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Thu, 11 Oct 2012 10:38:15 +0800</li>
+<li><em>Cc</em>: <a href="mailto:linux-sound@DOMAIN.HIDDEN">linux-sound@xxxxxxxxxxxxxxx</a>, <a href="mailto:alsa-devel@DOMAIN.HIDDEN">alsa-devel@xxxxxxxxxxxxxxxx</a>,        <a href="mailto:nicolas.ferre@DOMAIN.HIDDEN">nicolas.ferre@xxxxxxxxx</a>, <a href="mailto:jm.lin@DOMAIN.HIDDEN">jm.lin@xxxxxxxxx</a>,        Bo Shen &lt;<a href="mailto:voice.shen@DOMAIN.HIDDEN">voice.shen@xxxxxxxxx</a>&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg00149.html">1349923097-14115-1-git-send-email-voice.shen@atmel.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Signed-off-by: Bo Shen &lt;voice.shen@xxxxxxxxx&gt;
+---
+ sound/soc/atmel/sam9g20_wm8731.c |   51 ++++++++++++++++----------------------
+ 1 file changed, 22 insertions(+), 29 deletions(-)
+
+diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
+index c883514..e5e27db 100644
+--- a/sound/soc/atmel/sam9g20_wm8731.c
++++ b/sound/soc/atmel/sam9g20_wm8731.c
+@@ -195,22 +195,15 @@ static struct snd_soc_card snd_soc_at91sam9g20ek = {
+ 	.set_bias_level = at91sam9g20ek_set_bias_level,
+ };
+ 
+-static struct platform_device *at91sam9g20ek_snd_device;
+-
+-static int __init at91sam9g20ek_init(void)
++static int __devinit at91sam9g20ek_audio_probe(struct platform_device *pdev)
+ {
+ 	struct clk *pllb;
++	struct snd_soc_card *card = &amp;snd_soc_at91sam9g20ek;
+ 	int ret;
+ 
+ 	if (!(machine_is_at91sam9g20ek() || machine_is_at91sam9g20ek_2mmc()))
+ 		return -ENODEV;
+ 
+-	ret = atmel_ssc_set_audio(0);
+-	if (ret != 0) {
+-		pr_err(&quot;Failed to set SSC 0 for audio: %d\n&quot;, ret);
+-		return ret;
+-	}
+-
+ 	/*
+ 	 * Codec MCLK is supplied by PCK0 - set it up.
+ 	 */
+@@ -236,26 +229,14 @@ static int __init at91sam9g20ek_init(void)
+ 
+ 	clk_set_rate(mclk, MCLK_RATE);
+ 
+-	at91sam9g20ek_snd_device = platform_device_alloc(&quot;soc-audio&quot;, -1);
+-	if (!at91sam9g20ek_snd_device) {
+-		printk(KERN_ERR &quot;ASoC: Platform device allocation failed\n&quot;);
+-		ret = -ENOMEM;
+-		goto err_mclk;
+-	}
+-
+-	platform_set_drvdata(at91sam9g20ek_snd_device,
+-			&amp;snd_soc_at91sam9g20ek);
+-
+-	ret = platform_device_add(at91sam9g20ek_snd_device);
++	card-&gt;dev = &amp;pdev-&gt;dev;
++	ret = snd_soc_register_card(card);
+ 	if (ret) {
+-		printk(KERN_ERR &quot;ASoC: Platform device allocation failed\n&quot;);
+-		goto err_device_add;
++		printk(KERN_ERR &quot;ASoC: snd_soc_register_card() failed\n&quot;);
+ 	}
+ 
+ 	return ret;
+ 
+-err_device_add:
+-	platform_device_put(at91sam9g20ek_snd_device);
+ err_mclk:
+ 	clk_put(mclk);
+ 	mclk = NULL;
+@@ -263,18 +244,30 @@ err:
+ 	return ret;
+ }
+ 
+-static void __exit at91sam9g20ek_exit(void)
++static int __devexit at91sam9g20ek_audio_remove(struct platform_device *pdev)
+ {
+-	platform_device_unregister(at91sam9g20ek_snd_device);
+-	at91sam9g20ek_snd_device = NULL;
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++
++	snd_soc_unregister_card(card);
+ 	clk_put(mclk);
+ 	mclk = NULL;
++
++	return 0;
+ }
+ 
+-module_init(at91sam9g20ek_init);
+-module_exit(at91sam9g20ek_exit);
++static struct platform_driver at91sam9g20ek_audio_driver = {
++	.driver = {
++		.name	= &quot;at91sam9g20ek-audio&quot;,
++		.owner	= THIS_MODULE,
++	},
++	.probe	= at91sam9g20ek_audio_probe,
++	.remove	= __devexit_p(at91sam9g20ek_audio_remove),
++};
++
++module_platform_driver(at91sam9g20ek_audio_driver);
+ 
+ /* Module information */
+ MODULE_AUTHOR(&quot;Sedji Gaouaou &lt;sedji.gaouaou@xxxxxxxxx&gt;&quot;);
+ MODULE_DESCRIPTION(&quot;ALSA SoC AT91SAM9G20EK_WM8731&quot;);
++MODULE_ALIAS(&quot;platform:at91sam9g20ek-audio&quot;);
+ MODULE_LICENSE(&quot;GPL&quot;);
+-- 
+1.7.9.5
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe linux-sound&quot; in
+the body of a message to majordomo@xxxxxxxxxxxxxxx
+More majordomo info at  <a  rel="nofollow" href="http://vger.kernel.org/majordomo-info.html">http://vger.kernel.org/majordomo-info.html</a>
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="00162" href="msg00162.html">Re: [PATCH 1/3] ASoC: sam9g20-wm8731: convert to use snd_soc_register_card()</a></strong>
+<ul><li><em>From:</em> Mark Brown</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="00149" href="msg00149.html">[PATCH 0/3] Convert to use snd_soc_register_card()</a></strong>
+<ul><li><em>From:</em> Bo Shen</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00146.html">Re: [Resend PATCH] ASoC: wm8904: remove redundant code</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00148.html">[PATCH 2/3] ASoC: sam9g20: using platform device for audio part</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00149.html">[PATCH 0/3] Convert to use snd_soc_register_card()</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00162.html">Re: [PATCH 1/3] ASoC: sam9g20-wm8731: convert to use snd_soc_register_card()</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00147"><strong>Date</strong></a></li>
+<li><a href="index.html#00147"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/Pulseaudio/>[Pulseaudio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/alsa-devel/>[ALSA&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td valign=top align=left>&nbsp;</td>
+<td valign=top align=right>
+<a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

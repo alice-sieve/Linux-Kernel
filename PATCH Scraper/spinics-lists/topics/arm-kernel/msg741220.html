@@ -1,0 +1,269 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 25/28] perf cs&#45;etm: Remove errnoeous ERR_PTR() usage in cs_etm__process_auxtrace_info -->
+<!--X-From-R13: Oeanyqb Qneinyub qr [ryb &#60;npzrNxreary.bet> -->
+<!--X-Date: Mon, 15 Jul 2019 14:14:30 &#45;0700 -->
+<!--X-Message-Id: 20190715211200.10984&#45;26&#45;acme@kernel.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715211200.10984&#45;1&#45;acme@kernel.org -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH 25/28] perf cs-etm: Remove errnoeous ERR_PTR() usage in cs_etm__process_auxtrace_info">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH 25/28] perf cs-etm: Remove errnoeous ERR_PTR() usage in cs_etm__process_auxtrace_info &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH 25/28] perf cs-etm: Remove errnoeous ERR_PTR() usage in cs_etm__process_auxtrace_info</h1>
+[<a href="msg741219.html">Date Prev</a>][<a href="msg741221.html">Date Next</a>][<a href="msg741219.html">Thread Prev</a>][<a href="msg741221.html">Thread Next</a>][<a href="maillist.html#741220">Date Index</a>][<a href="threads.html#741220">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 25/28] perf cs-etm: Remove errnoeous ERR_PTR() usage in cs_etm__process_auxtrace_info</li>
+<li><em>From</em>: Arnaldo Carvalho de Melo &lt;acme@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 18:11:57 -0300</li>
+<li><em>In-reply-to</em>: &lt;20190715211200.10984-1-acme@kernel.org&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: YueHaibing &lt;yuehaibing@xxxxxxxxxx&gt;
+
+intlist__findnew() doesn't uses ERR_PTR() as a return mechanism
+so its callers shouldn't try to extract the error using PTR_ERR(
+ret) from intlist__findnew(), make cs_etm__process_auxtrace_info
+return -ENOMEM instead.
+
+Signed-off-by: YueHaibing &lt;yuehaibing@xxxxxxxxxx&gt;
+Reviewed-by: Mathieu Poirier &lt;mathieu.poirier@xxxxxxxxxx&gt;
+Cc: Alexander Shishkin &lt;alexander.shishkin@xxxxxxxxxxxxxxx&gt;
+Cc: Jiri Olsa &lt;jolsa@xxxxxxxxxx&gt;
+Cc: Namhyung Kim &lt;namhyung@xxxxxxxxxx&gt;
+Cc: Peter Zijlstra &lt;peterz@xxxxxxxxxxxxx&gt;
+Cc: Suzuki Poulouse &lt;suzuki.poulose@xxxxxxx&gt;
+Cc: linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+Fixes: cd8bfd8c973e (&quot;perf tools: Add processing of coresight metadata&quot;)
+Link: <a  rel="nofollow" href="http://lkml.kernel.org/r/20190321023122.21332-2-yuehaibing@xxxxxxxxxx">http://lkml.kernel.org/r/20190321023122.21332-2-yuehaibing@xxxxxxxxxx</a>
+Signed-off-by: Arnaldo Carvalho de Melo &lt;acme@xxxxxxxxxx&gt;
+---
+ tools/perf/util/cs-etm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+index 67b88b599a53..2e9f5bc45550 100644
+--- a/tools/perf/util/cs-etm.c
++++ b/tools/perf/util/cs-etm.c
+@@ -2460,7 +2460,7 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
+ 
+ 		/* Something went wrong, no need to continue */
+ 		if (!inode) {
+-			err = PTR_ERR(inode);
++			err = -ENOMEM;
+ 			goto err_free_metadata;
+ 		}
+ 
+-- 
+2.21.0
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741219.html">[PATCH] ARM: dts: nomadik: Set up the CS GPIO right</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741221.html">[PATCH 26/28] perf cs-etm: Return errcode in cs_etm__process_auxtrace_info()</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741219.html">[PATCH] ARM: dts: nomadik: Set up the CS GPIO right</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741221.html">[PATCH 26/28] perf cs-etm: Return errcode in cs_etm__process_auxtrace_info()</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741220"><strong>Date</strong></a></li>
+<li><a href="threads.html#741220"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH]Trusted verification for service authorization -->
+<!--X-From-R13: "Qynhqvb Fnxnunfv" &#60;pynhqvb.gnxnunfvNbcraobffn.bet> -->
+<!--X-Date: Thu, 1 May 2008 15:46:24 &#45;0700 -->
+<!--X-Message-Id: f9d4bd30805011546r4511609dned47cc9021dbe88d@mail.gmail.com -->
+<!--X-Content-Type: multipart/mixed -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Bluez Devel: [PATCH]Trusted verification for service authorization">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH]Trusted verification for service authorization &mdash; Bluez Devel</title>
+<link rel="alternate" type="application/rss+xml" title="Bluez Devel" href="maillist.rdf">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH]Trusted verification for service authorization</h1>
+[<a href="msg00157.html">Date Prev</a>][<a href="msg00159.html">Date Next</a>][<a href="msg00157.html">Thread Prev</a>][<a href="msg00159.html">Thread Next</a>][<a href="maillist.html#00158">Date Index</a>][<a href="index.html#00158">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH]Trusted verification for service authorization</li>
+<li><em>From</em>: &quot;Claudio Takahasi&quot; &lt;<a href="mailto:claudio.takahasi@DOMAIN.HIDDEN">claudio.takahasi@xxxxxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Thu, 1 May 2008 19:46:11 -0300</li>
+<li><em>Reply-to</em>: BlueZ development &lt;<a href="mailto:bluez-devel@DOMAIN.HIDDEN">bluez-devel@xxxxxxxxxxxxxxxxxxxxx</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Hi Marcel,
+
+here is the patch to check global and service trust before request for
+authorization.
+
+The code was basically copied from RequestAuthorization method. Any
+idea why BDADDR_ANY is being used?
+
+&quot;read_trust(BDADDR_ANY, ...&quot;
+Using this adapter address, service based &quot;trust&quot; will be applied to
+all adapters. Do you want this behavior?
+
+ps: tested using network service only, I don't have headsets or input
+devices at home.
+
+Regards,
+Claudio.
+
+-- 
+--
+Claudio Takahasi
+Instituto Nokia de Tecnologia
+Recife - Pernambuco - Brasil
++55 81 30879999
+</pre><pre>Index: hcid/dbus-service.c
+===================================================================
+RCS file: /cvsroot/bluez/utils/hcid/dbus-service.c,v
+retrieving revision 1.148
+diff -u -r1.148 dbus-service.c
+--- hcid/dbus-service.c	1 May 2008 13:52:27 -0000	1.148
++++ hcid/dbus-service.c	1 May 2008 22:31:57 -0000
+@@ -1236,6 +1236,7 @@
+ 
+ 	g_free(auth);
+ }
++
+ int service_req_auth(bdaddr_t *src, bdaddr_t *dst,
+ 		const char *uuid, service_auth_cb cb, void *user_data)
+ {
+@@ -1243,7 +1244,9 @@
+ 	struct adapter *adapter;
+ 	struct device *device;
+ 	struct agent *agent;
++	struct service *service;
+ 	char address[18];
++	gboolean trusted;
+ 
+ 	adapter = ba2adapter(src);
+ 	if (!adapter)
+@@ -1259,10 +1262,18 @@
+ 	if (!device)
+ 		return -EPERM;
+ 
+-	if (!search_service_by_uuid(uuid))
++	service = search_service_by_uuid(uuid);
++	if (!service)
+ 		return -EPERM;
+ 
+-	/* FIXME: Missing check trusted file entries */
++	trusted = read_trust(src, address, GLOBAL_TRUST);
++	if (!trusted)
++		trusted = read_trust(BDADDR_ANY, address, service-&gt;ident);
++
++	if (trusted) {
++		cb(NULL, user_data);
++		return 0;
++	}
+ 
+ 	agent = (device-&gt;agent ? : adapter-&gt;agent);
+ 	if (!agent)
+Index: network/server.c
+===================================================================
+RCS file: /cvsroot/bluez/utils/network/server.c,v
+retrieving revision 1.93
+diff -u -r1.93 server.c
+--- network/server.c	1 May 2008 13:52:28 -0000	1.93
++++ network/server.c	1 May 2008 22:31:58 -0000
+@@ -592,14 +592,16 @@
+ 		goto reply;
+ 	}
+ 
++	setup = setup_session_new(address, dst_role, src_role, sk, to-&gt;watch);
++
+ 	/* Wait authorization before reply success */
+ 	if (authorize_connection(ns, address) &lt; 0) {
++		setup_session_free(setup);
++		setup = NULL;
+ 		rsp = BNEP_CONN_NOT_ALLOWED;
+ 		goto reply;
+ 	}
+ 
+-	setup = setup_session_new(address, dst_role, src_role, sk, to-&gt;watch);
+-
+ 	g_source_remove(to-&gt;id);
+ 	to-&gt;id = 0;
+ 
+</pre><pre>-------------------------------------------------------------------------
+This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
+Don't miss this year's exciting event. There's still time to save $100. 
+Use priority code J8TL2D2. 
+<a  rel="nofollow" href="http://ad.doubleclick.net/clk;198757673;13503038;p?http://java.sun.com/javaone">http://ad.doubleclick.net/clk;198757673;13503038;p?http://java.sun.com/javaone</a></pre><pre>_______________________________________________
+Bluez-devel mailing list
+Bluez-devel@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.sourceforge.net/lists/listinfo/bluez-devel">https://lists.sourceforge.net/lists/listinfo/bluez-devel</a>
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00157.html">Usage of BondingCreated()</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00159.html">Sychip/Murata WLBT8111 experience?</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00157.html">Usage of BondingCreated()</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00159.html">Sychip/Murata WLBT8111 experience?</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00158"><strong>Date</strong></a></li>
+<li><a href="index.html#00158"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-bluetooth/>[Linux&nbsp;Bluetooth&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/netdev/>[Network&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

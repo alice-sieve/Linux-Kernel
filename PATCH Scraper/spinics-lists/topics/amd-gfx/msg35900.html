@@ -1,0 +1,607 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 48/87] drm/amd/display: Implement generic MUX registers -->
+<!--X-From-R13: &#60;fhacrat.yvNnzq.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 14:21:52 &#45;0700 -->
+<!--X-Message-Id: 20190715212049.4584&#45;49&#45;sunpeng.li@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715212049.4584&#45;1&#45;sunpeng.li@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 48/87] drm/amd/display: Implement generic MUX registers">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 48/87] drm/amd/display: Implement generic MUX registers &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 48/87] drm/amd/display: Implement generic MUX registers</h1>
+[<a href="msg35899.html">Date Prev</a>][<a href="msg35901.html">Date Next</a>][<a href="msg35899.html">Thread Prev</a>][<a href="msg35901.html">Thread Next</a>][<a href="maillist.html#35900">Date Index</a>][<a href="index.html#35900">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: &lt;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 48/87] drm/amd/display: Implement generic MUX registers</li>
+<li><em>From</em>: &lt;sunpeng.li@xxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 17:20:10 -0400</li>
+<li><em>Cc</em>: Leo Li &lt;sunpeng.li@xxxxxxx&gt;, Joshua Aberback &lt;Joshua.Aberback@xxxxxxx&gt;,        Murton Liu &lt;murton.liu@xxxxxxx&gt;, Aric Cyr &lt;Aric.Cyr@xxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg35850.html">20190715212049.4584-1-sunpeng.li@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg35850.html">20190715212049.4584-1-sunpeng.li@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Murton Liu &lt;murton.liu@xxxxxxx&gt;
+
+[Why]
+Logic &amp; structures for generic regs does not exist in DC currently.
+
+[How]
+Implement register masks/shifts and relevant functions for generic mux,
+similar to existing HPD and DDC objects.
+
+Signed-off-by: Murton Liu &lt;murton.liu@xxxxxxx&gt;
+Reviewed-by: Aric Cyr &lt;Aric.Cyr@xxxxxxx&gt;
+Acked-by: Joshua Aberback &lt;Joshua.Aberback@xxxxxxx&gt;
+Acked-by: Leo Li &lt;sunpeng.li@xxxxxxx&gt;
+---
+ drivers/gpu/drm/amd/display/dc/gpio/Makefile  |   2 +-
+ .../display/dc/gpio/dcn20/hw_factory_dcn20.c  |  41 +++++-
+ .../dc/gpio/diagnostics/hw_factory_diag.c     |   1 +
+ .../drm/amd/display/dc/gpio/generic_regs.h    |  66 +++++++++
+ .../gpu/drm/amd/display/dc/gpio/hw_factory.h  |   3 +
+ .../gpu/drm/amd/display/dc/gpio/hw_generic.c  | 132 ++++++++++++++++++
+ .../gpu/drm/amd/display/dc/gpio/hw_generic.h  |  46 ++++++
+ 7 files changed, 288 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/gpu/drm/amd/display/dc/gpio/generic_regs.h
+ create mode 100644 drivers/gpu/drm/amd/display/dc/gpio/hw_generic.c
+ create mode 100644 drivers/gpu/drm/amd/display/dc/gpio/hw_generic.h
+
+diff --git a/drivers/gpu/drm/amd/display/dc/gpio/Makefile b/drivers/gpu/drm/amd/display/dc/gpio/Makefile
+index c3d92878875d..113affea49bf 100644
+--- a/drivers/gpu/drm/amd/display/dc/gpio/Makefile
++++ b/drivers/gpu/drm/amd/display/dc/gpio/Makefile
+@@ -24,7 +24,7 @@
+ # It provides the control and status of HW GPIO pins.
+ 
+ GPIO = gpio_base.o gpio_service.o hw_factory.o \
+-       hw_gpio.o hw_hpd.o hw_ddc.o hw_translate.o
++       hw_gpio.o hw_hpd.o hw_ddc.o hw_generic.o hw_translate.o
+ 
+ AMD_DAL_GPIO = $(addprefix $(AMDDALPATH)/dc/gpio/,$(GPIO))
+ 
+diff --git a/drivers/gpu/drm/amd/display/dc/gpio/dcn20/hw_factory_dcn20.c b/drivers/gpu/drm/amd/display/dc/gpio/dcn20/hw_factory_dcn20.c
+index abd76d855375..afb7c0f111bf 100644
+--- a/drivers/gpu/drm/amd/display/dc/gpio/dcn20/hw_factory_dcn20.c
++++ b/drivers/gpu/drm/amd/display/dc/gpio/dcn20/hw_factory_dcn20.c
+@@ -31,6 +31,7 @@
+ #include &quot;../hw_gpio.h&quot;
+ #include &quot;../hw_ddc.h&quot;
+ #include &quot;../hw_hpd.h&quot;
++#include &quot;../hw_generic.h&quot;
+ 
+ #include &quot;hw_factory_dcn20.h&quot;
+ 
+@@ -138,6 +139,32 @@ static const struct ddc_sh_mask ddc_mask[] = {
+ 	DDC_MASK_SH_LIST_DCN2(_MASK, 6)
+ };
+ 
++#include &quot;../generic_regs.h&quot;
++
++/* set field name */
++#define SF_GENERIC(reg_name, field_name, post_fix)\
++	.field_name = reg_name ## __ ## field_name ## post_fix
++
++#define generic_regs(id) \
++{\
++	GENERIC_REG_LIST(id)\
++}
++
++static const struct generic_registers generic_regs[] = {
++	generic_regs(A),
++	generic_regs(B),
++};
++
++static const struct generic_sh_mask generic_shift[] = {
++	GENERIC_MASK_SH_LIST(__SHIFT, A),
++	GENERIC_MASK_SH_LIST(__SHIFT, B),
++};
++
++static const struct generic_sh_mask generic_mask[] = {
++	GENERIC_MASK_SH_LIST(_MASK, A),
++	GENERIC_MASK_SH_LIST(_MASK, B),
++};
++
+ static void define_ddc_registers(
+ 		struct hw_gpio_pin *pin,
+ 		uint32_t en)
+@@ -173,17 +200,27 @@ static void define_hpd_registers(struct hw_gpio_pin *pin, uint32_t en)
+ 	hpd-&gt;base.regs = &amp;hpd_regs[en].gpio;
+ }
+ 
++static void define_generic_registers(struct hw_gpio_pin *pin, uint32_t en)
++{
++	struct hw_generic *generic = HW_GENERIC_FROM_BASE(pin);
++
++	generic-&gt;regs = &amp;generic_regs[en];
++	generic-&gt;shifts = &amp;generic_shift[en];
++	generic-&gt;masks = &amp;generic_mask[en];
++	generic-&gt;base.regs = &amp;generic_regs[en].gpio;
++}
+ 
+ /* fucntion table */
+ static const struct hw_factory_funcs funcs = {
+ 	.create_ddc_data = dal_hw_ddc_create,
+ 	.create_ddc_clock = dal_hw_ddc_create,
+-	.create_generic = NULL,
++	.create_generic = dal_hw_generic_create,
+ 	.create_hpd = dal_hw_hpd_create,
+ 	.create_sync = NULL,
+ 	.create_gsl = NULL,
+ 	.define_hpd_registers = define_hpd_registers,
+-	.define_ddc_registers = define_ddc_registers
++	.define_ddc_registers = define_ddc_registers,
++	.define_generic_registers = define_generic_registers,
+ };
+ /*
+  * dal_hw_factory_dcn10_init
+diff --git a/drivers/gpu/drm/amd/display/dc/gpio/diagnostics/hw_factory_diag.c b/drivers/gpu/drm/amd/display/dc/gpio/diagnostics/hw_factory_diag.c
+index 26695b963c58..f15288c3986e 100644
+--- a/drivers/gpu/drm/amd/display/dc/gpio/diagnostics/hw_factory_diag.c
++++ b/drivers/gpu/drm/amd/display/dc/gpio/diagnostics/hw_factory_diag.c
+@@ -38,6 +38,7 @@
+ #include &quot;../hw_gpio.h&quot;
+ #include &quot;../hw_ddc.h&quot;
+ #include &quot;../hw_hpd.h&quot;
++#include &quot;../hw_generic.h&quot;
+ 
+ /* function table */
+ static const struct hw_factory_funcs funcs = {
+diff --git a/drivers/gpu/drm/amd/display/dc/gpio/generic_regs.h b/drivers/gpu/drm/amd/display/dc/gpio/generic_regs.h
+new file mode 100644
+index 000000000000..8c05295c05c2
+--- /dev/null
++++ b/drivers/gpu/drm/amd/display/dc/gpio/generic_regs.h
+@@ -0,0 +1,66 @@
++/*
++ * Copyright 2012-16 Advanced Micro Devices, Inc.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the &quot;Software&quot;),
++ * to deal in the Software without restriction, including without limitation
++ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
++ * and/or sell copies of the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice shall be included in
++ * all copies or substantial portions of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++ * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
++ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
++ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
++ * OTHER DEALINGS IN THE SOFTWARE.
++ *
++ * Authors: AMD
++ *
++ */
++
++#ifndef DRIVERS_GPU_DRM_AMD_DC_DEV_DC_GPIO_GENERIC_REGS_H_
++#define DRIVERS_GPU_DRM_AMD_DC_DEV_DC_GPIO_GENERIC_REGS_H_
++
++#include &quot;gpio_regs.h&quot;
++
++#define GENERIC_GPIO_REG_LIST_ENTRY(type, cd, id) \
++	.type ## _reg =  REG(DC_GPIO_GENERIC_## type),\
++	.type ## _mask =  DC_GPIO_GENERIC_ ## type ## __DC_GPIO_GENERIC ## id ## _ ## type ## _MASK,\
++	.type ## _shift = DC_GPIO_GENERIC_ ## type ## __DC_GPIO_GENERIC ## id ## _ ## type ## __SHIFT
++
++#define GENERIC_GPIO_REG_LIST(id) \
++	{\
++	GENERIC_GPIO_REG_LIST_ENTRY(MASK, cd, id),\
++	GENERIC_GPIO_REG_LIST_ENTRY(A, cd, id),\
++	GENERIC_GPIO_REG_LIST_ENTRY(EN, cd, id),\
++	GENERIC_GPIO_REG_LIST_ENTRY(Y, cd, id)\
++	}
++
++#define GENERIC_REG_LIST(id) \
++	GENERIC_GPIO_REG_LIST(id), \
++	.mux = REG(DC_GENERIC ## id),\
++
++#define GENERIC_MASK_SH_LIST(mask_sh, cd) \
++	{(DC_GENERIC ## cd ##__GENERIC ## cd ##_EN## mask_sh),\
++	(DC_GENERIC ## cd ##__GENERIC ## cd ##_SEL## mask_sh)}
++
++struct generic_registers {
++	struct gpio_registers gpio;
++	uint32_t mux;
++};
++
++struct generic_sh_mask {
++	/* enable */
++	uint32_t GENERIC_EN;
++	/* select */
++	uint32_t GENERIC_SEL;
++
++};
++
++
++#endif /* DRIVERS_GPU_DRM_AMD_DC_DEV_DC_GPIO_GENERIC_REGS_H_ */
+diff --git a/drivers/gpu/drm/amd/display/dc/gpio/hw_factory.h b/drivers/gpu/drm/amd/display/dc/gpio/hw_factory.h
+index 6e4dd3521935..7017c9337348 100644
+--- a/drivers/gpu/drm/amd/display/dc/gpio/hw_factory.h
++++ b/drivers/gpu/drm/amd/display/dc/gpio/hw_factory.h
+@@ -63,6 +63,9 @@ struct hw_factory {
+ 		void (*define_ddc_registers)(
+ 				struct hw_gpio_pin *pin,
+ 				uint32_t en);
++		void (*define_generic_registers)(
++				struct hw_gpio_pin *pin,
++				uint32_t en);
+ 	} *funcs;
+ };
+ 
+diff --git a/drivers/gpu/drm/amd/display/dc/gpio/hw_generic.c b/drivers/gpu/drm/amd/display/dc/gpio/hw_generic.c
+new file mode 100644
+index 000000000000..ea0a1fc8cf23
+--- /dev/null
++++ b/drivers/gpu/drm/amd/display/dc/gpio/hw_generic.c
+@@ -0,0 +1,132 @@
++/*
++ * Copyright 2012-15 Advanced Micro Devices, Inc.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the &quot;Software&quot;),
++ * to deal in the Software without restriction, including without limitation
++ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
++ * and/or sell copies of the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice shall be included in
++ * all copies or substantial portions of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++ * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
++ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
++ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
++ * OTHER DEALINGS IN THE SOFTWARE.
++ *
++ * Authors: AMD
++ *
++ */
++
++#include &quot;dm_services.h&quot;
++
++#include &quot;include/gpio_types.h&quot;
++#include &quot;hw_gpio.h&quot;
++#include &quot;hw_generic.h&quot;
++
++#include &quot;reg_helper.h&quot;
++#include &quot;generic_regs.h&quot;
++
++#undef FN
++#define FN(reg_name, field_name) \
++	generic-&gt;shifts-&gt;field_name, generic-&gt;masks-&gt;field_name
++
++#define CTX \
++	generic-&gt;base.base.ctx
++#define REG(reg)\
++	(generic-&gt;regs-&gt;reg)
++
++static void dal_hw_generic_construct(
++	struct hw_generic *pin,
++	enum gpio_id id,
++	uint32_t en,
++	struct dc_context *ctx)
++{
++	dal_hw_gpio_construct(&amp;pin-&gt;base, id, en, ctx);
++}
++
++static void dal_hw_generic_destruct(
++	struct hw_generic *pin)
++{
++	dal_hw_gpio_destruct(&amp;pin-&gt;base);
++}
++
++static void destroy(
++	struct hw_gpio_pin **ptr)
++{
++	struct hw_generic *generic = HW_GENERIC_FROM_BASE(*ptr);
++
++	dal_hw_generic_destruct(generic);
++
++	kfree(generic);
++
++	*ptr = NULL;
++}
++
++static enum gpio_result set_config(
++	struct hw_gpio_pin *ptr,
++	const struct gpio_config_data *config_data)
++{
++	struct hw_generic *generic = HW_GENERIC_FROM_BASE(ptr);
++
++	if (!config_data)
++		return GPIO_RESULT_INVALID_DATA;
++
++	REG_UPDATE_2(mux,
++		GENERIC_EN, config_data-&gt;config.generic_mux.enable_output_from_mux,
++		GENERIC_SEL, config_data-&gt;config.generic_mux.mux_select);
++
++	return GPIO_RESULT_OK;
++}
++
++static const struct hw_gpio_pin_funcs funcs = {
++	.destroy = destroy,
++	.open = dal_hw_gpio_open,
++	.get_value = dal_hw_gpio_get_value,
++	.set_value = dal_hw_gpio_set_value,
++	.set_config = set_config,
++	.change_mode = dal_hw_gpio_change_mode,
++	.close = dal_hw_gpio_close,
++};
++
++static void construct(
++	struct hw_generic *generic,
++	enum gpio_id id,
++	uint32_t en,
++	struct dc_context *ctx)
++{
++	dal_hw_generic_construct(generic, id, en, ctx);
++	generic-&gt;base.base.funcs = &amp;funcs;
++}
++
++struct hw_gpio_pin *dal_hw_generic_create(
++	struct dc_context *ctx,
++	enum gpio_id id,
++	uint32_t en)
++{
++	struct hw_generic *generic;
++
++	if (id != GPIO_ID_GENERIC) {
++		ASSERT_CRITICAL(false);
++		return NULL;
++	}
++
++	if ((en &lt; GPIO_GENERIC_MIN) || (en &gt; GPIO_GENERIC_MAX)) {
++		ASSERT_CRITICAL(false);
++		return NULL;
++	}
++
++	generic = kzalloc(sizeof(struct hw_generic), GFP_KERNEL);
++	if (!generic) {
++		ASSERT_CRITICAL(false);
++		return NULL;
++	}
++
++	construct(generic, id, en, ctx);
++	return &amp;generic-&gt;base.base;
++}
+diff --git a/drivers/gpu/drm/amd/display/dc/gpio/hw_generic.h b/drivers/gpu/drm/amd/display/dc/gpio/hw_generic.h
+new file mode 100644
+index 000000000000..3ea1c13e3ea6
+--- /dev/null
++++ b/drivers/gpu/drm/amd/display/dc/gpio/hw_generic.h
+@@ -0,0 +1,46 @@
++/*
++ * Copyright 2012-15 Advanced Micro Devices, Inc.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the &quot;Software&quot;),
++ * to deal in the Software without restriction, including without limitation
++ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
++ * and/or sell copies of the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice shall be included in
++ * all copies or substantial portions of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++ * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
++ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
++ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
++ * OTHER DEALINGS IN THE SOFTWARE.
++ *
++ * Authors: AMD
++ *
++ */
++
++#ifndef __DAL_HW_generic_H__
++#define __DAL_HW_generic_H__
++
++#include &quot;generic_regs.h&quot;
++
++struct hw_generic {
++	struct hw_gpio base;
++	const struct generic_registers *regs;
++	const struct generic_sh_mask *shifts;
++	const struct generic_sh_mask *masks;
++};
++
++#define HW_GENERIC_FROM_BASE(hw_gpio) \
++	container_of((HW_GPIO_FROM_BASE(hw_gpio)), struct hw_generic, base)
++
++struct hw_gpio_pin *dal_hw_generic_create(
++	struct dc_context *ctx,
++	enum gpio_id id,
++	uint32_t en);
++
++#endif
+-- 
+2.22.0
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="35850" href="msg35850.html">[PATCH 00/87] DC Patches 15 Jul, 2019</a></strong>
+<ul><li><em>From:</em> sunpeng.li</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35899.html">[PATCH 49/87] drm/amd/display: Use helper for determining HDMI signal</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35901.html">[PATCH 50/87] drm/amd/display: Set FEC_READY always before link training</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35899.html">[PATCH 49/87] drm/amd/display: Use helper for determining HDMI signal</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35901.html">[PATCH 50/87] drm/amd/display: Set FEC_READY always before link training</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35900"><strong>Date</strong></a></li>
+<li><a href="index.html#35900"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

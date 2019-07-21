@@ -1,0 +1,364 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v3] serial: 8250&#45;mtk: modify mtk uart power and clock management -->
+<!--X-From-R13: Qunatdv Vh &#60;punatdv.uhNzrqvngrx.pbz> -->
+<!--X-Date: Thu, 18 Jul 2019 20:00:07 &#45;0700 -->
+<!--X-Message-Id: 1563505182&#45;2408&#45;1&#45;git&#45;send&#45;email&#45;changqi.hu@mediatek.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH v3] serial: 8250-mtk: modify mtk uart power and clock management">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH v3] serial: 8250-mtk: modify mtk uart power and clock management &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH v3] serial: 8250-mtk: modify mtk uart power and clock management</h1>
+[<a href="msg741868.html">Date Prev</a>][<a href="msg741870.html">Date Next</a>][<a href="msg741862.html">Thread Prev</a>][<a href="msg741944.html">Thread Next</a>][<a href="maillist.html#741869">Date Index</a>][<a href="threads.html#741869">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v3] serial: 8250-mtk: modify mtk uart power and clock management</li>
+<li><em>From</em>: Changqi Hu &lt;changqi.hu@xxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 19 Jul 2019 10:59:42 +0800</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>modify mtk uart runtime interface, add uart clock use count.
+merge patch v1 and patch v2 together.
+
+Signed-off-by: Changqi Hu &lt;changqi.hu@xxxxxxxxxxxx&gt;
+---
+ drivers/tty/serial/8250/8250_mtk.c | 50 ++++++++++++++++++++++++--------------
+ 1 file changed, 32 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/tty/serial/8250/8250_mtk.c b/drivers/tty/serial/8250/8250_mtk.c
+index f470ded..a07c8ae 100644
+--- a/drivers/tty/serial/8250/8250_mtk.c
++++ b/drivers/tty/serial/8250/8250_mtk.c
+@@ -31,6 +31,7 @@
+ #define MTK_UART_RXTRI_AD	0x14	/* RX Trigger address */
+ #define MTK_UART_FRACDIV_L	0x15	/* Fractional divider LSB address */
+ #define MTK_UART_FRACDIV_M	0x16	/* Fractional divider MSB address */
++#define MTK_UART_DEBUG0	0x18
+ #define MTK_UART_IER_XOFFI	0x20	/* Enable XOFF character interrupt */
+ #define MTK_UART_IER_RTSI	0x40	/* Enable RTS Modem status interrupt */
+ #define MTK_UART_IER_CTSI	0x80	/* Enable CTS Modem status interrupt */
+@@ -386,9 +387,18 @@ static void mtk8250_set_flow_ctrl(struct uart_8250_port *up, int mode)
+ static int __maybe_unused mtk8250_runtime_suspend(struct device *dev)
+ {
+ 	struct mtk8250_data *data = dev_get_drvdata(dev);
++	struct uart_8250_port *up = serial8250_get_port(data-&gt;line);
+ 
+-	clk_disable_unprepare(data-&gt;uart_clk);
+-	clk_disable_unprepare(data-&gt;bus_clk);
++	/* wait until UART in idle status */
++	while
++		(serial_in(up, MTK_UART_DEBUG0));
++
++	if (data-&gt;clk_count == 0U) {
++		dev_dbg(dev, &quot;%s clock count is 0\n&quot;, __func__);
++	} else {
++		clk_disable_unprepare(data-&gt;bus_clk);
++		data-&gt;clk_count--;
++	}
+ 
+ 	return 0;
+ }
+@@ -398,16 +408,16 @@ static int __maybe_unused mtk8250_runtime_resume(struct device *dev)
+ 	struct mtk8250_data *data = dev_get_drvdata(dev);
+ 	int err;
+ 
+-	err = clk_prepare_enable(data-&gt;uart_clk);
+-	if (err) {
+-		dev_warn(dev, &quot;Can't enable clock\n&quot;);
+-		return err;
+-	}
+-
+-	err = clk_prepare_enable(data-&gt;bus_clk);
+-	if (err) {
+-		dev_warn(dev, &quot;Can't enable bus clock\n&quot;);
+-		return err;
++	if (data-&gt;clk_count &gt; 0U) {
++		dev_dbg(dev, &quot;%s clock count is %d\n&quot;, __func__,
++			data-&gt;clk_count);
++	} else {
++		err = clk_prepare_enable(data-&gt;bus_clk);
++		if (err) {
++			dev_warn(dev, &quot;Can't enable bus clock\n&quot;);
++			return err;
++		}
++		data-&gt;clk_count++;
+ 	}
+ 
+ 	return 0;
+@@ -417,12 +427,14 @@ static int __maybe_unused mtk8250_runtime_resume(struct device *dev)
+ mtk8250_do_pm(struct uart_port *port, unsigned int state, unsigned int old)
+ {
+ 	if (!state)
+-		pm_runtime_get_sync(port-&gt;dev);
++		if (!mtk8250_runtime_resume(port-&gt;dev))
++			pm_runtime_get_sync(port-&gt;dev);
+ 
+ 	serial8250_do_pm(port, state, old);
+ 
+ 	if (state)
+-		pm_runtime_put_sync_suspend(port-&gt;dev);
++		if (!pm_runtime_put_sync_suspend(port-&gt;dev))
++			mtk8250_runtime_suspend(port-&gt;dev);
+ }
+ 
+ #ifdef CONFIG_SERIAL_8250_DMA
+@@ -499,6 +511,8 @@ static int mtk8250_probe(struct platform_device *pdev)
+ 	if (!data)
+ 		return -ENOMEM;
+ 
++	data-&gt;clk_count = 0;
++
+ 	if (pdev-&gt;dev.of_node) {
+ 		err = mtk8250_probe_of(pdev, &amp;uart.port, data);
+ 		if (err)
+@@ -531,6 +545,7 @@ static int mtk8250_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, data);
+ 
++	pm_runtime_enable(&amp;pdev-&gt;dev);
+ 	err = mtk8250_runtime_resume(&amp;pdev-&gt;dev);
+ 	if (err)
+ 		return err;
+@@ -539,9 +554,6 @@ static int mtk8250_probe(struct platform_device *pdev)
+ 	if (data-&gt;line &lt; 0)
+ 		return data-&gt;line;
+ 
+-	pm_runtime_set_active(&amp;pdev-&gt;dev);
+-	pm_runtime_enable(&amp;pdev-&gt;dev);
+-
+ 	return 0;
+ }
+ 
+@@ -552,11 +564,13 @@ static int mtk8250_remove(struct platform_device *pdev)
+ 	pm_runtime_get_sync(&amp;pdev-&gt;dev);
+ 
+ 	serial8250_unregister_port(data-&gt;line);
+-	mtk8250_runtime_suspend(&amp;pdev-&gt;dev);
+ 
+ 	pm_runtime_disable(&amp;pdev-&gt;dev);
+ 	pm_runtime_put_noidle(&amp;pdev-&gt;dev);
+ 
++	if (!pm_runtime_status_suspended(&amp;pdev-&gt;dev))
++		mtk8250_runtime_suspend(&amp;pdev-&gt;dev);
++
+ 	return 0;
+ }
+ 
+-- 
+1.8.1.1.dirty
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="741944" href="msg741944.html">Re: [PATCH v3] serial: 8250-mtk: modify mtk uart power and clock management</a></strong>
+<ul><li><em>From:</em> Matthias Brugger</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741868.html">Re: [PATCH v9 08/10] open: openat2(2) syscall</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741870.html">[PATCH AUTOSEL 5.2 123/171] perf stat: Fix use-after-freed pointer detected by the smatch tool</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741862.html">[PATCH] arm64: dts: imx8mm-evk: Remove invalid properties</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741944.html">Re: [PATCH v3] serial: 8250-mtk: modify mtk uart power and clock management</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741869"><strong>Date</strong></a></li>
+<li><a href="threads.html#741869"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

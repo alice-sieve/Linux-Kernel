@@ -1,0 +1,373 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 4/4] index task_context by task -->
+<!--X-From-R13: Uert Furyra &#60;tguryraNtbbtyr.pbz> -->
+<!--X-Date: Fri, 6 Apr 2018 08:19:10 &#45;0700 -->
+<!--X-Message-Id: 20180406151504.88066&#45;5&#45;gthelen@google.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20180406151504.88066&#45;1&#45;gthelen@google.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 4/4] index task_context by task &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  [PATCH 4/4] index task_context by task</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 4/4] index task_context by task</h1>
+[<a href="msg07426.html">Date Prev</a>][<a href="msg07428.html">Date Next</a>][<a href="msg07433.html">Thread Prev</a>][<a href="msg07428.html">Thread Next</a>][<a href="maillist.html#07427">Date Index</a>][<a href="index.html#07427">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 4/4] index task_context by task</li>
+<li><em>From</em>: Greg Thelen &lt;gthelen@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri,  6 Apr 2018 08:15:04 -0700</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg07424.html">20180406151504.88066-1-gthelen@google.com</a>&gt;</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>For dumps with large task count, ps spends most its time in the
+following stack:
+  task_to_context
+  task_to_pid
+  show_ps_data
+  show_ps
+  cmd_ps
+  exec_command
+  main_loop
+  captured_command_loop
+  catch_errors
+  captured_main
+  catch_errors
+  gdb_main_entry
+  gdb_main_loop
+  main
+The above shows use of task_to_pid on each process.  task_to_context is
+O(N), thus ps is O(N^2).
+
+Reduce task_to_context to O(N*log(N)) by using a binary search.
+
+On a 1M task dump, this reduces ps time 45m =&gt; 17s.
+
+Signed-off-by: Greg Thelen &lt;gthelen@xxxxxxxxxx&gt;
+---
+ defs.h |  2 ++
+ task.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++++------
+ 2 files changed, 60 insertions(+), 6 deletions(-)
+
+diff --git a/defs.h b/defs.h
+index 3a3b6f66573c..15346f01fd4e 100644
+--- a/defs.h
++++ b/defs.h
+@@ -811,6 +811,7 @@ struct tgid_context {               /* tgid and task stored for each task */
+ struct task_table {                      /* kernel/local task table data */
+ 	struct task_context *current;
+ 	struct task_context *context_array;
++	struct task_context **context_by_task; /* task_context sorted by task addr */
+ 	void (*refresh_task_table)(void);
+ 	ulong flags;
+         ulong task_start;
+@@ -871,6 +872,7 @@ struct task_table {                      /* kernel/local task table data */
+ #define START_TIME_NSECS  (0x8000)
+ #define THREAD_INFO_IN_TASK (0x10000)
+ #define PID_RADIX_TREE   (0x20000)
++#define INDEXED_CONTEXTS (0x40000)
+ 
+ #define TASK_SLUSH (20)
+ 
+diff --git a/task.c b/task.c
+index cddc1f5b651a..5ad77408530d 100644
+--- a/task.c
++++ b/task.c
+@@ -783,6 +783,10 @@ allocate_task_space(int cnt)
+                     malloc(cnt * sizeof(struct task_context))))
+                         error(FATAL, &quot;cannot malloc context array (%d tasks)&quot;,
+                                 cnt);
++		if (!(tt-&gt;context_by_task = (struct task_context **)
++                    malloc(cnt * sizeof(struct task_context*))))
++                        error(FATAL, &quot;cannot malloc context_by_task array (%d tasks)&quot;,
++                                cnt);
+ 		if (!(tt-&gt;tgid_array = (struct tgid_context *)
+                     malloc(cnt * sizeof(struct tgid_context))))
+                         error(FATAL, &quot;cannot malloc tgid array (%d tasks)&quot;,
+@@ -802,6 +806,13 @@ allocate_task_space(int cnt)
+                             &quot;%scannot realloc context array (%d tasks)&quot;,
+ 	                	(pc-&gt;flags &amp; RUNTIME) ? &quot;&quot; : &quot;\n&quot;, cnt);
+ 
++		 if (!(tt-&gt;context_by_task = (struct task_context **)
++                    realloc(tt-&gt;context_by_task,
++		    cnt * sizeof(struct task_context*))))
++                        error(FATAL,
++                            &quot;%scannot realloc context_by_task array (%d tasks)&quot;,
++                            	(pc-&gt;flags &amp; RUNTIME) ? &quot;&quot; : &quot;\n&quot;, cnt);
++
+ 		 if (!(tt-&gt;tgid_array = (struct tgid_context *)
+                     realloc(tt-&gt;tgid_array, 
+ 		    cnt * sizeof(struct tgid_context)))) 
+@@ -2700,6 +2711,7 @@ add_context(ulong task, char *tp)
+         if (has_cpu &amp;&amp; (tt-&gt;flags &amp; POPULATE_PANIC))
+                 tt-&gt;panic_threads[tc-&gt;processor] = tc-&gt;task;
+ 
++	tt-&gt;flags &amp;= ~INDEXED_CONTEXTS;
+ 	tt-&gt;running_tasks++;
+ 	return tc;
+ }
+@@ -2747,6 +2759,33 @@ refresh_context(ulong curtask, ulong curpid)
+         }
+ }
+ 
++static int
++sort_by_task(const void *arg1, const void *arg2)
++{
++	const struct task_context *t1, *t2;
++
++	t1 = *(const struct task_context **)arg1;
++	t2 = *(const struct task_context **)arg2;
++
++	if (t1-&gt;task == t2-&gt;task)
++		return 0;
++
++	return (t1-&gt;task &lt; t2-&gt;task) ? -1 : 1;
++}
++
++/* sort context_by_task by task address */
++static void
++sort_context_by_task(void)
++{
++	int i;
++
++	for (i = 0; i &lt; tt-&gt;running_tasks; i++)
++		tt-&gt;context_by_task[i] = &amp;tt-&gt;context_array[i];
++	qsort(tt-&gt;context_by_task, tt-&gt;running_tasks,
++	      sizeof(*tt-&gt;context_by_task), sort_by_task);
++	tt-&gt;flags |= INDEXED_CONTEXTS;
++}
++
+ /*
+  *  Sort the task_context array by PID number; for PID 0, sort by processor.
+  */
+@@ -2759,6 +2798,8 @@ sort_context_array(void)
+ 	qsort((void *)tt-&gt;context_array, (size_t)tt-&gt;running_tasks,
+         	sizeof(struct task_context), sort_by_pid);
+ 	set_context(curtask, NO_PID);
++
++	sort_context_by_task();
+ }
+ 
+ static int
+@@ -2804,6 +2845,8 @@ sort_context_array_by_last_run(void)
+ 	qsort((void *)tt-&gt;context_array, (size_t)tt-&gt;running_tasks,
+         	sizeof(struct task_context), sort_by_last_run);
+ 	set_context(curtask, NO_PID);
++
++	sort_context_by_task();
+ }
+ 
+ /*
+@@ -4640,15 +4683,24 @@ task_exists(ulong task)
+ struct task_context *
+ task_to_context(ulong task)
+ {
+-        int i;
+-        struct task_context *tc;
++	struct task_context key, *tc, **found;
++	int i;
++
++	/* Binary search the context_by_task array. */
++	if (tt-&gt;flags &amp; INDEXED_CONTEXTS) {
++		key.task = task;
++		tc = &amp;key;
++		found = bsearch(&amp;tc, tt-&gt;context_by_task, tt-&gt;running_tasks,
++				sizeof(*tt-&gt;context_by_task), sort_by_task);
++		return found ? *found : NULL;
++	}
+ 
+         tc = FIRST_CONTEXT();
+-        for (i = 0; i &lt; RUNNING_TASKS(); i++, tc++) 
++        for (i = 0; i &lt; RUNNING_TASKS(); i++, tc++)
+                 if (tc-&gt;task == task)
+-                        return tc; 
+-        
+-        return NULL;
++                        return tc;
++
++	return NULL;
+ }
+ 
+ /*
+-- 
+2.17.0.484.g0c8726318c-goog
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="07424" href="msg07424.html">[PATCH 0/4] speed up handling of dumps with many	tasks</a></strong>
+<ul><li><em>From:</em> Greg Thelen</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07426.html">[PATCH 3/4] remove unreachable (and slow) code</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07428.html">[PATCH 2/4] refactor task_to_pid</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07433.html">Re:  [PATCH 3/4] remove unreachable (and slow) code</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07428.html">[PATCH 2/4] refactor task_to_pid</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07427"><strong>Date</strong></a></li>
+<li><a href="index.html#07427"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

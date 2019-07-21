@@ -1,0 +1,370 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 68/87] drm/amd/display: add pipe CRC sources without disabling dithering. -->
+<!--X-From-R13: &#60;fhacrat.yvNnzq.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 14:22:01 &#45;0700 -->
+<!--X-Message-Id: 20190715212049.4584&#45;69&#45;sunpeng.li@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715212049.4584&#45;1&#45;sunpeng.li@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 68/87] drm/amd/display: add pipe CRC sources without disabling dithering.">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 68/87] drm/amd/display: add pipe CRC sources without disabling dithering. &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 68/87] drm/amd/display: add pipe CRC sources without disabling dithering.</h1>
+[<a href="msg35910.html">Date Prev</a>][<a href="msg35912.html">Date Next</a>][<a href="msg35910.html">Thread Prev</a>][<a href="msg35912.html">Thread Next</a>][<a href="maillist.html#35911">Date Index</a>][<a href="index.html#35911">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: &lt;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 68/87] drm/amd/display: add pipe CRC sources without disabling dithering.</li>
+<li><em>From</em>: &lt;sunpeng.li@xxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 17:20:30 -0400</li>
+<li><em>Cc</em>: Leo Li &lt;sunpeng.li@xxxxxxx&gt;, Hanghong Ma &lt;Hanghong.Ma@xxxxxxx&gt;,        Dingchen Zhang &lt;dingchen.zhang@xxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg35850.html">20190715212049.4584-1-sunpeng.li@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg35850.html">20190715212049.4584-1-sunpeng.li@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Dingchen Zhang &lt;dingchen.zhang@xxxxxxx&gt;
+
+[Why]
+need to verify the impact of spatial dithering on 8bpc bypass mode.
+
+[How]
+added CRC sources and configure dihter option from dc stream.
+
+Signed-off-by: Dingchen Zhang &lt;dingchen.zhang@xxxxxxx&gt;
+Reviewed-by: Hanghong Ma &lt;Hanghong.Ma@xxxxxxx&gt;
+Acked-by: Leo Li &lt;sunpeng.li@xxxxxxx&gt;
+---
+ .../drm/amd/display/amdgpu_dm/amdgpu_dm_crc.c | 58 ++++++++++++++-----
+ .../drm/amd/display/amdgpu_dm/amdgpu_dm_crc.h |  6 +-
+ 2 files changed, 48 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.c
+index 7436c2e5a0a9..b01256a4692e 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.c
+@@ -32,7 +32,9 @@
+ static const char *const pipe_crc_sources[] = {
+ 	&quot;none&quot;,
+ 	&quot;crtc&quot;,
++	&quot;crtc dither&quot;,
+ 	&quot;dprx&quot;,
++	&quot;dprx dither&quot;,
+ 	&quot;auto&quot;,
+ };
+ 
+@@ -44,10 +46,33 @@ static enum amdgpu_dm_pipe_crc_source dm_parse_crc_source(const char *source)
+ 		return AMDGPU_DM_PIPE_CRC_SOURCE_CRTC;
+ 	if (!strcmp(source, &quot;dprx&quot;))
+ 		return AMDGPU_DM_PIPE_CRC_SOURCE_DPRX;
++	if (!strcmp(source, &quot;crtc dither&quot;))
++		return AMDGPU_DM_PIPE_CRC_SOURCE_CRTC_DITHER;
++	if (!strcmp(source, &quot;dprx dither&quot;))
++		return AMDGPU_DM_PIPE_CRC_SOURCE_DPRX_DITHER;
+ 
+ 	return AMDGPU_DM_PIPE_CRC_SOURCE_INVALID;
+ }
+ 
++static bool dm_is_crc_source_crtc(enum amdgpu_dm_pipe_crc_source src)
++{
++	return (src == AMDGPU_DM_PIPE_CRC_SOURCE_CRTC) ||
++	       (src == AMDGPU_DM_PIPE_CRC_SOURCE_CRTC_DITHER);
++}
++
++static bool dm_is_crc_source_dprx(enum amdgpu_dm_pipe_crc_source src)
++{
++	return (src == AMDGPU_DM_PIPE_CRC_SOURCE_DPRX) ||
++	       (src == AMDGPU_DM_PIPE_CRC_SOURCE_DPRX_DITHER);
++}
++
++static bool dm_need_crc_dither(enum amdgpu_dm_pipe_crc_source src)
++{
++	return (src == AMDGPU_DM_PIPE_CRC_SOURCE_CRTC_DITHER) ||
++	       (src == AMDGPU_DM_PIPE_CRC_SOURCE_DPRX_DITHER) ||
++	       (src == AMDGPU_DM_PIPE_CRC_SOURCE_NONE);
++}
++
+ const char *const *amdgpu_dm_crtc_get_crc_sources(struct drm_crtc *crtc,
+ 						  size_t *count)
+ {
+@@ -101,14 +126,18 @@ int amdgpu_dm_crtc_set_crc_source(struct drm_crtc *crtc, const char *src_name)
+ 	 * USER REQ SRC | CURRENT SRC | BEHAVIOR
+ 	 * -----------------------------
+ 	 * None         | None        | Do nothing
+-	 * None         | CRTC        | Disable CRTC CRC
+-	 * None         | DPRX        | Disable DPRX CRC, need 'aux'
+-	 * CRTC         | XXXX        | Enable CRTC CRC, configure DC strm
+-	 * DPRX         | XXXX        | Enable DPRX CRC, need 'aux'
++	 * None         | CRTC        | Disable CRTC CRC, set default to dither
++	 * None         | DPRX        | Disable DPRX CRC, need 'aux', set default to dither
++	 * None         | CRTC DITHER | Disable CRTC CRC
++	 * None         | DPRX DITHER | Disable DPRX CRC, need 'aux'
++	 * CRTC         | XXXX        | Enable CRTC CRC, no dither
++	 * DPRX         | XXXX        | Enable DPRX CRC, need 'aux', no dither
++	 * CRTC DITHER  | XXXX        | Enable CRTC CRC, set dither
++	 * DPRX DITHER  | XXXX        | Enable DPRX CRC, need 'aux', set dither
+ 	 */
+-	if (source == AMDGPU_DM_PIPE_CRC_SOURCE_DPRX ||
++	if (dm_is_crc_source_dprx(source) ||
+ 		(source == AMDGPU_DM_PIPE_CRC_SOURCE_NONE &amp;&amp;
+-		 crtc_state-&gt;crc_src == AMDGPU_DM_PIPE_CRC_SOURCE_DPRX)) {
++		 dm_is_crc_source_dprx(crtc_state-&gt;crc_src))) {
+ 		aconn = stream_state-&gt;link-&gt;priv;
+ 
+ 		if (!aconn) {
+@@ -124,7 +153,7 @@ int amdgpu_dm_crtc_set_crc_source(struct drm_crtc *crtc, const char *src_name)
+ 			mutex_unlock(&amp;adev-&gt;dm.dc_lock);
+ 			return -EINVAL;
+ 		}
+-	} else if (source == AMDGPU_DM_PIPE_CRC_SOURCE_CRTC) {
++	} else if (dm_is_crc_source_crtc(source)) {
+ 		if (!dc_stream_configure_crc(stream_state-&gt;ctx-&gt;dc, stream_state,
+ 					     enable, enable)) {
+ 			mutex_unlock(&amp;adev-&gt;dm.dc_lock);
+@@ -132,10 +161,11 @@ int amdgpu_dm_crtc_set_crc_source(struct drm_crtc *crtc, const char *src_name)
+ 		}
+ 	}
+ 
+-	/* When enabling CRC, we should also disable dithering. */
+-	dc_stream_set_dither_option(stream_state,
+-				    enable ? DITHER_OPTION_TRUN8
+-					   : DITHER_OPTION_DEFAULT);
++	/* configure dithering */
++	if (!dm_need_crc_dither(source))
++		dc_stream_set_dither_option(stream_state, DITHER_OPTION_TRUN8);
++	else if (!dm_need_crc_dither(crtc_state-&gt;crc_src))
++		dc_stream_set_dither_option(stream_state, DITHER_OPTION_DEFAULT);
+ 
+ 	mutex_unlock(&amp;adev-&gt;dm.dc_lock);
+ 
+@@ -146,7 +176,7 @@ int amdgpu_dm_crtc_set_crc_source(struct drm_crtc *crtc, const char *src_name)
+ 	enabled = amdgpu_dm_is_valid_crc_source(crtc_state-&gt;crc_src);
+ 	if (!enabled &amp;&amp; enable) {
+ 		drm_crtc_vblank_get(crtc);
+-		if (source == AMDGPU_DM_PIPE_CRC_SOURCE_DPRX) {
++		if (dm_is_crc_source_dprx(source)) {
+ 			if (drm_dp_start_crc(aux, crtc)) {
+ 				DRM_DEBUG_DRIVER(&quot;dp start crc failed\n&quot;);
+ 				return -EINVAL;
+@@ -154,7 +184,7 @@ int amdgpu_dm_crtc_set_crc_source(struct drm_crtc *crtc, const char *src_name)
+ 		}
+ 	} else if (enabled &amp;&amp; !enable) {
+ 		drm_crtc_vblank_put(crtc);
+-		if (crtc_state-&gt;crc_src == AMDGPU_DM_PIPE_CRC_SOURCE_DPRX) {
++		if (dm_is_crc_source_dprx(source)) {
+ 			if (drm_dp_stop_crc(aux)) {
+ 				DRM_DEBUG_DRIVER(&quot;dp stop crc failed\n&quot;);
+ 				return -EINVAL;
+@@ -203,7 +233,7 @@ void amdgpu_dm_crtc_handle_crc_irq(struct drm_crtc *crtc)
+ 		return;
+ 	}
+ 
+-	if (crtc_state-&gt;crc_src == AMDGPU_DM_PIPE_CRC_SOURCE_CRTC) {
++	if (dm_is_crc_source_crtc(crtc_state-&gt;crc_src)) {
+ 		if (!dc_stream_get_crc(stream_state-&gt;ctx-&gt;dc, stream_state,
+ 				       &amp;crcs[0], &amp;crcs[1], &amp;crcs[2]))
+ 			return;
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.h
+index b63a9011f511..14de7301c28d 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.h
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.h
+@@ -29,15 +29,17 @@
+ enum amdgpu_dm_pipe_crc_source {
+ 	AMDGPU_DM_PIPE_CRC_SOURCE_NONE = 0,
+ 	AMDGPU_DM_PIPE_CRC_SOURCE_CRTC,
++	AMDGPU_DM_PIPE_CRC_SOURCE_CRTC_DITHER,
+ 	AMDGPU_DM_PIPE_CRC_SOURCE_DPRX,
++	AMDGPU_DM_PIPE_CRC_SOURCE_DPRX_DITHER,
+ 	AMDGPU_DM_PIPE_CRC_SOURCE_MAX,
+ 	AMDGPU_DM_PIPE_CRC_SOURCE_INVALID = -1,
+ };
+ 
+ static inline bool amdgpu_dm_is_valid_crc_source(enum amdgpu_dm_pipe_crc_source source)
+ {
+-	return (source == AMDGPU_DM_PIPE_CRC_SOURCE_CRTC) ||
+-		   (source == AMDGPU_DM_PIPE_CRC_SOURCE_DPRX);
++	return (source &gt; AMDGPU_DM_PIPE_CRC_SOURCE_NONE) &amp;&amp;
++	       (source &lt; AMDGPU_DM_PIPE_CRC_SOURCE_MAX);
+ }
+ 
+ /* amdgpu_dm_crc.c */
+-- 
+2.22.0
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="35850" href="msg35850.html">[PATCH 00/87] DC Patches 15 Jul, 2019</a></strong>
+<ul><li><em>From:</em> sunpeng.li</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35910.html">[PATCH 63/87] drm/amd/display: add set and get clock for testing purposes</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35912.html">[PATCH 55/87] drm/amd/display: Add MPC 3DLUT resource management</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35910.html">[PATCH 63/87] drm/amd/display: add set and get clock for testing purposes</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35912.html">[PATCH 55/87] drm/amd/display: Add MPC 3DLUT resource management</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35911"><strong>Date</strong></a></li>
+<li><a href="index.html#35911"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

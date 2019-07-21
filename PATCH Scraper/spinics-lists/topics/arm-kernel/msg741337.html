@@ -1,0 +1,454 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2] PCI: pci&#45;bridge&#45;emul: fix big&#45;endian support -->
+<!--X-From-R13: Uemrtbem Xnfmpmlx &#60;wnmNfrzvunys.pbz> -->
+<!--X-Date: Tue, 16 Jul 2019 05:59:50 &#45;0700 -->
+<!--X-Message-Id: 1563279226&#45;30804&#45;1&#45;git&#45;send&#45;email&#45;jaz@semihalf.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH v2] PCI: pci-bridge-emul: fix big-endian support">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH v2] PCI: pci-bridge-emul: fix big-endian support &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH v2] PCI: pci-bridge-emul: fix big-endian support</h1>
+[<a href="msg741336.html">Date Prev</a>][<a href="msg741338.html">Date Next</a>][<a href="msg741335.html">Thread Prev</a>][<a href="msg741365.html">Thread Next</a>][<a href="maillist.html#741337">Date Index</a>][<a href="threads.html#741337">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v2] PCI: pci-bridge-emul: fix big-endian support</li>
+<li><em>From</em>: Grzegorz Jaszczyk &lt;jaz@xxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 16 Jul 2019 14:13:46 +0200</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Perform conversion to little-endian before every write to configuration
+space and converse back to cpu endianness during read. Additionally
+initialise every not-byte wide fields of config space with proper
+cpu_to_le* macro.
+
+This is required since the structure describing config space of emulated
+bridge assumes little-endian convention.
+
+Signed-off-by: Grzegorz Jaszczyk &lt;jaz@xxxxxxxxxxxx&gt;
+---
+v1-&gt;v2
+- use __le32 and __le16 for config fields
+- add missing cpu_to_le16 for pcie_conf.cap assignment
+- use __le32 for cfgspace pointer
+Issues with endianness were detected by Sparse tool recommended by Russell King.
+
+ drivers/pci/pci-bridge-emul.c | 25 +++++++-------
+ drivers/pci/pci-bridge-emul.h | 78 +++++++++++++++++++++----------------------
+ 2 files changed, 52 insertions(+), 51 deletions(-)
+
+diff --git a/drivers/pci/pci-bridge-emul.c b/drivers/pci/pci-bridge-emul.c
+index 83fb077..cfae566 100644
+--- a/drivers/pci/pci-bridge-emul.c
++++ b/drivers/pci/pci-bridge-emul.c
+@@ -270,10 +270,10 @@ const static struct pci_bridge_reg_behavior pcie_cap_regs_behavior[] = {
+ int pci_bridge_emul_init(struct pci_bridge_emul *bridge,
+ 			 unsigned int flags)
+ {
+-	bridge-&gt;conf.class_revision |= PCI_CLASS_BRIDGE_PCI &lt;&lt; 16;
++	bridge-&gt;conf.class_revision |= cpu_to_le32(PCI_CLASS_BRIDGE_PCI &lt;&lt; 16);
+ 	bridge-&gt;conf.header_type = PCI_HEADER_TYPE_BRIDGE;
+ 	bridge-&gt;conf.cache_line_size = 0x10;
+-	bridge-&gt;conf.status = PCI_STATUS_CAP_LIST;
++	bridge-&gt;conf.status = cpu_to_le16(PCI_STATUS_CAP_LIST);
+ 	bridge-&gt;pci_regs_behavior = kmemdup(pci_regs_behavior,
+ 					    sizeof(pci_regs_behavior),
+ 					    GFP_KERNEL);
+@@ -284,8 +284,9 @@ int pci_bridge_emul_init(struct pci_bridge_emul *bridge,
+ 		bridge-&gt;conf.capabilities_pointer = PCI_CAP_PCIE_START;
+ 		bridge-&gt;pcie_conf.cap_id = PCI_CAP_ID_EXP;
+ 		/* Set PCIe v2, root port, slot support */
+-		bridge-&gt;pcie_conf.cap = PCI_EXP_TYPE_ROOT_PORT &lt;&lt; 4 | 2 |
+-			PCI_EXP_FLAGS_SLOT;
++		bridge-&gt;pcie_conf.cap =
++			cpu_to_le16(PCI_EXP_TYPE_ROOT_PORT &lt;&lt; 4 | 2 |
++				    PCI_EXP_FLAGS_SLOT);
+ 		bridge-&gt;pcie_cap_regs_behavior =
+ 			kmemdup(pcie_cap_regs_behavior,
+ 				sizeof(pcie_cap_regs_behavior),
+@@ -327,7 +328,7 @@ int pci_bridge_emul_conf_read(struct pci_bridge_emul *bridge, int where,
+ 	int reg = where &amp; ~3;
+ 	pci_bridge_emul_read_status_t (*read_op)(struct pci_bridge_emul *bridge,
+ 						 int reg, u32 *value);
+-	u32 *cfgspace;
++	__le32 *cfgspace;
+ 	const struct pci_bridge_reg_behavior *behavior;
+ 
+ 	if (bridge-&gt;has_pcie &amp;&amp; reg &gt;= PCI_CAP_PCIE_END) {
+@@ -343,11 +344,11 @@ int pci_bridge_emul_conf_read(struct pci_bridge_emul *bridge, int where,
+ 	if (bridge-&gt;has_pcie &amp;&amp; reg &gt;= PCI_CAP_PCIE_START) {
+ 		reg -= PCI_CAP_PCIE_START;
+ 		read_op = bridge-&gt;ops-&gt;read_pcie;
+-		cfgspace = (u32 *) &amp;bridge-&gt;pcie_conf;
++		cfgspace = (__le32 *) &amp;bridge-&gt;pcie_conf;
+ 		behavior = bridge-&gt;pcie_cap_regs_behavior;
+ 	} else {
+ 		read_op = bridge-&gt;ops-&gt;read_base;
+-		cfgspace = (u32 *) &amp;bridge-&gt;conf;
++		cfgspace = (__le32 *) &amp;bridge-&gt;conf;
+ 		behavior = bridge-&gt;pci_regs_behavior;
+ 	}
+ 
+@@ -357,7 +358,7 @@ int pci_bridge_emul_conf_read(struct pci_bridge_emul *bridge, int where,
+ 		ret = PCI_BRIDGE_EMUL_NOT_HANDLED;
+ 
+ 	if (ret == PCI_BRIDGE_EMUL_NOT_HANDLED)
+-		*value = cfgspace[reg / 4];
++		*value = le32_to_cpu(cfgspace[reg / 4]);
+ 
+ 	/*
+ 	 * Make sure we never return any reserved bit with a value
+@@ -387,7 +388,7 @@ int pci_bridge_emul_conf_write(struct pci_bridge_emul *bridge, int where,
+ 	int mask, ret, old, new, shift;
+ 	void (*write_op)(struct pci_bridge_emul *bridge, int reg,
+ 			 u32 old, u32 new, u32 mask);
+-	u32 *cfgspace;
++	__le32 *cfgspace;
+ 	const struct pci_bridge_reg_behavior *behavior;
+ 
+ 	if (bridge-&gt;has_pcie &amp;&amp; reg &gt;= PCI_CAP_PCIE_END)
+@@ -414,11 +415,11 @@ int pci_bridge_emul_conf_write(struct pci_bridge_emul *bridge, int where,
+ 	if (bridge-&gt;has_pcie &amp;&amp; reg &gt;= PCI_CAP_PCIE_START) {
+ 		reg -= PCI_CAP_PCIE_START;
+ 		write_op = bridge-&gt;ops-&gt;write_pcie;
+-		cfgspace = (u32 *) &amp;bridge-&gt;pcie_conf;
++		cfgspace = (__le32 *) &amp;bridge-&gt;pcie_conf;
+ 		behavior = bridge-&gt;pcie_cap_regs_behavior;
+ 	} else {
+ 		write_op = bridge-&gt;ops-&gt;write_base;
+-		cfgspace = (u32 *) &amp;bridge-&gt;conf;
++		cfgspace = (__le32 *) &amp;bridge-&gt;conf;
+ 		behavior = bridge-&gt;pci_regs_behavior;
+ 	}
+ 
+@@ -431,7 +432,7 @@ int pci_bridge_emul_conf_write(struct pci_bridge_emul *bridge, int where,
+ 	/* Clear the W1C bits */
+ 	new &amp;= ~((value &lt;&lt; shift) &amp; (behavior[reg / 4].w1c &amp; mask));
+ 
+-	cfgspace[reg / 4] = new;
++	cfgspace[reg / 4] = cpu_to_le32(new);
+ 
+ 	if (write_op)
+ 		write_op(bridge, reg, old, new, mask);
+diff --git a/drivers/pci/pci-bridge-emul.h b/drivers/pci/pci-bridge-emul.h
+index e65b1b7..b318830 100644
+--- a/drivers/pci/pci-bridge-emul.h
++++ b/drivers/pci/pci-bridge-emul.h
+@@ -6,65 +6,65 @@
+ 
+ /* PCI configuration space of a PCI-to-PCI bridge. */
+ struct pci_bridge_emul_conf {
+-	u16 vendor;
+-	u16 device;
+-	u16 command;
+-	u16 status;
+-	u32 class_revision;
++	__le16 vendor;
++	__le16 device;
++	__le16 command;
++	__le16 status;
++	__le32 class_revision;
+ 	u8 cache_line_size;
+ 	u8 latency_timer;
+ 	u8 header_type;
+ 	u8 bist;
+-	u32 bar[2];
++	__le32 bar[2];
+ 	u8 primary_bus;
+ 	u8 secondary_bus;
+ 	u8 subordinate_bus;
+ 	u8 secondary_latency_timer;
+ 	u8 iobase;
+ 	u8 iolimit;
+-	u16 secondary_status;
+-	u16 membase;
+-	u16 memlimit;
+-	u16 pref_mem_base;
+-	u16 pref_mem_limit;
+-	u32 prefbaseupper;
+-	u32 preflimitupper;
+-	u16 iobaseupper;
+-	u16 iolimitupper;
++	__le16 secondary_status;
++	__le16 membase;
++	__le16 memlimit;
++	__le16 pref_mem_base;
++	__le16 pref_mem_limit;
++	__le32 prefbaseupper;
++	__le32 preflimitupper;
++	__le16 iobaseupper;
++	__le16 iolimitupper;
+ 	u8 capabilities_pointer;
+ 	u8 reserve[3];
+-	u32 romaddr;
++	__le32 romaddr;
+ 	u8 intline;
+ 	u8 intpin;
+-	u16 bridgectrl;
++	__le16 bridgectrl;
+ };
+ 
+ /* PCI configuration space of the PCIe capabilities */
+ struct pci_bridge_emul_pcie_conf {
+ 	u8 cap_id;
+ 	u8 next;
+-	u16 cap;
+-	u32 devcap;
+-	u16 devctl;
+-	u16 devsta;
+-	u32 lnkcap;
+-	u16 lnkctl;
+-	u16 lnksta;
+-	u32 slotcap;
+-	u16 slotctl;
+-	u16 slotsta;
+-	u16 rootctl;
+-	u16 rsvd;
+-	u32 rootsta;
+-	u32 devcap2;
+-	u16 devctl2;
+-	u16 devsta2;
+-	u32 lnkcap2;
+-	u16 lnkctl2;
+-	u16 lnksta2;
+-	u32 slotcap2;
+-	u16 slotctl2;
+-	u16 slotsta2;
++	__le16 cap;
++	__le32 devcap;
++	__le16 devctl;
++	__le16 devsta;
++	__le32 lnkcap;
++	__le16 lnkctl;
++	__le16 lnksta;
++	__le32 slotcap;
++	__le16 slotctl;
++	__le16 slotsta;
++	__le16 rootctl;
++	__le16 rsvd;
++	__le32 rootsta;
++	__le32 devcap2;
++	__le16 devctl2;
++	__le16 devsta2;
++	__le32 lnkcap2;
++	__le16 lnkctl2;
++	__le16 lnksta2;
++	__le32 slotcap2;
++	__le16 slotctl2;
++	__le16 slotsta2;
+ };
+ 
+ struct pci_bridge_emul;
+-- 
+2.7.4
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741336.html">[PATCH 01/14] docs: powerpc: convert docs to ReST and rename to *.rst</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741338.html">RE: [PATCH 1/3] perf/imx_ddr: Add MODULE_DEVICE_TABLE</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741335.html">[PATCH v2] PCI: aardvark: fix big endian support</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741365.html">[PATCH v3 00/11] clk: imx8: add new clock binding for better pm support</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741337"><strong>Date</strong></a></li>
+<li><a href="threads.html#741337"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

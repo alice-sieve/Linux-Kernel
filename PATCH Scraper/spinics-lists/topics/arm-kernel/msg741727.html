@@ -1,0 +1,539 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] firmware: imx: Add DSP IPC protocol interface -->
+<!--X-From-R13: Rnavry Pnyhgn &#60;qnavry.onyhgnNakc.pbz> -->
+<!--X-Date: Thu, 18 Jul 2019 01:19:55 &#45;0700 -->
+<!--X-Message-Id: 20190718081943.10272&#45;1&#45;daniel.baluta@nxp.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH] firmware: imx: Add DSP IPC protocol interface">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH] firmware: imx: Add DSP IPC protocol interface &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH] firmware: imx: Add DSP IPC protocol interface</h1>
+[<a href="msg741726.html">Date Prev</a>][<a href="msg741728.html">Date Next</a>][<a href="msg741726.html">Thread Prev</a>][<a href="msg741740.html">Thread Next</a>][<a href="maillist.html#741727">Date Index</a>][<a href="threads.html#741727">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] firmware: imx: Add DSP IPC protocol interface</li>
+<li><em>From</em>: Daniel Baluta &lt;daniel.baluta@xxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 18 Jul 2019 11:19:43 +0300</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Some of i.MX8 processors (e.g i.MX8QM, i.MX8QXP) contain
+the Tensilica HiFi4 DSP for advanced pre- and post-audio
+processing.
+
+The communication between Host CPU and DSP firmware is
+taking place using a shared memory area for message passing
+and a dedicated Messaging Unit for notifications.
+
+DSP IPC protocol offers a doorbell interface using
+imx-mailbox API.
+
+We use 4 MU channels (2 x TXDB, 2 x RXDB) to implement a
+request-reply protocol.
+
+Connection 0 (txdb0, rxdb0):
+        - Host writes messasge to shared memory [SHMEM]
+	- Host sends a request [MU]
+	- DSP handles request [SHMEM]
+	- DSP sends reply [MU]
+
+Connection 1 (txdb1, rxdb1):
+	- DSP writes a message to shared memory [SHMEM]
+	- DSP sends a request [MU]
+	- Host handles request [SHMEM]
+	- Host sends reply [MU]
+
+The protocol interface will be used by a Host client to
+communicate with the DSP. First client will be the i.MX8
+part from Sound Open Firmware infrastructure.
+
+The protocol offers the following interface:
+
+On Tx:
+   - imx_dsp_ring_doorbell, will be called to notify the DSP
+   that it needs to handle a request.
+
+On Rx:
+   - clients need to provide two callbacks:
+	.handle_reply
+	.handle_request
+  - the callbacks will be used by the protocol on
+    notification arrival from DSP.
+
+Signed-off-by: Daniel Baluta &lt;daniel.baluta@xxxxxxx&gt;
+---
+Changes since v2:
+	- remove DSP IPC own DT node as per Rob comments
+	- make dsp responsability to add MU nodes
+	- already got a Reviewed-by from Oleksij but won't add it
+	here since he might have some comments about new changes.
+	- drop dt-bindings patch since the DSP IPC no longer have
+	an associated DT node
+
+ drivers/firmware/imx/Kconfig     |  11 +++
+ drivers/firmware/imx/Makefile    |   1 +
+ drivers/firmware/imx/imx-dsp.c   | 138 +++++++++++++++++++++++++++++++
+ include/linux/firmware/imx/dsp.h |  67 +++++++++++++++
+ 4 files changed, 217 insertions(+)
+ create mode 100644 drivers/firmware/imx/imx-dsp.c
+ create mode 100644 include/linux/firmware/imx/dsp.h
+
+diff --git a/drivers/firmware/imx/Kconfig b/drivers/firmware/imx/Kconfig
+index 42b566f8903f..0dbee32da4c6 100644
+--- a/drivers/firmware/imx/Kconfig
++++ b/drivers/firmware/imx/Kconfig
+@@ -1,4 +1,15 @@
+ # SPDX-License-Identifier: GPL-2.0-only
++config IMX_DSP
++	bool &quot;IMX DSP Protocol driver&quot;
++	depends on IMX_MBOX
++	help
++	  This enables DSP IPC protocol between host AP (Linux)
++	  and the firmware running on DSP.
++	  DSP exists on some i.MX8 processors (e.g i.MX8QM, i.MX8QXP).
++
++	  It acts like a doorbell. Client might use shared memory to
++	  exchange information with DSP side.
++
+ config IMX_SCU
+ 	bool &quot;IMX SCU Protocol driver&quot;
+ 	depends on IMX_MBOX
+diff --git a/drivers/firmware/imx/Makefile b/drivers/firmware/imx/Makefile
+index 802c4ad8e8f9..08bc9ddfbdfb 100644
+--- a/drivers/firmware/imx/Makefile
++++ b/drivers/firmware/imx/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
++obj-$(CONFIG_IMX_DSP)		+= imx-dsp.o
+ obj-$(CONFIG_IMX_SCU)		+= imx-scu.o misc.o imx-scu-irq.o
+ obj-$(CONFIG_IMX_SCU_PD)	+= scu-pd.o
+diff --git a/drivers/firmware/imx/imx-dsp.c b/drivers/firmware/imx/imx-dsp.c
+new file mode 100644
+index 000000000000..b05bdb06662e
+--- /dev/null
++++ b/drivers/firmware/imx/imx-dsp.c
+@@ -0,0 +1,138 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright 2019 NXP
++ *  Author: Daniel Baluta &lt;daniel.baluta@xxxxxxx&gt;
++ *
++ * Implementation of the DSP IPC interface (host side)
++ */
++
++#include &lt;linux/firmware/imx/dsp.h&gt;
++#include &lt;linux/kernel.h&gt;
++#include &lt;linux/mailbox_client.h&gt;
++#include &lt;linux/module.h&gt;
++#include &lt;linux/of_platform.h&gt;
++#include &lt;linux/platform_device.h&gt;
++#include &lt;linux/slab.h&gt;
++
++/*
++ * imx_dsp_ring_doorbell - triggers an interrupt on the other side (DSP)
++ *
++ * @dsp: DSP IPC handle
++ * @chan_idx: index of the channel where to trigger the interrupt
++ *
++ * Returns non-negative value for success, negative value for error
++ */
++int imx_dsp_ring_doorbell(struct imx_dsp_ipc *ipc, unsigned int idx)
++{
++	int ret;
++	struct imx_dsp_chan *dsp_chan;
++
++	if (idx &gt;= DSP_MU_CHAN_NUM)
++		return -EINVAL;
++
++	dsp_chan = &amp;ipc-&gt;chans[idx];
++	ret = mbox_send_message(dsp_chan-&gt;ch, NULL);
++	if (ret &lt; 0)
++		return ret;
++
++	return 0;
++}
++EXPORT_SYMBOL(imx_dsp_ring_doorbell);
++
++/*
++ * imx_dsp_handle_rx - rx callback used by imx mailbox
++ *
++ * @c: mbox client
++ * @msg: message received
++ *
++ * Users of DSP IPC will need to privde handle_reply and handle_request
++ * callbacks.
++ */
++static void imx_dsp_handle_rx(struct mbox_client *c, void *msg)
++{
++	struct imx_dsp_chan *chan = container_of(c, struct imx_dsp_chan, cl);
++
++	if (chan-&gt;idx == 0) {
++		chan-&gt;ipc-&gt;ops-&gt;handle_reply(chan-&gt;ipc);
++	} else {
++		chan-&gt;ipc-&gt;ops-&gt;handle_request(chan-&gt;ipc);
++		imx_dsp_ring_doorbell(chan-&gt;ipc, 1);
++	}
++}
++
++static int imx_dsp_probe(struct platform_device *pdev)
++{
++	struct device *dev = &amp;pdev-&gt;dev;
++	struct imx_dsp_ipc *dsp_ipc;
++	struct imx_dsp_chan *dsp_chan;
++	struct mbox_client *cl;
++	char *chan_name;
++	int ret;
++	int i, j;
++
++	device_set_of_node_from_dev(&amp;pdev-&gt;dev, pdev-&gt;dev.parent);
++
++	dsp_ipc = devm_kzalloc(dev, sizeof(*dsp_ipc), GFP_KERNEL);
++	if (!dsp_ipc)
++		return -ENOMEM;
++
++	for (i = 0; i &lt; DSP_MU_CHAN_NUM; i++) {
++		if (i &lt; 2)
++			chan_name = kasprintf(GFP_KERNEL, &quot;txdb%d&quot;, i);
++		else
++			chan_name = kasprintf(GFP_KERNEL, &quot;rxdb%d&quot;, i - 2);
++
++		if (!chan_name)
++			return -ENOMEM;
++
++		dsp_chan = &amp;dsp_ipc-&gt;chans[i];
++		cl = &amp;dsp_chan-&gt;cl;
++		cl-&gt;dev = dev;
++		cl-&gt;tx_block = false;
++		cl-&gt;knows_txdone = true;
++		cl-&gt;rx_callback = imx_dsp_handle_rx;
++
++		dsp_chan-&gt;ipc = dsp_ipc;
++		dsp_chan-&gt;idx = i % 2;
++		dsp_chan-&gt;ch = mbox_request_channel_byname(cl, chan_name);
++		if (IS_ERR(dsp_chan-&gt;ch)) {
++			ret = PTR_ERR(dsp_chan-&gt;ch);
++			if (ret != -EPROBE_DEFER)
++				dev_err(dev, &quot;Failed to request mbox chan %s ret %d\n&quot;,
++					chan_name, ret);
++			goto out;
++		}
++
++		dev_dbg(dev, &quot;request mbox chan %s\n&quot;, chan_name);
++		/* chan_name is not used anymore by framework */
++		kfree(chan_name);
++	}
++
++	dsp_ipc-&gt;dev = dev;
++
++	dev_set_drvdata(dev, dsp_ipc);
++
++	dev_info(dev, &quot;NXP i.MX DSP IPC initialized\n&quot;);
++
++	return devm_of_platform_populate(dev);
++out:
++	kfree(chan_name);
++	for (j = 0; j &lt; i; j++) {
++		dsp_chan = &amp;dsp_ipc-&gt;chans[j];
++		mbox_free_channel(dsp_chan-&gt;ch);
++	}
++
++	return ret;
++}
++
++static struct platform_driver imx_dsp_driver = {
++	.driver = {
++		.name = &quot;imx-dsp&quot;,
++	},
++	.probe = imx_dsp_probe,
++};
++builtin_platform_driver(imx_dsp_driver);
++
++MODULE_AUTHOR(&quot;Daniel Baluta &lt;daniel.baluta@xxxxxxx&gt;&quot;);
++MODULE_DESCRIPTION(&quot;IMX DSP IPC protocol driver&quot;);
++MODULE_LICENSE(&quot;GPL v2&quot;);
+diff --git a/include/linux/firmware/imx/dsp.h b/include/linux/firmware/imx/dsp.h
+new file mode 100644
+index 000000000000..7562099c9e46
+--- /dev/null
++++ b/include/linux/firmware/imx/dsp.h
+@@ -0,0 +1,67 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * Copyright 2019 NXP
++ *
++ * Header file for the DSP IPC implementation
++ */
++
++#ifndef _IMX_DSP_IPC_H
++#define _IMX_DSP_IPC_H
++
++#include &lt;linux/device.h&gt;
++#include &lt;linux/types.h&gt;
++#include &lt;linux/mailbox_client.h&gt;
++
++#define DSP_MU_CHAN_NUM		4
++
++struct imx_dsp_chan {
++	struct imx_dsp_ipc *ipc;
++	struct mbox_client cl;
++	struct mbox_chan *ch;
++	char *name;
++	int idx;
++};
++
++struct imx_dsp_ops {
++	void (*handle_reply)(struct imx_dsp_ipc *ipc);
++	void (*handle_request)(struct imx_dsp_ipc *ipc);
++};
++
++struct imx_dsp_ipc {
++	/* Host &lt;-&gt; DSP communication uses 2 txdb and 2 rxdb channels */
++	struct imx_dsp_chan chans[DSP_MU_CHAN_NUM];
++	struct device *dev;
++	struct imx_dsp_ops *ops;
++	void *private_data;
++};
++
++static inline void imx_dsp_set_data(struct imx_dsp_ipc *ipc, void *data)
++{
++	if (!ipc)
++		return;
++
++	ipc-&gt;private_data = data;
++}
++
++static inline void *imx_dsp_get_data(struct imx_dsp_ipc *ipc)
++{
++	if (!ipc)
++		return NULL;
++
++	return ipc-&gt;private_data;
++}
++
++#if IS_ENABLED(CONFIG_IMX_DSP)
++
++int imx_dsp_ring_doorbell(struct imx_dsp_ipc *dsp, unsigned int chan_idx);
++
++#else
++
++static inline int imx_dsp_ring_doorbell(struct imx_dsp_ipc *ipc,
++					unsigned int chan_idx)
++{
++	return -ENOTSUPP;
++}
++
++#endif
++#endif /* _IMX_DSP_IPC_H */
+-- 
+2.17.1
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741726.html">[PATCH v2] KVM: arm/arm64: Introduce kvm_pmu_vcpu_init() to setup PMU counter idx</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741728.html">Re: [PATCH V3] soc: imx-scu: Add SoC UID(unique identifier) support</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741726.html">[PATCH v2] KVM: arm/arm64: Introduce kvm_pmu_vcpu_init() to setup PMU counter idx</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741740.html">[PATCH 1/4] ARM: dts: imx6sx: move GIC to right location in DT</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741727"><strong>Date</strong></a></li>
+<li><a href="threads.html#741727"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

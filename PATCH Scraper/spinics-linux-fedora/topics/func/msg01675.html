@@ -1,0 +1,377 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 1/2] convert func&#45;command func&#45;down&#45;hosts to	using the common parser -->
+<!--X-From-R13: Ergu Hvqny &#60;fxivqnyNsrqbencebwrpg.bet> -->
+<!--X-Date: Fri, 22 Oct 2010 14:18:24 &#45;0700 -->
+<!--X-Message-Id: 1287782206&#45;29590&#45;1&#45;git&#45;send&#45;email&#45;skvidal@fedoraproject.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Universal Network Connector, [PATCH 1/2] convert func-command func-down-hosts to	using the common parser">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Fedora Universal Network Connector &mdash; [PATCH 1/2] convert func-command func-down-hosts to	using the common parser</title>
+<link rel="alternate" type="application/rss+xml" title="Fedora Universal Network Connector" href="//feeds.feedburner.com/FedoraUniversalNetworkConnector">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 1/2] convert func-command func-down-hosts to	using the common parser</h1>
+[<a href="msg01674.html">Date Prev</a>][<a href="msg01676.html">Date Next</a>][<a href="msg01672.html">Thread Prev</a>][<a href="msg01674.html">Thread Next</a>][<a href="maillist.html#01675">Date Index</a>][<a href="index.html#01675">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 1/2] convert func-command func-down-hosts to	using the common parser</li>
+<li><em>From</em>: Seth Vidal &lt;<a href="mailto:skvidal@DOMAIN.HIDDEN">skvidal@xxxxxxxxxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Fri, 22 Oct 2010 17:16:45 -0400</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>---
+ func/overlord/scripts.py |   10 +++++--
+ scripts/func-command     |   58 +++++++++++++++++++++++++--------------------
+ scripts/func-down-hosts  |   45 ++++++++++++++++++-----------------
+ 3 files changed, 62 insertions(+), 51 deletions(-)
+
+diff --git a/func/overlord/scripts.py b/func/overlord/scripts.py
+index 57a6255..27ade78 100644
+--- a/func/overlord/scripts.py
++++ b/func/overlord/scripts.py
+@@ -9,7 +9,7 @@ from optparse import OptionParser
+ import sys
+ 
+ 
+-def base_func_parser(opthosts=True, outputpath=True):
++def base_func_parser(opthosts=True, outputpath=True, forkdef=40, timeoutdef=300):
+     parser = OptionParser()
+     if opthosts:
+         parser.add_option('--host', default=[], action='append',
+@@ -17,9 +17,9 @@ def base_func_parser(opthosts=True, outputpath=True):
+         parser.add_option('--hosts-from-file', default=None, dest=&quot;hostfile&quot;,
+                    help=&quot;read list of hosts from this file, if '-' read from stdin&quot;)
+ 
+-    parser.add_option('--timeout', default=300, type='int',
++    parser.add_option('--timeout', default=timeoutdef, type='int',
+                help='set the wait timeout for func commands')
+-    parser.add_option('--forks', default=40, type='int',
++    parser.add_option('--forks', default=forkdef, type='int',
+                help='set the number of forks to start up')
+     if outputpath:
+         parser.add_option('--outputpath', default='/var/lib/func/data/', dest=&quot;outputpath&quot;,
+@@ -43,3 +43,7 @@ def handle_base_func_options(parser, opts):
+ 
+     return opts
+ 
++def errorprint(msg)
++    print &gt;&gt; sys.stderr, msg
++    
++    
+diff --git a/scripts/func-command b/scripts/func-command
+index e6b88f9..5e0f43d 100755
+--- a/scripts/func-command
++++ b/scripts/func-command
+@@ -5,39 +5,45 @@
+ 
+ import sys
+ import func.overlord.client
+-from func.overlord.scripts import base_func_parser, handle_base_func_options
++from func.overlord.scripts import base_func_parser, handle_base_func_options, errorprint
+ from func.utils import is_error
+ 
+-parser = base_func_parser(outputpath=False)
+-opts, args, parser = parse_args(sys.argv[1:])
+-opts = handle_base_func_options(parser, opts)
+ 
+-if len(args) &lt; 1:
+-    print parser.format_help()
+-    sys.exit(1)
++def main(args):
++    parser = base_func_parser(outputpath=False)
++    opts, args, parser = parse_args(args)
++    opts = handle_base_func_options(parser, opts)
+ 
+-mycmd = ' '.join(args)
++    if len(args) &lt; 1:
++        errorprint(parser.format_help())
++        return 1
+ 
+-hosts ='*'
+-if opts.host:
+-    hosts = ';'.join(opts.host)
++    mycmd = ' '.join(args)
+ 
+-fc = func.overlord.client.Client(hosts, timeout=opts.timeout, nforks=opts.forks)
++    hosts ='*'
++    if opts.host:
++        hosts = ';'.join(opts.host)
+ 
+-print mycmd
+-results = fc.command.run(mycmd)
+-for (hn, output) in results.items():
+-    if is_error(output):
+-        msg = 'Error: %s: ' % hn
+-        for item in output[1:3]:
+-            if type(item) == type(''):
+-                msg += ' %s' % item
+-        print &gt;&gt; sys.stderr, msg 
+-        continue
++    fc = func.overlord.client.Client(hosts, timeout=opts.timeout, nforks=opts.forks)
+ 
+-    # FIXME - maybe for commands don't do it one line with hostname first
++    print mycmd
++    results = fc.command.run(mycmd)
++    for (hn, output) in results.items():
++        if is_error(output):
++            msg = 'Error: %s: ' % hn
++            for item in output[1:3]:
++                if type(item) == type(''):
++                    msg += ' %s' % item
++            errorprint(msg)
++            continue
+ 
+-    print '%s' % hn
+-    print output[1]
+-    print ''
++        # FIXME - maybe for commands don't do it one line with hostname first
++
++        print '%s' % hn
++        print output[1]
++        print ''
++    
++    return 0
+     
++if __name__ == &quot;__main__&quot;:
++    sys.exit(main(sys.argv[1:]))
+diff --git a/scripts/func-down-hosts b/scripts/func-down-hosts
+index 5d556f0..8ee08a9 100755
+--- a/scripts/func-down-hosts
++++ b/scripts/func-down-hosts
+@@ -4,32 +4,33 @@
+ 
+ import sys
+ import func.overlord.client
+-from optparse import OptionParser
++from func.overlord.scripts import base_func_parser, handle_base_func_options, errorprint
++from func.utils import is_error
+ 
+-def parse_args(args):
+-    parser = OptionParser(version = &quot;1.0&quot;)
+-    parser.add_option('--host', default=[], action='append',
+-               help=&quot;hosts to act on, defaults to ALL&quot;)
+-    parser.add_option('--timeout', default=10, type='int',
+-               help='set the wait timeout for func commands')
+-    parser.add_option('--forks', default=40, type='int',
+-               help='set the number of forks to start up')
+-    (opts, args) = parser.parse_args(args)
+ 
+-    return opts, args, parser
++def main(args):
++    parser = base_func_parser(outputpath=False, timeoutdef=10)
++    opts, args, parser = parse_args(args)
++    opts = handle_base_func_options(parser, opts)
+ 
+ 
+-opts, args, parser = parse_args(sys.argv[1:])
+-hosts ='*'
+-if opts.host:
+-    hosts = ';'.join(opts.host)
++    hosts ='*'
++    if opts.host:
++        hosts = ';'.join(opts.host)
+ 
+-fc = func.overlord.client.Client(hosts, timeout=opts.timeout, nforks=opts.forks)
++    fc = func.overlord.client.Client(hosts, timeout=opts.timeout, nforks=opts.forks)
++
++    results = fc.test.ping()
++    offline = []
++    for (hn, out) in results.items():
++        if out != 1:
++            offline.append(hn)
++
++    print '\n'.join(sorted(offline))
++
++    return 0
++
++if __name__ == &quot;__main__&quot;:
++    sys.exit(main(sys.argv[1:]))
+ 
+-results = fc.test.ping()
+-offline = []
+-for (hn, out) in results.items():
+-    if out != 1:
+-        offline.append(hn)
+ 
+-print '\n'.join(sorted(offline))
+-- 
+1.7.2.1
+
+_______________________________________________
+Func-list mailing list
+Func-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/func-list">https://www.redhat.com/mailman/listinfo/func-list</a>
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01674.html">[PATCH 2/2] fix users for python 2.4 and un-obsfuscate	this code</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01676.html">Re:  Module getfile</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01672.html">setup.py</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01674.html">[PATCH 2/2] fix users for python 2.4 and un-obsfuscate	this code</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01675"><strong>Date</strong></a></li>
+<li><a href="index.html#01675"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/netdev/>[Linux&nbsp;Networking]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fll/>[Fedora&nbsp;Legacy&nbsp;List]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z//biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] sadump: Fix a problem of PTI enabled kernel -->
+<!--X-From-R13: Fnxnb Waqbu &#60;vaqbh.gnxnbNwc.shwvgfh.pbz> -->
+<!--X-Date: Thu, 25 Jan 2018 16:26:11 &#45;0800 -->
+<!--X-Message-Id: 1516926341&#45;20383&#45;1&#45;git&#45;send&#45;email&#45;indou.takao@jp.fujitsu.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH] sadump: Fix a problem of PTI enabled kernel &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  [PATCH] sadump: Fix a problem of PTI enabled kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] sadump: Fix a problem of PTI enabled kernel</h1>
+[<a href="msg07277.html">Date Prev</a>][<a href="msg07279.html">Date Next</a>][<a href="msg07273.html">Thread Prev</a>][<a href="msg07281.html">Thread Next</a>][<a href="maillist.html#07278">Date Index</a>][<a href="index.html#07278">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] sadump: Fix a problem of PTI enabled kernel</li>
+<li><em>From</em>: Takao Indoh &lt;indou.takao@xxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 26 Jan 2018 09:25:41 +0900</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This patch fixes a problem that a dumpfile of sadump cannot be opened
+by crash when Page Table Isolation(PTI) is enabled.
+
+When PTI is enabled, bit 12 of CR3 register is used to split user
+space and kernel space. Also bit 11:0 is used for Process Context
+IDentifiers(PCID). To open a dump file of sadump, a value of CR3 is
+used to calculate KASLR offset and phys_base, therefore this patch
+fixes to mask CR3 register value collectly for PTI enabled kernel.
+
+This patch also includes code cleanup.
+
+Signed-off-by: Takao Indoh &lt;indou.takao@xxxxxxxxxxxxxx&gt;
+---
+ defs.h    |  2 ++
+ sadump.c  | 33 +++++++++++++++++++++------------
+ symbols.c |  9 +++++++++
+ 3 files changed, 32 insertions(+), 12 deletions(-)
+
+diff --git a/defs.h b/defs.h
+index dcd6c26..a19f280 100644
+--- a/defs.h
++++ b/defs.h
+@@ -2605,6 +2605,8 @@ struct symbol_table_data {
+ 	ulong divide_error_vmlinux;
+ 	ulong idt_table_vmlinux;
+ 	ulong saved_command_line_vmlinux;
++	ulong pti_init_vmlinux;
++	ulong kaiser_init_vmlinux;
+ };
+ 
+ /* flags for st */
+diff --git a/sadump.c b/sadump.c
+index 6b912d4..25cefe9 100644
+--- a/sadump.c
++++ b/sadump.c
+@@ -1749,7 +1749,7 @@ static ulong memparse(char *ptr, char **retptr)
+  * of elfcorehdr.
+  */
+ static ulong
+-get_elfcorehdr(ulong cr3, ulong kaslr_offset)
++get_elfcorehdr(ulong kaslr_offset)
+ {
+ 	char cmdline[BUFSIZE], *ptr;
+ 	ulong cmdline_vaddr;
+@@ -1906,7 +1906,7 @@ get_vmcoreinfo(ulong elfcorehdr, ulong *addr, int *len)
+  *    using &quot;elfcorehdr=&quot; and retrieve kaslr_offset/phys_base from vmcoreinfo.
+  */
+ static int
+-get_kaslr_offset_from_vmcoreinfo(ulong cr3, ulong orig_kaslr_offset,
++get_kaslr_offset_from_vmcoreinfo(ulong orig_kaslr_offset,
+ 		                 ulong *kaslr_offset, ulong *phys_base)
+ {
+ 	ulong elfcorehdr_addr = 0;
+@@ -1916,7 +1916,7 @@ get_kaslr_offset_from_vmcoreinfo(ulong cr3, ulong orig_kaslr_offset,
+ 	int ret = FALSE;
+ 
+ 	/* Find &quot;elfcorehdr=&quot; in the kernel boot parameter */
+-	elfcorehdr_addr = get_elfcorehdr(cr3, orig_kaslr_offset);
++	elfcorehdr_addr = get_elfcorehdr(orig_kaslr_offset);
+ 	if (!elfcorehdr_addr)
+ 		return FALSE;
+ 
+@@ -1973,8 +1973,8 @@ quit:
+  * 1) Get IDTR and CR3 value from the dump header.
+  * 2) Get a virtual address of IDT from IDTR value
+  *    --- (A)
+- * 3) Translate (A) to physical address using CR3, which points a top of
+- *    page table.
++ * 3) Translate (A) to physical address using CR3, the upper 52 bits
++ *    of which points a top of page table.
+  *    --- (B)
+  * 4) Get an address of vector0 (Devide Error) interrupt handler from
+  *    IDT, which are pointed by (B).
+@@ -2023,12 +2023,15 @@ quit:
+  *    kernel. Retrieve vmcoreinfo from address of &quot;elfcorehdr=&quot; and
+  *    get kaslr_offset and phys_base from vmcoreinfo.
+  */
++#define PTI_USER_PGTABLE_BIT	PAGE_SHIFT
++#define PTI_USER_PGTABLE_MASK	(1 &lt;&lt; PTI_USER_PGTABLE_BIT)
++#define CR3_PCID_MASK		0xFFFull
+ int
+ sadump_calc_kaslr_offset(ulong *kaslr_offset)
+ {
+ 	ulong phys_base = 0;
+ 	struct sadump_smram_cpu_state scs;
+-	uint64_t idtr = 0, cr3 = 0, idtr_paddr;
++	uint64_t idtr = 0, pgd = 0, idtr_paddr;
+ 	ulong divide_error_vmcore;
+ 	ulong kaslr_offset_kdump, phys_base_kdump;
+ 	int ret = FALSE;
+@@ -2039,7 +2042,10 @@ sadump_calc_kaslr_offset(ulong *kaslr_offset)
+ 
+ 	memset(&amp;scs, 0, sizeof(scs));
+ 	get_sadump_smram_cpu_state_any(&amp;scs);
+-	cr3 = scs.Cr3;
++	if (st-&gt;pti_init_vmlinux || st-&gt;kaiser_init_vmlinux)
++		pgd = scs.Cr3 &amp; ~(CR3_PCID_MASK|PTI_USER_PGTABLE_MASK);
++	else
++		pgd = scs.Cr3 &amp; ~CR3_PCID_MASK;
+ 	idtr = ((uint64_t)scs.IdtUpper)&lt;&lt;32 | (uint64_t)scs.IdtLower;
+ 
+ 	/*
+@@ -2050,12 +2056,12 @@ sadump_calc_kaslr_offset(ulong *kaslr_offset)
+ 	 *
+ 	 * TODO: XEN and 5-level is not supported
+ 	 */
+-	vt-&gt;kernel_pgd[0] = cr3;
++	vt-&gt;kernel_pgd[0] = pgd;
+ 	machdep-&gt;machspec-&gt;last_pml4_read = vt-&gt;kernel_pgd[0];
+ 	machdep-&gt;machspec-&gt;physical_mask_shift = __PHYSICAL_MASK_SHIFT_2_6;
+ 	machdep-&gt;machspec-&gt;pgdir_shift = PGDIR_SHIFT;
+-	if (!readmem(cr3, PHYSADDR, machdep-&gt;machspec-&gt;pml4, PAGESIZE(),
+-			&quot;cr3&quot;, RETURN_ON_ERROR))
++	if (!readmem(pgd, PHYSADDR, machdep-&gt;machspec-&gt;pml4, PAGESIZE(),
++			&quot;pgd&quot;, RETURN_ON_ERROR))
+ 		goto quit;
+ 
+ 	/* Convert virtual address of IDT table to physical address */
+@@ -2070,7 +2076,7 @@ sadump_calc_kaslr_offset(ulong *kaslr_offset)
+ 
+ 	if (CRASHDEBUG(1)) {
+ 		fprintf(fp, &quot;calc_kaslr_offset: idtr=%lx\n&quot;, idtr);
+-		fprintf(fp, &quot;calc_kaslr_offset: cr3=%lx\n&quot;, cr3);
++		fprintf(fp, &quot;calc_kaslr_offset: pgd=%lx\n&quot;, pgd);
+ 		fprintf(fp, &quot;calc_kaslr_offset: idtr(phys)=%lx\n&quot;, idtr_paddr);
+ 		fprintf(fp, &quot;calc_kaslr_offset: divide_error(vmlinux): %lx\n&quot;,
+ 			st-&gt;divide_error_vmlinux);
+@@ -2084,9 +2090,12 @@ sadump_calc_kaslr_offset(ulong *kaslr_offset)
+ 	 * from vmcoreinfo
+ 	 */
+ 	if (get_kaslr_offset_from_vmcoreinfo(
+-		cr3, *kaslr_offset, &amp;kaslr_offset_kdump, &amp;phys_base_kdump)) {
++		*kaslr_offset, &amp;kaslr_offset_kdump, &amp;phys_base_kdump)) {
+ 		*kaslr_offset =  kaslr_offset_kdump;
+ 		phys_base =  phys_base_kdump;
++	} else if (CRASHDEBUG(1)) {
++		fprintf(fp, &quot;sadump: failed to determine which kernel was running at crash,\n&quot;);
++		fprintf(fp, &quot;sadump: asssuming the kdump 1st kernel.\n&quot;);
+ 	}
+ 
+ 	if (CRASHDEBUG(1)) {
+diff --git a/symbols.c b/symbols.c
+index 2372887..26b319a 100644
+--- a/symbols.c
++++ b/symbols.c
+@@ -3072,10 +3072,14 @@ dump_symbol_table(void)
+ 		fprintf(fp, &quot;divide_error_vmlinux: %lx\n&quot;, st-&gt;divide_error_vmlinux);
+ 		fprintf(fp, &quot;   idt_table_vmlinux: %lx\n&quot;, st-&gt;idt_table_vmlinux);
+ 		fprintf(fp, &quot;saved_command_line_vmlinux: %lx\n&quot;, st-&gt;saved_command_line_vmlinux);
++		fprintf(fp, &quot;    pti_init_vmlinux: %lx\n&quot;, st-&gt;pti_init_vmlinux);
++		fprintf(fp, &quot; kaiser_init_vmlinux: %lx\n&quot;, st-&gt;kaiser_init_vmlinux);
+ 	} else {
+ 		fprintf(fp, &quot;divide_error_vmlinux: (unused)\n&quot;);
+ 		fprintf(fp, &quot;   idt_table_vmlinux: (unused)\n&quot;);
+ 		fprintf(fp, &quot;saved_command_line_vmlinux: (unused)\n&quot;);
++		fprintf(fp, &quot;    pti_init_vmlinux: (unused)\n&quot;);
++		fprintf(fp, &quot; kaiser_init_vmlinux: (unused)\n&quot;);
+ 	}
+ 
+         fprintf(fp, &quot;    symval_hash[%d]: %lx\n&quot;, SYMVAL_HASH,
+@@ -12306,6 +12310,11 @@ numeric_forward(const void *P_x, const void *P_y)
+ 			st-&gt;saved_command_line_vmlinux = valueof(x);
+ 		else if (STREQ(y-&gt;name, &quot;saved_command_line&quot;))
+ 			st-&gt;saved_command_line_vmlinux = valueof(y);
++
++		if (STREQ(x-&gt;name, &quot;pti_init&quot;))
++			st-&gt;pti_init_vmlinux = valueof(x);
++		else if (STREQ(y-&gt;name, &quot;kaiser_init&quot;))
++			st-&gt;kaiser_init_vmlinux = valueof(y);
+ 	}
+ 
+   	xs = bfd_get_section(x);
+-- 
+1.8.3.1
+
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07284" href="msg07284.html">Re:  [PATCH] sadump: Fix a problem of PTI enabled kernel</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+<li><strong><a name="07281" href="msg07281.html">Re:  [PATCH] sadump: Fix a problem of PTI enabled	kernel</a></strong>
+<ul><li><em>From:</em> Hatayama, Daisuke</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07277.html">Re:  Using crash with structure layout randomized kernel</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07279.html">Re:  Using crash with structure layout	randomized	kernel</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07273.html">Crash debugging vmcore, start error problem,	crash seekerror: kernel virtual address: fffffffffffffffa0 type:	&quot;kmem_cache buffer&quot;</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07281.html">Re:  [PATCH] sadump: Fix a problem of PTI enabled	kernel</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07278"><strong>Date</strong></a></li>
+<li><a href="index.html#07278"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v1 04/31] Revert "virpcitest: Test	virPCIDeviceDetach failure" -->
+<!--X-From-R13: [vpuny Bevibmavx &#60;zcevibmaNerqung.pbz> -->
+<!--X-Date: Thu, 11 Jul 2019 08:54:44 &#45;0700 -->
+<!--X-Message-Id: 48cb8d5771288a152366718b749e230c1e983b9f.1562859733.git.mprivozn@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1562859733.git.mprivozn@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v1 04/31] Revert &quot;virpcitest: Test	virPCIDeviceDetach failure&quot;</title>
+<meta name="description" content="libvirt: [PATCH v1 04/31] Revert &quot;virpcitest: Test	virPCIDeviceDetach failure&quot;">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v1 04/31] Revert &quot;virpcitest: Test	virPCIDeviceDetach failure&quot;</h1>
+[<a href="msg187165.html">Date Prev</a>][<a href="msg187167.html">Date Next</a>][<a href="msg187464.html">Thread Prev</a>][<a href="msg187167.html">Thread Next</a>][<a href="maillist.html#187166">Date Index</a>][<a href="index.html#187166">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v1 04/31] Revert &quot;virpcitest: Test	virPCIDeviceDetach failure&quot;</li>
+<li><em>From</em>: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 11 Jul 2019 17:53:51 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187163.html">cover.1562859733.git.mprivozn@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187163.html">cover.1562859733.git.mprivozn@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This reverts commit b70c093ffa00cd87c8d39d3652b798f033a81faf.
+
+In next commit the virpcimock is going to be extended and thus
+binding a PCI device to vfio-pci driver will finally succeed.
+Remove this test as it will no longer make sense.
+
+Signed-off-by: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;
+---
+ tests/virpcitest.c | 32 --------------------------------
+ 1 file changed, 32 deletions(-)
+
+diff --git a/tests/virpcitest.c b/tests/virpcitest.c
+index 961a7eff1a..9ecd1b7d27 100644
+--- a/tests/virpcitest.c
++++ b/tests/virpcitest.c
+@@ -256,36 +256,6 @@ testVirPCIDeviceDetachSingle(const void *opaque)
+     return ret;
+ }
+ 
+-static int
+-testVirPCIDeviceDetachFail(const void *opaque)
+-{
+-    const struct testPCIDevData *data = opaque;
+-    int ret = -1;
+-    virPCIDevicePtr dev;
+-
+-    dev = virPCIDeviceNew(data-&gt;domain, data-&gt;bus, data-&gt;slot, data-&gt;function);
+-    if (!dev)
+-        goto cleanup;
+-
+-    virPCIDeviceSetStubDriver(dev, VIR_PCI_STUB_DRIVER_VFIO);
+-
+-    if (virPCIDeviceDetach(dev, NULL, NULL) &lt; 0) {
+-        if (virTestGetVerbose() || virTestGetDebug())
+-            virDispatchError(NULL);
+-        virResetLastError();
+-        ret = 0;
+-    } else {
+-        virReportError(VIR_ERR_INTERNAL_ERROR,
+-                       &quot;Attaching device %s to %s should have failed&quot;,
+-                       virPCIDeviceGetName(dev),
+-                       virPCIStubDriverTypeToString(VIR_PCI_STUB_DRIVER_VFIO));
+-    }
+-
+- cleanup:
+-    virPCIDeviceFree(dev);
+-    return ret;
+-}
+-
+ static int
+ testVirPCIDeviceReattachSingle(const void *opaque)
+ {
+@@ -421,8 +391,6 @@ mymain(void)
+     DO_TEST_PCI(testVirPCIDeviceIsAssignable, 5, 0x90, 1, 0);
+     DO_TEST_PCI(testVirPCIDeviceIsAssignable, 1, 1, 0, 0);
+ 
+-    DO_TEST_PCI(testVirPCIDeviceDetachFail, 0, 0x0a, 1, 0);
+-
+     /* Reattach a device already bound to non-stub a driver */
+     DO_TEST_PCI_DRIVER(0, 0x0a, 1, 0, &quot;i915&quot;);
+     DO_TEST_PCI(testVirPCIDeviceReattachSingle, 0, 0x0a, 1, 0);
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187165.html">[PATCH v1 02/31] virHostdevReAttachPCIDevices: Separate	out function body</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187167.html">[PATCH v1 03/31] virpcimock: Move actions checking one	level up</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187464.html">Re:  [PATCH v1 02/31] virHostdevReAttachPCIDevices: Separate out function body</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187167.html">[PATCH v1 03/31] virpcimock: Move actions checking one	level up</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187166"><strong>Date</strong></a></li>
+<li><a href="index.html#187166"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

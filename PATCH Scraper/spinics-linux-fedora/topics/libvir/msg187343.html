@@ -1,0 +1,299 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v5 03/20] conf: Extend TPM XML parser with	encryption support -->
+<!--X-From-R13: Egrsna Pretre &#60;fgrsnaoNyvahk.iarg.voz.pbz> -->
+<!--X-Date: Fri, 12 Jul 2019 09:24:16 &#45;0700 -->
+<!--X-Message-Id: 20190712162354.2366936&#45;4&#45;stefanb@linux.vnet.ibm.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190712162354.2366936&#45;1&#45;stefanb@linux.vnet.ibm.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v5 03/20] conf: Extend TPM XML parser with	encryption support</title>
+<meta name="description" content="libvirt: [PATCH v5 03/20] conf: Extend TPM XML parser with	encryption support">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v5 03/20] conf: Extend TPM XML parser with	encryption support</h1>
+[<a href="msg187342.html">Date Prev</a>][<a href="msg187344.html">Date Next</a>][<a href="msg187342.html">Thread Prev</a>][<a href="msg187344.html">Thread Next</a>][<a href="maillist.html#187343">Date Index</a>][<a href="index.html#187343">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v5 03/20] conf: Extend TPM XML parser with	encryption support</li>
+<li><em>From</em>: Stefan Berger &lt;stefanb@xxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 12 Jul 2019 12:23:37 -0400</li>
+<li><em>Cc</em>: marcandre.lureau@xxxxxxxxxx, Stefan Berger &lt;stefanb@xxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187340.html">20190712162354.2366936-1-stefanb@linux.vnet.ibm.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187340.html">20190712162354.2366936-1-stefanb@linux.vnet.ibm.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Extend the TPM device XML parser and XML generator with emulator
+state encryption support.
+
+Signed-off-by: Stefan Berger &lt;stefanb@xxxxxxxxxxxxx&gt;
+---
+ src/conf/domain_conf.c | 31 ++++++++++++++++++++++++++++++-
+ src/conf/domain_conf.h |  2 ++
+ 2 files changed, 32 insertions(+), 1 deletion(-)
+
+diff --git a/src/conf/domain_conf.c b/src/conf/domain_conf.c
+index 3323c9a5b1..7b0de160a6 100644
+--- a/src/conf/domain_conf.c
++++ b/src/conf/domain_conf.c
+@@ -13048,6 +13048,14 @@ virDomainSmartcardDefParseXML(virDomainXMLOptionPtr xmlopt,
+  * &lt;tpm model='tpm-tis'&gt;
+  *   &lt;backend type='emulator' version='2'/&gt;
+  * &lt;/tpm&gt;
++ *
++ * Emulator state encryption is supported with the following:
++ *
++ * &lt;tpm model='tpm-tis'&gt;
++ *   &lt;backend type='emulator' version='2'&gt;
++ *     &lt;encryption uuid='32ee7e76-2178-47a1-ab7b-269e6e348015'/&gt;
++ *   &lt;/backend&gt;
++ * &lt;/tpm&gt;
+  */
+ static virDomainTPMDefPtr
+ virDomainTPMDefParseXML(virDomainXMLOptionPtr xmlopt,
+@@ -13062,6 +13070,7 @@ virDomainTPMDefParseXML(virDomainXMLOptionPtr xmlopt,
+     VIR_AUTOFREE(char *) model = NULL;
+     VIR_AUTOFREE(char *) backend = NULL;
+     VIR_AUTOFREE(char *) version = NULL;
++    VIR_AUTOFREE(char *) secretuuid = NULL;
+     VIR_AUTOFREE(xmlNodePtr *) backends = NULL;
+ 
+     if (VIR_ALLOC(def) &lt; 0)
+@@ -13126,6 +13135,15 @@ virDomainTPMDefParseXML(virDomainXMLOptionPtr xmlopt,
+         def-&gt;data.passthrough.source.type = VIR_DOMAIN_CHR_TYPE_DEV;
+         break;
+     case VIR_DOMAIN_TPM_TYPE_EMULATOR:
++        secretuuid = virXPathString(&quot;string(./backend/encryption/@secret)&quot;, ctxt);
++        if (secretuuid) {
++            if (virUUIDParse(secretuuid, def-&gt;data.emulator.secretuuid) &lt; 0) {
++                virReportError(VIR_ERR_INTERNAL_ERROR,
++                               _(&quot;Unable to parse secret uuid '%s'&quot;), secretuuid);
++                goto error;
++            }
++            def-&gt;data.emulator.hassecretuuid = true;
++        }
+         break;
+     case VIR_DOMAIN_TPM_TYPE_LAST:
+         goto error;
+@@ -25949,8 +25967,19 @@ virDomainTPMDefFormat(virBufferPtr buf,
+         virBufferAddLit(buf, &quot;&lt;/backend&gt;\n&quot;);
+         break;
+     case VIR_DOMAIN_TPM_TYPE_EMULATOR:
+-        virBufferAsprintf(buf, &quot; version='%s'/&gt;\n&quot;,
++        virBufferAsprintf(buf, &quot; version='%s'&quot;,
+                           virDomainTPMVersionTypeToString(def-&gt;version));
++        if (def-&gt;data.emulator.hassecretuuid) {
++            char uuidstr[VIR_UUID_STRING_BUFLEN];
++            virBufferAddLit(buf, &quot;&gt;\n&quot;);
++            virBufferAdjustIndent(buf, 2);
++            virBufferAsprintf(buf, &quot;&lt;encryption secret='%s'/&gt;\n&quot;,
++                virUUIDFormat(def-&gt;data.emulator.secretuuid, uuidstr));
++            virBufferAdjustIndent(buf, -2);
++            virBufferAddLit(buf, &quot;&lt;/backend&gt;\n&quot;);
++        } else {
++            virBufferAddLit(buf, &quot;/&gt;\n&quot;);
++        }
+         break;
+     case VIR_DOMAIN_TPM_TYPE_LAST:
+         break;
+diff --git a/src/conf/domain_conf.h b/src/conf/domain_conf.h
+index c1b5fc1337..3facf506ce 100644
+--- a/src/conf/domain_conf.h
++++ b/src/conf/domain_conf.h
+@@ -1270,6 +1270,8 @@ struct _virDomainTPMDef {
+             virDomainChrSourceDef source;
+             char *storagepath;
+             char *logfile;
++            unsigned char secretuuid[VIR_UUID_BUFLEN];
++            bool hassecretuuid;
+         } emulator;
+     } data;
+ };
+-- 
+2.20.1
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187342.html">[PATCH v5 06/20] tests: Add tests for QEMU command line	generation with encrypted TPM</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187344.html">[PATCH v5 20/20] docs: Extend TPM docs with new	encryption element</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187342.html">[PATCH v5 06/20] tests: Add tests for QEMU command line	generation with encrypted TPM</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187344.html">[PATCH v5 20/20] docs: Extend TPM docs with new	encryption element</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187343"><strong>Date</strong></a></li>
+<li><a href="index.html#187343"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

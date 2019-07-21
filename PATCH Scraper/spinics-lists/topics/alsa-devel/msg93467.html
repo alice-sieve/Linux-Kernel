@@ -1,0 +1,493 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH V2 1/2] ASoC: fsl_esai: Wrap some operations to	be functions -->
+<!--X-From-R13: furatwvh.jnatNakc.pbz -->
+<!--X-Date: Tue, 2 Jul 2019 23:53:11 &#45;0700 -->
+<!--X-Message-Id: f57c5a045c6e5491b1bc9831388eab2c88773176.1562136119.git.shengjiu.wang@nxp.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1562136119.git.shengjiu.wang@nxp.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH V2 1/2] ASoC: fsl_esai: Wrap some operations to	be functions &mdash; ALSA Devel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH V2 1/2] ASoC: fsl_esai: Wrap some operations to	be functions &mdash; ALSA Devel</title>
+<link rel="alternate" type="application/rss+xml" title="ALSA Devel" href="//feedproxy.google.com/AlsaDevel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH V2 1/2] ASoC: fsl_esai: Wrap some operations to	be functions</h1>
+[<a href="msg93466.html">Date Prev</a>][<a href="msg93468.html">Date Next</a>][<a href="msg93466.html">Thread Prev</a>][<a href="msg93478.html">Thread Next</a>][<a href="maillist.html#93467">Date Index</a>][<a href="threads.html#93467">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: timur@xxxxxxxxxx, nicoleotsuka@xxxxxxxxx, Xiubo.Lee@xxxxxxxxx,        festevam@xxxxxxxxx, broonie@xxxxxxxxxx, alsa-devel@xxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH V2 1/2] ASoC: fsl_esai: Wrap some operations to	be functions</li>
+<li><em>From</em>: shengjiu.wang@xxxxxxx</li>
+<li><em>Date</em>: Wed,  3 Jul 2019 14:42:04 +0800</li>
+<li><em>Cc</em>: linuxppc-dev@xxxxxxxxxxxxxxxx, linux-kernel@xxxxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg93466.html">cover.1562136119.git.shengjiu.wang@nxp.com</a>&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg93466.html">cover.1562136119.git.shengjiu.wang@nxp.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg93466.html">cover.1562136119.git.shengjiu.wang@nxp.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg93466.html">cover.1562136119.git.shengjiu.wang@nxp.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Shengjiu Wang &lt;shengjiu.wang@xxxxxxx&gt;
+
+Extract the operation to be functions, to improve the
+readability.
+
+In this patch, fsl_esai_init, fsl_esai_register_restore,
+fsl_esai_trigger_start and fsl_esai_trigger_stop are
+extracted.
+
+Signed-off-by: Shengjiu Wang &lt;shengjiu.wang@xxxxxxx&gt;
+---
+ sound/soc/fsl/fsl_esai.c | 191 ++++++++++++++++++++++++---------------
+ 1 file changed, 118 insertions(+), 73 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 10d2210c91ef..20039ae9893b 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -35,6 +35,7 @@
+  * @fifo_depth: depth of tx/rx FIFO
+  * @slot_width: width of each DAI slot
+  * @slots: number of slots
++ * @channels: channel num for tx or rx
+  * @hck_rate: clock rate of desired HCKx clock
+  * @sck_rate: clock rate of desired SCKx clock
+  * @hck_dir: the direction of HCKx pads
+@@ -57,6 +58,7 @@ struct fsl_esai {
+ 	u32 slots;
+ 	u32 tx_mask;
+ 	u32 rx_mask;
++	u32 channels[2];
+ 	u32 hck_rate[2];
+ 	u32 sck_rate[2];
+ 	bool hck_dir[2];
+@@ -543,64 +545,131 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+-			    struct snd_soc_dai *dai)
++static int fsl_esai_init(struct fsl_esai *esai_priv)
+ {
+-	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
+-	bool tx = substream-&gt;stream == SNDRV_PCM_STREAM_PLAYBACK;
+-	u8 i, channels = substream-&gt;runtime-&gt;channels;
++	struct platform_device *pdev = esai_priv-&gt;pdev;
++	int ret;
++
++	/* Reset ESAI unit */
++	ret = regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_ECR,
++				 ESAI_ECR_ESAIEN_MASK | ESAI_ECR_ERST_MASK,
++				 ESAI_ECR_ESAIEN | ESAI_ECR_ERST);
++	if (ret) {
++		dev_err(&amp;pdev-&gt;dev, &quot;failed to reset ESAI: %d\n&quot;, ret);
++		return ret;
++	}
++
++	/*
++	 * We need to enable ESAI so as to access some of its registers.
++	 * Otherwise, we would fail to dump regmap from user space.
++	 */
++	ret = regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_ECR,
++				 ESAI_ECR_ESAIEN_MASK | ESAI_ECR_ERST_MASK,
++				 ESAI_ECR_ESAIEN);
++	if (ret) {
++		dev_err(&amp;pdev-&gt;dev, &quot;failed to enable ESAI: %d\n&quot;, ret);
++		return ret;
++	}
++
++	regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_PRRC,
++			   ESAI_PRRC_PDC_MASK, 0);
++	regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_PCRC,
++			   ESAI_PCRC_PC_MASK, 0);
++
++	return 0;
++}
++
++static int fsl_esai_register_restore(struct fsl_esai *esai_priv)
++{
++	int ret;
++	/* FIFO reset for safety */
++	regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_TFCR,
++			   ESAI_xFCR_xFR, ESAI_xFCR_xFR);
++	regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_RFCR,
++			   ESAI_xFCR_xFR, ESAI_xFCR_xFR);
++
++	regcache_mark_dirty(esai_priv-&gt;regmap);
++	ret = regcache_sync(esai_priv-&gt;regmap);
++	if (ret)
++		return ret;
++
++	/* FIFO reset done */
++	regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_TFCR, ESAI_xFCR_xFR, 0);
++	regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_RFCR, ESAI_xFCR_xFR, 0);
++
++	return 0;
++}
++
++static void fsl_esai_trigger_start(struct fsl_esai *esai_priv, bool tx)
++{
++	u8 i, channels = esai_priv-&gt;channels[tx];
+ 	u32 pins = DIV_ROUND_UP(channels, esai_priv-&gt;slots);
+ 	u32 mask;
+ 
++	regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xFCR(tx),
++			   ESAI_xFCR_xFEN_MASK, ESAI_xFCR_xFEN);
++
++	/* Write initial words reqiured by ESAI as normal procedure */
++	for (i = 0; tx &amp;&amp; i &lt; channels; i++)
++		regmap_write(esai_priv-&gt;regmap, REG_ESAI_ETDR, 0x0);
++
++	/*
++	 * When set the TE/RE in the end of enablement flow, there
++	 * will be channel swap issue for multi data line case.
++	 * In order to workaround this issue, we switch the bit
++	 * enablement sequence to below sequence
++	 * 1) clear the xSMB &amp; xSMA: which is done in probe and
++	 *                           stop state.
++	 * 2) set TE/RE
++	 * 3) set xSMB
++	 * 4) set xSMA:  xSMA is the last one in this flow, which
++	 *               will trigger esai to start.
++	 */
++	regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xCR(tx),
++			   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK,
++			   tx ? ESAI_xCR_TE(pins) : ESAI_xCR_RE(pins));
++	mask = tx ? esai_priv-&gt;tx_mask : esai_priv-&gt;rx_mask;
++
++	regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xSMB(tx),
++			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(mask));
++	regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xSMA(tx),
++			   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(mask));
++}
++
++static void fsl_esai_trigger_stop(struct fsl_esai *esai_priv, bool tx)
++{
++	regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xCR(tx),
++			   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK, 0);
++	regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xSMA(tx),
++			   ESAI_xSMA_xS_MASK, 0);
++	regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xSMB(tx),
++			   ESAI_xSMB_xS_MASK, 0);
++
++	/* Disable and reset FIFO */
++	regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xFCR(tx),
++			   ESAI_xFCR_xFR | ESAI_xFCR_xFEN, ESAI_xFCR_xFR);
++	regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xFCR(tx),
++			   ESAI_xFCR_xFR, 0);
++}
++
++static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
++			    struct snd_soc_dai *dai)
++{
++	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
++	bool tx = substream-&gt;stream == SNDRV_PCM_STREAM_PLAYBACK;
++
++	esai_priv-&gt;channels[tx] = substream-&gt;runtime-&gt;channels;
++
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xFCR(tx),
+-				   ESAI_xFCR_xFEN_MASK, ESAI_xFCR_xFEN);
+-
+-		/* Write initial words reqiured by ESAI as normal procedure */
+-		for (i = 0; tx &amp;&amp; i &lt; channels; i++)
+-			regmap_write(esai_priv-&gt;regmap, REG_ESAI_ETDR, 0x0);
+-
+-		/*
+-		 * When set the TE/RE in the end of enablement flow, there
+-		 * will be channel swap issue for multi data line case.
+-		 * In order to workaround this issue, we switch the bit
+-		 * enablement sequence to below sequence
+-		 * 1) clear the xSMB &amp; xSMA: which is done in probe and
+-		 *                           stop state.
+-		 * 2) set TE/RE
+-		 * 3) set xSMB
+-		 * 4) set xSMA:  xSMA is the last one in this flow, which
+-		 *               will trigger esai to start.
+-		 */
+-		regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xCR(tx),
+-				   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK,
+-				   tx ? ESAI_xCR_TE(pins) : ESAI_xCR_RE(pins));
+-		mask = tx ? esai_priv-&gt;tx_mask : esai_priv-&gt;rx_mask;
+-
+-		regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xSMB(tx),
+-				   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(mask));
+-		regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xSMA(tx),
+-				   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(mask));
+-
++		fsl_esai_trigger_start(esai_priv, tx);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xCR(tx),
+-				   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK, 0);
+-		regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xSMA(tx),
+-				   ESAI_xSMA_xS_MASK, 0);
+-		regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xSMB(tx),
+-				   ESAI_xSMB_xS_MASK, 0);
+-
+-		/* Disable and reset FIFO */
+-		regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xFCR(tx),
+-				   ESAI_xFCR_xFR | ESAI_xFCR_xFEN, ESAI_xFCR_xFR);
+-		regmap_update_bits(esai_priv-&gt;regmap, REG_ESAI_xFCR(tx),
+-				   ESAI_xFCR_xFR, 0);
++		fsl_esai_trigger_stop(esai_priv, tx);
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -866,22 +935,9 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 
+ 	dev_set_drvdata(&amp;pdev-&gt;dev, esai_priv);
+ 
+-	/* Reset ESAI unit */
+-	ret = regmap_write(esai_priv-&gt;regmap, REG_ESAI_ECR, ESAI_ECR_ERST);
+-	if (ret) {
+-		dev_err(&amp;pdev-&gt;dev, &quot;failed to reset ESAI: %d\n&quot;, ret);
++	ret = fsl_esai_init(esai_priv);
++	if (ret)
+ 		return ret;
+-	}
+-
+-	/*
+-	 * We need to enable ESAI so as to access some of its registers.
+-	 * Otherwise, we would fail to dump regmap from user space.
+-	 */
+-	ret = regmap_write(esai_priv-&gt;regmap, REG_ESAI_ECR, ESAI_ECR_ESAIEN);
+-	if (ret) {
+-		dev_err(&amp;pdev-&gt;dev, &quot;failed to enable ESAI: %d\n&quot;, ret);
+-		return ret;
+-	}
+ 
+ 	esai_priv-&gt;tx_mask = 0xFFFFFFFF;
+ 	esai_priv-&gt;rx_mask = 0xFFFFFFFF;
+@@ -955,20 +1011,10 @@ static int fsl_esai_runtime_resume(struct device *dev)
+ 
+ 	regcache_cache_only(esai-&gt;regmap, false);
+ 
+-	/* FIFO reset for safety */
+-	regmap_update_bits(esai-&gt;regmap, REG_ESAI_TFCR,
+-			   ESAI_xFCR_xFR, ESAI_xFCR_xFR);
+-	regmap_update_bits(esai-&gt;regmap, REG_ESAI_RFCR,
+-			   ESAI_xFCR_xFR, ESAI_xFCR_xFR);
+-
+-	ret = regcache_sync(esai-&gt;regmap);
++	ret = fsl_esai_register_restore(esai);
+ 	if (ret)
+ 		goto err_regcache_sync;
+ 
+-	/* FIFO reset done */
+-	regmap_update_bits(esai-&gt;regmap, REG_ESAI_TFCR, ESAI_xFCR_xFR, 0);
+-	regmap_update_bits(esai-&gt;regmap, REG_ESAI_RFCR, ESAI_xFCR_xFR, 0);
+-
+ 	return 0;
+ 
+ err_regcache_sync:
+@@ -991,7 +1037,6 @@ static int fsl_esai_runtime_suspend(struct device *dev)
+ 	struct fsl_esai *esai = dev_get_drvdata(dev);
+ 
+ 	regcache_cache_only(esai-&gt;regmap, true);
+-	regcache_mark_dirty(esai-&gt;regmap);
+ 
+ 	if (!IS_ERR(esai-&gt;fsysclk))
+ 		clk_disable_unprepare(esai-&gt;fsysclk);
+-- 
+2.21.0
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@xxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://mailman.alsa-project.org/mailman/listinfo/alsa-devel">https://mailman.alsa-project.org/mailman/listinfo/alsa-devel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="93478" href="msg93478.html">Re:  [PATCH V2 1/2] ASoC: fsl_esai: Wrap some operations to be functions</a></strong>
+<ul><li><em>From:</em> Nicolin Chen</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="93466" href="msg93466.html">[PATCH V2 0/2] recover the channel swap after xrun</a></strong>
+<ul><li><em>From:</em> shengjiu . wang</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg93466.html">[PATCH V2 0/2] recover the channel swap after xrun</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg93468.html">[PATCH V2 2/2] ASoC: fsl_esai: recover the channel	swap after xrun</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg93466.html">[PATCH V2 0/2] recover the channel swap after xrun</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg93478.html">Re:  [PATCH V2 1/2] ASoC: fsl_esai: Wrap some operations to be functions</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#93467"><strong>Date</strong></a></li>
+<li><a href="threads.html#93467"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/alsa-user/>[ALSA&nbsp;User]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/pulse-audio/>[Pulse&nbsp;Audio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=http://yosemitephotos.net/>[Photo&nbsp;Sharing]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/linux-sound/>[Linux&nbsp;Sound]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-media/>[Video&nbsp;4&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gimp/>[Gimp]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

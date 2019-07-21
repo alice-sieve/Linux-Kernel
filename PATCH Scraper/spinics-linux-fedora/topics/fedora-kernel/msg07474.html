@@ -1,0 +1,938 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Drop six orphaned patches -->
+<!--X-From-R13: Bnhy Pbyyr &#60;crobyyrNgvfpnyv.ay> -->
+<!--X-Date: Fri, 8 Mar 2019 12:56:58 &#45;0800 -->
+<!--X-Message-Id: 20190308205639.428&#45;1&#45;pebolle@tiscali.nl -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description content="[PATCH] Drop six orphaned patches &mdash; Fedora Linux Kernel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH] Drop six orphaned patches &mdash; Fedora Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Fedora Linux Kernel" href="//feeds.feedburner.com/FedoraKernel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH] Drop six orphaned patches</h1>
+[<a href="msg07473.html">Date Prev</a>][<a href="msg07475.html">Date Next</a>][<a href="msg07473.html">Thread Prev</a>][<a href="msg07484.html">Thread Next</a>][<a href="maillist.html#07474">Date Index</a>][<a href="index.html#07474">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Drop six orphaned patches</li>
+<li><em>From</em>: Paul Bolle &lt;pebolle@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri,  8 Mar 2019 21:56:39 +0100</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Signed-off-by: Paul Bolle &lt;pebolle@xxxxxxxxxx&gt;
+---
+ 0001-Correct-warning-with-gcc9.patch          |  35 ---
+ ...tomatically-enforce-module-signature.patch | 217 ------------------
+ efi-Add-EFI_SECURE_BOOT-bit.patch             |  43 ----
+ ...ure-boot-if-shim-is-in-insecure-mode.patch |  58 -----
+ ...nit-cleanup_module-aliases-as-__cold.patch | 149 ------------
+ ...e-__crc32c_le_base-aliases-as-__pure.patch | 124 ----------
+ 6 files changed, 626 deletions(-)
+ delete mode 100644 0001-Correct-warning-with-gcc9.patch
+ delete mode 100644 Add-option-to-automatically-enforce-module-signature.patch
+ delete mode 100644 efi-Add-EFI_SECURE_BOOT-bit.patch
+ delete mode 100644 efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
+ delete mode 100644 include-linux-module.h-mark-init-cleanup_module-aliases-as-__cold.patch
+ delete mode 100644 lib-crc32.c-mark-crc32_le_base-__crc32c_le_base-aliases-as-__pure.patch
+
+diff --git a/0001-Correct-warning-with-gcc9.patch b/0001-Correct-warning-with-gcc9.patch
+deleted file mode 100644
+index 9a5e9423041e..000000000000
+--- a/0001-Correct-warning-with-gcc9.patch
++++ /dev/null
+@@ -1,35 +0,0 @@
+-From 0de1315ee843713bafb9a59bc040a024f688c62a Mon Sep 17 00:00:00 2001
+-From: Laura Abbott &lt;labbott@xxxxxxxxxx&gt;
+-Date: Wed, 23 Jan 2019 13:56:47 +0100
+-Subject: [PATCH] Correct warning with gcc9
+-
+-Suggested from Arnd
+-
+-Signed-off-by: Laura Abbott &lt;labbott@xxxxxxxxxx&gt;
+----
+- include/linux/module.h | 4 ++--
+- 1 file changed, 2 insertions(+), 2 deletions(-)
+-
+-diff --git a/include/linux/module.h b/include/linux/module.h
+-index 8fa38d3e7538..f2a24b59cca4 100644
+---- a/include/linux/module.h
+-+++ b/include/linux/module.h
+-@@ -129,13 +129,13 @@ extern void cleanup_module(void);
+- #define module_init(initfn)					\
+- 	static inline initcall_t __maybe_unused __inittest(void)		\
+- 	{ return initfn; }					\
+--	int init_module(void) __attribute__((alias(#initfn)));
+-+	int init_module(void) __attribute__((cold, alias(#initfn)));
+- 
+- /* This is only required if you want to be unloadable. */
+- #define module_exit(exitfn)					\
+- 	static inline exitcall_t __maybe_unused __exittest(void)		\
+- 	{ return exitfn; }					\
+--	void cleanup_module(void) __attribute__((alias(#exitfn)));
+-+	void cleanup_module(void) __attribute__((cold, alias(#exitfn)));
+- 
+- #endif
+- 
+--- 
+-2.20.1
+-
+diff --git a/Add-option-to-automatically-enforce-module-signature.patch b/Add-option-to-automatically-enforce-module-signature.patch
+deleted file mode 100644
+index ebabac62ee91..000000000000
+--- a/Add-option-to-automatically-enforce-module-signature.patch
++++ /dev/null
+@@ -1,217 +0,0 @@
+-From 6b6203b92cfb457a0669a9c87a29b360405bffc6 Mon Sep 17 00:00:00 2001
+-From: Matthew Garrett &lt;matthew.garrett@xxxxxxxxxx&gt;
+-Date: Fri, 9 Aug 2013 18:36:30 -0400
+-Subject: [PATCH 10/20] Add option to automatically enforce module signatures
+- when in Secure Boot mode
+-
+-UEFI Secure Boot provides a mechanism for ensuring that the firmware will
+-only load signed bootloaders and kernels. Certain use cases may also
+-require that all kernel modules also be signed. Add a configuration option
+-that enforces this automatically when enabled.
+-
+-Signed-off-by: Matthew Garrett &lt;matthew.garrett@xxxxxxxxxx&gt;
+----
+- Documentation/x86/zero-page.txt       |  2 ++
+- arch/x86/Kconfig                      | 11 ++++++
+- arch/x86/boot/compressed/eboot.c      | 66 +++++++++++++++++++++++++++++++++++
+- arch/x86/include/uapi/asm/bootparam.h |  3 +-
+- arch/x86/kernel/setup.c               |  6 ++++
+- include/linux/module.h                |  6 ++++
+- kernel/module.c                       |  7 ++++
+- 7 files changed, 100 insertions(+), 1 deletion(-)
+-
+-diff --git a/Documentation/x86/zero-page.txt b/Documentation/x86/zero-page.txt
+-index 95a4d34af3fd..b8527c6b7646 100644
+---- a/Documentation/x86/zero-page.txt
+-+++ b/Documentation/x86/zero-page.txt
+-@@ -31,6 +31,8 @@ Offset	Proto	Name		Meaning
+- 1E9/001	ALL	eddbuf_entries	Number of entries in eddbuf (below)
+- 1EA/001	ALL	edd_mbr_sig_buf_entries	Number of entries in edd_mbr_sig_buffer
+- 				(below)
+-+1EB/001	ALL     kbd_status      Numlock is enabled
+-+1EC/001	ALL     secure_boot	Secure boot is enabled in the firmware
+- 1EF/001	ALL	sentinel	Used to detect broken bootloaders
+- 290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
+- 2D0/A00	ALL	e820_map	E820 memory map table
+-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+-index bada636d1065..d666ef8b616c 100644
+---- a/arch/x86/Kconfig
+-+++ b/arch/x86/Kconfig
+-@@ -1786,6 +1786,17 @@ config EFI_MIXED
+- 
+- 	   If unsure, say N.
+- 
+-+config EFI_SECURE_BOOT_SIG_ENFORCE
+-+	def_bool n
+-+	depends on EFI
+-+	prompt &quot;Force module signing when UEFI Secure Boot is enabled&quot;
+-+	---help---
+-+	  UEFI Secure Boot provides a mechanism for ensuring that the
+-+	  firmware will only load signed bootloaders and kernels. Certain
+-+	  use cases may also require that all kernel modules also be signed.
+-+	  Say Y here to automatically enable module signature enforcement
+-+	  when a system boots with UEFI Secure Boot enabled.
+-+
+- config SECCOMP
+- 	def_bool y
+- 	prompt &quot;Enable seccomp to safely compute untrusted bytecode&quot;
+-diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
+-index cc69e37548db..ebc85c1eefd6 100644
+---- a/arch/x86/boot/compressed/eboot.c
+-+++ b/arch/x86/boot/compressed/eboot.c
+-@@ -12,6 +12,7 @@
+- #include &lt;asm/efi.h&gt;
+- #include &lt;asm/setup.h&gt;
+- #include &lt;asm/desc.h&gt;
+-+#include &lt;asm/bootparam_utils.h&gt;
+- 
+- #include &quot;../string.h&quot;
+- #include &quot;eboot.h&quot;
+-@@ -537,6 +538,67 @@ static void setup_efi_pci(struct boot_params *params)
+- 	efi_call_early(free_pool, pci_handle);
+- }
+- 
+-+static int get_secure_boot(void)
+-+{
+-+	u8 sb, setup;
+-+	unsigned long datasize = sizeof(sb);
+-+	efi_guid_t var_guid = EFI_GLOBAL_VARIABLE_GUID;
+-+	efi_status_t status;
+-+
+-+	status = efi_early-&gt;call((unsigned long)sys_table-&gt;runtime-&gt;get_variable,
+-+				L&quot;SecureBoot&quot;, &amp;var_guid, NULL, &amp;datasize, &amp;sb);
+-+
+-+	if (status != EFI_SUCCESS)
+-+		return 0;
+-+
+-+	if (sb == 0)
+-+		return 0;
+-+
+-+
+-+	status = efi_early-&gt;call((unsigned long)sys_table-&gt;runtime-&gt;get_variable,
+-+				L&quot;SetupMode&quot;, &amp;var_guid, NULL, &amp;datasize,
+-+				&amp;setup);
+-+
+-+	if (status != EFI_SUCCESS)
+-+		return 0;
+-+
+-+	if (setup == 1)
+-+		return 0;
+-+
+-+	return 1;
+-+}
+-+
+-+
+-+/*
+-+ * See if we have Graphics Output Protocol
+-+ */
+-+static efi_status_t setup_gop(struct screen_info *si, efi_guid_t *proto,
+-+			      unsigned long size)
+-+{
+-+	efi_status_t status;
+-+	void **gop_handle = NULL;
+-+
+-+	status = efi_call_early(allocate_pool, EFI_LOADER_DATA,
+-+				size, (void **)&amp;gop_handle);
+-+	if (status != EFI_SUCCESS)
+-+		return status;
+-+
+-+	status = efi_call_early(locate_handle,
+-+				EFI_LOCATE_BY_PROTOCOL,
+-+				proto, NULL, &amp;size, gop_handle);
+-+	if (status != EFI_SUCCESS)
+-+		goto free_handle;
+-+
+-+	if (efi_early-&gt;is64)
+-+		status = setup_gop64(si, proto, size, gop_handle);
+-+	else
+-+		status = setup_gop32(si, proto, size, gop_handle);
+-+
+-+free_handle:
+-+	efi_call_early(free_pool, gop_handle);
+-+	return status;
+-+}
+-+
+- static efi_status_t
+- setup_uga32(void **uga_handle, unsigned long size, u32 *width, u32 *height)
+- {
+-@@ -1094,6 +1156,10 @@ struct boot_params *efi_main(struct efi_config *c,
+- 	else
+- 		setup_boot_services32(efi_early);
+- 
+-+	sanitize_boot_params(boot_params);
+-+
+-+	boot_params-&gt;secure_boot = get_secure_boot();
+-+
+- 	setup_graphics(boot_params);
+- 
+- 	setup_efi_pci(boot_params);
+-diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
+-index c18ce67495fa..2b3e5427097b 100644
+---- a/arch/x86/include/uapi/asm/bootparam.h
+-+++ b/arch/x86/include/uapi/asm/bootparam.h
+-@@ -134,7 +134,8 @@ struct boot_params {
+- 	__u8  eddbuf_entries;				/* 0x1e9 */
+- 	__u8  edd_mbr_sig_buf_entries;			/* 0x1ea */
+- 	__u8  kbd_status;				/* 0x1eb */
+--	__u8  _pad5[3];					/* 0x1ec */
+-+	__u8  secure_boot;				/* 0x1ec */
+-+	__u8  _pad5[2];					/* 0x1ed */
+- 	/*
+- 	 * The sentinel is set to a nonzero value (0xff) in header.S.
+- 	 *
+-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+-index bbfbca5fea0c..d40e961753c9 100644
+---- a/arch/x86/kernel/setup.c
+-+++ b/arch/x86/kernel/setup.c
+-@@ -1160,6 +1160,12 @@ void __init setup_arch(char **cmdline_p)
+- 
+- 	io_delay_init();
+- 
+-+#ifdef CONFIG_EFI_SECURE_BOOT_SIG_ENFORCE
+-+	if (boot_params.secure_boot) {
+-+		enforce_signed_modules();
+-+	}
+-+#endif
+-+
+- 	/*
+- 	 * Parse the ACPI tables for possible boot-time SMP configuration.
+- 	 */
+-diff --git a/include/linux/module.h b/include/linux/module.h
+-index 05bd6c989a0c..32327704e18d 100644
+---- a/include/linux/module.h
+-+++ b/include/linux/module.h
+-@@ -260,6 +260,12 @@ extern const typeof(name) __mod_##type##__##name##_device_table		\
+- 
+- struct notifier_block;
+- 
+-+#ifdef CONFIG_MODULE_SIG
+-+extern void enforce_signed_modules(void);
+-+#else
+-+static inline void enforce_signed_modules(void) {};
+-+#endif
+-+
+- #ifdef CONFIG_MODULES
+- 
+- extern int modules_disabled; /* for sysctl */
+-diff --git a/kernel/module.c b/kernel/module.c
+-index cb864505d020..cb1f1da69bf4 100644
+---- a/kernel/module.c
+-+++ b/kernel/module.c
+-@@ -4285,6 +4285,13 @@ void module_layout(struct module *mod,
+- EXPORT_SYMBOL(module_layout);
+- #endif
+- 
+-+#ifdef CONFIG_MODULE_SIG
+-+void enforce_signed_modules(void)
+-+{
+-+	sig_enforce = true;
+-+}
+-+#endif
+-+
+- bool secure_modules(void)
+- {
+- #ifdef CONFIG_MODULE_SIG
+--- 
+-2.9.3
+-
+diff --git a/efi-Add-EFI_SECURE_BOOT-bit.patch b/efi-Add-EFI_SECURE_BOOT-bit.patch
+deleted file mode 100644
+index c440103221ce..000000000000
+--- a/efi-Add-EFI_SECURE_BOOT-bit.patch
++++ /dev/null
+@@ -1,43 +0,0 @@
+-From a8883aff32f1e15b65e210462804aa2a9ab9a0b6 Mon Sep 17 00:00:00 2001
+-From: Josh Boyer &lt;jwboyer@xxxxxxxxxxxxxxxxx&gt;
+-Date: Tue, 27 Aug 2013 13:33:03 -0400
+-Subject: [PATCH 13/20] efi: Add EFI_SECURE_BOOT bit
+-
+-UEFI machines can be booted in Secure Boot mode.  Add a EFI_SECURE_BOOT bit
+-for use with efi_enabled.
+-
+-Signed-off-by: Josh Boyer &lt;jwboyer@xxxxxxxxxxxxxxxxx&gt;
+----
+- arch/x86/kernel/setup.c | 2 ++
+- include/linux/efi.h     | 1 +
+- 2 files changed, 3 insertions(+)
+-
+-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+-index d40e961753c9..b93183336674 100644
+---- a/arch/x86/kernel/setup.c
+-+++ b/arch/x86/kernel/setup.c
+-@@ -1162,7 +1162,9 @@ void __init setup_arch(char **cmdline_p)
+- 
+- #ifdef CONFIG_EFI_SECURE_BOOT_SIG_ENFORCE
+- 	if (boot_params.secure_boot) {
+-+		set_bit(EFI_SECURE_BOOT, &amp;efi.flags);
+- 		enforce_signed_modules();
+-+		pr_info(&quot;Secure boot enabled\n&quot;);
+- 	}
+- #endif
+- 
+-diff --git a/include/linux/efi.h b/include/linux/efi.h
+-index ce943d5accfd..5af91b58afae 100644
+---- a/include/linux/efi.h
+-+++ b/include/linux/efi.h
+-@@ -1046,6 +1046,7 @@ extern int __init efi_setup_pcdp_console(char *);
+- #define EFI_ARCH_1		7	/* First arch-specific bit */
+- #define EFI_DBG			8	/* Print additional debug info at runtime */
+- #define EFI_NX_PE_DATA		9	/* Can runtime data regions be mapped non-executable? */
+-+#define EFI_SECURE_BOOT		10	/* Are we in Secure Boot mode? */
+- 
+- #ifdef CONFIG_EFI
+- /*
+--- 
+-2.9.3
+-
+diff --git a/efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch b/efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
+deleted file mode 100644
+index 761a66ff7392..000000000000
+--- a/efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
++++ /dev/null
+@@ -1,58 +0,0 @@
+-From d687d79620ea20511b2dbf77e74fdcf4d94981f9 Mon Sep 17 00:00:00 2001
+-From: Josh Boyer &lt;jwboyer@xxxxxxxxxxxxxxxxx&gt;
+-Date: Tue, 5 Feb 2013 19:25:05 -0500
+-Subject: [PATCH 12/20] efi: Disable secure boot if shim is in insecure mode
+-
+-A user can manually tell the shim boot loader to disable validation of
+-images it loads.  When a user does this, it creates a UEFI variable called
+-MokSBState that does not have the runtime attribute set.  Given that the
+-user explicitly disabled validation, we can honor that and not enable
+-secure boot mode if that variable is set.
+-
+-Signed-off-by: Josh Boyer &lt;jwboyer@xxxxxxxxxxxxxxxxx&gt;
+----
+- arch/x86/boot/compressed/eboot.c | 20 +++++++++++++++++++-
+- 1 file changed, 19 insertions(+), 1 deletion(-)
+-
+-diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
+-index ebc85c1eefd6..50e027f388d8 100644
+---- a/arch/x86/boot/compressed/eboot.c
+-+++ b/arch/x86/boot/compressed/eboot.c
+-@@ -540,8 +540,9 @@ static void setup_efi_pci(struct boot_params *params)
+- 
+- static int get_secure_boot(void)
+- {
+--	u8 sb, setup;
+-+	u8 sb, setup, moksbstate;
+- 	unsigned long datasize = sizeof(sb);
+-+	u32 attr;
+- 	efi_guid_t var_guid = EFI_GLOBAL_VARIABLE_GUID;
+- 	efi_status_t status;
+- 
+-@@ -565,6 +566,23 @@ static int get_secure_boot(void)
+- 	if (setup == 1)
+- 		return 0;
+- 
+-+	/* See if a user has put shim into insecure_mode.  If so, and the variable
+-+	 * doesn't have the runtime attribute set, we might as well honor that.
+-+	 */
+-+	var_guid = EFI_SHIM_LOCK_GUID;
+-+	status = efi_early-&gt;call((unsigned long)sys_table-&gt;runtime-&gt;get_variable,
+-+				L&quot;MokSBState&quot;, &amp;var_guid, &amp;attr, &amp;datasize,
+-+				&amp;moksbstate);
+-+
+-+	/* If it fails, we don't care why.  Default to secure */
+-+	if (status != EFI_SUCCESS)
+-+		return 1;
+-+
+-+	if (!(attr &amp; EFI_VARIABLE_RUNTIME_ACCESS)) {
+-+		if (moksbstate == 1)
+-+			return 0;
+-+	}
+-+
+- 	return 1;
+- }
+- 
+--- 
+-2.9.3
+-
+diff --git a/include-linux-module.h-mark-init-cleanup_module-aliases-as-__cold.patch b/include-linux-module.h-mark-init-cleanup_module-aliases-as-__cold.patch
+deleted file mode 100644
+index f350e6f32cf3..000000000000
+--- a/include-linux-module.h-mark-init-cleanup_module-aliases-as-__cold.patch
++++ /dev/null
+@@ -1,149 +0,0 @@
+-From patchwork Wed Jan 23 17:37:07 2019
+-Content-Type: text/plain; charset=&quot;utf-8&quot;
+-MIME-Version: 1.0
+-Content-Transfer-Encoding: 7bit
+-X-Patchwork-Submitter: Miguel Ojeda &lt;miguel.ojeda.sandonis@xxxxxxxxx&gt;
+-X-Patchwork-Id: 1034989
+-Return-Path: &lt;SRS0=drEb=P7=vger.kernel.org=linux-kernel-owner@xxxxxxxxxx&gt;
+-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7D50C282C0
+-	for &lt;linux-kernel@xxxxxxxxxxxxxxxxxxx&gt;; Wed, 23 Jan 2019 17:38:31 +0000 (UTC)
+-Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
+-	by mail.kernel.org (Postfix) with ESMTP id 7CE1F20870
+-	for &lt;linux-kernel@xxxxxxxxxxxxxxxxxxx&gt;; Wed, 23 Jan 2019 17:38:31 +0000 (UTC)
+-Authentication-Results: mail.kernel.org;
+-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+- header.b=&quot;qdRA7oPl&quot;
+-Received: (majordomo@xxxxxxxxxxxxxxx) by vger.kernel.org via listexpand
+-        id S1726152AbfAWRi3 (ORCPT
+-        &lt;rfc822;linux-kernel@xxxxxxxxxxxxxxxxxxx&gt;);
+-        Wed, 23 Jan 2019 12:38:29 -0500
+-Received: from mail-wm1-f67.google.com ([209.85.128.67]:52719 &quot;EHLO
+-        mail-wm1-f67.google.com&quot; rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+-        with ESMTP id S1725896AbfAWRi3 (ORCPT
+-        &lt;rfc822;linux-kernel@xxxxxxxxxxxxxxx&gt;);
+-        Wed, 23 Jan 2019 12:38:29 -0500
+-Received: by mail-wm1-f67.google.com with SMTP id m1so242485wml.2
+-        for &lt;linux-kernel@xxxxxxxxxxxxxxx&gt;;
+- Wed, 23 Jan 2019 09:38:27 -0800 (PST)
+-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+-        d=gmail.com; s=20161025;
+-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+-         :user-agent;
+-        bh=1joVTuHcQFv5PhIFvZBlpu1jeKwRQi2Ty1HKsqzNx+0=;
+-        b=qdRA7oPloipduZyiYE/EECaW/vCZup5EXmE5a1XgE9mc55H+TTPNNRTt44QJbQgbnn
+-         wTNksIkBx8Gs0k3pJI9QIDO2J5AipLN8OOoxkPiDIJtAC8buHzQrdTxFG/4Uxw7tRf8X
+-         A6PNyuUGr+02itkYIlALzEuDHvZna8yZx0zCeCDXF2IrGt0NBHZVTzz1XfX8LeQlCh9L
+-         hleyVdDQnDvwxA7dXqrA4UugXUlEqT8HnIAUdg8+/xubsXOSz9T/22+zc9pZ9uSHm2uq
+-         DpO/hgx1e5DONDN8T+sjjKCO0LnJ8Z9ZS0Huf+8W2XH1uxo48jSgXUOsygPQ36+8R/7t
+-         ng6Q==
+-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+-        d=1e100.net; s=20161025;
+-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+-         :content-disposition:user-agent;
+-        bh=1joVTuHcQFv5PhIFvZBlpu1jeKwRQi2Ty1HKsqzNx+0=;
+-        b=ZQrXdTIYsCSUGNJS1C0dn+gibvoSHb2o+kcUMGTbH6G2tag3Zy4vnfIcBT0xhmvPLq
+-         5pU8jskcufXp0qQ0sivNsBpJYJCbsqqiChoivTs9WC4rxoM5G62Wi0pAZL59fGGDnmyV
+-         xjSTkSoxe8CiB+26BDzg52zkynkWC2v0OHgaM7/1lTeTqNxdYIvQ+hC4LXdy40bAP64/
+-         JIC1nET+KwewpPHJQc2u87ah4xp6nEjzO/4wTP3CUi4zbZPTU17oH007IAXhObL7JO0r
+-         XkRBJAgpcTKexfAJB7HnAUc4KLSv5L5Uz+Z14TusskTuK6njE11PE9GSJ7Z7lqufqJNZ
+-         Z4GQ==
+-X-Gm-Message-State: AJcUukdaW+EjUkHLIrpaLWRYCoF9XYWdpSiPfNnJgu3VB9CW8t9xYlZJ
+-        NDU6hJ2AXvnDR+awfdjm6IU=
+-X-Google-Smtp-Source: 
+- ALg8bN59XklA0HTVEDaLFI+8dguNdipIQWTlgIi23N78PjaLBzniLMXowf2nCpIra7boIidjtFvfYg==
+-X-Received: by 2002:a1c:7c05:: with SMTP id x5mr3525198wmc.54.1548265106544;
+-        Wed, 23 Jan 2019 09:38:26 -0800 (PST)
+-Received: from gmail.com (79.108.96.12.dyn.user.ono.com. [79.108.96.12])
+-        by smtp.gmail.com with ESMTPSA id
+- r77sm74200791wmd.22.2019.01.23.09.38.25
+-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+-        Wed, 23 Jan 2019 09:38:25 -0800 (PST)
+-Date: Wed, 23 Jan 2019 18:37:07 +0100
+-From: Miguel Ojeda &lt;miguel.ojeda.sandonis@xxxxxxxxx&gt;
+-To: Jessica Yu &lt;jeyu@xxxxxxxxxx&gt;
+-Cc: Laura Abbott &lt;labbott@xxxxxxxxxx&gt;,
+-        Martin Sebor &lt;msebor@xxxxxxxxxxx&gt;, linux-kernel@xxxxxxxxxxxxxxx
+-Subject: [PATCH] include/linux/module.h: mark init/cleanup_module aliases as
+- __cold
+-Message-ID: &lt;20190123173707.GA16603@xxxxxxxxx&gt;
+-MIME-Version: 1.0
+-Content-Type: text/plain; charset=us-ascii
+-Content-Disposition: inline
+-User-Agent: elm/2
+-Sender: linux-kernel-owner@xxxxxxxxxxxxxxx
+-Precedence: bulk
+-List-ID: &lt;linux-kernel.vger.kernel.org&gt;
+-X-Mailing-List: linux-kernel@xxxxxxxxxxxxxxx
+-
+-The upcoming GCC 9 release adds the -Wmissing-attributes warnings
+-(enabled by -Wall), which trigger for all the init/cleanup_module
+-aliases in the kernel (defined by the module_init/exit macros),
+-ending up being very noisy.
+-
+-These aliases point to the __init/__exit functions of a module,
+-which are defined as __cold (among other attributes). However,
+-the aliases themselves do not have the __cold attribute.
+-
+-Since the compiler behaves differently when compiling a __cold
+-function as well as when compiling paths leading to calls
+-to __cold functions, the warning is trying to point out
+-the possibly-forgotten attribute in the alias.
+-
+-In order to keep the warning enabled, we choose to silence
+-the warning by marking the aliases as __cold. This is possible
+-marking either the extern declaration, the definition, or both.
+-In order to avoid changing the behavior of callers, we do it
+-only in the definition of the aliases (since those are not
+-seen by any other TU).
+-
+-Suggested-by: Martin Sebor &lt;msebor@xxxxxxxxxxx&gt;
+-Signed-off-by: Miguel Ojeda &lt;miguel.ojeda.sandonis@xxxxxxxxx&gt;
+----
+-Note that an alternative is using the new copy attribute
+-introduced by GCC 9 (Martin told me about it, as well as the
+-new warning).
+-
+-What I am concerned about using __copy is that I am not sure
+-we should be copying all the attributes (even if some are
+-blacklisted by the copy itself), since:
+-  - We have unknown-to-GCC attributes (e.g. from plugins).
+-  - We wouldn't enjoy the fix for older compilers
+-    (e.g. if the fix had an actual impact).
+-
+-So here I took the conservative approach for the moment,
+-and we can discuss/apply whether another solution is best.
+-
+-Jessica: please review what I explain in the commit message.
+-Do we actually want the __cold attribute in the declaration
+-as well? If yes, AFAIK, GCC would assume paths that end up
+-calling the __init/__exit functions are not meant to be taken
+-(but when we are asked to load modules, that is the expected
+-path, no?).
+-
+-I will put this in the compiler-attributes tree and get
+-some time in linux-next, unless you want to pick it up!
+-
+- include/linux/module.h | 4 ++--
+- 1 file changed, 2 insertions(+), 2 deletions(-)
+-
+-diff --git a/include/linux/module.h b/include/linux/module.h
+-index 8fa38d3e7538..c4e805e87628 100644
+---- a/include/linux/module.h
+-+++ b/include/linux/module.h
+-@@ -129,13 +129,13 @@ extern void cleanup_module(void);
+- #define module_init(initfn)					\
+- 	static inline initcall_t __maybe_unused __inittest(void)		\
+- 	{ return initfn; }					\
+--	int init_module(void) __attribute__((alias(#initfn)));
+-+	int init_module(void) __cold __attribute__((alias(#initfn)));
+- 
+- /* This is only required if you want to be unloadable. */
+- #define module_exit(exitfn)					\
+- 	static inline exitcall_t __maybe_unused __exittest(void)		\
+- 	{ return exitfn; }					\
+--	void cleanup_module(void) __attribute__((alias(#exitfn)));
+-+	void cleanup_module(void) __cold __attribute__((alias(#exitfn)));
+- 
+- #endif
+- 
+diff --git a/lib-crc32.c-mark-crc32_le_base-__crc32c_le_base-aliases-as-__pure.patch b/lib-crc32.c-mark-crc32_le_base-__crc32c_le_base-aliases-as-__pure.patch
+deleted file mode 100644
+index 2010603f4ad4..000000000000
+--- a/lib-crc32.c-mark-crc32_le_base-__crc32c_le_base-aliases-as-__pure.patch
++++ /dev/null
+@@ -1,124 +0,0 @@
+-From patchwork Thu Jan 24 15:44:20 2019
+-Content-Type: text/plain; charset=&quot;utf-8&quot;
+-MIME-Version: 1.0
+-Content-Transfer-Encoding: 7bit
+-X-Patchwork-Submitter: Miguel Ojeda &lt;miguel.ojeda.sandonis@xxxxxxxxx&gt;
+-X-Patchwork-Id: 1035252
+-Return-Path: &lt;SRS0=jJS3=QA=vger.kernel.org=linux-kernel-owner@xxxxxxxxxx&gt;
+-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95925C282C3
+-	for &lt;linux-kernel@xxxxxxxxxxxxxxxxxxx&gt;; Thu, 24 Jan 2019 15:44:28 +0000 (UTC)
+-Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
+-	by mail.kernel.org (Postfix) with ESMTP id 6368521872
+-	for &lt;linux-kernel@xxxxxxxxxxxxxxxxxxx&gt;; Thu, 24 Jan 2019 15:44:28 +0000 (UTC)
+-Authentication-Results: mail.kernel.org;
+-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+- header.b=&quot;DEOxuN9k&quot;
+-Received: (majordomo@xxxxxxxxxxxxxxx) by vger.kernel.org via listexpand
+-        id S1728590AbfAXPo1 (ORCPT
+-        &lt;rfc822;linux-kernel@xxxxxxxxxxxxxxxxxxx&gt;);
+-        Thu, 24 Jan 2019 10:44:27 -0500
+-Received: from mail-wm1-f68.google.com ([209.85.128.68]:37788 &quot;EHLO
+-        mail-wm1-f68.google.com&quot; rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+-        with ESMTP id S1727649AbfAXPo0 (ORCPT
+-        &lt;rfc822;linux-kernel@xxxxxxxxxxxxxxx&gt;);
+-        Thu, 24 Jan 2019 10:44:26 -0500
+-Received: by mail-wm1-f68.google.com with SMTP id g67so3548002wmd.2
+-        for &lt;linux-kernel@xxxxxxxxxxxxxxx&gt;;
+- Thu, 24 Jan 2019 07:44:25 -0800 (PST)
+-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+-        d=gmail.com; s=20161025;
+-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+-         :user-agent;
+-        bh=JeyLhzrsCRzzO/4nbb0LJSQxILVpgC++VcQqugacalc=;
+-        b=DEOxuN9kV3A3qQ3ere0UjnfgT3DE1Gc4z/52Qty46F/mbpPja2OkXvtPJ15RK9/h4Z
+-         AG1fdkKf/GjCRaBidO9BLWwcoq0uiTV69J0KR0rF67QR9zxgGVEl8fu6s/ZmtKnnIdF4
+-         AysPfOHY+/MwlcB6UOzADtS69SDUYTsxDxOfHBj/FjnS7WmNetq8ae17VvRdpd/JEWtE
+-         M58OhgBYmckFYuVXQTEEhpm8w6TIefPA5S3r3KeUuXclMeqJ07pU1vJWK7tdTp7sIeAv
+-         xYgGq49/NBPkUl4l+LdwVBwp+o6pvUfh2w9zBQW67xZu6rn/j500BV8xdubxQqHTauSM
+-         oQPw==
+-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+-        d=1e100.net; s=20161025;
+-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+-         :content-disposition:user-agent;
+-        bh=JeyLhzrsCRzzO/4nbb0LJSQxILVpgC++VcQqugacalc=;
+-        b=twekOdboep908h8e5de5qIQIgDuUrOYeS/p8s5bh3AYpMD9r3CIJtanHSCWnFCsPIw
+-         /hesYDvbpVSiQTI1afBap2tw2ugq2aL2Sur2/9BhWE5So2HlVMlN5M6S8ccs6IK6Ldzh
+-         +wxWJnq7dnvwbpMLcT3mASpdlEUPTaVTA7AazIssYrIDY9ucJA4vfYUemvvTtKn2tovO
+-         lJjVDsOwv7/3P9XphLneTUXTI1ZD9soUX/qpt1m4n4BAme1tHfmbAL4cceRfMf7eFKhh
+-         t3iRpkh/6ZHMGw0moeXPkTB+WTDhA7MgsmQA/X6tmPfjfMQsEo+OKRUBtFuuVDY5wzSf
+-         eX7Q==
+-X-Gm-Message-State: AJcUukcM8ZahlKLufK0H1V2XtT0GIN899FyU1V2PJM0+/GfK3XvzMW2n
+-        o0kPoin07YrKIK/Zh71qAxI=
+-X-Google-Smtp-Source: 
+- ALg8bN7upuyKWCD/cTB9FAkdcEyU6dlTStUcg49cEAv640NugO83fRipoQ9X2YGpIogSFxA7BbHmeQ==
+-X-Received: by 2002:a1c:bbd6:: with SMTP id l205mr2979576wmf.97.1548344665032;
+-        Thu, 24 Jan 2019 07:44:25 -0800 (PST)
+-Received: from gmail.com (79.108.96.12.dyn.user.ono.com. [79.108.96.12])
+-        by smtp.gmail.com with ESMTPSA id
+- k128sm80898610wmd.37.2019.01.24.07.44.23
+-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+-        Thu, 24 Jan 2019 07:44:24 -0800 (PST)
+-Date: Thu, 24 Jan 2019 16:44:20 +0100
+-From: Miguel Ojeda &lt;miguel.ojeda.sandonis@xxxxxxxxx&gt;
+-To: Krzysztof Kozlowski &lt;krzk@xxxxxxxxxx&gt;
+-Cc: Laura Abbott &lt;labbott@xxxxxxxxxx&gt;,
+-        Herbert Xu &lt;herbert@xxxxxxxxxxxxxxxxxxx&gt;,
+-        Ard Biesheuvel &lt;ard.biesheuvel@xxxxxxxxxx&gt;,
+-        Catalin Marinas &lt;catalin.marinas@xxxxxxx&gt;,
+-        Martin Sebor &lt;msebor@xxxxxxxxxxx&gt;, linux-kernel@xxxxxxxxxxxxxxx
+-Subject: [PATCH] lib/crc32.c: mark crc32_le_base/__crc32c_le_base aliases as
+- __pure
+-Message-ID: &lt;20190124154420.GA11471@xxxxxxxxx&gt;
+-MIME-Version: 1.0
+-Content-Type: text/plain; charset=us-ascii
+-Content-Disposition: inline
+-User-Agent: elm/2
+-Sender: linux-kernel-owner@xxxxxxxxxxxxxxx
+-Precedence: bulk
+-List-ID: &lt;linux-kernel.vger.kernel.org&gt;
+-X-Mailing-List: linux-kernel@xxxxxxxxxxxxxxx
+-
+-The upcoming GCC 9 release extends the -Wmissing-attributes warnings
+-(enabled by -Wall) to C and aliases: it warns when particular function
+-attributes are missing in the aliases but not in their target.
+-
+-In particular, it triggers here because crc32_le_base/__crc32c_le_base
+-aren't __pure while their target crc32_le/__crc32c_le are.
+-
+-These aliases are used by architectures as a fallback in accelerated
+-versions of CRC32. See commit 9784d82db3eb (&quot;lib/crc32: make core crc32()
+-routines weak so they can be overridden&quot;).
+-
+-Therefore, being fallbacks, it is likely that even if the aliases
+-were called from C, there wouldn't be any optimizations possible.
+-Currently, the only user is arm64, which calls this from asm.
+-
+-Still, marking the aliases as __pure makes sense and is a good idea
+-for documentation purposes and possible future optimizations,
+-which also silences the warning.
+-
+-Signed-off-by: Miguel Ojeda &lt;miguel.ojeda.sandonis@xxxxxxxxx&gt;
+----
+-I am picking this up through the compiler-attributes tree
+-and putting it into -next along with the other cleanup
+-for -Wmissing-attributes (unless some other maintainer wants it).
+-
+- lib/crc32.c | 4 ++--
+- 1 file changed, 2 insertions(+), 2 deletions(-)
+-
+-diff --git a/lib/crc32.c b/lib/crc32.c
+-index 45b1d67a1767..4a20455d1f61 100644
+---- a/lib/crc32.c
+-+++ b/lib/crc32.c
+-@@ -206,8 +206,8 @@ u32 __pure __weak __crc32c_le(u32 crc, unsigned char const *p, size_t len)
+- EXPORT_SYMBOL(crc32_le);
+- EXPORT_SYMBOL(__crc32c_le);
+- 
+--u32 crc32_le_base(u32, unsigned char const *, size_t) __alias(crc32_le);
+--u32 __crc32c_le_base(u32, unsigned char const *, size_t) __alias(__crc32c_le);
+-+u32 __pure crc32_le_base(u32, unsigned char const *, size_t) __alias(crc32_le);
+-+u32 __pure __crc32c_le_base(u32, unsigned char const *, size_t) __alias(__crc32c_le);
+- 
+- /*
+-  * This multiplies the polynomials x and y modulo the given modulus.
+-- 
+2.17.2
+_______________________________________________
+kernel mailing list -- kernel@xxxxxxxxxxxxxxxxxxxxxxx
+To unsubscribe send an email to kernel-leave@xxxxxxxxxxxxxxxxxxxxxxx
+Fedora Code of Conduct: <a  rel="nofollow" href="https://getfedora.org/code-of-conduct.html">https://getfedora.org/code-of-conduct.html</a>
+List Guidelines: <a  rel="nofollow" href="https://fedoraproject.org/wiki/Mailing_list_guidelines">https://fedoraproject.org/wiki/Mailing_list_guidelines</a>
+List Archives: <a  rel="nofollow" href="https://lists.fedoraproject.org/archives/list/kernel@xxxxxxxxxxxxxxxxxxxxxxx">https://lists.fedoraproject.org/archives/list/kernel@xxxxxxxxxxxxxxxxxxxxxxx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07484" href="msg07484.html">Re: [PATCH] Drop six orphaned patches</a></strong>
+<ul><li><em>From:</em> Jeremy Cline</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07473.html">[Test Day] Kernel 5.0 2019-03-12</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07475.html">[PATCH] Remove a patch that still touches userspace tools</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07473.html">[Test Day] Kernel 5.0 2019-03-12</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07484.html">Re: [PATCH] Drop six orphaned patches</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07474"><strong>Date</strong></a></li>
+<li><a href="index.html#07474"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;General&nbsp;Discussion]</a>
+&nbsp;
+&nbsp;
+<a href=http://lists.linuxcoding.com/rhl/>[Older&nbsp;Fedora&nbsp;Users&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-advisory-board/>[Fedora&nbsp;Advisory&nbsp;Board]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-security/>[Fedora&nbsp;Security]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-devel-java/>[Fedora&nbsp;Devel&nbsp;Java]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-legacy/>[Fedora&nbsp;Legacy]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ataraid/>[ATA&nbsp;RAID]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-marketing/>[Fedora&nbsp;Marketing]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-mentors/>[Fedora&nbsp;Mentors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-package-announce/>[Fedora&nbsp;Package&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-package-review/>[Fedora&nbsp;Package&nbsp;Review]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-music/>[Fedora&nbsp;Music]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-packaging/>[Fedora&nbsp;Packaging]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos/>[Centos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/coolkey/>[Coolkey]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/yum/>[Yum&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/tux/>[Tux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-art/>[Fedora&nbsp;Art]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-docs/>[Fedora&nbsp;Docs]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[USB]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

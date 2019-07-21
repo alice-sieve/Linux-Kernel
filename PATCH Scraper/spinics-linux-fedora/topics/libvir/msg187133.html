@@ -1,0 +1,332 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2 00/19] Enable proper use of systemd socket	activation with libvirtd -->
+<!--X-From-R13: =?GFT&#45;8?d?Rnavry=20B=2S=20Preenat=Q3=O9?= &#60;oreenatrNerqung.pbz> -->
+<!--X-Date: Thu, 11 Jul 2019 07:07:50 &#45;0700 -->
+<!--X-Message-Id: 20190711140742.31029&#45;1&#45;berrange@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v2 00/19] Enable proper use of systemd socket	activation with libvirtd</title>
+<meta name="description" content="libvirt: [PATCH v2 00/19] Enable proper use of systemd socket	activation with libvirtd">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v2 00/19] Enable proper use of systemd socket	activation with libvirtd</h1>
+[<a href="msg187132.html">Date Prev</a>][<a href="msg187134.html">Date Next</a>][<a href="msg187128.html">Thread Prev</a>][<a href="msg187134.html">Thread Next</a>][<a href="maillist.html#187133">Date Index</a>][<a href="index.html#187133">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v2 00/19] Enable proper use of systemd socket	activation with libvirtd</li>
+<li><em>From</em>: Daniel P. Berrang&#xE9; &lt;berrange@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 11 Jul 2019 15:07:23 +0100</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The libvirtd daemon has some support for systemd socket activation
+from:
+
+  commit 27a7081c2968ca0d7fbd590629b5a5303851f4a3
+  Author: Martin Kletzander &lt;mkletzan@xxxxxxxxxx&gt;
+  Date:   Tue Jul 15 15:28:53 2014 +0200
+
+    daemon: support passing FDs from the calling process
+
+    First FD is the RW unix socket to listen on, second one (if
+    applicable) is the RO unix socket.
+
+This was originally intended for use by the libvirt client when doing
+auto-spawning of libvirtd, but we later deleted that client side code
+in
+
+  commit be78814ae07f092d9c4e71fd82dd1947aba2f029
+  Author: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;
+  Date:   Thu Apr 2 14:41:17 2015 +0200
+
+    virNetSocketNewConnectUNIX: Use flocks when spawning a daemon
+
+We never added systemd socket units before as we need libvirtd to start
+on boot to perform autostart.
+
+It was recently pointed out by Lennart that these two features are not
+mutually exclusive though. Libvirtd can be set to start on boot, and
+also have socket unit files.
+
+The idea is that we start libvirtd on boot, perform autostart, and then
+libvirtd can exit if nothing is running. The socket unit files are then
+there to start it again when a mgmt app connects.
+
+This series implements that strategy. In doing so the current socket
+activation support was rewritten to be more flexible, able to cope with
+the admin socket and the TCP/TLS sockets, all passed in any order.
+
+NB, I don't believe I have got the RPM upgrade procedure right yet. As
+there are alot of scenario to test for upgrades, I need more validation
+of that. The series is long enough now though, that it would benefit
+from code review already
+
+This socket activation is also going to be important when we split out
+the daemons, as we will use the same libvirtd codebase for these new
+daemons, simply compiled with different options.
+
+Changed in v2:
+
+ - Merge 4 patches already ACKd by Jan
+ - Drop VIR_AUTOSTRUCT patch
+ - Fix patch ordering to be bisectable with &quot;make check&quot;
+
+Daniel P. Berrang&#xE9; (19):
+  rpc: ensure all sockets bind to same port when service is NULL
+  util: add APIs for facilitating use of systemd activation FDs
+  rpc: refactor RPC service constructors to share more code
+  rpc: allow creating RPC service from an array of FDs
+  rpc: avoid unlinking sockets passed in from systemd
+  rpc: add helper APIs for adding services with systemd activation
+  rpc: add API for checking whether an auth scheme is in use on a server
+  remote: simplify libvirtd code for deciding if SASL auth is needed
+  remote: fix handling of systemd activation wrt socket ordering
+  rpc: remove unused API for creating services from FDs
+  remote: add systemd socket units for UNIX/TCP sockets
+  remote: make system libvirtd exit when idle via timeout
+  remote: update config files to note usage wrt systemd socket
+    activation
+  util: remove code spawning with systemd activation env vars
+  locking: convert lock daemon to use systemd activation APIs
+  logging: convert log daemon to use systemd activation APIs
+  util: move code for getting listen FDs into systemd module
+  util: remove unused helper for getting UNIX socket path
+  rpc: remove unused typedef for auto shutdown function callback
+
+ libvirt.spec.in                               |  24 +-
+ src/libvirt_private.syms                      |   8 +-
+ src/libvirt_remote.syms                       |   6 +-
+ src/locking/lock_daemon.c                     | 121 ++---
+ src/logging/log_daemon.c                      | 121 ++---
+ src/remote/Makefile.inc.am                    |  35 ++
+ src/remote/libvirtd-admin.socket.in           |  15 +
+ src/remote/libvirtd-ro.socket.in              |  15 +
+ src/remote/libvirtd-tcp.socket.in             |  14 +
+ src/remote/libvirtd-tls.socket.in             |  14 +
+ src/remote/libvirtd.conf                      |  31 ++
+ src/remote/libvirtd.service.in                |  16 +-
+ src/remote/libvirtd.socket.in                 |  13 +
+ src/remote/libvirtd.sysconf                   |   3 +-
+ src/remote/remote_daemon.c                    | 255 +++++-----
+ src/rpc/virnetdaemon.h                        |   2 -
+ src/rpc/virnetserver.c                        | 162 +++++++
+ src/rpc/virnetserver.h                        |  26 ++
+ src/rpc/virnetserverservice.c                 | 238 ++++------
+ src/rpc/virnetserverservice.h                 |  24 +-
+ src/rpc/virnetsocket.c                        |  83 +++-
+ src/rpc/virnetsocket.h                        |   1 +
+ src/util/vircommand.c                         |  99 ----
+ src/util/vircommand.h                         |   2 -
+ src/util/virsystemd.c                         | 434 ++++++++++++++++++
+ src/util/virsystemd.h                         |  32 ++
+ src/util/virutil.c                            | 116 -----
+ src/util/virutil.h                            |   3 -
+ tests/commanddata/test24.log                  |   8 -
+ tests/commandtest.c                           |  58 ---
+ .../input-data-anon-clients.json              |  12 +-
+ .../output-data-admin-server-names.json       |  24 +-
+ tests/virnetdaemondata/output-data-admin.json |  24 +-
+ .../output-data-anon-clients.json             |  12 +-
+ .../output-data-client-auth-pending.json      |  12 +-
+ .../output-data-client-ids.json               |  12 +-
+ .../output-data-client-timestamp.json         |  12 +-
+ .../virnetdaemondata/output-data-initial.json |  12 +-
+ .../output-data-no-keepalive-required.json    |  24 +-
+ tests/virsystemdtest.c                        | 169 +++++++
+ 40 files changed, 1464 insertions(+), 828 deletions(-)
+ create mode 100644 src/remote/libvirtd-admin.socket.in
+ create mode 100644 src/remote/libvirtd-ro.socket.in
+ create mode 100644 src/remote/libvirtd-tcp.socket.in
+ create mode 100644 src/remote/libvirtd-tls.socket.in
+ create mode 100644 src/remote/libvirtd.socket.in
+ delete mode 100644 tests/commanddata/test24.log
+
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187132.html">Re:  [PATCH] test_driver: consider flags in testDomainSetMemoryFlags</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187134.html">[PATCH v2 01/19] rpc: ensure all sockets bind to same	port when service is NULL</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187128.html">[PATCH] nodedev: add missing include for	virFileMakePathWithMode</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187134.html">[PATCH v2 01/19] rpc: ensure all sockets bind to same	port when service is NULL</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187133"><strong>Date</strong></a></li>
+<li><a href="index.html#187133"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

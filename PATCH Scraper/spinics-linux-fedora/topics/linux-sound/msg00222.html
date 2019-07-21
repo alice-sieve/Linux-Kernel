@@ -1,0 +1,790 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v5 2/3] ASoC: atmel&#45;ssc&#45;dai: register dai and pcm directly -->
+<!--X-From-R13: Pb Eura &#60;ibvpr.furaNngzry.pbz> -->
+<!--X-Date: Sun, 11 Nov 2012 23:45:01 &#45;0800 -->
+<!--X-Message-Id: 1352706028&#45;750&#45;3&#45;git&#45;send&#45;email&#45;voice.shen@atmel.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1352706028&#45;750&#45;1&#45;git&#45;send&#45;email&#45;voice.shen@atmel.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Sound: [PATCH v5 2/3] ASoC: atmel-ssc-dai: register dai and pcm directly">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Sound &mdash; [PATCH v5 2/3] ASoC: atmel-ssc-dai: register dai and pcm directly</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Sound" href="//feeds.feedburner.com/LinuxSound">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:6612422167" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v5 2/3] ASoC: atmel-ssc-dai: register dai and pcm directly</h1>
+[<a href="msg00224.html">Date Prev</a>][<a href="msg00225.html">Date Next</a>][<a href="msg00224.html">Thread Prev</a>][<a href="msg00226.html">Thread Next</a>][<a href="maillist.html#00222">Date Index</a>][<a href="index.html#00222">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v5 2/3] ASoC: atmel-ssc-dai: register dai and pcm directly</li>
+<li><em>From</em>: Bo Shen &lt;<a href="mailto:voice.shen@DOMAIN.HIDDEN">voice.shen@xxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Mon, 12 Nov 2012 15:40:26 +0800</li>
+<li><em>Cc</em>: <a href="mailto:linux-arm-kernel@DOMAIN.HIDDEN">linux-arm-kernel@xxxxxxxxxxxxxxxxxxx</a>, <a href="mailto:devicetree-discuss@DOMAIN.HIDDEN">devicetree-discuss@xxxxxxxxxxxxxxxx</a>,        <a href="mailto:linux-sound@DOMAIN.HIDDEN">linux-sound@xxxxxxxxxxxxxxx</a>, <a href="mailto:alsa-devel@DOMAIN.HIDDEN">alsa-devel@xxxxxxxxxxxxxxxx</a>,        Bo Shen &lt;<a href="mailto:voice.shen@DOMAIN.HIDDEN">voice.shen@xxxxxxxxx</a>&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg00223.html">1352706028-750-1-git-send-email-voice.shen@atmel.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>change the method for register dai and pcm
+  - let the atmel-ssc-dai no longer as a standalone platform device
+  - remap ssc and then register dai directly
+  - register pcm from dai directly
+
+Modify the code which related with this change
+
+Signed-off-by: Bo Shen &lt;voice.shen@xxxxxxxxx&gt;
+---
+Change since v4 RFC
+  - no change
+Change since v3 RFC
+  - remap ssc and then register dai and pcm directly
+Change since v2
+  - Register dai and pcm directly according to Mark Brown's suggestion
+    - using name to distinguish ssc register for audio or library
+      if for audio, the name with dai subfix
+      if for library, the name without dai subfix
+  - fix the issue for sam9g20-wm8731
+    - when register dai and pcm cause the sam9g20-wm8731 doesn't work,
+      so fix it
+  - Add device tree support
+    - Detail information reference atmel-ssc-dai.txt binding document
+Change since v1
+  No change
+---
+ arch/arm/mach-at91/at91sam9260_devices.c |    9 --
+ arch/arm/mach-at91/board-sam9g20ek.c     |    8 +-
+ sound/soc/atmel/atmel-pcm.c              |   23 +--
+ sound/soc/atmel/atmel-pcm.h              |    3 +
+ sound/soc/atmel/atmel_ssc_dai.c          |  228 +++++++-----------------------
+ sound/soc/atmel/atmel_ssc_dai.h          |    1 +
+ sound/soc/atmel/sam9g20_wm8731.c         |   13 +-
+ 7 files changed, 76 insertions(+), 209 deletions(-)
+
+diff --git a/arch/arm/mach-at91/at91sam9260_devices.c b/arch/arm/mach-at91/at91sam9260_devices.c
+index df7bebf..6959fd2 100644
+--- a/arch/arm/mach-at91/at91sam9260_devices.c
++++ b/arch/arm/mach-at91/at91sam9260_devices.c
+@@ -768,14 +768,6 @@ static inline void configure_ssc_pins(unsigned pins)
+ 		at91_set_A_periph(AT91_PIN_PB21, 1);
+ }
+ 
+-static struct platform_device at91sam9260_ssc_dai_device = {
+-	.name	= &quot;atmel-ssc-dai&quot;,
+-	.id	= 0,
+-	.dev	= {
+-		.parent	= &amp;(at91sam9260_ssc_device.dev),
+-	},
+-};
+-
+ /*
+  * SSC controllers are accessed through library code, instead of any
+  * kind of all-singing/all-dancing driver.  For example one could be
+@@ -800,7 +792,6 @@ void __init at91_add_device_ssc(unsigned id, unsigned pins)
+ 	}
+ 
+ 	platform_device_register(pdev);
+-	platform_device_register(&amp;at91sam9260_ssc_dai_device);
+ }
+ 
+ #else
+diff --git a/arch/arm/mach-at91/board-sam9g20ek.c b/arch/arm/mach-at91/board-sam9g20ek.c
+index 5b6a6f9..f3faf54 100644
+--- a/arch/arm/mach-at91/board-sam9g20ek.c
++++ b/arch/arm/mach-at91/board-sam9g20ek.c
+@@ -353,19 +353,13 @@ static struct i2c_board_info __initdata ek_i2c_devices[] = {
+         },
+ };
+ 
+-static struct platform_device sam9g20ek_pcm_device = {
+-	.name	= &quot;atmel-pcm-audio&quot;,
+-	.id = -1,
+-};
+-
+ static struct platform_device sam9g20ek_audio_device = {
+ 	.name   = &quot;at91sam9g20ek-audio&quot;,
+-	.id     = -1,
++	.id     = 0,
+ };
+ 
+ static void __init ek_add_device_audio(void)
+ {
+-	platform_device_register(&amp;sam9g20ek_pcm_device);
+ 	platform_device_register(&amp;sam9g20ek_audio_device);
+ }
+ 
+diff --git a/sound/soc/atmel/atmel-pcm.c b/sound/soc/atmel/atmel-pcm.c
+index 9b84f98..40e17d1 100644
+--- a/sound/soc/atmel/atmel-pcm.c
++++ b/sound/soc/atmel/atmel-pcm.c
+@@ -473,28 +473,17 @@ static struct snd_soc_platform_driver atmel_soc_platform = {
+ 	.resume		= atmel_pcm_resume,
+ };
+ 
+-static int __devinit atmel_soc_platform_probe(struct platform_device *pdev)
++int atmel_pcm_platform_register(struct device *dev)
+ {
+-	return snd_soc_register_platform(&amp;pdev-&gt;dev, &amp;atmel_soc_platform);
++	return snd_soc_register_platform(dev, &amp;atmel_soc_platform);
+ }
++EXPORT_SYMBOL(atmel_pcm_platform_register);
+ 
+-static int __devexit atmel_soc_platform_remove(struct platform_device *pdev)
++void atmel_pcm_platform_unregister(struct device *dev)
+ {
+-	snd_soc_unregister_platform(&amp;pdev-&gt;dev);
+-	return 0;
++	snd_soc_unregister_platform(dev);
+ }
+-
+-static struct platform_driver atmel_pcm_driver = {
+-	.driver = {
+-			.name = &quot;atmel-pcm-audio&quot;,
+-			.owner = THIS_MODULE,
+-	},
+-
+-	.probe = atmel_soc_platform_probe,
+-	.remove = __devexit_p(atmel_soc_platform_remove),
+-};
+-
+-module_platform_driver(atmel_pcm_driver);
++EXPORT_SYMBOL(atmel_pcm_platform_unregister);
+ 
+ MODULE_AUTHOR(&quot;Sedji Gaouaou &lt;sedji.gaouaou@xxxxxxxxx&gt;&quot;);
+ MODULE_DESCRIPTION(&quot;Atmel PCM module&quot;);
+diff --git a/sound/soc/atmel/atmel-pcm.h b/sound/soc/atmel/atmel-pcm.h
+index 5e0a95e..e6d67b3 100644
+--- a/sound/soc/atmel/atmel-pcm.h
++++ b/sound/soc/atmel/atmel-pcm.h
+@@ -80,4 +80,7 @@ struct atmel_pcm_dma_params {
+ #define ssc_readx(base, reg)            (__raw_readl((base) + (reg)))
+ #define ssc_writex(base, reg, value)    __raw_writel((value), (base) + (reg))
+ 
++int atmel_pcm_platform_register(struct device *dev);
++void atmel_pcm_platform_unregister(struct device *dev);
++
+ #endif /* _ATMEL_PCM_H */
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index 354341e..4435e19 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -47,13 +47,6 @@
+ #include &quot;atmel-pcm.h&quot;
+ #include &quot;atmel_ssc_dai.h&quot;
+ 
+-
+-#if defined(CONFIG_ARCH_AT91SAM9260) || defined(CONFIG_ARCH_AT91SAM9G20)
+-#define NUM_SSC_DEVICES		1
+-#else
+-#define NUM_SSC_DEVICES		3
+-#endif
+-
+ /*
+  * SSC PDC registers required by the PCM DMA engine.
+  */
+@@ -96,63 +89,24 @@ static struct atmel_ssc_mask ssc_rx_mask = {
+ /*
+  * DMA parameters.
+  */
+-static struct atmel_pcm_dma_params ssc_dma_params[NUM_SSC_DEVICES][2] = {
+-	{{
+-	.name		= &quot;SSC0 PCM out&quot;,
+-	.pdc		= &amp;pdc_tx_reg,
+-	.mask		= &amp;ssc_tx_mask,
+-	},
++static struct atmel_pcm_dma_params ssc_dma_params[2] = {
+ 	{
+-	.name		= &quot;SSC0 PCM in&quot;,
+-	.pdc		= &amp;pdc_rx_reg,
+-	.mask		= &amp;ssc_rx_mask,
+-	} },
+-#if NUM_SSC_DEVICES == 3
+-	{{
+-	.name		= &quot;SSC1 PCM out&quot;,
++	.name		= &quot;SSC PCM out&quot;,
+ 	.pdc		= &amp;pdc_tx_reg,
+ 	.mask		= &amp;ssc_tx_mask,
+ 	},
+ 	{
+-	.name		= &quot;SSC1 PCM in&quot;,
++	.name		= &quot;SSC PCM in&quot;,
+ 	.pdc		= &amp;pdc_rx_reg,
+ 	.mask		= &amp;ssc_rx_mask,
+-	} },
+-	{{
+-	.name		= &quot;SSC2 PCM out&quot;,
+-	.pdc		= &amp;pdc_tx_reg,
+-	.mask		= &amp;ssc_tx_mask,
+ 	},
+-	{
+-	.name		= &quot;SSC2 PCM in&quot;,
+-	.pdc		= &amp;pdc_rx_reg,
+-	.mask		= &amp;ssc_rx_mask,
+-	} },
+-#endif
+ };
+ 
+-
+-static struct atmel_ssc_info ssc_info[NUM_SSC_DEVICES] = {
+-	{
+-	.name		= &quot;ssc0&quot;,
+-	.lock		= __SPIN_LOCK_UNLOCKED(ssc_info[0].lock),
+-	.dir_mask	= SSC_DIR_MASK_UNUSED,
+-	.initialized	= 0,
+-	},
+-#if NUM_SSC_DEVICES == 3
+-	{
+-	.name		= &quot;ssc1&quot;,
+-	.lock		= __SPIN_LOCK_UNLOCKED(ssc_info[1].lock),
++static struct atmel_ssc_info ssc_info = {
++	.name		= &quot;ssc&quot;,
++	.lock		= __SPIN_LOCK_UNLOCKED(ssc_info.lock),
+ 	.dir_mask	= SSC_DIR_MASK_UNUSED,
+ 	.initialized	= 0,
+-	},
+-	{
+-	.name		= &quot;ssc2&quot;,
+-	.lock		= __SPIN_LOCK_UNLOCKED(ssc_info[2].lock),
+-	.dir_mask	= SSC_DIR_MASK_UNUSED,
+-	.initialized	= 0,
+-	},
+-#endif
+ };
+ 
+ 
+@@ -205,7 +159,7 @@ static irqreturn_t atmel_ssc_interrupt(int irq, void *dev_id)
+ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
+ 			     struct snd_soc_dai *dai)
+ {
+-	struct atmel_ssc_info *ssc_p = &amp;ssc_info[dai-&gt;id];
++	struct atmel_ssc_info *ssc_p = &amp;ssc_info;
+ 	int dir_mask;
+ 
+ 	pr_debug(&quot;atmel_ssc_startup: SSC_SR=0x%u\n&quot;,
+@@ -234,7 +188,7 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
+ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *dai)
+ {
+-	struct atmel_ssc_info *ssc_p = &amp;ssc_info[dai-&gt;id];
++	struct atmel_ssc_info *ssc_p = &amp;ssc_info;
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	int dir, dir_mask;
+ 
+@@ -285,7 +239,7 @@ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
+ static int atmel_ssc_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		unsigned int fmt)
+ {
+-	struct atmel_ssc_info *ssc_p = &amp;ssc_info[cpu_dai-&gt;id];
++	struct atmel_ssc_info *ssc_p = &amp;ssc_info;
+ 
+ 	ssc_p-&gt;daifmt = fmt;
+ 	return 0;
+@@ -297,7 +251,7 @@ static int atmel_ssc_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ static int atmel_ssc_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
+ 	int div_id, int div)
+ {
+-	struct atmel_ssc_info *ssc_p = &amp;ssc_info[cpu_dai-&gt;id];
++	struct atmel_ssc_info *ssc_p = &amp;ssc_info;
+ 
+ 	switch (div_id) {
+ 	case ATMEL_SSC_CMR_DIV:
+@@ -336,8 +290,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+-	int id = dai-&gt;id;
+-	struct atmel_ssc_info *ssc_p = &amp;ssc_info[id];
++	struct atmel_ssc_info *ssc_p = &amp;ssc_info;
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	int dir, channels, bits;
+ 	u32 tfmr, rfmr, tcmr, rcmr;
+@@ -354,7 +307,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 	else
+ 		dir = 1;
+ 
+-	dma_params = &amp;ssc_dma_params[id][dir];
++	dma_params = &amp;ssc_dma_params[dir];
+ 	dma_params-&gt;ssc = ssc_p-&gt;ssc;
+ 	dma_params-&gt;substream = substream;
+ 
+@@ -603,7 +556,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
+ 			     struct snd_soc_dai *dai)
+ {
+-	struct atmel_ssc_info *ssc_p = &amp;ssc_info[dai-&gt;id];
++	struct atmel_ssc_info *ssc_p = &amp;ssc_info;
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	int dir;
+ 
+@@ -631,7 +584,7 @@ static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
+ 	if (!cpu_dai-&gt;active)
+ 		return 0;
+ 
+-	ssc_p = &amp;ssc_info[cpu_dai-&gt;id];
++	ssc_p = &amp;ssc_info;
+ 
+ 	/* Save the status register before disabling transmit and receive */
+ 	ssc_p-&gt;ssc_state.ssc_sr = ssc_readl(ssc_p-&gt;ssc-&gt;regs, SR);
+@@ -660,7 +613,7 @@ static int atmel_ssc_resume(struct snd_soc_dai *cpu_dai)
+ 	if (!cpu_dai-&gt;active)
+ 		return 0;
+ 
+-	ssc_p = &amp;ssc_info[cpu_dai-&gt;id];
++	ssc_p = &amp;ssc_info;
+ 
+ 	/* restore SSC register settings */
+ 	ssc_writel(ssc_p-&gt;ssc-&gt;regs, TFMR, ssc_p-&gt;ssc_state.ssc_tfmr);
+@@ -689,28 +642,10 @@ static int atmel_ssc_resume(struct snd_soc_dai *cpu_dai)
+ 
+ static int atmel_ssc_probe(struct snd_soc_dai *dai)
+ {
+-	struct atmel_ssc_info *ssc_p = &amp;ssc_info[dai-&gt;id];
+-	int ret = 0;
++	struct atmel_ssc_info *ssc_p = &amp;ssc_info;
+ 
+ 	snd_soc_dai_set_drvdata(dai, ssc_p);
+ 
+-	/*
+-	 * Request SSC device
+-	 */
+-	ssc_p-&gt;ssc = ssc_request(dai-&gt;id);
+-	if (IS_ERR(ssc_p-&gt;ssc)) {
+-		printk(KERN_ERR &quot;ASoC: Failed to request SSC %d\n&quot;, dai-&gt;id);
+-		ret = PTR_ERR(ssc_p-&gt;ssc);
+-	}
+-
+-	return ret;
+-}
+-
+-static int atmel_ssc_remove(struct snd_soc_dai *dai)
+-{
+-	struct atmel_ssc_info *ssc_p = snd_soc_dai_get_drvdata(dai);
+-
+-	ssc_free(ssc_p-&gt;ssc);
+ 	return 0;
+ }
+ 
+@@ -728,11 +663,8 @@ static const struct snd_soc_dai_ops atmel_ssc_dai_ops = {
+ 	.set_clkdiv	= atmel_ssc_set_dai_clkdiv,
+ };
+ 
+-static struct snd_soc_dai_driver atmel_ssc_dai[NUM_SSC_DEVICES] = {
+-	{
+-		.name = &quot;atmel-ssc-dai.0&quot;,
++static struct snd_soc_dai_driver atmel_ssc_dai = {
+ 		.probe = atmel_ssc_probe,
+-		.remove = atmel_ssc_remove,
+ 		.suspend = atmel_ssc_suspend,
+ 		.resume = atmel_ssc_resume,
+ 		.playback = {
+@@ -746,69 +678,37 @@ static struct snd_soc_dai_driver atmel_ssc_dai[NUM_SSC_DEVICES] = {
+ 			.rates = ATMEL_SSC_RATES,
+ 			.formats = ATMEL_SSC_FORMATS,},
+ 		.ops = &amp;atmel_ssc_dai_ops,
+-	},
+-#if NUM_SSC_DEVICES == 3
+-	{
+-		.name = &quot;atmel-ssc-dai.1&quot;,
+-		.probe = atmel_ssc_probe,
+-		.remove = atmel_ssc_remove,
+-		.suspend = atmel_ssc_suspend,
+-		.resume = atmel_ssc_resume,
+-		.playback = {
+-			.channels_min = 1,
+-			.channels_max = 2,
+-			.rates = ATMEL_SSC_RATES,
+-			.formats = ATMEL_SSC_FORMATS,},
+-		.capture = {
+-			.channels_min = 1,
+-			.channels_max = 2,
+-			.rates = ATMEL_SSC_RATES,
+-			.formats = ATMEL_SSC_FORMATS,},
+-		.ops = &amp;atmel_ssc_dai_ops,
+-	},
+-	{
+-		.name = &quot;atmel-ssc-dai.2&quot;,
+-		.probe = atmel_ssc_probe,
+-		.remove = atmel_ssc_remove,
+-		.suspend = atmel_ssc_suspend,
+-		.resume = atmel_ssc_resume,
+-		.playback = {
+-			.channels_min = 1,
+-			.channels_max = 2,
+-			.rates = ATMEL_SSC_RATES,
+-			.formats = ATMEL_SSC_FORMATS,},
+-		.capture = {
+-			.channels_min = 1,
+-			.channels_max = 2,
+-			.rates = ATMEL_SSC_RATES,
+-			.formats = ATMEL_SSC_FORMATS,},
+-		.ops = &amp;atmel_ssc_dai_ops,
+-	},
+-#endif
+ };
+ 
+-static __devinit int asoc_ssc_probe(struct platform_device *pdev)
++static int asoc_ssc_init(struct device *dev)
+ {
+-	BUG_ON(pdev-&gt;id &lt; 0);
+-	BUG_ON(pdev-&gt;id &gt;= ARRAY_SIZE(atmel_ssc_dai));
+-	return snd_soc_register_dai(&amp;pdev-&gt;dev, &amp;atmel_ssc_dai[pdev-&gt;id]);
+-}
++	int ret;
++
++	ret = snd_soc_register_dai(dev, &amp;atmel_ssc_dai);
++	if (ret) {
++		dev_err(dev, &quot;Could not register DAI: %d\n&quot;, ret);
++		goto err;
++	}
++
++	ret = atmel_pcm_platform_register(dev);
++	if (ret) {
++		dev_err(dev, &quot;Could not register PCM: %d\n&quot;, ret);
++		goto err_unregister_dai;
++	};
+ 
+-static int __devexit asoc_ssc_remove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_dai(&amp;pdev-&gt;dev);
+ 	return 0;
+-}
+ 
+-static struct platform_driver asoc_ssc_driver = {
+-	.driver = {
+-			.name = &quot;atmel-ssc-dai&quot;,
+-			.owner = THIS_MODULE,
+-	},
++err_unregister_dai:
++	snd_soc_unregister_dai(dev);
++err:
++	return ret;
++}
+ 
+-	.probe = asoc_ssc_probe,
+-	.remove = __devexit_p(asoc_ssc_remove),
+-};
++static void asoc_ssc_exit(struct device *dev)
++{
++	atmel_pcm_platform_unregister(dev);
++	snd_soc_unregister_dai(dev);
++}
+ 
+ /**
+  * atmel_ssc_set_audio - Allocate the specified SSC for audio use.
+@@ -816,50 +716,32 @@ static struct platform_driver asoc_ssc_driver = {
+ int atmel_ssc_set_audio(int ssc_id)
+ {
+ 	struct ssc_device *ssc;
+-	static struct platform_device *dma_pdev;
+-	struct platform_device *ssc_pdev;
+ 	int ret;
+ 
+-	if (ssc_id &lt; 0 || ssc_id &gt;= ARRAY_SIZE(atmel_ssc_dai))
+-		return -EINVAL;
+-
+-	/* Allocate a dummy device for DMA if we don't have one already */
+-	if (!dma_pdev) {
+-		dma_pdev = platform_device_alloc(&quot;atmel-pcm-audio&quot;, -1);
+-		if (!dma_pdev)
+-			return -ENOMEM;
+-
+-		ret = platform_device_add(dma_pdev);
+-		if (ret &lt; 0) {
+-			platform_device_put(dma_pdev);
+-			dma_pdev = NULL;
+-			return ret;
+-		}
+-	}
+-
+-	ssc_pdev = platform_device_alloc(&quot;atmel-ssc-dai&quot;, ssc_id);
+-	if (!ssc_pdev)
+-		return -ENOMEM;
+-
+ 	/* If we can grab the SSC briefly to parent the DAI device off it */
+ 	ssc = ssc_request(ssc_id);
+-	if (IS_ERR(ssc))
+-		pr_warn(&quot;Unable to parent ASoC SSC DAI on SSC: %ld\n&quot;,
++	if (IS_ERR(ssc)) {
++		pr_err(&quot;Unable to parent ASoC SSC DAI on SSC: %ld\n&quot;,
+ 			PTR_ERR(ssc));
+-	else {
+-		ssc_pdev-&gt;dev.parent = &amp;(ssc-&gt;pdev-&gt;dev);
+-		ssc_free(ssc);
++		return PTR_ERR(ssc);
++	} else {
++		ssc_info.ssc = ssc;
+ 	}
+ 
+-	ret = platform_device_add(ssc_pdev);
+-	if (ret &lt; 0)
+-		platform_device_put(ssc_pdev);
++	ret = asoc_ssc_init(&amp;ssc-&gt;pdev-&gt;dev);
+ 
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(atmel_ssc_set_audio);
+ 
+-module_platform_driver(asoc_ssc_driver);
++void atmel_ssc_put_audio(void)
++{
++	struct ssc_device *ssc = ssc_info.ssc;
++
++	ssc_free(ssc);
++	asoc_ssc_exit(&amp;ssc-&gt;pdev-&gt;dev);
++}
++EXPORT_SYMBOL_GPL(atmel_ssc_put_audio);
+ 
+ /* Module information */
+ MODULE_AUTHOR(&quot;Sedji Gaouaou, sedji.gaouaou@xxxxxxxxx, www.atmel.com&quot;);
+diff --git a/sound/soc/atmel/atmel_ssc_dai.h b/sound/soc/atmel/atmel_ssc_dai.h
+index 5d4f0f9..70c66dd 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.h
++++ b/sound/soc/atmel/atmel_ssc_dai.h
+@@ -118,5 +118,6 @@ struct atmel_ssc_info {
+ };
+ 
+ int atmel_ssc_set_audio(int ssc);
++void atmel_ssc_put_audio(void);
+ 
+ #endif /* _AT91_SSC_DAI_H */
+diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
+index 228ca6a..eef6eed 100644
+--- a/sound/soc/atmel/sam9g20_wm8731.c
++++ b/sound/soc/atmel/sam9g20_wm8731.c
+@@ -179,10 +179,10 @@ static int at91sam9g20ek_wm8731_init(struct snd_soc_pcm_runtime *rtd)
+ static struct snd_soc_dai_link at91sam9g20ek_dai = {
+ 	.name = &quot;WM8731&quot;,
+ 	.stream_name = &quot;WM8731 PCM&quot;,
+-	.cpu_dai_name = &quot;atmel-ssc-dai.0&quot;,
++	.cpu_dai_name = &quot;at91rm9200_ssc.0&quot;,
+ 	.codec_dai_name = &quot;wm8731-hifi&quot;,
+ 	.init = at91sam9g20ek_wm8731_init,
+-	.platform_name = &quot;atmel-pcm-audio&quot;,
++	.platform_name = &quot;at91rm9200_ssc.0&quot;,
+ 	.codec_name = &quot;wm8731.0-001b&quot;,
+ 	.ops = &amp;at91sam9g20ek_ops,
+ };
+@@ -204,6 +204,10 @@ static int __devinit at91sam9g20ek_audio_probe(struct platform_device *pdev)
+ 	if (!(machine_is_at91sam9g20ek() || machine_is_at91sam9g20ek_2mmc()))
+ 		return -ENODEV;
+ 
++	ret = atmel_ssc_set_audio(pdev-&gt;id);
++	if (ret)
++		goto err;
++
+ 	/*
+ 	 * Codec MCLK is supplied by PCK0 - set it up.
+ 	 */
+@@ -211,7 +215,7 @@ static int __devinit at91sam9g20ek_audio_probe(struct platform_device *pdev)
+ 	if (IS_ERR(mclk)) {
+ 		printk(KERN_ERR &quot;ASoC: Failed to get MCLK\n&quot;);
+ 		ret = PTR_ERR(mclk);
+-		goto err;
++		goto err_ssc_put_audio;
+ 	}
+ 
+ 	pllb = clk_get(NULL, &quot;pllb&quot;);
+@@ -240,6 +244,8 @@ static int __devinit at91sam9g20ek_audio_probe(struct platform_device *pdev)
+ err_mclk:
+ 	clk_put(mclk);
+ 	mclk = NULL;
++err_ssc_put_audio:
++	atmel_ssc_put_audio();
+ err:
+ 	return ret;
+ }
+@@ -248,6 +254,7 @@ static int __devexit at91sam9g20ek_audio_remove(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 
++	atmel_ssc_put_audio();
+ 	snd_soc_unregister_card(card);
+ 	clk_put(mclk);
+ 	mclk = NULL;
+-- 
+1.7.9.5
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe linux-sound&quot; in
+the body of a message to majordomo@xxxxxxxxxxxxxxx
+More majordomo info at  <a  rel="nofollow" href="http://vger.kernel.org/majordomo-info.html">http://vger.kernel.org/majordomo-info.html</a>
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="00226" href="msg00226.html">Re: [PATCH v5 2/3] ASoC: atmel-ssc-dai: register dai and pcm directly</a></strong>
+<ul><li><em>From:</em> Mark Brown</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="00223" href="msg00223.html">[PATCH v5 0/3] Add pinctrl support and enable audio</a></strong>
+<ul><li><em>From:</em> Bo Shen</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00224.html">[PATCH 3/3] ASoC: at91sam9g20ek-wm8731: convert to dt support</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00225.html">Re: [RFC PATCH v4 2/2] ASoC: sam9g20-wm8731: convert to dt support</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00224.html">[PATCH 3/3] ASoC: at91sam9g20ek-wm8731: convert to dt support</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00226.html">Re: [PATCH v5 2/3] ASoC: atmel-ssc-dai: register dai and pcm directly</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00222"><strong>Date</strong></a></li>
+<li><a href="index.html#00222"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/Pulseaudio/>[Pulseaudio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/alsa-devel/>[ALSA&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td valign=top align=left>&nbsp;</td>
+<td valign=top align=right>
+<a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

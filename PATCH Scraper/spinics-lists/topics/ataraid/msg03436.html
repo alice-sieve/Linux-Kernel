@@ -1,0 +1,293 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Change uuid for partitions and internal devices -->
+<!--X-From-R13: Buvyyvc Ehfv &#60;cfhfvNpsy.ee.pbz> -->
+<!--X-Date: Tue, 10 Jan 2012 15:01:10 &#45;0800 -->
+<!--X-Message-Id: 4F0CC1FD.3040908@cfl.rr.com -->
+<!--X-Content-Type: multipart/mixed -->
+<!--X-Derived: pgp6qdo_xpajR.pgp -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH] Change uuid for partitions and internal devices &mdash; Linux ATA RAID Storage Archive">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux ATA RAID Storage &mdash; [PATCH] Change uuid for partitions and internal devices</title>
+<link rel="alternate" type="application/rss+xml" title="ATA RAID" href="//feeds2.feedburner.com/ataraid">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH] Change uuid for partitions and internal devices</h1>
+[<a href="msg03435.html">Date Prev</a>][<a href="msg03437.html">Date Next</a>][<a href="msg03434.html">Thread Prev</a>][<a href="msg03437.html">Thread Next</a>][<a href="maillist.html#03436">Date Index</a>][<a href="threads.html#03436">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Change uuid for partitions and internal devices</li>
+<li><em>From</em>: Phillip Susi &lt;<a href="mailto:psusi@DOMAIN.HIDDEN">psusi@xxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Tue, 10 Jan 2012 17:55:57 -0500</li>
+<li><em>User-agent</em>: Mozilla/5.0 (X11; Linux x86_64;	rv:8.0) Gecko/20111124 Thunderbird/8.0</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre></pre><pre>From: Phillip Susi &lt;psusi@xxxxxxxxxx&gt;
+Subject: Change uuid for partitions and internal devices
+Description: Change the uuid for internal devices ( like
+ each half of a raid10 ) so that the rest of the system
+ can recognize that the internal device should not be
+ probed for partitions or filesystems or mounted.  Also
+ change partition's uuid to have the same &quot;partNN-&quot;
+ prefix that kpartx gives them.
+
+Index: b/1.0.0.rc16/lib/activate/devmapper.c
+===================================================================
+--- a/1.0.0.rc16/lib/activate/devmapper.c
++++ b/1.0.0.rc16/lib/activate/devmapper.c
+@@ -171,8 +171,18 @@ dmraid_uuid(struct lib_context *lc, stru
+ 	/* Clear garbage data from uuid string */
+ 	memset(uuid, 0, uuid_len);
+ 
+-	/* Create UUID string from subsystem prefix and RAID set name. */
+-	r = snprintf(uuid, uuid_len, &quot;DMRAID-%s&quot;, name) &lt; uuid_len;
++	/* Create UUID string from subsystem prefix and RAID set name.  *
++	 * Prefix partitions with &quot;partNN-&quot; and add an 'I' for internal *
++	 * for stacked devices ( each half of a raid10 )                */
++
++	if (rs-&gt;type &amp; t_partition) {
++		char *part;
++		for (part = name + strlen(name) - 1; isdigit(*part); part--);
++		part++;
++		r = snprintf(uuid, uuid_len, &quot;part%s-DMRAID-%S&quot;, part, name) &lt; uuid_len;
++	} else if (rs-&gt;flags &amp; f_subset)
++		r = snprintf(uuid, uuid_len, &quot;DMRAIDI-%s&quot;, name) &lt; uuid_len;
++	else r = snprintf(uuid, uuid_len, &quot;DMRAID-%s&quot;, name) &lt; uuid_len;
+ 	return r &lt; 0 ? 0 : (r &lt; uuid_len);
+ }
+ 
+Index: b/1.0.0.rc16/include/dmraid/metadata.h
+===================================================================
+--- a/1.0.0.rc16/include/dmraid/metadata.h
++++ b/1.0.0.rc16/include/dmraid/metadata.h
+@@ -177,6 +177,7 @@ enum flags {
+ 	f_maximize = 0x01,	/* If set, maximize set capacity,
+ 				   if not set, limit to smallest device. */
+ 	f_partitions = 0x02,	/* Set has partitions. */
++	f_subset = 0x04,	/* Set is an internal subset ( half of raid10 ) */
+ };
+ 
+ #define	F_MAXIMIZE(rs)		((rs)-&gt;flags &amp; f_maximize)
+Index: b/1.0.0.rc16/lib/format/ataraid/isw.c
+===================================================================
+--- a/1.0.0.rc16/lib/format/ataraid/isw.c
++++ b/1.0.0.rc16/lib/format/ataraid/isw.c
+@@ -877,7 +877,8 @@ group_rd(struct lib_context *lc,
+ 				free_raid_dev(lc, &amp;rd);
+ 				return NULL;
+ 			}
+-
++			if (is_raid10(dev))
++				rs-&gt;flags |= f_subset;
+ 			rs-&gt;status = s_ok;
+ 
+ 			/* Save and set to enable dev_sort(). */
+Index: b/1.0.0.rc16/lib/format/format.c
+===================================================================
+--- a/1.0.0.rc16/lib/format/format.c
++++ b/1.0.0.rc16/lib/format/format.c
+@@ -649,9 +649,10 @@ join_superset(struct lib_context *lc,
+ 	if ((n = f_name(lc, rd, 0))) {
+ 		if ((ret = find_or_alloc_raid_set(lc, n, FIND_TOP, NO_RD,
+ 						  LC_RS(lc), f_create, rd)) &amp;&amp;
+-		    !find_set(lc, &amp;ret-&gt;sets, rs-&gt;name, FIND_TOP))
++		    !find_set(lc, &amp;ret-&gt;sets, rs-&gt;name, FIND_TOP)) {
+ 			list_add_sorted(lc, &amp;ret-&gt;sets, &amp;rs-&gt;list, f_set_sort);
+-
++			rs-&gt;flags |= f_subset;
++		}
+ 		dbg_free(n);
+ 	}
+ 
+</pre><p><strong>Attachment:
+<a href="pgp6qdo_xpajR.pgp" ><tt>signature.asc</tt></a></strong><br>
+<em>Description:</em> OpenPGP digital signature</p>
+<pre>_______________________________________________
+Ataraid-list mailing list
+Ataraid-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/ataraid-list">https://www.redhat.com/mailman/listinfo/ataraid-list</a></pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="03437" href="msg03437.html">Re: [PATCH] Change uuid for partitions and internal devices</a></strong>
+<ul><li><em>From:</em> Alasdair G Kergon</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg03435.html">Re: Making the UUID more informative</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg03437.html">Re: [PATCH] Change uuid for partitions and internal devices</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg03434.html">Making the UUID more informative</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg03437.html">Re: [PATCH] Change uuid for partitions and internal devices</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#03436"><strong>Date</strong></a></li>
+<li><a href="threads.html#03436"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/raid/>[Linux&nbsp;RAID]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dm-devel/>[Linux&nbsp;Device&nbsp;Mapper]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ide/>[Linux&nbsp;IDE]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art/z/biglist.php>[Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-admin/>[Linux&nbsp;Admin]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gfs/>[GFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/rpm/>[RPM]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;Campgrounds]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/amd64/>[AMD&nbsp;64]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 0/4] Introduce the aural error reporting framework -->
+<!--X-From-R13: [nggrb Qebpr &#60;zpebprNerqung.pbz> -->
+<!--X-Date: Mon, 1 Apr 2019 03:25:05 &#45;0700 -->
+<!--X-Message-Id: 20190401102456.11162&#45;1&#45;mcroce@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Sound: [PATCH 0/4] Introduce the aural error reporting framework">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Sound &mdash; [PATCH 0/4] Introduce the aural error reporting framework</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Sound" href="//feeds.feedburner.com/LinuxSound">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:6612422167" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 0/4] Introduce the aural error reporting framework</h1>
+[<a href="msg00672.html">Date Prev</a>][<a href="msg00674.html">Date Next</a>][<a href="msg00672.html">Thread Prev</a>][<a href="msg00674.html">Thread Next</a>][<a href="maillist.html#00673">Date Index</a>][<a href="index.html#00673">Thread Index</a>]
+
+
+<p>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 0/4] Introduce the aural error reporting framework</li>
+<li><em>From</em>: Matteo Croce &lt;mcroce@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon,  1 Apr 2019 12:24:51 +0200</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The Linux kernel has had verbal error reporting since the beginning.
+Different error conditions trigger different error messages, with
+different severity: from a simple warning to the most feared kernel panic.
+
+While this detailed error reporting is much helpful to developers or end
+users, there are some cases in which it's impossible to notice that an
+error happened.
+The most common case is headless devices, such as home servers without an
+attached display, or routers without an exposed serial port. Needless
+to say, logging into the machine via SSH is not an option after such
+a severe error.
+In other cases the monitor might be attached, but the system is unable to
+display the error, probably because there is an X server running and
+the KMS switch fails. Or simply the user is visually impaired.
+
+These are all cases when the aural errors framework comes to help. This
+framework adds to the kernel a generic library to play sounds, which can
+be used to report errors or generic events.
+
+As the sound card driver could, and most probably will, become unusable
+during a kernel crash, the sounds are played via the system buzzer which
+has been around since the dawn of time.
+The buzzer driver is simple, requires just a few register writes to work,
+the hardware is extremely cheap and is already present on most machines.
+
+The first patch introduces the framework functions, the other three make
+use of it in, respectively, kernel panic, warning and oops.
+The last patch, not to be merged, creates a procfs handler useful to test
+the error reporting.
+
+Matteo Croce (4):
+  aural error reporting framework
+  panic: use the aural error reporting framework to report panics
+  bug: use the aural error reporting framework to report warnings
+  oops: use the aural error reporting framework to report oopses
+
+ arch/x86/lib/Makefile |  1 +
+ arch/x86/lib/play.c   | 75 +++++++++++++++++++++++++++++++++++++++++++
+ include/linux/play.h  | 34 ++++++++++++++++++++
+ kernel/panic.c        | 61 +++++++++++++++++++++++++++++++++++
+ lib/Kconfig.debug     | 35 ++++++++++++++++++++
+ 5 files changed, 206 insertions(+)
+ create mode 100644 arch/x86/lib/play.c
+ create mode 100644 include/linux/play.h
+
+-- 
+2.20.1
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="00679" href="msg00679.html">Re: [PATCH 0/4] Introduce the aural error reporting framework</a></strong>
+<ul><li><em>From:</em> Peter Zijlstra</li></ul></li>
+<li><strong><a name="00678" href="msg00678.html">[PATCH 5/4] procfs: utility handler to trigger different errors</a></strong>
+<ul><li><em>From:</em> Matteo Croce</li></ul></li>
+<li><strong><a name="00677" href="msg00677.html">[PATCH 4/4] oops: use the aural error reporting framework to report oopses</a></strong>
+<ul><li><em>From:</em> Matteo Croce</li></ul></li>
+<li><strong><a name="00676" href="msg00676.html">[PATCH 3/4] bug: use the aural error reporting framework to report warnings</a></strong>
+<ul><li><em>From:</em> Matteo Croce</li></ul></li>
+<li><strong><a name="00675" href="msg00675.html">[PATCH 2/4] panic: use the aural error reporting framework to report panics</a></strong>
+<ul><li><em>From:</em> Matteo Croce</li></ul></li>
+<li><strong><a name="00674" href="msg00674.html">[PATCH 1/4] aural error reporting framework</a></strong>
+<ul><li><em>From:</em> Matteo Croce</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00672.html">kernel panic</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00674.html">[PATCH 1/4] aural error reporting framework</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00672.html">kernel panic</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00674.html">[PATCH 1/4] aural error reporting framework</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00673"><strong>Date</strong></a></li>
+<li><a href="index.html#00673"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/Pulseaudio/>[Pulseaudio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/alsa-devel/>[ALSA&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td valign=top align=left>&nbsp;</td>
+<td valign=top align=right>
+<a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

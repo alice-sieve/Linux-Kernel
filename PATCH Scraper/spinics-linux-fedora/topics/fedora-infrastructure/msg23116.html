@@ -1,0 +1,237 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Add f30&#45;flatpak to the list of tags we sync -->
+<!--X-From-R13: Ajra Fnlybe &#60;bgnlybeNerqung.pbz> -->
+<!--X-Date: Tue, 4 Jun 2019 07:52:09 &#45;0700 -->
+<!--X-Message-Id: 20190604145142.21004&#45;1&#45;otaylor@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Infrastructure, [PATCH] Add f30-flatpak to the list of tags we sync">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Fedora Infrastructure &mdash; [PATCH] Add f30-flatpak to the list of tags we sync</title>
+<link rel="alternate" type="application/rss+xml" title="Fedora Infrastructure" href="maillist.rdf">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH] Add f30-flatpak to the list of tags we sync</h1>
+[<a href="msg23115.html">Date Prev</a>][<a href="msg23117.html">Date Next</a>][<a href="msg23111.html">Thread Prev</a>][<a href="msg23123.html">Thread Next</a>][<a href="maillist.html#23116">Date Index</a>][<a href="index.html#23116">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Add f30-flatpak to the list of tags we sync</li>
+<li><em>From</em>: Owen Taylor &lt;otaylor@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue,  4 Jun 2019 14:51:42 +0000</li>
+<li><em>Cc</em>: &quot;Owen W. Taylor&quot; &lt;otaylor@xxxxxxxxxxxx&gt;</li>
+<li><em>Reply-to</em>: Fedora Infrastructure &lt;infrastructure@xxxxxxxxxxxxxxxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: &quot;Owen W. Taylor&quot; &lt;otaylor@xxxxxxxxxxxx&gt;
+
+We're now building Fedora 30 Flatpaks based on the F30 runtime, so
+we need to populate the f30-flatpak tag based on the contents of
+Pagure.
+---
+ roles/bodhi2/backend/files/koji-sync-listener.py | 2 +-
+ roles/bodhi2/backend/tasks/main.yml              | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/roles/bodhi2/backend/files/koji-sync-listener.py b/roles/bodhi2/backend/files/koji-sync-listener.py
+index 5d65cc164..1ea07ad53 100644
+--- a/roles/bodhi2/backend/files/koji-sync-listener.py
++++ b/roles/bodhi2/backend/files/koji-sync-listener.py
+@@ -23,7 +23,7 @@ def handle(content):
+     sys.stdout.flush()
+     # XXX If you modify this taglist.  Please also modify the other copy in
+     # bodhi2/backend/tasks/main.yml
+-    taglist = 'f31 f31-container f31-modular f30 f30-container f30-modular f29 f29-container f29-flatpak f29-modular epel7 dist-6E-epel module-package-list modular'
++    taglist = 'f31 f31-container f31-modular f30 f30-container f30-flatpak f30-modular f29 f29-container f29-flatpak f29-modular epel7 dist-6E-epel module-package-list modular'
+     cmd = [
+         '/usr/local/bin/owner-sync-pagure',
+         '--package', package,
+diff --git a/roles/bodhi2/backend/tasks/main.yml b/roles/bodhi2/backend/tasks/main.yml
+index 8867d11da..13014d08e 100644
+--- a/roles/bodhi2/backend/tasks/main.yml
++++ b/roles/bodhi2/backend/tasks/main.yml
+@@ -65,7 +65,7 @@
+   # bodhi2/backend/files/koji-sync-listener.py
+   # This cronjob runs only once a day.  The listener script runs reactively.
+   cron: name=&quot;owner-sync&quot; minute=&quot;15&quot; hour=&quot;4&quot; user=&quot;root&quot;
+-      job=&quot;/usr/local/bin/lock-wrapper owner-sync '/usr/local/bin/owner-sync-pagure f31 f31-container f31-modular f30 f30-container f30-modular f29 f29-container f29-flatpak f29-modular epel7 dist-6E-epel module-package-list modular'&quot;
++      job=&quot;/usr/local/bin/lock-wrapper owner-sync '/usr/local/bin/owner-sync-pagure f31 f31-container f31-modular f30 f30-container f30-flatpak f30-modular f29 f29-container f29-flatpak f29-modular epel7 dist-6E-epel module-package-list modular'&quot;
+       cron_file=update-koji-owner
+   when: env == &quot;production&quot;
+   tags:
+-- 
+2.21.0
+_______________________________________________
+infrastructure mailing list -- infrastructure@xxxxxxxxxxxxxxxxxxxxxxx
+To unsubscribe send an email to infrastructure-leave@xxxxxxxxxxxxxxxxxxxxxxx
+Fedora Code of Conduct: <a  rel="nofollow" href="https://getfedora.org/code-of-conduct.html">https://getfedora.org/code-of-conduct.html</a>
+List Guidelines: <a  rel="nofollow" href="https://fedoraproject.org/wiki/Mailing_list_guidelines">https://fedoraproject.org/wiki/Mailing_list_guidelines</a>
+List Archives: <a  rel="nofollow" href="https://lists.fedoraproject.org/archives/list/infrastructure@xxxxxxxxxxxxxxxxxxxxxxx">https://lists.fedoraproject.org/archives/list/infrastructure@xxxxxxxxxxxxxxxxxxxxxxx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg23115.html">Re: pastebin plans</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg23117.html">Re: pastebin plans</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg23111.html">Compose Tracker Discussion</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg23123.html">RFC: Deploying coreos-koji-tagger in Fedora Openshift</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#23116"><strong>Date</strong></a></li>
+<li><a href="index.html#23116"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

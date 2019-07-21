@@ -1,0 +1,347 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re:  [PATCH v2] vmware_vmss: read vCPUs regs and	show them in 'bt' -->
+<!--X-From-R13: Rnir Oaqrefba &#60;naqrefbaNerqung.pbz> -->
+<!--X-Date: Thu, 22 Mar 2018 07:32:33 &#45;0700 -->
+<!--X-Message-Id: 393525770.13269258.1521728530038.JavaMail.zimbra@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20180322111155.32656&#45;1&#45;slp@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Re:  [PATCH v2] vmware_vmss: read vCPUs regs and	show them in 'bt' &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  Re:  [PATCH v2] vmware_vmss: read vCPUs regs and	show them in 'bt'</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re:  [PATCH v2] vmware_vmss: read vCPUs regs and	show them in 'bt'</h1>
+[<a href="msg07397.html">Date Prev</a>][<a href="msg07399.html">Date Next</a>][<a href="msg07397.html">Thread Prev</a>][<a href="msg07399.html">Thread Next</a>][<a href="maillist.html#07398">Date Index</a>][<a href="index.html#07398">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re:  [PATCH v2] vmware_vmss: read vCPUs regs and	show them in 'bt'</li>
+<li><em>From</em>: Dave Anderson &lt;anderson@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 22 Mar 2018 10:22:10 -0400 (EDT)</li>
+<li><em>Cc</em>: crash-utility@xxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg07397.html">20180322111155.32656-1-slp@redhat.com</a>&gt;</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>
+
+----- Original Message -----
+&gt;<i> VMSS dump files contain the state of each vCPU at the time of suspending</i>
+&gt;<i> the VM. This change enables 'crash' to read some relevant registers from</i>
+&gt;<i> each vCPU state to display them in 'bt' and adds additional output for</i>
+&gt;<i> commands 'help -D', 'help -r' and 'help -p'.</i>
+&gt;<i> </i>
+&gt;<i> This is also the first step towards implementing kaslr offset</i>
+&gt;<i> calculation for VMSS dump files.</i>
+&gt;<i> ---</i>
+&gt;<i>  defs.h        |   5 +</i>
+&gt;<i>  help.c        |   3 +</i>
+&gt;<i>  kernel.c      |   2 +</i>
+&gt;<i>  main.c        |   3 +</i>
+&gt;<i>  memory.c      |   2 +</i>
+&gt;<i>  vmware_vmss.c | 375</i>
+&gt;<i>  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++--</i>
+&gt;<i>  vmware_vmss.h |  31 +++++</i>
+&gt;<i>  x86_64.c      |  13 +-</i>
+&gt;<i>  8 files changed, 424 insertions(+), 10 deletions(-)</i>
+&gt;<i> </i>
+
+Hi Sergio,
+
+I should have mentioned this before, but there is a build option 
+for compiling with several warning ptions, which should result in
+clean compiles.  Here on an x86_64:
+
+$ make warn
+... [ cut ] ...
+cc -c -g -DX86_64 -DLZO -DSNAPPY -DGDB_7_6  vmware_vmss.c -Wall -O2 -Wstrict-prototypes -Wmissing-prototypes -fstack-protector -Wformat-security 
+vmware_vmss.c: In function &#x2018;vmware_vmss_init&#x2019;:
+vmware_vmss.c:242:6: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+      vmss.regs64[cpu]-&gt;idtr = *((uint64_t *)(&amp;buf[0] + 2));
+      ^
+vmware_vmss.c: In function &#x2018;vmware_vmss_display_regs&#x2019;:
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 3 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+   );
+   ^
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 4 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 5 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 6 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 7 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 8 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 9 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 10 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 11 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 12 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 13 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 14 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 15 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 16 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 17 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 18 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 19 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:439:3: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 20 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c: In function &#x2018;get_vmware_vmss_regs&#x2019;:
+vmware_vmss.c:447:23: warning: unused variable &#x2018;rp&#x2019; [-Wunused-variable]
+  struct register_set *rp;
+                       ^
+vmware_vmss.c: In function &#x2018;vmware_vmss_memory_dump&#x2019;:
+vmware_vmss.c:501:4: warning: format &#x2018;%s&#x2019; expects argument of type &#x2018;char *&#x2019;, but argument 3 has type &#x2018;int&#x2019; [-Wformat=]
+    errno, strerror(errno));
+    ^
+vmware_vmss.c:501:4: warning: format &#x2018;%d&#x2019; expects argument of type &#x2018;int&#x2019;, but argument 4 has type &#x2018;char *&#x2019; [-Wformat=]
+vmware_vmss.c:501:4: warning: format &#x2018;%s&#x2019; expects a matching &#x2018;char *&#x2019; argument [-Wformat=]
+vmware_vmss.c: In function &#x2018;dump_registers_for_vmss_dump&#x2019;:
+vmware_vmss.c:695:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 3 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+    regs-&gt;rax, regs-&gt;rbx, regs-&gt;rcx);
+    ^
+vmware_vmss.c:695:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 4 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:695:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 5 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:697:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 3 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+    regs-&gt;rdx, regs-&gt;rsi, regs-&gt;rdi);
+    ^
+vmware_vmss.c:697:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 4 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:697:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 5 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:699:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 3 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+    regs-&gt;rsp, regs-&gt;rbp, regs-&gt;r8);
+    ^
+vmware_vmss.c:699:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 4 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:699:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 5 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:701:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 3 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+    regs-&gt;r9, regs-&gt;r10, regs-&gt;r11);
+    ^
+vmware_vmss.c:701:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 4 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:701:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 5 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:703:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 3 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+    regs-&gt;r12, regs-&gt;r13, regs-&gt;r14);
+    ^
+vmware_vmss.c:703:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 4 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:703:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 5 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:705:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 3 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+    regs-&gt;r15, regs-&gt;rip, regs-&gt;rflags);
+    ^
+vmware_vmss.c:705:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 4 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:705:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 5 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:707:25: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 3 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+                         regs-&gt;idtr);
+                         ^
+vmware_vmss.c:709:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 3 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+    regs-&gt;cr[0], regs-&gt;cr[1], regs-&gt;cr[2]);
+    ^
+vmware_vmss.c:709:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 4 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:709:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 5 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+vmware_vmss.c:711:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 3 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+    regs-&gt;cr[3], regs-&gt;cr[4]);
+    ^
+vmware_vmss.c:711:4: warning: format &#x2018;%llx&#x2019; expects argument of type &#x2018;long long unsigned int&#x2019;, but argument 4 has type &#x2018;uint64_t&#x2019; [-Wformat=]
+cc -c -g -DX86_64 -DLZO -DSNAPPY -DGDB_7_6  xen_dom0.c -Wall -O2 -Wstrict-prototypes -Wmissing-prototypes -fstack-protector -Wformat-security 
+...
+
+And here on 32-bit x86:
+
+$ make warn
+... [ cut ] ...
+cc -c -g -DX86 -m32 -D_FILE_OFFSET_BITS=64 -DLZO -DSNAPPY -DGDB_7_6  vmware_vmss.c -Wall -O2 -Wstrict-prototypes -Wmissing-prototypes -fstack-protector -Wformat-security 
+vmware_vmss.c: In function &#x2018;vmware_vmss_init&#x2019;:
+vmware_vmss.c:242:6: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+      vmss.regs64[cpu]-&gt;idtr = *((uint64_t *)(&amp;buf[0] + 2));
+      ^
+vmware_vmss.c: In function &#x2018;get_vmware_vmss_regs&#x2019;:
+vmware_vmss.c:447:23: warning: unused variable &#x2018;rp&#x2019; [-Wunused-variable]
+  struct register_set *rp;
+                       ^
+vmware_vmss.c: In function &#x2018;vmware_vmss_memory_dump&#x2019;:
+vmware_vmss.c:501:4: warning: format &#x2018;%s&#x2019; expects argument of type &#x2018;char *&#x2019;, but argument 3 has type &#x2018;int&#x2019; [-Wformat=]
+    errno, strerror(errno));
+    ^
+vmware_vmss.c:501:4: warning: format &#x2018;%d&#x2019; expects argument of type &#x2018;int&#x2019;, but argument 4 has type &#x2018;char *&#x2019; [-Wformat=]
+vmware_vmss.c:501:4: warning: format &#x2018;%s&#x2019; expects a matching &#x2018;char *&#x2019; argument [-Wformat=]
+...
+
+Can you clean these up?
+
+Thanks,
+  Dave
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07399" href="msg07399.html">Re:  [PATCH v2] vmware_vmss: read vCPUs regs and	show them in 'bt'</a></strong>
+<ul><li><em>From:</em> Sergio Lopez</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="07397" href="msg07397.html">[PATCH v2] vmware_vmss: read vCPUs regs and show	them in 'bt'</a></strong>
+<ul><li><em>From:</em> Sergio Lopez</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07397.html">[PATCH v2] vmware_vmss: read vCPUs regs and show	them in 'bt'</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07399.html">Re:  [PATCH v2] vmware_vmss: read vCPUs regs and	show them in 'bt'</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07397.html">[PATCH v2] vmware_vmss: read vCPUs regs and show	them in 'bt'</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07399.html">Re:  [PATCH v2] vmware_vmss: read vCPUs regs and	show them in 'bt'</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07398"><strong>Date</strong></a></li>
+<li><a href="index.html#07398"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

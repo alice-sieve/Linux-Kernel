@@ -1,0 +1,386 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 27/35] autofs&#45;5.1.3 &#45; only take master map mutex for master map update -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Sun, 15 Oct 2017 22:11:52 &#45;0700 -->
+<!--X-Message-Id: 150813052783.25695.2451102421641576888.stgit@pluto.themaw.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 150813019190.25695.13810689562896522990.stgit@pluto.themaw.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 27/35] autofs-5.1.3 - only take master map mutex for master map update &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 27/35] autofs-5.1.3 - only take master map mutex for master map update &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 27/35] autofs-5.1.3 - only take master map mutex for master map update</h1>
+[<a href="msg01712.html">Date Prev</a>][<a href="msg01714.html">Date Next</a>][<a href="msg01745.html">Thread Prev</a>][<a href="msg01714.html">Thread Next</a>][<a href="maillist.html#01713">Date Index</a>][<a href="index.html#01713">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 27/35] autofs-5.1.3 - only take master map mutex for master map update</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 16 Oct 2017 13:08:47 +0800</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg01722.html">150813019190.25695.13810689562896522990.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg01722.html">150813019190.25695.13810689562896522990.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>User-agent</em>: StGit/0.17.1-dirty</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>When a map read is done it's neccessary to re-initialize the lookup
+context which requires a write lock to be taken on the master map
+entry source. Currently a map re-read also takes the master map lock
+which will block new lookups.
+
+If the lookup module thinks the map has been modified it will queue
+a map read which will take these locks.
+
+Now, when a bind mount (or symlink) is triggered by a lookup it's
+necessary to trigger automounts that are included in the target path
+for the dependent path to be valid.
+
+When the target path triggers automounts in this way and refers to the
+same master map entry, and a map re-read is scheduled and started and
+manages to take the master map lock before the dependent lookup gets
+past the master map lock check, the dependent path lookup will deadlock.
+
+But the master map lock is meant to gaurd against master map entries
+going away during lookups so isn't really needed for map reads as long
+as the master map lock is held during the update of the mounted
+automounts.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ CHANGELOG      |    1 +
+ daemon/state.c |    3 ---
+ lib/master.c   |   45 +++++++++++++++++++++++++++++++++++++--------
+ 3 files changed, 38 insertions(+), 11 deletions(-)
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 7457e620..1ab2e966 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -25,6 +25,7 @@ xx/xx/2017 autofs-5.1.4
+ - fix amd parser error buffer size.
+ - make spawn_bind_mount() use mount_wait as well.
+ - document ghost option in auto.master man page.
++- only take master map mutex for master map update.
+ 
+ 24/05/2017 autofs-5.1.3
+ =======================
+diff --git a/daemon/state.c b/daemon/state.c
+index 72bba6af..cf835e05 100644
+--- a/daemon/state.c
++++ b/daemon/state.c
+@@ -484,12 +484,9 @@ static void *do_readmap(void *arg)
+ 
+ 	info(ap-&gt;logopt, &quot;re-reading map for %s&quot;, ap-&gt;path);
+ 
+-	pthread_cleanup_push(master_mutex_lock_cleanup, NULL);
+-	master_mutex_lock();
+ 	status = lookup_nss_read_map(ap, NULL, now);
+ 	if (!status)
+ 		pthread_exit(NULL);
+-	pthread_cleanup_pop(1);
+ 
+ 	if (ap-&gt;type == LKP_INDIRECT) {
+ 		struct ioctl_ops *ops = get_ioctl_ops();
+diff --git a/lib/master.c b/lib/master.c
+index 22b1522a..a144a39d 100644
+--- a/lib/master.c
++++ b/lib/master.c
+@@ -1090,6 +1090,39 @@ next:
+ 	free(paths);
+ }
+ 
++static void wait_for_lookups_and_lock(struct master *master)
++{
++	struct list_head *p, *head;
++	int status;
++
++again:
++	master_mutex_lock();
++
++	head = &amp;master-&gt;mounts;
++	p = head-&gt;next;
++	while (p != head) {
++		struct master_mapent *this;
++
++		this = list_entry(p, struct master_mapent, list);
++
++		status = pthread_rwlock_trywrlock(&amp;this-&gt;source_lock);
++		if (status) {
++			struct timespec t = { 0, 200000000 };
++			struct timespec r;
++
++			master_mutex_unlock();
++
++			while (nanosleep(&amp;t, &amp;r) == -1 &amp;&amp; errno == EINTR)
++				memcpy(&amp;t, &amp;r, sizeof(struct timespec));
++
++			goto again;
++		}
++		master_source_unlock(this);
++
++		p = p-&gt;next;
++	}
++}
++
+ int master_read_master(struct master *master, time_t age, int readall)
+ {
+ 	unsigned int logopt = master-&gt;logopt;
+@@ -1099,7 +1132,7 @@ int master_read_master(struct master *master, time_t age, int readall)
+ 	 * We need to clear and re-populate the null map entry cache
+ 	 * before alowing anyone else to use it.
+ 	 */
+-	master_mutex_lock();
++	wait_for_lookups_and_lock(master);
+ 	if (master-&gt;nc) {
+ 		cache_writelock(master-&gt;nc);
+ 		nc = master-&gt;nc;
+@@ -1119,21 +1152,19 @@ int master_read_master(struct master *master, time_t age, int readall)
+ 	lookup_nss_read_master(master, age);
+ 	cache_unlock(nc);
+ 	master_add_amd_mount_section_mounts(master, age);
+-	master_mutex_unlock();
+ 
+ 	if (!master-&gt;read_fail)
+ 		master_mount_mounts(master, age, readall);
+ 	else {
+ 		master-&gt;read_fail = 0;
+ 		/* HUP signal sets readall == 1 only */
+-		if (!readall)
++		if (!readall) {
++			master_mutex_unlock();
+ 			return 0;
+-		else
++		} else
+ 			master_mount_mounts(master, age, readall);
+ 	}
+ 
+-	master_mutex_lock();
+-
+ 	if (list_empty(&amp;master-&gt;mounts))
+ 		warn(logopt, &quot;no mounts in table&quot;);
+ 
+@@ -1423,7 +1454,6 @@ int master_mount_mounts(struct master *master, time_t age, int readall)
+ 	int cur_state;
+ 
+ 	pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &amp;cur_state);
+-	master_mutex_lock();
+ 
+ 	head = &amp;master-&gt;mounts;
+ 	p = head-&gt;next;
+@@ -1511,7 +1541,6 @@ cont:
+ 		}
+ 	}
+ 
+-	master_mutex_unlock();
+ 	pthread_setcancelstate(cur_state, NULL);
+ 
+ 	return 1;
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01722" href="msg01722.html">[PATCH 00/35] Current autofs patch queue (lets try again)</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01712.html">[PATCH 26/35] autofs-5.1.3 - document ghost option in auto.master man page</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01714.html">[PATCH 28/35] autofs-5.1.3 - revert fix argc off by one in mount_autofs.c</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01745.html">Re: [PATCH 26/35] autofs-5.1.3 - document ghost option in auto.master man page</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01714.html">[PATCH 28/35] autofs-5.1.3 - revert fix argc off by one in mount_autofs.c</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01713"><strong>Date</strong></a></li>
+<li><a href="index.html#01713"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

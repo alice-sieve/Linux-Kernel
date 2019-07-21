@@ -1,0 +1,387 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v3 1/2] qemu: Add bochs&#45;display capability -->
+<!--X-From-R13: Xbanguba Xbatfzn &#60;wwbatfznNerqung.pbz> -->
+<!--X-Date: Fri, 12 Jul 2019 13:12:44 &#45;0700 -->
+<!--X-Message-Id: 20190712201216.20443&#45;2&#45;jjongsma@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190712201216.20443&#45;1&#45;jjongsma@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v3 1/2] qemu: Add bochs-display capability</title>
+<meta name="description" content="libvirt: [PATCH v3 1/2] qemu: Add bochs-display capability">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v3 1/2] qemu: Add bochs-display capability</h1>
+[<a href="msg187367.html">Date Prev</a>][<a href="msg187369.html">Date Next</a>][<a href="msg187366.html">Thread Prev</a>][<a href="msg187396.html">Thread Next</a>][<a href="maillist.html#187368">Date Index</a>][<a href="index.html#187368">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v3 1/2] qemu: Add bochs-display capability</li>
+<li><em>From</em>: Jonathon Jongsma &lt;jjongsma@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 12 Jul 2019 15:12:15 -0500</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187367.html">20190712201216.20443-1-jjongsma@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187367.html">20190712201216.20443-1-jjongsma@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Check whether qemu supports the bochs-display device and set a
+capability. Update tests.
+
+Signed-off-by: Jonathon Jongsma &lt;jjongsma@xxxxxxxxxx&gt;
+---
+ src/qemu/qemu_capabilities.c                      | 4 ++++
+ src/qemu/qemu_capabilities.h                      | 3 +++
+ tests/qemucapabilitiesdata/caps_3.0.0.ppc64.xml   | 1 +
+ tests/qemucapabilitiesdata/caps_3.0.0.x86_64.xml  | 1 +
+ tests/qemucapabilitiesdata/caps_3.1.0.ppc64.xml   | 1 +
+ tests/qemucapabilitiesdata/caps_3.1.0.x86_64.xml  | 1 +
+ tests/qemucapabilitiesdata/caps_4.0.0.aarch64.xml | 1 +
+ tests/qemucapabilitiesdata/caps_4.0.0.ppc64.xml   | 1 +
+ tests/qemucapabilitiesdata/caps_4.0.0.riscv32.xml | 1 +
+ tests/qemucapabilitiesdata/caps_4.0.0.riscv64.xml | 1 +
+ tests/qemucapabilitiesdata/caps_4.0.0.x86_64.xml  | 1 +
+ tests/qemucapabilitiesdata/caps_4.1.0.x86_64.xml  | 1 +
+ 12 files changed, 17 insertions(+)
+
+diff --git a/src/qemu/qemu_capabilities.c b/src/qemu/qemu_capabilities.c
+index 02e84edc15..65192469da 100644
+--- a/src/qemu/qemu_capabilities.c
++++ b/src/qemu/qemu_capabilities.c
+@@ -533,6 +533,9 @@ VIR_ENUM_IMPL(virQEMUCaps,
+               &quot;x86-max-cpu&quot;,
+               &quot;cpu-unavailable-features&quot;,
+               &quot;canonical-cpu-features&quot;,
++
++              /* 335 */
++              &quot;bochs-display&quot;,
+     );
+ 
+ 
+@@ -1121,6 +1124,7 @@ struct virQEMUCapsStringFlags virQEMUCapsObjectTypes[] = {
+     { &quot;virtio-serial-pci-transitional&quot;, QEMU_CAPS_VIRTIO_PCI_TRANSITIONAL },
+     { &quot;virtio-serial-pci-non-transitional&quot;, QEMU_CAPS_VIRTIO_PCI_TRANSITIONAL },
+     { &quot;max-x86_64-cpu&quot;, QEMU_CAPS_X86_MAX_CPU },
++    { &quot;bochs-display&quot;, QEMU_CAPS_DEVICE_BOCHS_DISPLAY },
+ };
+ 
+ static struct virQEMUCapsStringFlags virQEMUCapsDevicePropsVirtioBalloon[] = {
+diff --git a/src/qemu/qemu_capabilities.h b/src/qemu/qemu_capabilities.h
+index 915ba6cb2e..3cb56e63f4 100644
+--- a/src/qemu/qemu_capabilities.h
++++ b/src/qemu/qemu_capabilities.h
+@@ -515,6 +515,9 @@ typedef enum { /* virQEMUCapsFlags grouping marker for syntax-check */
+     QEMU_CAPS_CPU_UNAVAILABLE_FEATURES, /* &quot;unavailable-features&quot; CPU property */
+     QEMU_CAPS_CANONICAL_CPU_FEATURES, /* avoid CPU feature aliases */
+ 
++    /* 335 */
++    QEMU_CAPS_DEVICE_BOCHS_DISPLAY, /* -device bochs-display */
++
+     QEMU_CAPS_LAST /* this must always be the last item */
+ } virQEMUCapsFlags;
+ 
+diff --git a/tests/qemucapabilitiesdata/caps_3.0.0.ppc64.xml b/tests/qemucapabilitiesdata/caps_3.0.0.ppc64.xml
+index 40718981a8..61be1df782 100644
+--- a/tests/qemucapabilitiesdata/caps_3.0.0.ppc64.xml
++++ b/tests/qemucapabilitiesdata/caps_3.0.0.ppc64.xml
+@@ -151,6 +151,7 @@
+   &lt;flag name='memory-backend-memfd.hugetlb'/&gt;
+   &lt;flag name='iothread.poll-max-ns'/&gt;
+   &lt;flag name='memory-backend-file.align'/&gt;
++  &lt;flag name='bochs-display'/&gt;
+   &lt;version&gt;2012050&lt;/version&gt;
+   &lt;kvmVersion&gt;0&lt;/kvmVersion&gt;
+   &lt;microcodeVersion&gt;42900757&lt;/microcodeVersion&gt;
+diff --git a/tests/qemucapabilitiesdata/caps_3.0.0.x86_64.xml b/tests/qemucapabilitiesdata/caps_3.0.0.x86_64.xml
+index c6394db602..7a322030bd 100644
+--- a/tests/qemucapabilitiesdata/caps_3.0.0.x86_64.xml
++++ b/tests/qemucapabilitiesdata/caps_3.0.0.x86_64.xml
+@@ -198,6 +198,7 @@
+   &lt;flag name='memory-backend-file.align'/&gt;
+   &lt;flag name='nvdimm.unarmed'/&gt;
+   &lt;flag name='x86-max-cpu'/&gt;
++  &lt;flag name='bochs-display'/&gt;
+   &lt;version&gt;3000000&lt;/version&gt;
+   &lt;kvmVersion&gt;0&lt;/kvmVersion&gt;
+   &lt;microcodeVersion&gt;43100757&lt;/microcodeVersion&gt;
+diff --git a/tests/qemucapabilitiesdata/caps_3.1.0.ppc64.xml b/tests/qemucapabilitiesdata/caps_3.1.0.ppc64.xml
+index ee6921ff92..400dc45be4 100644
+--- a/tests/qemucapabilitiesdata/caps_3.1.0.ppc64.xml
++++ b/tests/qemucapabilitiesdata/caps_3.1.0.ppc64.xml
+@@ -156,6 +156,7 @@
+   &lt;flag name='memory-backend-file.align'/&gt;
+   &lt;flag name='memory-backend-file.pmem'/&gt;
+   &lt;flag name='overcommit'/&gt;
++  &lt;flag name='bochs-display'/&gt;
+   &lt;version&gt;3000091&lt;/version&gt;
+   &lt;kvmVersion&gt;0&lt;/kvmVersion&gt;
+   &lt;microcodeVersion&gt;42900758&lt;/microcodeVersion&gt;
+diff --git a/tests/qemucapabilitiesdata/caps_3.1.0.x86_64.xml b/tests/qemucapabilitiesdata/caps_3.1.0.x86_64.xml
+index a8cb061bf3..434c644ad4 100644
+--- a/tests/qemucapabilitiesdata/caps_3.1.0.x86_64.xml
++++ b/tests/qemucapabilitiesdata/caps_3.1.0.x86_64.xml
+@@ -201,6 +201,7 @@
+   &lt;flag name='nvdimm.unarmed'/&gt;
+   &lt;flag name='overcommit'/&gt;
+   &lt;flag name='x86-max-cpu'/&gt;
++  &lt;flag name='bochs-display'/&gt;
+   &lt;version&gt;3000092&lt;/version&gt;
+   &lt;kvmVersion&gt;0&lt;/kvmVersion&gt;
+   &lt;microcodeVersion&gt;43100758&lt;/microcodeVersion&gt;
+diff --git a/tests/qemucapabilitiesdata/caps_4.0.0.aarch64.xml b/tests/qemucapabilitiesdata/caps_4.0.0.aarch64.xml
+index 250b7edd52..8fe369f518 100644
+--- a/tests/qemucapabilitiesdata/caps_4.0.0.aarch64.xml
++++ b/tests/qemucapabilitiesdata/caps_4.0.0.aarch64.xml
+@@ -163,6 +163,7 @@
+   &lt;flag name='machine.virt.iommu'/&gt;
+   &lt;flag name='bitmap-merge'/&gt;
+   &lt;flag name='nbd-bitmap'/&gt;
++  &lt;flag name='bochs-display'/&gt;
+   &lt;version&gt;4000000&lt;/version&gt;
+   &lt;kvmVersion&gt;0&lt;/kvmVersion&gt;
+   &lt;microcodeVersion&gt;61700758&lt;/microcodeVersion&gt;
+diff --git a/tests/qemucapabilitiesdata/caps_4.0.0.ppc64.xml b/tests/qemucapabilitiesdata/caps_4.0.0.ppc64.xml
+index 24b55002a6..2df230c4f7 100644
+--- a/tests/qemucapabilitiesdata/caps_4.0.0.ppc64.xml
++++ b/tests/qemucapabilitiesdata/caps_4.0.0.ppc64.xml
+@@ -168,6 +168,7 @@
+   &lt;flag name='query-current-machine'/&gt;
+   &lt;flag name='bitmap-merge'/&gt;
+   &lt;flag name='nbd-bitmap'/&gt;
++  &lt;flag name='bochs-display'/&gt;
+   &lt;version&gt;4000000&lt;/version&gt;
+   &lt;kvmVersion&gt;0&lt;/kvmVersion&gt;
+   &lt;microcodeVersion&gt;42900758&lt;/microcodeVersion&gt;
+diff --git a/tests/qemucapabilitiesdata/caps_4.0.0.riscv32.xml b/tests/qemucapabilitiesdata/caps_4.0.0.riscv32.xml
+index 230e1e7c99..f4acda457a 100644
+--- a/tests/qemucapabilitiesdata/caps_4.0.0.riscv32.xml
++++ b/tests/qemucapabilitiesdata/caps_4.0.0.riscv32.xml
+@@ -166,6 +166,7 @@
+   &lt;flag name='query-current-machine'/&gt;
+   &lt;flag name='bitmap-merge'/&gt;
+   &lt;flag name='nbd-bitmap'/&gt;
++  &lt;flag name='bochs-display'/&gt;
+   &lt;version&gt;4000000&lt;/version&gt;
+   &lt;kvmVersion&gt;0&lt;/kvmVersion&gt;
+   &lt;microcodeVersion&gt;0&lt;/microcodeVersion&gt;
+diff --git a/tests/qemucapabilitiesdata/caps_4.0.0.riscv64.xml b/tests/qemucapabilitiesdata/caps_4.0.0.riscv64.xml
+index 4b2f4cf628..e71d83ee06 100644
+--- a/tests/qemucapabilitiesdata/caps_4.0.0.riscv64.xml
++++ b/tests/qemucapabilitiesdata/caps_4.0.0.riscv64.xml
+@@ -166,6 +166,7 @@
+   &lt;flag name='query-current-machine'/&gt;
+   &lt;flag name='bitmap-merge'/&gt;
+   &lt;flag name='nbd-bitmap'/&gt;
++  &lt;flag name='bochs-display'/&gt;
+   &lt;version&gt;4000000&lt;/version&gt;
+   &lt;kvmVersion&gt;0&lt;/kvmVersion&gt;
+   &lt;microcodeVersion&gt;0&lt;/microcodeVersion&gt;
+diff --git a/tests/qemucapabilitiesdata/caps_4.0.0.x86_64.xml b/tests/qemucapabilitiesdata/caps_4.0.0.x86_64.xml
+index 716b756979..1d44a5a1ba 100644
+--- a/tests/qemucapabilitiesdata/caps_4.0.0.x86_64.xml
++++ b/tests/qemucapabilitiesdata/caps_4.0.0.x86_64.xml
+@@ -205,6 +205,7 @@
+   &lt;flag name='bitmap-merge'/&gt;
+   &lt;flag name='nbd-bitmap'/&gt;
+   &lt;flag name='x86-max-cpu'/&gt;
++  &lt;flag name='bochs-display'/&gt;
+   &lt;version&gt;4000000&lt;/version&gt;
+   &lt;kvmVersion&gt;0&lt;/kvmVersion&gt;
+   &lt;microcodeVersion&gt;43100758&lt;/microcodeVersion&gt;
+diff --git a/tests/qemucapabilitiesdata/caps_4.1.0.x86_64.xml b/tests/qemucapabilitiesdata/caps_4.1.0.x86_64.xml
+index 9cbf65b405..f336aeb48c 100644
+--- a/tests/qemucapabilitiesdata/caps_4.1.0.x86_64.xml
++++ b/tests/qemucapabilitiesdata/caps_4.1.0.x86_64.xml
+@@ -207,6 +207,7 @@
+   &lt;flag name='x86-max-cpu'/&gt;
+   &lt;flag name='cpu-unavailable-features'/&gt;
+   &lt;flag name='canonical-cpu-features'/&gt;
++  &lt;flag name='bochs-display'/&gt;
+   &lt;version&gt;4000050&lt;/version&gt;
+   &lt;kvmVersion&gt;0&lt;/kvmVersion&gt;
+   &lt;microcodeVersion&gt;43100759&lt;/microcodeVersion&gt;
+-- 
+2.20.1
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187367.html">[PATCH v3 0/2] add support for bochs-video device</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187369.html">[PATCH] maint: RNG comment fix</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187366.html">[PATCH v3 2/2] qemu: add 'bochs' video display type</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187396.html">Re:  [PATCH v3 0/2] add support for bochs-video device</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187368"><strong>Date</strong></a></li>
+<li><a href="index.html#187368"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

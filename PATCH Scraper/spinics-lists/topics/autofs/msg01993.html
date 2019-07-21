@@ -1,0 +1,464 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 13/22] autofs&#45;5.1.4 &#45; remove autofs4 module load code -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Sun, 14 Oct 2018 20:53:39 &#45;0700 -->
+<!--X-Message-Id: 153957505891.14897.11032643249348735274.stgit@pluto&#45;themaw&#45;net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 153957483372.14897.14805717004658230261.stgit@pluto&#45;themaw&#45;net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 13/22] autofs-5.1.4 - remove autofs4 module load code &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 13/22] autofs-5.1.4 - remove autofs4 module load code &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 13/22] autofs-5.1.4 - remove autofs4 module load code</h1>
+[<a href="msg01992.html">Date Prev</a>][<a href="msg01994.html">Date Next</a>][<a href="msg01992.html">Thread Prev</a>][<a href="msg01994.html">Thread Next</a>][<a href="maillist.html#01993">Date Index</a>][<a href="index.html#01993">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 13/22] autofs-5.1.4 - remove autofs4 module load code</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Oct 2018 11:44:19 +0800</li>
+<li><em>In-reply-to</em>: &lt;153957483372.14897.14805717004658230261.stgit@pluto-themaw-net&gt;</li>
+<li><em>References</em>: &lt;153957483372.14897.14805717004658230261.stgit@pluto-themaw-net&gt;</li>
+<li><em>User-agent</em>: StGit/unknown-version</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The autofs kernel module has finally been renamed from autofs4 to
+autofs so autoloading works so there is no need for manual loading.
+
+The module load function has been commented out in the source for
+a long time so there should not be any adverse affects from removing
+it.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ CHANGELOG           |    1 +
+ configure           |   61 ---------------------------------------------------
+ configure.in        |    1 -
+ daemon/automount.c  |    8 -------
+ daemon/module.c     |   35 -----------------------------
+ include/automount.h |    7 ------
+ include/config.h.in |    6 -----
+ 7 files changed, 1 insertion(+), 118 deletions(-)
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 1a9296f5..0a56df5a 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -42,6 +42,7 @@ xx/xx/2018 autofs-5.1.5
+ - fix possible NULL pointer dereference in get_defaults_entry().
+ - better handle hesiod support not built in.
+ - fix indent in automount(8) man page.
++- remove autofs4 module load code.
+ 
+ 19/12/2017 autofs-5.1.4
+ - fix spec file url.
+diff --git a/configure b/configure
+index 827921ba..2116668a 100755
+--- a/configure
++++ b/configure
+@@ -659,8 +659,6 @@ PATH_YACC
+ YACC
+ PATH_LEX
+ LEX
+-HAVE_MODPROBE
+-MODPROBE
+ HAVE_E4FSCK
+ E4FSCK
+ HAVE_E3FSCK
+@@ -4155,65 +4153,6 @@ else
+   HAVE_E4FSCK=0
+ fi
+ 
+-for ac_prog in modprobe
+-do
+-  # Extract the first word of &quot;$ac_prog&quot;, so it can be a program name with args.
+-set dummy $ac_prog; ac_word=$2
+-{ $as_echo &quot;$as_me:${as_lineno-$LINENO}: checking for $ac_word&quot; &gt;&amp;5
+-$as_echo_n &quot;checking for $ac_word... &quot; &gt;&amp;6; }
+-if ${ac_cv_path_MODPROBE+:} false; then :
+-  $as_echo_n &quot;(cached) &quot; &gt;&amp;6
+-else
+-  case $MODPROBE in
+-  [\\/]* | ?:[\\/]*)
+-  ac_cv_path_MODPROBE=&quot;$MODPROBE&quot; # Let the user override the test with a path.
+-  ;;
+-  *)
+-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+-for as_dir in $searchpath
+-do
+-  IFS=$as_save_IFS
+-  test -z &quot;$as_dir&quot; &amp;&amp; as_dir=.
+-    for ac_exec_ext in '' $ac_executable_extensions; do
+-  if as_fn_executable_p &quot;$as_dir/$ac_word$ac_exec_ext&quot;; then
+-    ac_cv_path_MODPROBE=&quot;$as_dir/$ac_word$ac_exec_ext&quot;
+-    $as_echo &quot;$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext&quot; &gt;&amp;5
+-    break 2
+-  fi
+-done
+-  done
+-IFS=$as_save_IFS
+-
+-  ;;
+-esac
+-fi
+-MODPROBE=$ac_cv_path_MODPROBE
+-if test -n &quot;$MODPROBE&quot;; then
+-  { $as_echo &quot;$as_me:${as_lineno-$LINENO}: result: $MODPROBE&quot; &gt;&amp;5
+-$as_echo &quot;$MODPROBE&quot; &gt;&amp;6; }
+-else
+-  { $as_echo &quot;$as_me:${as_lineno-$LINENO}: result: no&quot; &gt;&amp;5
+-$as_echo &quot;no&quot; &gt;&amp;6; }
+-fi
+-
+-
+-  test -n &quot;$MODPROBE&quot; &amp;&amp; break
+-done
+-
+-if test -n &quot;$MODPROBE&quot;; then
+-
+-$as_echo &quot;#define HAVE_MODPROBE 1&quot; &gt;&gt;confdefs.h
+-
+-
+-cat &gt;&gt;confdefs.h &lt;&lt;_ACEOF
+-#define PATH_MODPROBE &quot;$MODPROBE&quot;
+-_ACEOF
+-
+-  HAVE_MODPROBE=1
+-else
+-  HAVE_MODPROBE=0
+-fi
+-
+ 
+ for ac_prog in flex lex
+ do
+diff --git a/configure.in b/configure.in
+index 4b0a81f2..dbee99f4 100644
+--- a/configure.in
++++ b/configure.in
+@@ -161,7 +161,6 @@ AF_PATH_INCLUDE(UMOUNT, umount, /bin/umount, $searchpath)
+ AF_PATH_INCLUDE(E2FSCK, fsck.ext2 e2fsck, , $searchpath)
+ AF_PATH_INCLUDE(E3FSCK, fsck.ext3 e3fsck, , $searchpath)
+ AF_PATH_INCLUDE(E4FSCK, fsck.ext4 e4fsck, , $searchpath)
+-AF_PATH_INCLUDE(MODPROBE, modprobe, , $searchpath)
+ 
+ AF_CHECK_PROG(LEX, flex lex, , $searchpath)
+ AF_CHECK_PROG(YACC, bison, , $searchpath)
+diff --git a/daemon/automount.c b/daemon/automount.c
+index 05ec8a62..2c0def54 100644
+--- a/daemon/automount.c
++++ b/daemon/automount.c
+@@ -2336,14 +2336,6 @@ int main(int argc, char *argv[])
+ 		exit(exit_code);
+ 	}
+ 
+-#if 0
+-	if (!load_autofs4_module()) {
+-		fprintf(stderr, &quot;%s: can't load %s filesystem module.\n&quot;,
+-			program, FS_MODULE_NAME);
+-		exit(1);
+-	}
+-#endif
+-
+ 	/* Don't need the kernel module just to look at the configured maps */
+ 	if (!dumpmaps &amp;&amp; (!query_kproto_ver() || get_kver_major() &lt; 5)) {
+ 		fprintf(stderr,
+diff --git a/daemon/module.c b/daemon/module.c
+index b1a94f56..be96a82b 100644
+--- a/daemon/module.c
++++ b/daemon/module.c
+@@ -19,41 +19,6 @@
+ #include &quot;automount.h&quot;
+ #include &quot;nsswitch.h&quot;
+ 
+-int load_autofs4_module(void)
+-{
+-	FILE *fp;
+-	char buf[PATH_MAX];
+-	int ret;
+-
+-	/*
+-	 * Check if module already loaded or compiled in.
+-	 * If both autofs v3 and v4 are coplied in and
+-	 * the v3 module registers first or the v4 module
+-	 * is an older version we will catch it at mount
+-	 * time.
+-	 */
+-	fp = open_fopen_r(&quot;/proc/filesystems&quot;);
+-	if (!fp) {
+-		logerr(&quot;cannot open /proc/filesystems&quot;);
+-		return 0;
+-	}
+-
+-	while (fgets(buf, sizeof(buf), fp)) {
+-		if (strstr(buf, &quot;autofs&quot;)) {
+-			fclose(fp);
+-			return 1;
+-		}
+-	}
+-	fclose(fp);
+-
+-	ret = spawnl(LOGOPT_NONE, PATH_MODPROBE, PATH_MODPROBE,
+-				&quot;-q&quot;, FS_MODULE_NAME, NULL);
+-	if (ret)
+-		return 0;
+-
+-	return 1;
+-}
+-
+ int open_lookup(const char *name, const char *err_prefix, const char *mapfmt,
+ 		int argc, const char *const *argv, struct lookup_mod **lookup)
+ {
+diff --git a/include/automount.h b/include/automount.h
+index 417dacbb..eccd16aa 100644
+--- a/include/automount.h
++++ b/include/automount.h
+@@ -52,17 +52,10 @@
+ #error Failed to locate umount(8)!
+ #endif
+ 
+-#ifndef HAVE_MODPROBE
+-#error Failed to locate modprobe(8)!
+-#endif
+-
+ #ifndef HAVE_LINUX_PROCFS
+ #error Failed to verify existence of procfs filesystem!
+ #endif
+ 
+-#define FS_MODULE_NAME  &quot;autofs4&quot;
+-int load_autofs4_module(void);
+-
+ /* The -s (sloppy) option to mount is good, if we have it... */
+ 
+ #ifdef HAVE_SLOPPY_MOUNT
+diff --git a/include/config.h.in b/include/config.h.in
+index 991a2bda..a4879494 100644
+--- a/include/config.h.in
++++ b/include/config.h.in
+@@ -48,9 +48,6 @@
+ /* Define to 1 if you have the &lt;memory.h&gt; header file. */
+ #undef HAVE_MEMORY_H
+ 
+-/* define if you have MODPROBE */
+-#undef HAVE_MODPROBE
+-
+ /* define if you have MOUNT */
+ #undef HAVE_MOUNT
+ 
+@@ -129,9 +126,6 @@
+ /* define if you have LEX */
+ #undef PATH_LEX
+ 
+-/* define if you have MODPROBE */
+-#undef PATH_MODPROBE
+-
+ /* define if you have MOUNT */
+ #undef PATH_MOUNT
+ 
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01980" href="msg01980.html">[PATCH 00/22] Current patch queue</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01992.html">[PATCH 12/22] autofs-5.1.4 - fix indent in automount(8) man page</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01994.html">[PATCH 14/22] autofs-5.1.4 - add NULL check in prepare_attempt_prefix()</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01992.html">[PATCH 12/22] autofs-5.1.4 - fix indent in automount(8) man page</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01994.html">[PATCH 14/22] autofs-5.1.4 - add NULL check in prepare_attempt_prefix()</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01993"><strong>Date</strong></a></li>
+<li><a href="index.html#01993"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

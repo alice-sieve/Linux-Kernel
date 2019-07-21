@@ -1,0 +1,676 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH V3] cpufreq: Make cpufreq_generic_init() return void -->
+<!--X-From-R13: "Dnsnry X. Ilfbpxv" &#60;ewjNewjlfbpxv.arg> -->
+<!--X-Date: Thu, 18 Jul 2019 01:47:46 &#45;0700 -->
+<!--X-Message-Id: 2600442.BuetrrJ8M2@kreacher -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 770b46d99e2fa88bc8cdfd95388374284c8b3cf8.1563249700.git.viresh.kumar@linaro.org -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: Re: [PATCH V3] cpufreq: Make cpufreq_generic_init() return void">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Re: [PATCH V3] cpufreq: Make cpufreq_generic_init() return void &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">Re: [PATCH V3] cpufreq: Make cpufreq_generic_init() return void</h1>
+[<a href="msg741731.html">Date Prev</a>][<a href="msg741733.html">Date Next</a>][<a href="msg741243.html">Thread Prev</a>][<a href="msg741245.html">Thread Next</a>][<a href="maillist.html#741732">Date Index</a>][<a href="threads.html#741732">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH V3] cpufreq: Make cpufreq_generic_init() return void</li>
+<li><em>From</em>: &quot;Rafael J. Wysocki&quot; &lt;rjw@xxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 18 Jul 2019 10:47:37 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg741243.html">770b46d99e2fa88bc8cdfd95388374284c8b3cf8.1563249700.git.viresh.kumar@linaro.org</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On Tuesday, July 16, 2019 6:06:08 AM CEST Viresh Kumar wrote:
+&gt;<i> It always returns 0 (success) and its return type should really be void.</i>
+&gt;<i> Over that, many drivers have added error handling code based on its</i>
+&gt;<i> return value, which is not required at all.</i>
+&gt;<i> </i>
+&gt;<i> change its return type to void and update all the callers.</i>
+&gt;<i> </i>
+&gt;<i> Signed-off-by: Viresh Kumar &lt;viresh.kumar@xxxxxxxxxx&gt;</i>
+&gt;<i> ---</i>
+&gt;<i> V2-&gt;V3:</i>
+&gt;<i> - Update bmips cpufreq driver to avoid &quot;warning: 'ret' may be used</i>
+&gt;<i>   uninitialized&quot;.</i>
+&gt;<i> - Build bot reported this issue almost after 4 days of posting this</i>
+&gt;<i>   patch, I was expecting this a lot earlier :)</i>
+&gt;<i> </i>
+&gt;<i>  drivers/cpufreq/bmips-cpufreq.c     | 17 ++++++-----------</i>
+&gt;<i>  drivers/cpufreq/cpufreq.c           |  4 +---</i>
+&gt;<i>  drivers/cpufreq/davinci-cpufreq.c   |  3 ++-</i>
+&gt;<i>  drivers/cpufreq/imx6q-cpufreq.c     |  6 ++----</i>
+&gt;<i>  drivers/cpufreq/kirkwood-cpufreq.c  |  3 ++-</i>
+&gt;<i>  drivers/cpufreq/loongson1-cpufreq.c |  8 +++-----</i>
+&gt;<i>  drivers/cpufreq/loongson2_cpufreq.c |  3 ++-</i>
+&gt;<i>  drivers/cpufreq/maple-cpufreq.c     |  3 ++-</i>
+&gt;<i>  drivers/cpufreq/omap-cpufreq.c      | 15 +++++----------</i>
+&gt;<i>  drivers/cpufreq/pasemi-cpufreq.c    |  3 ++-</i>
+&gt;<i>  drivers/cpufreq/pmac32-cpufreq.c    |  3 ++-</i>
+&gt;<i>  drivers/cpufreq/pmac64-cpufreq.c    |  3 ++-</i>
+&gt;<i>  drivers/cpufreq/s3c2416-cpufreq.c   |  9 ++-------</i>
+&gt;<i>  drivers/cpufreq/s3c64xx-cpufreq.c   | 15 +++------------</i>
+&gt;<i>  drivers/cpufreq/s5pv210-cpufreq.c   |  3 ++-</i>
+&gt;<i>  drivers/cpufreq/sa1100-cpufreq.c    |  3 ++-</i>
+&gt;<i>  drivers/cpufreq/sa1110-cpufreq.c    |  3 ++-</i>
+&gt;<i>  drivers/cpufreq/spear-cpufreq.c     |  3 ++-</i>
+&gt;<i>  drivers/cpufreq/tegra20-cpufreq.c   |  8 +-------</i>
+&gt;<i>  include/linux/cpufreq.h             |  2 +-</i>
+&gt;<i>  20 files changed, 46 insertions(+), 71 deletions(-)</i>
+&gt;<i> </i>
+&gt;<i> diff --git a/drivers/cpufreq/bmips-cpufreq.c b/drivers/cpufreq/bmips-cpufreq.c</i>
+&gt;<i> index 56a4ebbf00e0..f7c23fa468f0 100644</i>
+&gt;<i> --- a/drivers/cpufreq/bmips-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/bmips-cpufreq.c</i>
+&gt;<i> @@ -131,23 +131,18 @@ static int bmips_cpufreq_exit(struct cpufreq_policy *policy)</i>
+&gt;<i>  static int bmips_cpufreq_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  {</i>
+&gt;<i>  	struct cpufreq_frequency_table *freq_table;</i>
+&gt;<i> -	int ret;</i>
+&gt;<i>  </i>
+&gt;<i>  	freq_table = bmips_cpufreq_get_freq_table(policy);</i>
+&gt;<i>  	if (IS_ERR(freq_table)) {</i>
+&gt;<i> -		ret = PTR_ERR(freq_table);</i>
+&gt;<i> -		pr_err(&quot;%s: couldn't determine frequency table (%d).\n&quot;,</i>
+&gt;<i> -			BMIPS_CPUFREQ_NAME, ret);</i>
+&gt;<i> -		return ret;</i>
+&gt;<i> +		pr_err(&quot;%s: couldn't determine frequency table (%ld).\n&quot;,</i>
+&gt;<i> +			BMIPS_CPUFREQ_NAME, PTR_ERR(freq_table));</i>
+&gt;<i> +		return PTR_ERR(freq_table);</i>
+&gt;<i>  	}</i>
+&gt;<i>  </i>
+&gt;<i> -	ret = cpufreq_generic_init(policy, freq_table, TRANSITION_LATENCY);</i>
+&gt;<i> -	if (ret)</i>
+&gt;<i> -		bmips_cpufreq_exit(policy);</i>
+&gt;<i> -	else</i>
+&gt;<i> -		pr_info(&quot;%s: registered\n&quot;, BMIPS_CPUFREQ_NAME);</i>
+&gt;<i> +	cpufreq_generic_init(policy, freq_table, TRANSITION_LATENCY);</i>
+&gt;<i> +	pr_info(&quot;%s: registered\n&quot;, BMIPS_CPUFREQ_NAME);</i>
+&gt;<i>  </i>
+&gt;<i> -	return ret;</i>
+&gt;<i> +	return 0;</i>
+&gt;<i>  }</i>
+&gt;<i>  </i>
+&gt;<i>  static struct cpufreq_driver bmips_cpufreq_driver = {</i>
+&gt;<i> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c</i>
+&gt;<i> index 4d6043ee7834..8dda62367816 100644</i>
+&gt;<i> --- a/drivers/cpufreq/cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/cpufreq.c</i>
+&gt;<i> @@ -159,7 +159,7 @@ EXPORT_SYMBOL_GPL(arch_set_freq_scale);</i>
+&gt;<i>   * - set policies transition latency</i>
+&gt;<i>   * - policy-&gt;cpus with all possible CPUs</i>
+&gt;<i>   */</i>
+&gt;<i> -int cpufreq_generic_init(struct cpufreq_policy *policy,</i>
+&gt;<i> +void cpufreq_generic_init(struct cpufreq_policy *policy,</i>
+&gt;<i>  		struct cpufreq_frequency_table *table,</i>
+&gt;<i>  		unsigned int transition_latency)</i>
+&gt;<i>  {</i>
+&gt;<i> @@ -171,8 +171,6 @@ int cpufreq_generic_init(struct cpufreq_policy *policy,</i>
+&gt;<i>  	 * share the clock and voltage and clock.</i>
+&gt;<i>  	 */</i>
+&gt;<i>  	cpumask_setall(policy-&gt;cpus);</i>
+&gt;<i> -</i>
+&gt;<i> -	return 0;</i>
+&gt;<i>  }</i>
+&gt;<i>  EXPORT_SYMBOL_GPL(cpufreq_generic_init);</i>
+&gt;<i>  </i>
+&gt;<i> diff --git a/drivers/cpufreq/davinci-cpufreq.c b/drivers/cpufreq/davinci-cpufreq.c</i>
+&gt;<i> index 3de48ae60c29..297d23cad8b5 100644</i>
+&gt;<i> --- a/drivers/cpufreq/davinci-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/davinci-cpufreq.c</i>
+&gt;<i> @@ -90,7 +90,8 @@ static int davinci_cpu_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  	 * Setting the latency to 2000 us to accommodate addition of drivers</i>
+&gt;<i>  	 * to pre/post change notification list.</i>
+&gt;<i>  	 */</i>
+&gt;<i> -	return cpufreq_generic_init(policy, freq_table, 2000 * 1000);</i>
+&gt;<i> +	cpufreq_generic_init(policy, freq_table, 2000 * 1000);</i>
+&gt;<i> +	return 0;</i>
+&gt;<i>  }</i>
+&gt;<i>  </i>
+&gt;<i>  static struct cpufreq_driver davinci_driver = {</i>
+&gt;<i> diff --git a/drivers/cpufreq/imx6q-cpufreq.c b/drivers/cpufreq/imx6q-cpufreq.c</i>
+&gt;<i> index 47ccfa6b17b7..648a09a1778a 100644</i>
+&gt;<i> --- a/drivers/cpufreq/imx6q-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/imx6q-cpufreq.c</i>
+&gt;<i> @@ -190,14 +190,12 @@ static int imx6q_set_target(struct cpufreq_policy *policy, unsigned int index)</i>
+&gt;<i>  </i>
+&gt;<i>  static int imx6q_cpufreq_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  {</i>
+&gt;<i> -	int ret;</i>
+&gt;<i> -</i>
+&gt;<i>  	policy-&gt;clk = clks[ARM].clk;</i>
+&gt;<i> -	ret = cpufreq_generic_init(policy, freq_table, transition_latency);</i>
+&gt;<i> +	cpufreq_generic_init(policy, freq_table, transition_latency);</i>
+&gt;<i>  	policy-&gt;suspend_freq = max_freq;</i>
+&gt;<i>  	dev_pm_opp_of_register_em(policy-&gt;cpus);</i>
+&gt;<i>  </i>
+&gt;<i> -	return ret;</i>
+&gt;<i> +	return 0;</i>
+&gt;<i>  }</i>
+&gt;<i>  </i>
+&gt;<i>  static struct cpufreq_driver imx6q_cpufreq_driver = {</i>
+&gt;<i> diff --git a/drivers/cpufreq/kirkwood-cpufreq.c b/drivers/cpufreq/kirkwood-cpufreq.c</i>
+&gt;<i> index 7ab564c1f7ae..cb74bdc5baaa 100644</i>
+&gt;<i> --- a/drivers/cpufreq/kirkwood-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/kirkwood-cpufreq.c</i>
+&gt;<i> @@ -85,7 +85,8 @@ static int kirkwood_cpufreq_target(struct cpufreq_policy *policy,</i>
+&gt;<i>  /* Module init and exit code */</i>
+&gt;<i>  static int kirkwood_cpufreq_cpu_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  {</i>
+&gt;<i> -	return cpufreq_generic_init(policy, kirkwood_freq_table, 5000);</i>
+&gt;<i> +	cpufreq_generic_init(policy, kirkwood_freq_table, 5000);</i>
+&gt;<i> +	return 0;</i>
+&gt;<i>  }</i>
+&gt;<i>  </i>
+&gt;<i>  static struct cpufreq_driver kirkwood_cpufreq_driver = {</i>
+&gt;<i> diff --git a/drivers/cpufreq/loongson1-cpufreq.c b/drivers/cpufreq/loongson1-cpufreq.c</i>
+&gt;<i> index 21c9ce8526c0..0ea88778882a 100644</i>
+&gt;<i> --- a/drivers/cpufreq/loongson1-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/loongson1-cpufreq.c</i>
+&gt;<i> @@ -81,7 +81,7 @@ static int ls1x_cpufreq_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  	struct device *cpu_dev = get_cpu_device(policy-&gt;cpu);</i>
+&gt;<i>  	struct cpufreq_frequency_table *freq_tbl;</i>
+&gt;<i>  	unsigned int pll_freq, freq;</i>
+&gt;<i> -	int steps, i, ret;</i>
+&gt;<i> +	int steps, i;</i>
+&gt;<i>  </i>
+&gt;<i>  	pll_freq = clk_get_rate(cpufreq-&gt;pll_clk) / 1000;</i>
+&gt;<i>  </i>
+&gt;<i> @@ -103,11 +103,9 @@ static int ls1x_cpufreq_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  	freq_tbl[i].frequency = CPUFREQ_TABLE_END;</i>
+&gt;<i>  </i>
+&gt;<i>  	policy-&gt;clk = cpufreq-&gt;clk;</i>
+&gt;<i> -	ret = cpufreq_generic_init(policy, freq_tbl, 0);</i>
+&gt;<i> -	if (ret)</i>
+&gt;<i> -		kfree(freq_tbl);</i>
+&gt;<i> +	cpufreq_generic_init(policy, freq_tbl, 0);</i>
+&gt;<i>  </i>
+&gt;<i> -	return ret;</i>
+&gt;<i> +	return 0;</i>
+&gt;<i>  }</i>
+&gt;<i>  </i>
+&gt;<i>  static int ls1x_cpufreq_exit(struct cpufreq_policy *policy)</i>
+&gt;<i> diff --git a/drivers/cpufreq/loongson2_cpufreq.c b/drivers/cpufreq/loongson2_cpufreq.c</i>
+&gt;<i> index da344696beed..890813e0bb76 100644</i>
+&gt;<i> --- a/drivers/cpufreq/loongson2_cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/loongson2_cpufreq.c</i>
+&gt;<i> @@ -95,7 +95,8 @@ static int loongson2_cpufreq_cpu_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  	}</i>
+&gt;<i>  </i>
+&gt;<i>  	policy-&gt;clk = cpuclk;</i>
+&gt;<i> -	return cpufreq_generic_init(policy, &amp;loongson2_clockmod_table[0], 0);</i>
+&gt;<i> +	cpufreq_generic_init(policy, &amp;loongson2_clockmod_table[0], 0);</i>
+&gt;<i> +	return 0;</i>
+&gt;<i>  }</i>
+&gt;<i>  </i>
+&gt;<i>  static int loongson2_cpufreq_exit(struct cpufreq_policy *policy)</i>
+&gt;<i> diff --git a/drivers/cpufreq/maple-cpufreq.c b/drivers/cpufreq/maple-cpufreq.c</i>
+&gt;<i> index f5220b3d4ec5..28d346062166 100644</i>
+&gt;<i> --- a/drivers/cpufreq/maple-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/maple-cpufreq.c</i>
+&gt;<i> @@ -140,7 +140,8 @@ static unsigned int maple_cpufreq_get_speed(unsigned int cpu)</i>
+&gt;<i>  </i>
+&gt;<i>  static int maple_cpufreq_cpu_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  {</i>
+&gt;<i> -	return cpufreq_generic_init(policy, maple_cpu_freqs, 12000);</i>
+&gt;<i> +	cpufreq_generic_init(policy, maple_cpu_freqs, 12000);</i>
+&gt;<i> +	return 0;</i>
+&gt;<i>  }</i>
+&gt;<i>  </i>
+&gt;<i>  static struct cpufreq_driver maple_cpufreq_driver = {</i>
+&gt;<i> diff --git a/drivers/cpufreq/omap-cpufreq.c b/drivers/cpufreq/omap-cpufreq.c</i>
+&gt;<i> index 29643f06a3c3..8d14b42a8c6f 100644</i>
+&gt;<i> --- a/drivers/cpufreq/omap-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/omap-cpufreq.c</i>
+&gt;<i> @@ -122,23 +122,18 @@ static int omap_cpu_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  			dev_err(mpu_dev,</i>
+&gt;<i>  				&quot;%s: cpu%d: failed creating freq table[%d]\n&quot;,</i>
+&gt;<i>  				__func__, policy-&gt;cpu, result);</i>
+&gt;<i> -			goto fail;</i>
+&gt;<i> +			clk_put(policy-&gt;clk);</i>
+&gt;<i> +			return result;</i>
+&gt;<i>  		}</i>
+&gt;<i>  	}</i>
+&gt;<i>  </i>
+&gt;<i>  	atomic_inc_return(&amp;freq_table_users);</i>
+&gt;<i>  </i>
+&gt;<i>  	/* FIXME: what's the actual transition time? */</i>
+&gt;<i> -	result = cpufreq_generic_init(policy, freq_table, 300 * 1000);</i>
+&gt;<i> -	if (!result) {</i>
+&gt;<i> -		dev_pm_opp_of_register_em(policy-&gt;cpus);</i>
+&gt;<i> -		return 0;</i>
+&gt;<i> -	}</i>
+&gt;<i> +	cpufreq_generic_init(policy, freq_table, 300 * 1000);</i>
+&gt;<i> +	dev_pm_opp_of_register_em(policy-&gt;cpus);</i>
+&gt;<i>  </i>
+&gt;<i> -	freq_table_free();</i>
+&gt;<i> -fail:</i>
+&gt;<i> -	clk_put(policy-&gt;clk);</i>
+&gt;<i> -	return result;</i>
+&gt;<i> +	return 0;</i>
+&gt;<i>  }</i>
+&gt;<i>  </i>
+&gt;<i>  static int omap_cpu_exit(struct cpufreq_policy *policy)</i>
+&gt;<i> diff --git a/drivers/cpufreq/pasemi-cpufreq.c b/drivers/cpufreq/pasemi-cpufreq.c</i>
+&gt;<i> index 6b1e4abe3248..93f39a1d4c3d 100644</i>
+&gt;<i> --- a/drivers/cpufreq/pasemi-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/pasemi-cpufreq.c</i>
+&gt;<i> @@ -196,7 +196,8 @@ static int pas_cpufreq_cpu_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  	policy-&gt;cur = pas_freqs[cur_astate].frequency;</i>
+&gt;<i>  	ppc_proc_freq = policy-&gt;cur * 1000ul;</i>
+&gt;<i>  </i>
+&gt;<i> -	return cpufreq_generic_init(policy, pas_freqs, get_gizmo_latency());</i>
+&gt;<i> +	cpufreq_generic_init(policy, pas_freqs, get_gizmo_latency());</i>
+&gt;<i> +	return 0;</i>
+&gt;<i>  </i>
+&gt;<i>  out_unmap_sdcpwr:</i>
+&gt;<i>  	iounmap(sdcpwr_mapbase);</i>
+&gt;<i> diff --git a/drivers/cpufreq/pmac32-cpufreq.c b/drivers/cpufreq/pmac32-cpufreq.c</i>
+&gt;<i> index 650104d729f3..73621bc11976 100644</i>
+&gt;<i> --- a/drivers/cpufreq/pmac32-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/pmac32-cpufreq.c</i>
+&gt;<i> @@ -372,7 +372,8 @@ static int pmac_cpufreq_target(	struct cpufreq_policy *policy,</i>
+&gt;<i>  </i>
+&gt;<i>  static int pmac_cpufreq_cpu_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  {</i>
+&gt;<i> -	return cpufreq_generic_init(policy, pmac_cpu_freqs, transition_latency);</i>
+&gt;<i> +	cpufreq_generic_init(policy, pmac_cpu_freqs, transition_latency);</i>
+&gt;<i> +	return 0;</i>
+&gt;<i>  }</i>
+&gt;<i>  </i>
+&gt;<i>  static u32 read_gpio(struct device_node *np)</i>
+&gt;<i> diff --git a/drivers/cpufreq/pmac64-cpufreq.c b/drivers/cpufreq/pmac64-cpufreq.c</i>
+&gt;<i> index 1af3492a000d..d7542a106e6b 100644</i>
+&gt;<i> --- a/drivers/cpufreq/pmac64-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/pmac64-cpufreq.c</i>
+&gt;<i> @@ -321,7 +321,8 @@ static unsigned int g5_cpufreq_get_speed(unsigned int cpu)</i>
+&gt;<i>  </i>
+&gt;<i>  static int g5_cpufreq_cpu_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  {</i>
+&gt;<i> -	return cpufreq_generic_init(policy, g5_cpu_freqs, transition_latency);</i>
+&gt;<i> +	cpufreq_generic_init(policy, g5_cpu_freqs, transition_latency);</i>
+&gt;<i> +	return 0;</i>
+&gt;<i>  }</i>
+&gt;<i>  </i>
+&gt;<i>  static struct cpufreq_driver g5_cpufreq_driver = {</i>
+&gt;<i> diff --git a/drivers/cpufreq/s3c2416-cpufreq.c b/drivers/cpufreq/s3c2416-cpufreq.c</i>
+&gt;<i> index f7ff1ed7fef1..106910351c41 100644</i>
+&gt;<i> --- a/drivers/cpufreq/s3c2416-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/s3c2416-cpufreq.c</i>
+&gt;<i> @@ -447,21 +447,16 @@ static int s3c2416_cpufreq_driver_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  	/* Datasheet says PLL stabalisation time must be at least 300us,</i>
+&gt;<i>  	 * so but add some fudge. (reference in LOCKCON0 register description)</i>
+&gt;<i>  	 */</i>
+&gt;<i> -	ret = cpufreq_generic_init(policy, s3c_freq-&gt;freq_table,</i>
+&gt;<i> +	cpufreq_generic_init(policy, s3c_freq-&gt;freq_table,</i>
+&gt;<i>  			(500 * 1000) + s3c_freq-&gt;regulator_latency);</i>
+&gt;<i> -	if (ret)</i>
+&gt;<i> -		goto err_freq_table;</i>
+&gt;<i> -</i>
+&gt;<i>  	register_reboot_notifier(&amp;s3c2416_cpufreq_reboot_notifier);</i>
+&gt;<i>  </i>
+&gt;<i>  	return 0;</i>
+&gt;<i>  </i>
+&gt;<i> -err_freq_table:</i>
+&gt;<i>  #ifdef CONFIG_ARM_S3C2416_CPUFREQ_VCORESCALE</i>
+&gt;<i> -	regulator_put(s3c_freq-&gt;vddarm);</i>
+&gt;<i>  err_vddarm:</i>
+&gt;<i> -#endif</i>
+&gt;<i>  	clk_put(s3c_freq-&gt;armclk);</i>
+&gt;<i> +#endif</i>
+&gt;<i>  err_armclk:</i>
+&gt;<i>  	clk_put(s3c_freq-&gt;hclk);</i>
+&gt;<i>  err_hclk:</i>
+&gt;<i> diff --git a/drivers/cpufreq/s3c64xx-cpufreq.c b/drivers/cpufreq/s3c64xx-cpufreq.c</i>
+&gt;<i> index 37df2d892eb0..af0c00dabb22 100644</i>
+&gt;<i> --- a/drivers/cpufreq/s3c64xx-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/s3c64xx-cpufreq.c</i>
+&gt;<i> @@ -144,7 +144,6 @@ static void s3c64xx_cpufreq_config_regulator(void)</i>
+&gt;<i>  </i>
+&gt;<i>  static int s3c64xx_cpufreq_driver_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  {</i>
+&gt;<i> -	int ret;</i>
+&gt;<i>  	struct cpufreq_frequency_table *freq;</i>
+&gt;<i>  </i>
+&gt;<i>  	if (policy-&gt;cpu != 0)</i>
+&gt;<i> @@ -165,8 +164,7 @@ static int s3c64xx_cpufreq_driver_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  #ifdef CONFIG_REGULATOR</i>
+&gt;<i>  	vddarm = regulator_get(NULL, &quot;vddarm&quot;);</i>
+&gt;<i>  	if (IS_ERR(vddarm)) {</i>
+&gt;<i> -		ret = PTR_ERR(vddarm);</i>
+&gt;<i> -		pr_err(&quot;Failed to obtain VDDARM: %d\n&quot;, ret);</i>
+&gt;<i> +		pr_err(&quot;Failed to obtain VDDARM: %ld\n&quot;, PTR_ERR(vddarm));</i>
+&gt;<i>  		pr_err(&quot;Only frequency scaling available\n&quot;);</i>
+&gt;<i>  		vddarm = NULL;</i>
+&gt;<i>  	} else {</i>
+&gt;<i> @@ -196,16 +194,9 @@ static int s3c64xx_cpufreq_driver_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  	 * the PLLs, which we don't currently) is ~300us worst case,</i>
+&gt;<i>  	 * but add some fudge.</i>
+&gt;<i>  	 */</i>
+&gt;<i> -	ret = cpufreq_generic_init(policy, s3c64xx_freq_table,</i>
+&gt;<i> +	cpufreq_generic_init(policy, s3c64xx_freq_table,</i>
+&gt;<i>  			(500 * 1000) + regulator_latency);</i>
+&gt;<i> -	if (ret != 0) {</i>
+&gt;<i> -		pr_err(&quot;Failed to configure frequency table: %d\n&quot;,</i>
+&gt;<i> -		       ret);</i>
+&gt;<i> -		regulator_put(vddarm);</i>
+&gt;<i> -		clk_put(policy-&gt;clk);</i>
+&gt;<i> -	}</i>
+&gt;<i> -</i>
+&gt;<i> -	return ret;</i>
+&gt;<i> +	return 0;</i>
+&gt;<i>  }</i>
+&gt;<i>  </i>
+&gt;<i>  static struct cpufreq_driver s3c64xx_cpufreq_driver = {</i>
+&gt;<i> diff --git a/drivers/cpufreq/s5pv210-cpufreq.c b/drivers/cpufreq/s5pv210-cpufreq.c</i>
+&gt;<i> index e5cb17d4be7b..5d10030f2560 100644</i>
+&gt;<i> --- a/drivers/cpufreq/s5pv210-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/s5pv210-cpufreq.c</i>
+&gt;<i> @@ -541,7 +541,8 @@ static int s5pv210_cpu_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  	s5pv210_dram_conf[1].freq = clk_get_rate(dmc1_clk);</i>
+&gt;<i>  </i>
+&gt;<i>  	policy-&gt;suspend_freq = SLEEP_FREQ;</i>
+&gt;<i> -	return cpufreq_generic_init(policy, s5pv210_freq_table, 40000);</i>
+&gt;<i> +	cpufreq_generic_init(policy, s5pv210_freq_table, 40000);</i>
+&gt;<i> +	return 0;</i>
+&gt;<i>  </i>
+&gt;<i>  out_dmc1:</i>
+&gt;<i>  	clk_put(dmc0_clk);</i>
+&gt;<i> diff --git a/drivers/cpufreq/sa1100-cpufreq.c b/drivers/cpufreq/sa1100-cpufreq.c</i>
+&gt;<i> index ab5cab93e638..5c075ef6adc0 100644</i>
+&gt;<i> --- a/drivers/cpufreq/sa1100-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/sa1100-cpufreq.c</i>
+&gt;<i> @@ -181,7 +181,8 @@ static int sa1100_target(struct cpufreq_policy *policy, unsigned int ppcr)</i>
+&gt;<i>  </i>
+&gt;<i>  static int __init sa1100_cpu_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  {</i>
+&gt;<i> -	return cpufreq_generic_init(policy, sa11x0_freq_table, 0);</i>
+&gt;<i> +	cpufreq_generic_init(policy, sa11x0_freq_table, 0);</i>
+&gt;<i> +	return 0;</i>
+&gt;<i>  }</i>
+&gt;<i>  </i>
+&gt;<i>  static struct cpufreq_driver sa1100_driver __refdata = {</i>
+&gt;<i> diff --git a/drivers/cpufreq/sa1110-cpufreq.c b/drivers/cpufreq/sa1110-cpufreq.c</i>
+&gt;<i> index dab54e051c0e..d9d04d935b3a 100644</i>
+&gt;<i> --- a/drivers/cpufreq/sa1110-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/sa1110-cpufreq.c</i>
+&gt;<i> @@ -303,7 +303,8 @@ static int sa1110_target(struct cpufreq_policy *policy, unsigned int ppcr)</i>
+&gt;<i>  </i>
+&gt;<i>  static int __init sa1110_cpu_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  {</i>
+&gt;<i> -	return cpufreq_generic_init(policy, sa11x0_freq_table, 0);</i>
+&gt;<i> +	cpufreq_generic_init(policy, sa11x0_freq_table, 0);</i>
+&gt;<i> +	return 0;</i>
+&gt;<i>  }</i>
+&gt;<i>  </i>
+&gt;<i>  /* sa1110_driver needs __refdata because it must remain after init registers</i>
+&gt;<i> diff --git a/drivers/cpufreq/spear-cpufreq.c b/drivers/cpufreq/spear-cpufreq.c</i>
+&gt;<i> index 4074e2615522..73bd8dc47074 100644</i>
+&gt;<i> --- a/drivers/cpufreq/spear-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/spear-cpufreq.c</i>
+&gt;<i> @@ -153,8 +153,9 @@ static int spear_cpufreq_target(struct cpufreq_policy *policy,</i>
+&gt;<i>  static int spear_cpufreq_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  {</i>
+&gt;<i>  	policy-&gt;clk = spear_cpufreq.clk;</i>
+&gt;<i> -	return cpufreq_generic_init(policy, spear_cpufreq.freq_tbl,</i>
+&gt;<i> +	cpufreq_generic_init(policy, spear_cpufreq.freq_tbl,</i>
+&gt;<i>  			spear_cpufreq.transition_latency);</i>
+&gt;<i> +	return 0;</i>
+&gt;<i>  }</i>
+&gt;<i>  </i>
+&gt;<i>  static struct cpufreq_driver spear_cpufreq_driver = {</i>
+&gt;<i> diff --git a/drivers/cpufreq/tegra20-cpufreq.c b/drivers/cpufreq/tegra20-cpufreq.c</i>
+&gt;<i> index 3c32cc7b0671..f84ecd22f488 100644</i>
+&gt;<i> --- a/drivers/cpufreq/tegra20-cpufreq.c</i>
+&gt;<i> +++ b/drivers/cpufreq/tegra20-cpufreq.c</i>
+&gt;<i> @@ -118,17 +118,11 @@ static int tegra_target(struct cpufreq_policy *policy, unsigned int index)</i>
+&gt;<i>  static int tegra_cpu_init(struct cpufreq_policy *policy)</i>
+&gt;<i>  {</i>
+&gt;<i>  	struct tegra20_cpufreq *cpufreq = cpufreq_get_driver_data();</i>
+&gt;<i> -	int ret;</i>
+&gt;<i>  </i>
+&gt;<i>  	clk_prepare_enable(cpufreq-&gt;cpu_clk);</i>
+&gt;<i>  </i>
+&gt;<i>  	/* FIXME: what's the actual transition time? */</i>
+&gt;<i> -	ret = cpufreq_generic_init(policy, freq_table, 300 * 1000);</i>
+&gt;<i> -	if (ret) {</i>
+&gt;<i> -		clk_disable_unprepare(cpufreq-&gt;cpu_clk);</i>
+&gt;<i> -		return ret;</i>
+&gt;<i> -	}</i>
+&gt;<i> -</i>
+&gt;<i> +	cpufreq_generic_init(policy, freq_table, 300 * 1000);</i>
+&gt;<i>  	policy-&gt;clk = cpufreq-&gt;cpu_clk;</i>
+&gt;<i>  	policy-&gt;suspend_freq = freq_table[0].frequency;</i>
+&gt;<i>  	return 0;</i>
+&gt;<i> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h</i>
+&gt;<i> index d757a56a74dc..536a049d7ecc 100644</i>
+&gt;<i> --- a/include/linux/cpufreq.h</i>
+&gt;<i> +++ b/include/linux/cpufreq.h</i>
+&gt;<i> @@ -992,7 +992,7 @@ extern struct freq_attr *cpufreq_generic_attr[];</i>
+&gt;<i>  int cpufreq_table_validate_and_sort(struct cpufreq_policy *policy);</i>
+&gt;<i>  </i>
+&gt;<i>  unsigned int cpufreq_generic_get(unsigned int cpu);</i>
+&gt;<i> -int cpufreq_generic_init(struct cpufreq_policy *policy,</i>
+&gt;<i> +void cpufreq_generic_init(struct cpufreq_policy *policy,</i>
+&gt;<i>  		struct cpufreq_frequency_table *table,</i>
+&gt;<i>  		unsigned int transition_latency);</i>
+&gt;<i>  #endif /* _LINUX_CPUFREQ_H */</i>
+&gt;<i> </i>
+
+Applied, thanks!
+
+
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="741243" href="msg741243.html">[PATCH V3] cpufreq: Make cpufreq_generic_init() return void</a></strong>
+<ul><li><em>From:</em> Viresh Kumar</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741731.html">Re: [PATCH] ACPI: support for NXP i2c controller</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741733.html">Re: [PATCH RFC 07/18] clk: bcm2835: Add BCM2838_CLOCK_EMMC2 support</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741243.html">[PATCH V3] cpufreq: Make cpufreq_generic_init() return void</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741245.html">[PATCH] media: platform: sti: c8sectpfe: core: Add of_node_put() at goto</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741732"><strong>Date</strong></a></li>
+<li><a href="threads.html#741732"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

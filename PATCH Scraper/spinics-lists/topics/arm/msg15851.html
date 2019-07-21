@@ -1,0 +1,243 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Fix compilation for AT91 etc -->
+<!--X-From-R13: Brgre Quhoo &#60;crgre.puhooNavpgn.pbz.nh> -->
+<!--X-Date: Sun, 29 May 2011 21:56:45 &#45;0700 -->
+<!--X-Message-Id: w4zkm4dc8u.wl%peter@chubb.wattle.id.au -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux ARM: [PATCH] Fix compilation for AT91 etc">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux ARM, Xscale &mdash; [PATCH] Fix compilation for AT91 etc</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:1790192168" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH] Fix compilation for AT91 etc</h1>
+[<a href="msg15850.html">Date Prev</a>][<a href="msg15852.html">Date Next</a>][<a href="msg15850.html">Thread Prev</a>][<a href="msg15852.html">Thread Next</a>][<a href="maillist.html#15851">Date Index</a>][<a href="threads.html#15851">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: <a href="mailto:linux-arm@DOMAIN.HIDDEN">linux-arm@xxxxxxxxxxxxxxxxxxx</a></li>
+<li><em>Subject</em>: [PATCH] Fix compilation for AT91 etc</li>
+<li><em>From</em>: Peter Chubb &lt;<a href="mailto:peter.chubb@DOMAIN.HIDDEN">peter.chubb@xxxxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Mon, 30 May 2011 14:49:05 +1000</li>
+<li><em>Organization</em>: National ICT Australia</li>
+<li><em>User-agent</em>: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)	FLIM/1.14.9 (Goj&#xC5;) APEL/10.8 Emacs/23.3	(i486-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Hi Folks,
+   When I try to build for the GDB Armulator, I see:
+  AS      arch/arm/mm/proc-arm7tdmi.o
+/tmp/ccybRx5v.s: Assembler messages:
+/tmp/ccybRx5v.s: Error: .size expression for __arm7tdmi_proc_info does ate to a constant
+
+This is because of a typo in the file, which the attached patch fixes.
+Signed-off-by: Peter Chubb &lt;peter.chubb@xxxxxxxxxxxx&gt;
+
+ arch/arm/mm/proc-arm7tdmi.S |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: linux-2.6/arch/arm/mm/proc-arm7tdmi.S
+===================================================================
+--- linux-2.6.orig/arch/arm/mm/proc-arm7tdmi.S	2011-05-30 14:41:15.068813624 +1000
++++ linux-2.6/arch/arm/mm/proc-arm7tdmi.S	2011-05-30 14:41:39.044766533 +1000
+@@ -146,7 +146,7 @@
+ 		.long	0
+ 		.long	0
+ 		.long	v4_cache_fns
+-		.size	__arm7tdmi_proc_info, . - __arm7dmi_proc_info
++		.size	__arm7tdmi_proc_info, . - __arm7tdmi_proc_info
+ 
+ 		.type	__triscenda7_proc_info, #object
+ __triscenda7_proc_info:
+
+---
+Dr Peter Chubb                                  peter DOT chubb AT nicta.com.au
+<a  rel="nofollow" href="http://www.ertos.nicta.com.au">http://www.ertos.nicta.com.au</a>               ERTOS within National ICT Australia
+All things shall perish from under the sky/Music alone shall live, never to die
+
+--
+Dr Peter Chubb                                  peter DOT chubb AT nicta.com.au
+<a  rel="nofollow" href="http://www.ertos.nicta.com.au">http://www.ertos.nicta.com.au</a>               ERTOS within National ICT Australia
+All things shall perish from under the sky/Music alone shall live, never to die
+
+_______________________________________________
+linux-arm mailing list
+linux-arm@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm">http://lists.infradead.org/mailman/listinfo/linux-arm</a>
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg15850.html">clone() for 2.6.33 Cortex-M3 kernel?</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg15852.html">information regarding Haptics class &amp; driver</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg15850.html">clone() for 2.6.33 Cortex-M3 kernel?</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg15852.html">information regarding Haptics class &amp; driver</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#15851"><strong>Date</strong></a></li>
+<li><a href="threads.html#15851"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

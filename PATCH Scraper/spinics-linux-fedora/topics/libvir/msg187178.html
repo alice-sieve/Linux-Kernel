@@ -1,0 +1,443 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v1 15/31] virhostdevtest:	s/CHECK_LIST_COUNT/CHECK_PCI_LIST_COUNT/ -->
+<!--X-From-R13: [vpuny Bevibmavx &#60;zcevibmaNerqung.pbz> -->
+<!--X-Date: Thu, 11 Jul 2019 08:54:59 &#45;0700 -->
+<!--X-Message-Id: 86240ff451cabe5de80311ad0449a84404c0045d.1562859733.git.mprivozn@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1562859733.git.mprivozn@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v1 15/31] virhostdevtest:	s/CHECK_LIST_COUNT/CHECK_PCI_LIST_COUNT/</title>
+<meta name="description" content="libvirt: [PATCH v1 15/31] virhostdevtest:	s/CHECK_LIST_COUNT/CHECK_PCI_LIST_COUNT/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v1 15/31] virhostdevtest:	s/CHECK_LIST_COUNT/CHECK_PCI_LIST_COUNT/</h1>
+[<a href="msg187177.html">Date Prev</a>][<a href="msg187179.html">Date Next</a>][<a href="msg187477.html">Thread Prev</a>][<a href="msg187479.html">Thread Next</a>][<a href="maillist.html#187178">Date Index</a>][<a href="index.html#187178">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v1 15/31] virhostdevtest:	s/CHECK_LIST_COUNT/CHECK_PCI_LIST_COUNT/</li>
+<li><em>From</em>: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 11 Jul 2019 17:54:02 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187163.html">cover.1562859733.git.mprivozn@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187163.html">cover.1562859733.git.mprivozn@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>In near future we will need to check for number of members of two
+different types of lists: PCI and NVMe. Rename CHECK_LIST_COUNT
+to CHECK_PCI_LIST_COUNT to mark explicitly what type of list it
+is working with.
+
+Signed-off-by: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;
+---
+ tests/virhostdevtest.c | 83 ++++++++++++++++++++++--------------------
+ 1 file changed, 43 insertions(+), 40 deletions(-)
+
+diff --git a/tests/virhostdevtest.c b/tests/virhostdevtest.c
+index cf39c83c76..7d15a87797 100644
+--- a/tests/virhostdevtest.c
++++ b/tests/virhostdevtest.c
+@@ -34,10 +34,10 @@
+ 
+ VIR_LOG_INIT(&quot;tests.hostdevtest&quot;);
+ 
+-# define CHECK_LIST_COUNT(list, cnt) \
++# define CHECK_LIST_COUNT(list, cnt, cb) \
+     do { \
+         size_t actualCount; \
+-        if ((actualCount = virPCIDeviceListCount(list)) != cnt) { \
++        if ((actualCount = cb(list)) != cnt) { \
+             virReportError(VIR_ERR_INTERNAL_ERROR, \
+                            &quot;Unexpected count of items in &quot; #list &quot;: %zu, &quot; \
+                            &quot;expecting %zu&quot;, actualCount, (size_t) cnt); \
+@@ -45,6 +45,9 @@ VIR_LOG_INIT(&quot;tests.hostdevtest&quot;);
+         } \
+     } while (0)
+ 
++# define CHECK_PCI_LIST_COUNT(list, cnt) \
++    CHECK_LIST_COUNT(list, cnt, virPCIDeviceListCount)
++
+ # define TEST_STATE_DIR abs_builddir &quot;/hostdevmgr&quot;
+ static const char *drv_name = &quot;test_driver&quot;;
+ static const char *dom_name = &quot;test_domain&quot;;
+@@ -143,16 +146,16 @@ testVirHostdevPreparePCIHostdevs_unmanaged(void)
+     if (virHostdevPreparePCIDevices(mgr, drv_name, dom_name, uuid,
+                                     NULL, 0, 0) &lt; 0)
+         goto cleanup;
+-    CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
+-    CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
+ 
+     /* Test unmanaged hostdevs */
+     VIR_DEBUG(&quot;Test &gt;=1 unmanaged hostdevs&quot;);
+     if (virHostdevPreparePCIDevices(mgr, drv_name, dom_name, uuid,
+                                     hostdevs, nhostdevs, 0) &lt; 0)
+         goto cleanup;
+-    CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count + nhostdevs);
+-    CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count - nhostdevs);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count + nhostdevs);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count - nhostdevs);
+ 
+     /* Test conflict */
+     active_count = virPCIDeviceListCount(mgr-&gt;activePCIHostdevs);
+@@ -161,22 +164,22 @@ testVirHostdevPreparePCIHostdevs_unmanaged(void)
+     if (!virHostdevPreparePCIDevices(mgr, drv_name, dom_name, uuid,
+                                      &amp;hostdevs[0], 1, 0))
+         goto cleanup;
+-    CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
+-    CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
+ 
+     VIR_DEBUG(&quot;Test: prepare same hostdevs for same driver, diff domain again&quot;);
+     if (!virHostdevPreparePCIDevices(mgr, drv_name, &quot;test_domain1&quot;, uuid,
+                                      &amp;hostdevs[1], 1, 0))
+         goto cleanup;
+-    CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
+-    CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
+ 
+     VIR_DEBUG(&quot;Test: prepare same hostdevs for diff driver/domain again&quot;);
+     if (!virHostdevPreparePCIDevices(mgr, &quot;test_driver1&quot;, dom_name, uuid,
+                                      &amp;hostdevs[2], 1, 0))
+         goto cleanup;
+-    CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
+-    CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
+ 
+     ret = 0;
+ 
+@@ -203,14 +206,14 @@ testVirHostdevReAttachPCIHostdevs_unmanaged(void)
+ 
+     VIR_DEBUG(&quot;Test 0 hostdevs&quot;);
+     virHostdevReAttachPCIDevices(mgr, drv_name, dom_name, NULL, 0, NULL);
+-    CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
+-    CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
+ 
+     VIR_DEBUG(&quot;Test &gt;=1 unmanaged hostdevs&quot;);
+     virHostdevReAttachPCIDevices(mgr, drv_name, dom_name,
+                                   hostdevs, nhostdevs, NULL);
+-    CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count - nhostdevs);
+-    CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count + nhostdevs);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count - nhostdevs);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count + nhostdevs);
+ 
+     ret = 0;
+ 
+@@ -236,14 +239,14 @@ testVirHostdevPreparePCIHostdevs_managed(bool mixed)
+     if (virHostdevPreparePCIDevices(mgr, drv_name, dom_name, uuid,
+                                      hostdevs, nhostdevs, 0) &lt; 0)
+         goto cleanup;
+-    CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count + nhostdevs);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count + nhostdevs);
+     /* If testing a mixed roundtrip, devices are already in the inactive list
+      * before we start and are removed from it as soon as we attach them to
+      * the guest */
+     if (mixed)
+-        CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count - nhostdevs);
++        CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count - nhostdevs);
+     else
+-        CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
++        CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
+ 
+     /* Test conflict */
+     active_count = virPCIDeviceListCount(mgr-&gt;activePCIHostdevs);
+@@ -252,22 +255,22 @@ testVirHostdevPreparePCIHostdevs_managed(bool mixed)
+     if (!virHostdevPreparePCIDevices(mgr, drv_name, dom_name, uuid,
+                                       &amp;hostdevs[0], 1, 0))
+         goto cleanup;
+-    CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
+-    CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
+ 
+     VIR_DEBUG(&quot;Test: prepare same hostdevs for same driver, diff domain again&quot;);
+     if (!virHostdevPreparePCIDevices(mgr, drv_name, &quot;test_domain1&quot;, uuid,
+                                       &amp;hostdevs[1], 1, 0))
+         goto cleanup;
+-    CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
+-    CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
+ 
+     VIR_DEBUG(&quot;Test: prepare same hostdevs for diff driver/domain again&quot;);
+     if (!virHostdevPreparePCIDevices(mgr, &quot;test_driver1&quot;, dom_name, uuid,
+                                       &amp;hostdevs[2], 1, 0))
+         goto cleanup;
+-    CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
+-    CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
+ 
+     ret = 0;
+ 
+@@ -294,19 +297,19 @@ testVirHostdevReAttachPCIHostdevs_managed(bool mixed)
+ 
+     VIR_DEBUG(&quot;Test 0 hostdevs&quot;);
+     virHostdevReAttachPCIDevices(mgr, drv_name, dom_name, NULL, 0, NULL);
+-    CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
+-    CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
+ 
+     VIR_DEBUG(&quot;Test &gt;=1 hostdevs&quot;);
+     virHostdevReAttachPCIDevices(mgr, drv_name, dom_name,
+                                   hostdevs, nhostdevs, NULL);
+-    CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count - nhostdevs);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count - nhostdevs);
+     /* If testing a mixed roundtrip, devices are added back to the inactive
+      * list as soon as we detach from the guest */
+     if (mixed)
+-        CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count + nhostdevs);
++        CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count + nhostdevs);
+     else
+-        CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
++        CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
+ 
+     ret = 0;
+ 
+@@ -326,8 +329,8 @@ testVirHostdevDetachPCINodeDevice(void)
+         inactive_count = virPCIDeviceListCount(mgr-&gt;inactivePCIHostdevs);
+         if (virHostdevPCINodeDeviceDetach(mgr, dev[i]) &lt; 0)
+             goto cleanup;
+-        CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
+-        CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count + 1);
++        CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
++        CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count + 1);
+     }
+ 
+     ret = 0;
+@@ -347,8 +350,8 @@ testVirHostdevResetPCINodeDevice(void)
+         inactive_count = virPCIDeviceListCount(mgr-&gt;inactivePCIHostdevs);
+         if (virHostdevPCINodeDeviceReset(mgr, dev[i]) &lt; 0)
+             goto cleanup;
+-        CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
+-        CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
++        CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
++        CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
+     }
+ 
+     ret = 0;
+@@ -369,8 +372,8 @@ testVirHostdevReAttachPCINodeDevice(void)
+         inactive_count = virPCIDeviceListCount(mgr-&gt;inactivePCIHostdevs);
+         if (virHostdevPCINodeDeviceReAttach(mgr, dev[i]) &lt; 0)
+             goto cleanup;
+-        CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
+-        CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count - 1);
++        CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
++        CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count - 1);
+     }
+ 
+     ret = 0;
+@@ -393,15 +396,15 @@ testVirHostdevUpdateActivePCIHostdevs(void)
+     if (virHostdevUpdateActivePCIDevices(mgr, NULL, 0,
+                                          drv_name, dom_name) &lt; 0)
+         goto cleanup;
+-    CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
+-    CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
+ 
+     VIR_DEBUG(&quot;Test &gt;=1 hostdevs&quot;);
+     if (virHostdevUpdateActivePCIDevices(mgr, hostdevs, nhostdevs,
+                                          drv_name, dom_name) &lt; 0)
+         goto cleanup;
+-    CHECK_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count + nhostdevs);
+-    CHECK_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, active_count + nhostdevs);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, inactive_count);
+ 
+     ret = 0;
+ 
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187177.html">[PATCH v1 12/31] util: Introduce virNVMeDevice module</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187179.html">[PATCH v1 18/31] qemu: prepare NVMe devices too</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187477.html">Re:  [PATCH v1 12/31] util: Introduce virNVMeDevice module</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187479.html">Re:  [PATCH v1 15/31] virhostdevtest: s/CHECK_LIST_COUNT/CHECK_PCI_LIST_COUNT/</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187178"><strong>Date</strong></a></li>
+<li><a href="index.html#187178"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

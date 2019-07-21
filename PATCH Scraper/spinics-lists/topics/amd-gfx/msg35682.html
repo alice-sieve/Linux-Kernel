@@ -1,0 +1,250 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 5/5] drm/amdgpu: Fix potential integer overflows -->
+<!--X-From-R13: "Yhruyvat, Tryvk" &#60;Tryvk.YhruyvatNnzq.pbz> -->
+<!--X-Date: Tue, 9 Jul 2019 20:59:17 &#45;0700 -->
+<!--X-Message-Id: 20190710035848.26966&#45;5&#45;Felix.Kuehling@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190710035848.26966&#45;1&#45;Felix.Kuehling@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 5/5] drm/amdgpu: Fix potential integer overflows">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 5/5] drm/amdgpu: Fix potential integer overflows &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 5/5] drm/amdgpu: Fix potential integer overflows</h1>
+[<a href="msg35681.html">Date Prev</a>][<a href="msg35683.html">Date Next</a>][<a href="msg35681.html">Thread Prev</a>][<a href="msg35702.html">Thread Next</a>][<a href="maillist.html#35682">Date Index</a>][<a href="index.html#35682">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: &quot;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&quot; &lt;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 5/5] drm/amdgpu: Fix potential integer overflows</li>
+<li><em>From</em>: &quot;Kuehling, Felix&quot; &lt;Felix.Kuehling@xxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 10 Jul 2019 03:59:10 +0000</li>
+<li><em>Accept-language</em>: en-US</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg35681.html">20190710035848.26966-1-Felix.Kuehling@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg35681.html">20190710035848.26966-1-Felix.Kuehling@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>With mm_nodes larger than 4GB, byte_count in amdgpu_fill_buffer would
+overflow.
+
+Signed-off-by: Felix Kuehling &lt;Felix.Kuehling@xxxxxxx&gt;
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+index ae0eb64e734b..bbbf069efb77 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@ -2071,9 +2071,9 @@ int amdgpu_fill_buffer(struct amdgpu_bo *bo,
+ 	mm_node = bo-&gt;tbo.mem.mm_node;
+ 	num_loops = 0;
+ 	while (num_pages) {
+-		uint32_t byte_count = mm_node-&gt;size &lt;&lt; PAGE_SHIFT;
++		uint64_t byte_count = mm_node-&gt;size &lt;&lt; PAGE_SHIFT;
+ 
+-		num_loops += DIV_ROUND_UP(byte_count, max_bytes);
++		num_loops += DIV_ROUND_UP_ULL(byte_count, max_bytes);
+ 		num_pages -= mm_node-&gt;size;
+ 		++mm_node;
+ 	}
+@@ -2099,12 +2099,13 @@ int amdgpu_fill_buffer(struct amdgpu_bo *bo,
+ 	mm_node = bo-&gt;tbo.mem.mm_node;
+ 
+ 	while (num_pages) {
+-		uint32_t byte_count = mm_node-&gt;size &lt;&lt; PAGE_SHIFT;
++		uint64_t byte_count = mm_node-&gt;size &lt;&lt; PAGE_SHIFT;
+ 		uint64_t dst_addr;
+ 
+ 		dst_addr = amdgpu_mm_node_addr(&amp;bo-&gt;tbo, mm_node, &amp;bo-&gt;tbo.mem);
+ 		while (byte_count) {
+-			uint32_t cur_size_in_bytes = min(byte_count, max_bytes);
++			uint32_t cur_size_in_bytes = min_t(uint64_t, byte_count,
++							   max_bytes);
+ 
+ 			amdgpu_emit_fill_buffer(adev, &amp;job-&gt;ibs[0], src_data,
+ 						dst_addr, cur_size_in_bytes);
+-- 
+2.17.1
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="35702" href="msg35702.html">Re: [PATCH 5/5] drm/amdgpu: Fix potential integer overflows</a></strong>
+<ul><li><em>From:</em> Alex Deucher</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="35681" href="msg35681.html">[PATCH 1/5] drm/amdgpu: Add flag to wipe VRAM on release</a></strong>
+<ul><li><em>From:</em> Kuehling, Felix</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35681.html">[PATCH 1/5] drm/amdgpu: Add flag to wipe VRAM on release</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35683.html">[PATCH 4/5] drm/amdgpu: Implement VRAM wipe on release</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35681.html">[PATCH 1/5] drm/amdgpu: Add flag to wipe VRAM on release</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35702.html">Re: [PATCH 5/5] drm/amdgpu: Fix potential integer overflows</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35682"><strong>Date</strong></a></li>
+<li><a href="index.html#35682"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

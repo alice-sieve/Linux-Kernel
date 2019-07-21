@@ -1,0 +1,270 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Dealing with a missing interface -->
+<!--X-From-R13: Quevfgbcu Pvrqy &#60;fbheprsbetr.oajvNznapuzny.va&#45;hyz.qr> -->
+<!--X-Date: Fri, 10 Nov 2017 10:18:00 &#45;0800 -->
+<!--X-Message-Id: 1510336420@msgid.manchmal.in&#45;ulm.de -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH] Dealing with a missing interface &mdash; Linux ATA over Ethernet Tools">
+<title>[PATCH] Dealing with a missing interface &mdash; Linux ATA over Ethernet Tools</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ATA over Ethernet Tools" href="//feeds.feedburner.com/aoetools">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] Dealing with a missing interface</h1>
+[<a href="msg00224.html">Date Prev</a>][<a href="msg00226.html">Date Next</a>][<a href="msg00221.html">Thread Prev</a>][<a href="msg00229.html">Thread Next</a>][<a href="maillist.html#00225">Date Index</a>][<a href="index.html#00225">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: aoetools-discuss@xxxxxxxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH] Dealing with a missing interface</li>
+<li><em>From</em>: Christoph Biedl &lt;sourceforge.bnwi@xxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 10 Nov 2017 18:58:09 +0100</li>
+<li><em>User-agent</em>: Mutt/1.5.23 (2014-03-12)</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Hello,
+
+at the moment, vblade handles an unknown or missing interface
+to bind to not that well (seen on Linux):
+
+# /usr/sbin/vblade 12 3 ens4 /home/root/vblade.img
+| bind funky: No such device
+| Can't get hw addr: Bad file descriptor
+| pid 1664: e12.3, 131072 sectors O_RDWR
+| Can't get mtu: Bad file descriptor
+| putpkt aoe id: Bad file descriptor
+| read network: Bad file descriptor
+
+Two problems here:
+
+* (linux only) In dial, the getindx result is not checked. The following
+  bind call however fails for an invalid interface index. But &quot;bind funky&quot;
+  isn't quite a helpful error message.
+
+* The main routine does not check the dial result.
+
+Patches for both are fairly simple. The freebsd counterpart for the
+first one is missing, though. I don't want to fiddle with code I don't
+fully understand, and cannot test either.
+
+Output then:
+| ens4: No such device
+
+... which I call an improvement.
+
+    Christoph
+
+--- a/aoe.c
++++ b/aoe.c
+@@ -536,6 +536,8 @@
+ 	}
+ 	ifname = argv[2];
+ 	sfd = dial(ifname, bufcnt);
++	if (sfd &lt; 0)
++		return 1;
+ 	getea(sfd, ifname, mac);
+ 	printf(&quot;pid %ld: e%d.%d, %lld sectors %s\n&quot;,
+ 		(long) getpid(), shelf, slot, size,
+--- a/linux.c
++++ b/linux.c
+@@ -47,6 +47,10 @@
+ 		return -1;
+ 	}
+ 	i = getindx(s, eth);
++	if (i &lt; 0) {
++		perror(eth);
++		return -1;
++	}
+ 	sa.sll_family = AF_PACKET;
+ 	sa.sll_protocol = htons(0x88a2);
+ 	sa.sll_ifindex = i;
+
+------------------------------------------------------------------------------
+Check out the vibrant tech community on one of the world's most
+engaging tech sites, Slashdot.org! <a  rel="nofollow" href="http://sdm.link/slashdot">http://sdm.link/slashdot</a>
+_______________________________________________
+Aoetools-discuss mailing list
+Aoetools-discuss@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.sourceforge.net/lists/listinfo/aoetools-discuss">https://lists.sourceforge.net/lists/listinfo/aoetools-discuss</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="00229" href="msg00229.html">Re:  [PATCH] Dealing with a missing interface</a></strong>
+<ul><li><em>From:</em> Ed Cashin</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00224.html">Re:  Query on AoE initiator accessing target started locally over lo</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00226.html">Persisting vblade exports</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00221.html">Query on AoE initiator accessing target started locally over lo</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00229.html">Re:  [PATCH] Dealing with a missing interface</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00225"><strong>Date</strong></a></li>
+<li><a href="index.html#00225"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

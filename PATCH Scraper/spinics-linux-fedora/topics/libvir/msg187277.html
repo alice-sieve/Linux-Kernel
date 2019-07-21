@@ -1,0 +1,293 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re:  [PATCH v2 11/19] remote: add systemd socket units for UNIX/TCP sockets -->
+<!--X-From-R13: [vpuny Bevibmavx &#60;zcevibmaNerqung.pbz> -->
+<!--X-Date: Fri, 12 Jul 2019 02:40:38 &#45;0700 -->
+<!--X-Message-Id: 96415d93&#45;0633&#45;20df&#45;8095&#45;fa845638b78a@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190711140742.31029&#45;1&#45;berrange@redhat.com -->
+<!--X-Reference: 20190711140742.31029&#45;12&#45;berrange@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; Re:  [PATCH v2 11/19] remote: add systemd socket units for UNIX/TCP sockets</title>
+<meta name="description" content="libvirt: Re:  [PATCH v2 11/19] remote: add systemd socket units for UNIX/TCP sockets">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>Re:  [PATCH v2 11/19] remote: add systemd socket units for UNIX/TCP sockets</h1>
+[<a href="msg187276.html">Date Prev</a>][<a href="msg187278.html">Date Next</a>][<a href="msg187146.html">Thread Prev</a>][<a href="msg187147.html">Thread Next</a>][<a href="maillist.html#187277">Date Index</a>][<a href="index.html#187277">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re:  [PATCH v2 11/19] remote: add systemd socket units for UNIX/TCP sockets</li>
+<li><em>From</em>: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 12 Jul 2019 11:40:19 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187146.html">20190711140742.31029-12-berrange@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187133.html">20190711140742.31029-1-berrange@redhat.com</a>&gt;	&lt;<a href="msg187146.html">20190711140742.31029-12-berrange@redhat.com</a>&gt;</li>
+<li><em>User-agent</em>: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101	Thunderbird/60.7.2</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre style="margin: 0em;">
+On 7/11/19 4:07 PM, Daniel P. Berrang&#xE9; wrote:
+</pre><blockquote style="border-left: #5555EE solid 0.2em; margin: 0em; padding-left: 0.85em"><pre style="margin: 0em;">
+We don't do socket activation of libvirtd, since we need to
+unconditionally start libvirtd in order to perform autostart. This
+doesn't mean we can't have systemd socket units. Some use cases will
+not need libvirt's autostart &amp; are thus free to use activation.
+
+Signed-off-by: Daniel P. Berrang&#xE9; &lt;berrange@xxxxxxxxxx&gt;
+---
+  libvirt.spec.in                     | 24 +++++++++++++++++++-
+  src/remote/Makefile.inc.am          | 35 +++++++++++++++++++++++++++++
+  src/remote/libvirtd-admin.socket.in | 13 +++++++++++
+  src/remote/libvirtd-ro.socket.in    | 13 +++++++++++
+  src/remote/libvirtd-tcp.socket.in   | 12 ++++++++++
+  src/remote/libvirtd-tls.socket.in   | 12 ++++++++++
+  src/remote/libvirtd.service.in      | 10 ++++-----
+  src/remote/libvirtd.socket.in       | 11 +++++++++
+  8 files changed, 124 insertions(+), 6 deletions(-)
+  create mode 100644 src/remote/libvirtd-admin.socket.in
+  create mode 100644 src/remote/libvirtd-ro.socket.in
+  create mode 100644 src/remote/libvirtd-tcp.socket.in
+  create mode 100644 src/remote/libvirtd-tls.socket.in
+  create mode 100644 src/remote/libvirtd.socket.in
+
+diff --git a/libvirt.spec.in b/libvirt.spec.in
+index d54f58f1d4..ec562d5f7a 100644
+--- a/libvirt.spec.in
++++ b/libvirt.spec.in
+@@ -1342,6 +1342,8 @@ exit 0
+</pre><tt>  
+</tt><tt>  %systemd_post virtlockd.socket virtlockd-admin.socket
+</tt><pre style="margin: 0em;">
+  %systemd_post virtlogd.socket virtlogd-admin.socket
++%systemd_post libvirtd.socket libvirtd-ro.socket libvirtd-admin.socket
++%systemd_post libvirtd-tcp.socket libvirtd-tls.socket
+  %systemd_post libvirtd.service
+</pre><tt>  
+</tt><tt>  # request daemon restart in posttrans
+</tt><pre style="margin: 0em;">
+@@ -1350,6 +1352,8 @@ touch %{_localstatedir}/lib/rpm-state/libvirt/restart || :
+</pre><tt>  
+</tt><tt>  %preun daemon
+</tt><pre style="margin: 0em;">
+  %systemd_preun libvirtd.service
++%systemd_preun libvirtd-tcp.socket libvirtd-tls.socket
++%systemd_preun libvirtd.socket libvirtd-ro.socket libvirtd-admin.socket
+  %systemd_preun virtlogd.socket virtlogd-admin.socket virtlogd.service
+  %systemd_preun virtlockd.socket virtlockd-admin.socket virtlockd.service
+</pre><tt>  
+</tt><tt>@@ -1374,7 +1378,20 @@ fi
+</tt><tt>  
+</tt><tt>  %posttrans daemon
+</tt><pre style="margin: 0em;">
+  if [ -f %{_localstatedir}/lib/rpm-state/libvirt/restart ]; then
+-    /bin/systemctl try-restart libvirtd.service &gt;/dev/null 2&gt;&amp;1 || :
++    /bin/systemctl is-active libvirtd.service 1&gt;/dev/null 2&gt;&amp;1
++    # Old libvirtd owns the sockets and will delete them on
++    # shutdown. Can't use a try-restart as libvirtd will simply
++    # own the sockets again when it comes back up. Thus we must
++    # do this particular ordering
++    if test $? == 0 ; then
+</pre></blockquote><pre style="margin: 0em;">
+
+s/==/=/
+
+</pre><blockquote style="border-left: #5555EE solid 0.2em; margin: 0em; padding-left: 0.85em"><pre style="margin: 0em;">
++        /bin/systemctl stop libvirtd.service &gt;/dev/null 2&gt;&amp;1 || :
++
++        /bin/systemctl try-restart libvirtd.socket &gt;/dev/null 2&gt;&amp;1 || :
++        /bin/systemctl try-restart libvirtd-ro.socket &gt;/dev/null 2&gt;&amp;1 || :
++        /bin/systemctl try-restart libvirtd-admin.socket &gt;/dev/null 2&gt;&amp;1 || :
++
++        /bin/systemctl start libvirtd.service &gt;/dev/null 2&gt;&amp;1 || :
++    fi
+  fi
+  rm -rf %{_localstatedir}/lib/rpm-state/libvirt || :
+</pre></blockquote><pre style="margin: 0em;">
+
+Michal
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187276.html">Re:  [PATCH v4 08/23] tpm: Move virtpm.c from utils dir to own tpm dir</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187278.html">Re:  [PATCH v2 00/19] Enable proper use of systemd socket activation with libvirtd</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187146.html">[PATCH v2 11/19] remote: add systemd socket units for	UNIX/TCP sockets</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187147.html">[PATCH v2 15/19] locking: convert lock daemon to use	systemd activation APIs</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187277"><strong>Date</strong></a></li>
+<li><a href="index.html#187277"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

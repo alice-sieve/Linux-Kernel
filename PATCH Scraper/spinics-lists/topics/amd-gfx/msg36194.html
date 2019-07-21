@@ -1,0 +1,238 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH AUTOSEL 5.2 023/171] drm/amdgpu: Reserve shared fence for eviction fence -->
+<!--X-From-R13: Enfun Zriva &#60;fnfunyNxreary.bet> -->
+<!--X-Date: Thu, 18 Jul 2019 20:57:50 &#45;0700 -->
+<!--X-Message-Id: 20190719035643.14300&#45;23&#45;sashal@kernel.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190719035643.14300&#45;1&#45;sashal@kernel.org -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH AUTOSEL 5.2 023/171] drm/amdgpu: Reserve shared fence for eviction fence">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH AUTOSEL 5.2 023/171] drm/amdgpu: Reserve shared fence for eviction fence &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH AUTOSEL 5.2 023/171] drm/amdgpu: Reserve shared fence for eviction fence</h1>
+[<a href="msg36193.html">Date Prev</a>][<a href="msg36195.html">Date Next</a>][<a href="msg36193.html">Thread Prev</a>][<a href="msg36195.html">Thread Next</a>][<a href="maillist.html#36194">Date Index</a>][<a href="index.html#36194">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: linux-kernel@xxxxxxxxxxxxxxx, stable@xxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH AUTOSEL 5.2 023/171] drm/amdgpu: Reserve shared fence for eviction fence</li>
+<li><em>From</em>: Sasha Levin &lt;sashal@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 18 Jul 2019 23:54:14 -0400</li>
+<li><em>Cc</em>: Sasha Levin &lt;sashal@xxxxxxxxxx&gt;, Felix Kuehling &lt;Felix.Kuehling@xxxxxxx&gt;,        Harish Kasiviswanathan &lt;Harish.Kasiviswanathan@xxxxxxx&gt;,        dri-devel@xxxxxxxxxxxxxxxxxxxxx, amd-gfx@xxxxxxxxxxxxxxxxxxxxx,        Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;,        Christian K&#xF6;nig &lt;christian.koenig@xxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;20190719035643.14300-1-sashal@kernel.org&gt;</li>
+<li><em>References</em>: &lt;20190719035643.14300-1-sashal@kernel.org&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Felix Kuehling &lt;Felix.Kuehling@xxxxxxx&gt;
+
+[ Upstream commit dd68722c427d5b33420dce0ed0c44b4881e0a416 ]
+
+Need to reserve space for the shared eviction fence when initializing
+a KFD VM.
+
+Signed-off-by: Felix Kuehling &lt;Felix.Kuehling@xxxxxxx&gt;
+Acked-by: Christian K&#xF6;nig &lt;christian.koenig@xxxxxxx&gt;
+Reviewed-by: Harish Kasiviswanathan &lt;Harish.Kasiviswanathan@xxxxxxx&gt;
+Signed-off-by: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;
+Signed-off-by: Sasha Levin &lt;sashal@xxxxxxxxxx&gt;
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
+index a6e5184d436c..4b192e0ce92f 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
+@@ -896,6 +896,9 @@ static int init_kfd_vm(struct amdgpu_vm *vm, void **process_info,
+ 				  AMDGPU_FENCE_OWNER_KFD, false);
+ 	if (ret)
+ 		goto wait_pd_fail;
++	ret = reservation_object_reserve_shared(vm-&gt;root.base.bo-&gt;tbo.resv, 1);
++	if (ret)
++		goto reserve_shared_fail;
+ 	amdgpu_bo_fence(vm-&gt;root.base.bo,
+ 			&amp;vm-&gt;process_info-&gt;eviction_fence-&gt;base, true);
+ 	amdgpu_bo_unreserve(vm-&gt;root.base.bo);
+@@ -909,6 +912,7 @@ static int init_kfd_vm(struct amdgpu_vm *vm, void **process_info,
+ 
+ 	return 0;
+ 
++reserve_shared_fail:
+ wait_pd_fail:
+ validate_pd_fail:
+ 	amdgpu_bo_unreserve(vm-&gt;root.base.bo);
+-- 
+2.20.1
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg36193.html">[PATCH AUTOSEL 5.2 021/171] drm/amd/display: Disable cursor when offscreen in negative direction</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg36195.html">[PATCH AUTOSEL 5.2 022/171] drm/amd/display: Fill plane attrs only for valid pxl format</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg36193.html">[PATCH AUTOSEL 5.2 021/171] drm/amd/display: Disable cursor when offscreen in negative direction</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg36195.html">[PATCH AUTOSEL 5.2 022/171] drm/amd/display: Fill plane attrs only for valid pxl format</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#36194"><strong>Date</strong></a></li>
+<li><a href="index.html#36194"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH bpf&#45;next v2 1/6] xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup -->
+<!--X-From-R13: [ntahf Yneyffba &#60;zntahf.xneyffbaNvagry.pbz> -->
+<!--X-Date: Tue, 2 Jul 2019 02:22:20 &#45;0700 -->
+<!--X-Message-Id: 1562059288&#45;26773&#45;2&#45;git&#45;send&#45;email&#45;magnus.karlsson@intel.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1562059288&#45;26773&#45;1&#45;git&#45;send&#45;email&#45;magnus.karlsson@intel.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BPF: [PATCH bpf-next v2 1/6] xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH bpf-next v2 1/6] xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup &mdash; BPF</title>
+<link rel="alternate" type="application/rss+xml" title="BPF" href="//feeds.feedburner.com/packetfilters">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH bpf-next v2 1/6] xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup</h1>
+[<a href="msg04811.html">Date Prev</a>][<a href="msg04813.html">Date Next</a>][<a href="msg04819.html">Thread Prev</a>][<a href="msg04821.html">Thread Next</a>][<a href="maillist.html#04812">Date Index</a>][<a href="index.html#04812">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH bpf-next v2 1/6] xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup</li>
+<li><em>From</em>: Magnus Karlsson &lt;magnus.karlsson@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue,  2 Jul 2019 11:21:23 +0200</li>
+<li><em>Cc</em>: bpf@xxxxxxxxxxxxxxx, bruce.richardson@xxxxxxxxx,        ciara.loftus@xxxxxxxxx, jakub.kicinski@xxxxxxxxxxxxx,        xiaolong.ye@xxxxxxxxx, qi.z.zhang@xxxxxxxxx, maximmi@xxxxxxxxxxxx,        sridhar.samudrala@xxxxxxxxx, kevin.laatz@xxxxxxxxx,        ilias.apalodimas@xxxxxxxxxx, kiran.patil@xxxxxxxxx, axboe@xxxxxxxxx,        maciej.fijalkowski@xxxxxxxxx, maciejromanfijalkowski@xxxxxxxxx,        intel-wired-lan@xxxxxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg04819.html">1562059288-26773-1-git-send-email-magnus.karlsson@intel.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This commit replaces ndo_xsk_async_xmit with ndo_xsk_wakeup. This new
+ndo provides the same functionality as before but with the addition of
+a new flags field that is used to specifiy if Rx, Tx or both should be
+woken up. The previous ndo only woke up Tx, as implied by the
+name. The i40e and ixgbe drivers (which are all the supported ones)
+are updated with this new interface.
+
+This new ndo will be used by the new need_wakeup functionality of XDP
+sockets that need to be able to wake up both Rx and Tx driver
+processing.
+
+Signed-off-by: Magnus Karlsson &lt;magnus.karlsson@xxxxxxxxx&gt;
+---
+ drivers/net/ethernet/intel/i40e/i40e_main.c          |  5 +++--
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c           |  7 ++++---
+ drivers/net/ethernet/intel/i40e/i40e_xsk.h           |  2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c        |  5 +++--
+ drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h |  2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c         |  4 ++--
+ include/linux/netdevice.h                            | 14 ++++++++++++--
+ net/xdp/xdp_umem.c                                   |  3 +--
+ net/xdp/xsk.c                                        |  3 ++-
+ 9 files changed, 29 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index 7c43ec5..eee429d 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -12022,7 +12022,8 @@ static int i40e_xdp_setup(struct i40e_vsi *vsi,
+ 	if (need_reset &amp;&amp; prog)
+ 		for (i = 0; i &lt; vsi-&gt;num_queue_pairs; i++)
+ 			if (vsi-&gt;xdp_rings[i]-&gt;xsk_umem)
+-				(void)i40e_xsk_async_xmit(vsi-&gt;netdev, i);
++				(void)i40e_xsk_wakeup(vsi-&gt;netdev, i,
++						      XDP_WAKEUP_RX);
+ 
+ 	return 0;
+ }
+@@ -12344,7 +12345,7 @@ static const struct net_device_ops i40e_netdev_ops = {
+ 	.ndo_bridge_setlink	= i40e_ndo_bridge_setlink,
+ 	.ndo_bpf		= i40e_xdp,
+ 	.ndo_xdp_xmit		= i40e_xdp_xmit,
+-	.ndo_xsk_async_xmit	= i40e_xsk_async_xmit,
++	.ndo_xsk_wakeup	        = i40e_xsk_wakeup,
+ };
+ 
+ /**
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+index 32bad01..d0ff5d8 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+@@ -116,7 +116,7 @@ static int i40e_xsk_umem_enable(struct i40e_vsi *vsi, struct xdp_umem *umem,
+ 			return err;
+ 
+ 		/* Kick start the NAPI context so that receiving will start */
+-		err = i40e_xsk_async_xmit(vsi-&gt;netdev, qid);
++		err = i40e_xsk_wakeup(vsi-&gt;netdev, qid, XDP_WAKEUP_RX);
+ 		if (err)
+ 			return err;
+ 	}
+@@ -765,13 +765,14 @@ bool i40e_clean_xdp_tx_irq(struct i40e_vsi *vsi,
+ }
+ 
+ /**
+- * i40e_xsk_async_xmit - Implements the ndo_xsk_async_xmit
++ * i40e_xsk_wakeup - Implements the ndo_xsk_wakeup
+  * @dev: the netdevice
+  * @queue_id: queue id to wake up
++ * @flags: ignored in our case since we have Rx and Tx in the same NAPI.
+  *
+  * Returns &lt;0 for errors, 0 otherwise.
+  **/
+-int i40e_xsk_async_xmit(struct net_device *dev, u32 queue_id)
++int i40e_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags)
+ {
+ 	struct i40e_netdev_priv *np = netdev_priv(dev);
+ 	struct i40e_vsi *vsi = np-&gt;vsi;
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.h b/drivers/net/ethernet/intel/i40e/i40e_xsk.h
+index 8cc0a2e..9ed59c1 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_xsk.h
++++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.h
+@@ -18,6 +18,6 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget);
+ 
+ bool i40e_clean_xdp_tx_irq(struct i40e_vsi *vsi,
+ 			   struct i40e_ring *tx_ring, int napi_budget);
+-int i40e_xsk_async_xmit(struct net_device *dev, u32 queue_id);
++int i40e_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags);
+ 
+ #endif /* _I40E_XSK_H_ */
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index b613e72..574d3f9 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -10276,7 +10276,8 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+ 	if (need_reset &amp;&amp; prog)
+ 		for (i = 0; i &lt; adapter-&gt;num_rx_queues; i++)
+ 			if (adapter-&gt;xdp_ring[i]-&gt;xsk_umem)
+-				(void)ixgbe_xsk_async_xmit(adapter-&gt;netdev, i);
++				(void)ixgbe_xsk_wakeup(adapter-&gt;netdev, i,
++						       XDP_WAKEUP_RX);
+ 
+ 	return 0;
+ }
+@@ -10395,7 +10396,7 @@ static const struct net_device_ops ixgbe_netdev_ops = {
+ 	.ndo_features_check	= ixgbe_features_check,
+ 	.ndo_bpf		= ixgbe_xdp,
+ 	.ndo_xdp_xmit		= ixgbe_xdp_xmit,
+-	.ndo_xsk_async_xmit	= ixgbe_xsk_async_xmit,
++	.ndo_xsk_wakeup         = ixgbe_xsk_wakeup,
+ };
+ 
+ static void ixgbe_disable_txr_hw(struct ixgbe_adapter *adapter,
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
+index d93a690..6d01700 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
+@@ -42,7 +42,7 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
+ void ixgbe_xsk_clean_rx_ring(struct ixgbe_ring *rx_ring);
+ bool ixgbe_clean_xdp_tx_irq(struct ixgbe_q_vector *q_vector,
+ 			    struct ixgbe_ring *tx_ring, int napi_budget);
+-int ixgbe_xsk_async_xmit(struct net_device *dev, u32 queue_id);
++int ixgbe_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags);
+ void ixgbe_xsk_clean_tx_ring(struct ixgbe_ring *tx_ring);
+ 
+ #endif /* #define _IXGBE_TXRX_COMMON_H_ */
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+index 6b60955..e598af9 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+@@ -100,7 +100,7 @@ static int ixgbe_xsk_umem_enable(struct ixgbe_adapter *adapter,
+ 		ixgbe_txrx_ring_enable(adapter, qid);
+ 
+ 		/* Kick start the NAPI context so that receiving will start */
+-		err = ixgbe_xsk_async_xmit(adapter-&gt;netdev, qid);
++		err = ixgbe_xsk_wakeup(adapter-&gt;netdev, qid, XDP_WAKEUP_RX);
+ 		if (err)
+ 			return err;
+ 	}
+@@ -692,7 +692,7 @@ bool ixgbe_clean_xdp_tx_irq(struct ixgbe_q_vector *q_vector,
+ 	return budget &gt; 0 &amp;&amp; xmit_done;
+ }
+ 
+-int ixgbe_xsk_async_xmit(struct net_device *dev, u32 qid)
++int ixgbe_xsk_wakeup(struct net_device *dev, u32 qid, u32 flags)
+ {
+ 	struct ixgbe_adapter *adapter = netdev_priv(dev);
+ 	struct ixgbe_ring *ring;
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index eeacebd..60eef29 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -899,6 +899,10 @@ struct netdev_bpf {
+ 	};
+ };
+ 
++/* Flags for ndo_xsk_wakeup. */
++#define XDP_WAKEUP_RX (1 &lt;&lt; 0)
++#define XDP_WAKEUP_TX (1 &lt;&lt; 1)
++
+ #ifdef CONFIG_XFRM_OFFLOAD
+ struct xfrmdev_ops {
+ 	int	(*xdo_dev_state_add) (struct xfrm_state *x);
+@@ -1225,6 +1229,12 @@ struct tlsdev_ops;
+  *	that got dropped are freed/returned via xdp_return_frame().
+  *	Returns negative number, means general error invoking ndo, meaning
+  *	no frames were xmit'ed and core-caller will free all frames.
++ * int (*ndo_xsk_wakeup)(struct net_device *dev, u32 queue_id, u32 flags);
++ *      This function is used to wake up the softirq, ksoftirqd or kthread
++ *	responsible for sending and/or receiving packets on a specific
++ *	queue id bound to an AF_XDP socket. The flags field specifies if
++ *	only RX, only Tx, or both should be woken up using the flags
++ *	XDP_WAKEUP_RX and XDP_WAKEUP_TX.
+  * struct devlink_port *(*ndo_get_devlink_port)(struct net_device *dev);
+  *	Get devlink port instance associated with a given netdev.
+  *	Called with a reference on the netdevice and devlink locks only,
+@@ -1424,8 +1434,8 @@ struct net_device_ops {
+ 	int			(*ndo_xdp_xmit)(struct net_device *dev, int n,
+ 						struct xdp_frame **xdp,
+ 						u32 flags);
+-	int			(*ndo_xsk_async_xmit)(struct net_device *dev,
+-						      u32 queue_id);
++	int			(*ndo_xsk_wakeup)(struct net_device *dev,
++						  u32 queue_id, u32 flags);
+ 	struct devlink_port *	(*ndo_get_devlink_port)(struct net_device *dev);
+ };
+ 
+diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
+index 9c6de4f..803554b 100644
+--- a/net/xdp/xdp_umem.c
++++ b/net/xdp/xdp_umem.c
+@@ -109,8 +109,7 @@ int xdp_umem_assign_dev(struct xdp_umem *umem, struct net_device *dev,
+ 		/* For copy-mode, we are done. */
+ 		goto out_rtnl_unlock;
+ 
+-	if (!dev-&gt;netdev_ops-&gt;ndo_bpf ||
+-	    !dev-&gt;netdev_ops-&gt;ndo_xsk_async_xmit) {
++	if (!dev-&gt;netdev_ops-&gt;ndo_bpf || !dev-&gt;netdev_ops-&gt;ndo_xsk_wakeup) {
+ 		err = -EOPNOTSUPP;
+ 		goto err_unreg_umem;
+ 	}
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 74417a8..cf8898f 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -200,7 +200,8 @@ static int xsk_zc_xmit(struct sock *sk)
+ 	struct xdp_sock *xs = xdp_sk(sk);
+ 	struct net_device *dev = xs-&gt;dev;
+ 
+-	return dev-&gt;netdev_ops-&gt;ndo_xsk_async_xmit(dev, xs-&gt;queue_id);
++	return dev-&gt;netdev_ops-&gt;ndo_xsk_wakeup(dev, xs-&gt;queue_id,
++					       XDP_WAKEUP_TX);
+ }
+ 
+ static void xsk_destruct_skb(struct sk_buff *skb)
+-- 
+2.7.4
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="04821" href="msg04821.html">Re: [PATCH bpf-next v2 1/6] xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup</a></strong>
+<ul><li><em>From:</em> Maxim Mikityanskiy</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="04819" href="msg04819.html">[PATCH bpf-next v2 0/6] add need_wakeup flag to the AF_XDP rings</a></strong>
+<ul><li><em>From:</em> Magnus Karlsson</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg04811.html">Re: [PATCH bpf-next] libbpf: fix GCC8 warning for strncpy</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg04813.html">[PATCH bpf-next v2 3/6] i40e: add support for AF_XDP need_wakup feature</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg04819.html">[PATCH bpf-next v2 0/6] add need_wakeup flag to the AF_XDP rings</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg04821.html">Re: [PATCH bpf-next v2 1/6] xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#04812"><strong>Date</strong></a></li>
+<li><a href="index.html#04812"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;Samsung&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-rockchip/>[Linux&nbsp;Rockchip&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-actions/>[Linux&nbsp;Actions&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-snps-arc/>[Linux&nbsp;for&nbsp;Synopsys&nbsp;ARC&nbsp;Processors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nfs/>[Linux&nbsp;NFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nilfs/>[Linux&nbsp;NILFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/vfl/>[Video&nbsp;for&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<p>
+<hr>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 11/25] qemu: blockjob: Save status XML when	modifying job state -->
+<!--X-From-R13: Brgre Yerzcn &#60;cxerzcnNerqung.pbz> -->
+<!--X-Date: Fri, 12 Jul 2019 09:06:44 &#45;0700 -->
+<!--X-Message-Id: 19f63484792cf396740f4256335f1bbfb0e0b0f8.1562947284.git.pkrempa@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1562947283.git.pkrempa@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 11/25] qemu: blockjob: Save status XML when	modifying job state</title>
+<meta name="description" content="libvirt: [PATCH 11/25] qemu: blockjob: Save status XML when	modifying job state">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 11/25] qemu: blockjob: Save status XML when	modifying job state</h1>
+[<a href="msg187324.html">Date Prev</a>][<a href="msg187326.html">Date Next</a>][<a href="msg187415.html">Thread Prev</a>][<a href="msg187416.html">Thread Next</a>][<a href="maillist.html#187325">Date Index</a>][<a href="index.html#187325">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 11/25] qemu: blockjob: Save status XML when	modifying job state</li>
+<li><em>From</em>: Peter Krempa &lt;pkrempa@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 12 Jul 2019 18:05:52 +0200</li>
+<li><em>Cc</em>: Peter Krempa &lt;pkrempa@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187317.html">cover.1562947283.git.pkrempa@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187317.html">cover.1562947283.git.pkrempa@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Now that block job data is stored in the status XML portion we need to
+make sure that everything which changes the state also saves the status
+XML. The job registering function is used while parsing the status XML
+so in that case we need to skip the XML saving.
+
+Signed-off-by: Peter Krempa &lt;pkrempa@xxxxxxxxxx&gt;
+---
+ src/qemu/qemu_blockjob.c  | 15 ++++++++++++---
+ src/qemu/qemu_blockjob.h  |  8 +++++---
+ src/qemu/qemu_domain.c    |  2 +-
+ src/qemu/qemu_driver.c    |  8 ++++----
+ src/qemu/qemu_migration.c |  2 +-
+ src/qemu/qemu_process.c   |  4 ++--
+ 6 files changed, 25 insertions(+), 14 deletions(-)
+
+diff --git a/src/qemu/qemu_blockjob.c b/src/qemu/qemu_blockjob.c
+index 78d4938684..3211230811 100644
+--- a/src/qemu/qemu_blockjob.c
++++ b/src/qemu/qemu_blockjob.c
+@@ -104,7 +104,8 @@ qemuBlockJobDataNew(qemuBlockJobType type,
+ int
+ qemuBlockJobRegister(qemuBlockJobDataPtr job,
+                      virDomainObjPtr vm,
+-                     virDomainDiskDefPtr disk)
++                     virDomainDiskDefPtr disk,
++                     bool savestatus)
+ {
+     qemuDomainObjPrivatePtr priv = vm-&gt;privateData;
+
+@@ -118,6 +119,9 @@ qemuBlockJobRegister(qemuBlockJobDataPtr job,
+         QEMU_DOMAIN_DISK_PRIVATE(disk)-&gt;blockjob = virObjectRef(job);
+     }
+
++    if (savestatus)
++        qemuDomainSaveStatus(vm);
++
+     return 0;
+ }
+
+@@ -142,6 +146,8 @@ qemuBlockJobUnregister(qemuBlockJobDataPtr job,
+
+     /* this may remove the last reference of 'job' */
+     virHashRemoveEntry(priv-&gt;blockjobs, job-&gt;name);
++
++    qemuDomainSaveStatus(vm);
+ }
+
+
+@@ -164,7 +170,7 @@ qemuBlockJobDiskNew(virDomainObjPtr vm,
+     if (!(job = qemuBlockJobDataNew(type, jobname)))
+         return NULL;
+
+-    if (qemuBlockJobRegister(job, vm, disk) &lt; 0)
++    if (qemuBlockJobRegister(job, vm, disk, true) &lt; 0)
+         return NULL;
+
+     VIR_RETURN_PTR(job);
+@@ -196,10 +202,13 @@ qemuBlockJobDiskGetJob(virDomainDiskDefPtr disk)
+  * Mark @job as started in qemu.
+  */
+ void
+-qemuBlockJobStarted(qemuBlockJobDataPtr job)
++qemuBlockJobStarted(qemuBlockJobDataPtr job,
++                    virDomainObjPtr vm)
+ {
+     if (job-&gt;state == QEMU_BLOCKJOB_STATE_NEW)
+         job-&gt;state = QEMU_BLOCKJOB_STATE_RUNNING;
++
++    qemuDomainSaveStatus(vm);
+ }
+
+
+diff --git a/src/qemu/qemu_blockjob.h b/src/qemu/qemu_blockjob.h
+index 5b3af69d89..c5fd636340 100644
+--- a/src/qemu/qemu_blockjob.h
++++ b/src/qemu/qemu_blockjob.h
+@@ -87,7 +87,8 @@ struct _qemuBlockJobData {
+ int
+ qemuBlockJobRegister(qemuBlockJobDataPtr job,
+                      virDomainObjPtr vm,
+-                     virDomainDiskDefPtr disk)
++                     virDomainDiskDefPtr disk,
++                     bool savestatus)
+     ATTRIBUTE_NONNULL(1) ATTRIBUTE_NONNULL(2);
+
+ qemuBlockJobDataPtr
+@@ -107,8 +108,9 @@ qemuBlockJobDiskGetJob(virDomainDiskDefPtr disk)
+     ATTRIBUTE_NONNULL(1);
+
+ void
+-qemuBlockJobStarted(qemuBlockJobDataPtr job)
+-    ATTRIBUTE_NONNULL(1);
++qemuBlockJobStarted(qemuBlockJobDataPtr job,
++                    virDomainObjPtr vm)
++    ATTRIBUTE_NONNULL(1) ATTRIBUTE_NONNULL(2);
+
+ bool
+ qemuBlockJobIsRunning(qemuBlockJobDataPtr job)
+diff --git a/src/qemu/qemu_domain.c b/src/qemu/qemu_domain.c
+index 59225c3ca9..7162fca71b 100644
+--- a/src/qemu/qemu_domain.c
++++ b/src/qemu/qemu_domain.c
+@@ -2755,7 +2755,7 @@ qemuDomainObjPrivateXMLParseBlockjobData(virDomainObjPtr vm,
+     job-&gt;errmsg = virXPathString(&quot;string(./errmsg)&quot;, ctxt);
+     job-&gt;invalidData = invalidData;
+
+-    if (qemuBlockJobRegister(job, vm, disk) &lt; 0)
++    if (qemuBlockJobRegister(job, vm, disk, false) &lt; 0)
+         return -1;
+
+     return 0;
+diff --git a/src/qemu/qemu_driver.c b/src/qemu/qemu_driver.c
+index 879a78858b..a0c246a416 100644
+--- a/src/qemu/qemu_driver.c
++++ b/src/qemu/qemu_driver.c
+@@ -4704,7 +4704,7 @@ processBlockJobEvent(virQEMUDriverPtr driver,
+     if (!(job = qemuBlockJobDiskGetJob(disk))) {
+         if (!(job = qemuBlockJobDiskNew(vm, disk, type, diskAlias)))
+             goto endjob;
+-        qemuBlockJobStarted(job);
++        job-&gt;state = QEMU_BLOCKJOB_STATE_RUNNING;
+     }
+
+     job-&gt;newstate = status;
+@@ -17100,7 +17100,7 @@ qemuDomainBlockPullCommon(virQEMUDriverPtr driver,
+     if (ret &lt; 0)
+         goto endjob;
+
+-    qemuBlockJobStarted(job);
++    qemuBlockJobStarted(job, vm);
+
+     if (virDomainSaveStatus(driver-&gt;xmlopt, cfg-&gt;stateDir, vm, driver-&gt;caps) &lt; 0)
+         VIR_WARN(&quot;Unable to save status on vm %s after state change&quot;,
+@@ -17676,11 +17676,11 @@ qemuDomainBlockCopyCommon(virDomainObjPtr vm,
+     }
+
+     /* Update vm in place to match changes.  */
+-    qemuBlockJobStarted(job);
+     need_unlink = false;
+     virStorageFileDeinit(mirror);
+     VIR_STEAL_PTR(disk-&gt;mirror, mirror);
+     disk-&gt;mirrorJob = VIR_DOMAIN_BLOCK_JOB_TYPE_COPY;
++    qemuBlockJobStarted(job, vm);
+
+     if (virDomainSaveStatus(driver-&gt;xmlopt, cfg-&gt;stateDir, vm, driver-&gt;caps) &lt; 0)
+         VIR_WARN(&quot;Unable to save status on vm %s after state change&quot;,
+@@ -18066,11 +18066,11 @@ qemuDomainBlockCommit(virDomainPtr dom,
+         goto endjob;
+     }
+
+-    qemuBlockJobStarted(job);
+     if (mirror) {
+         VIR_STEAL_PTR(disk-&gt;mirror, mirror);
+         disk-&gt;mirrorJob = VIR_DOMAIN_BLOCK_JOB_TYPE_ACTIVE_COMMIT;
+     }
++    qemuBlockJobStarted(job, vm);
+
+     if (virDomainSaveStatus(driver-&gt;xmlopt, cfg-&gt;stateDir, vm, driver-&gt;caps) &lt; 0)
+         VIR_WARN(&quot;Unable to save status on vm %s after block job&quot;,
+diff --git a/src/qemu/qemu_migration.c b/src/qemu/qemu_migration.c
+index e72553befc..cbacb886f8 100644
+--- a/src/qemu/qemu_migration.c
++++ b/src/qemu/qemu_migration.c
+@@ -944,7 +944,7 @@ qemuMigrationSrcNBDStorageCopyOne(virQEMUDriverPtr driver,
+         goto cleanup;
+
+     diskPriv-&gt;migrating = true;
+-    qemuBlockJobStarted(job);
++    qemuBlockJobStarted(job, vm);
+
+     ret = 0;
+
+diff --git a/src/qemu/qemu_process.c b/src/qemu/qemu_process.c
+index 29124ae184..f39143d499 100644
+--- a/src/qemu/qemu_process.c
++++ b/src/qemu/qemu_process.c
+@@ -7819,8 +7819,6 @@ qemuProcessRefreshLegacyBlockjob(void *payload,
+     if (!(job = qemuBlockJobDiskNew(vm, disk, jobtype, jobname)))
+         return -1;
+
+-    qemuBlockJobStarted(job);
+-
+     if (disk-&gt;mirror) {
+         if (info-&gt;ready == 1 ||
+             (info-&gt;ready == -1 &amp;&amp; info-&gt;end == info-&gt;cur)) {
+@@ -7849,6 +7847,8 @@ qemuProcessRefreshLegacyBlockjob(void *payload,
+         }
+     }
+
++    qemuBlockJobStarted(job, vm);
++
+  cleanup:
+     qemuBlockJobStartupFinalize(vm, job);
+
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187324.html">[PATCH 10/25] qemu: domain: Store blockjob data in the	status XML</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187326.html">[PATCH 12/25] qemu: driver: Remove unnecessary saving of	status XML</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187415.html">Re:  [PATCH 10/25] qemu: domain: Store blockjob data in the status XML</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187416.html">Re:  [PATCH 11/25] qemu: blockjob: Save status XML when modifying job state</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187325"><strong>Date</strong></a></li>
+<li><a href="index.html#187325"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

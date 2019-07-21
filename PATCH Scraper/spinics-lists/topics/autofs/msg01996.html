@@ -1,0 +1,347 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 1/6] autofs &#45; improve ioctl sbi checks -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Mon, 12 Nov 2018 17:36:03 &#45;0800 -->
+<!--X-Message-Id: 154207295533.11064.12485527860509413072.stgit@pluto&#45;themaw&#45;net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 1/6] autofs - improve ioctl sbi checks &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 1/6] autofs - improve ioctl sbi checks &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 1/6] autofs - improve ioctl sbi checks</h1>
+[<a href="msg01995.html">Date Prev</a>][<a href="msg01997.html">Date Next</a>][<a href="msg01995.html">Thread Prev</a>][<a href="msg01997.html">Thread Next</a>][<a href="maillist.html#01996">Date Index</a>][<a href="index.html#01996">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: Andrew Morton &lt;akpm@xxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 1/6] autofs - improve ioctl sbi checks</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 13 Nov 2018 09:35:57 +0800</li>
+<li><em>Cc</em>: Al Viro &lt;viro@xxxxxxxxxxxxxxxxxx&gt;,        autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;,        Kernel Mailing List &lt;linux-kernel@xxxxxxxxxxxxxxx&gt;,        linux-fsdevel &lt;linux-fsdevel@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>User-agent</em>: StGit/unknown-version</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Al Viro made some suggestions to improve the implementation
+of commit 0633da48f0 &quot;fix autofs_sbi() does not check super
+block type&quot;.
+
+The check is unnessesary in all cases except for ioctl usage
+so placing the check in the super block accessor function
+adds a small overhead to the common case where it isn't
+needed.
+
+So it's sufficient to do this in the ioctl code only.
+
+Also the check in the ioctl code is needlessly complex.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+Cc: Al Viro &lt;viro@xxxxxxxxxxxxxxxxxx&gt;
+---
+ fs/autofs/autofs_i.h  |    3 +--
+ fs/autofs/dev-ioctl.c |   25 +++++++------------------
+ fs/autofs/init.c      |    2 +-
+ 3 files changed, 9 insertions(+), 21 deletions(-)
+
+diff --git a/fs/autofs/autofs_i.h b/fs/autofs/autofs_i.h
+index 9f9cadbfbd7a..c4301e33c027 100644
+--- a/fs/autofs/autofs_i.h
++++ b/fs/autofs/autofs_i.h
+@@ -126,8 +126,7 @@ struct autofs_sb_info {
+ 
+ static inline struct autofs_sb_info *autofs_sbi(struct super_block *sb)
+ {
+-	return sb-&gt;s_magic != AUTOFS_SUPER_MAGIC ?
+-		NULL : (struct autofs_sb_info *)(sb-&gt;s_fs_info);
++	return (struct autofs_sb_info *)(sb-&gt;s_fs_info);
+ }
+ 
+ static inline struct autofs_info *autofs_dentry_ino(struct dentry *dentry)
+diff --git a/fs/autofs/dev-ioctl.c b/fs/autofs/dev-ioctl.c
+index 86eafda4a652..3de4f5e61caf 100644
+--- a/fs/autofs/dev-ioctl.c
++++ b/fs/autofs/dev-ioctl.c
+@@ -14,6 +14,8 @@
+ 
+ #include &quot;autofs_i.h&quot;
+ 
++extern struct file_system_type autofs_fs_type;
++
+ /*
+  * This module implements an interface for routing autofs ioctl control
+  * commands via a miscellaneous device file.
+@@ -151,22 +153,6 @@ static int validate_dev_ioctl(int cmd, struct autofs_dev_ioctl *param)
+ 	return err;
+ }
+ 
+-/*
+- * Get the autofs super block info struct from the file opened on
+- * the autofs mount point.
+- */
+-static struct autofs_sb_info *autofs_dev_ioctl_sbi(struct file *f)
+-{
+-	struct autofs_sb_info *sbi = NULL;
+-	struct inode *inode;
+-
+-	if (f) {
+-		inode = file_inode(f);
+-		sbi = autofs_sbi(inode-&gt;i_sb);
+-	}
+-	return sbi;
+-}
+-
+ /* Return autofs dev ioctl version */
+ static int autofs_dev_ioctl_version(struct file *fp,
+ 				    struct autofs_sb_info *sbi,
+@@ -658,6 +644,8 @@ static int _autofs_dev_ioctl(unsigned int command,
+ 	if (cmd != AUTOFS_DEV_IOCTL_VERSION_CMD &amp;&amp;
+ 	    cmd != AUTOFS_DEV_IOCTL_OPENMOUNT_CMD &amp;&amp;
+ 	    cmd != AUTOFS_DEV_IOCTL_CLOSEMOUNT_CMD) {
++		struct super_block *sb;
++
+ 		fp = fget(param-&gt;ioctlfd);
+ 		if (!fp) {
+ 			if (cmd == AUTOFS_DEV_IOCTL_ISMOUNTPOINT_CMD)
+@@ -666,12 +654,13 @@ static int _autofs_dev_ioctl(unsigned int command,
+ 			goto out;
+ 		}
+ 
+-		sbi = autofs_dev_ioctl_sbi(fp);
+-		if (!sbi || sbi-&gt;magic != AUTOFS_SBI_MAGIC) {
++		sb = file_inode(fp)-&gt;i_sb;
++		if (sb-&gt;s_type != &amp;autofs_fs_type) {
+ 			err = -EINVAL;
+ 			fput(fp);
+ 			goto out;
+ 		}
++		sbi = autofs_sbi(sb);
+ 
+ 		/*
+ 		 * Admin needs to be able to set the mount catatonic in
+diff --git a/fs/autofs/init.c b/fs/autofs/init.c
+index 79ae07d9592f..c0c1db2cc6ea 100644
+--- a/fs/autofs/init.c
++++ b/fs/autofs/init.c
+@@ -16,7 +16,7 @@ static struct dentry *autofs_mount(struct file_system_type *fs_type,
+ 	return mount_nodev(fs_type, flags, data, autofs_fill_super);
+ }
+ 
+-static struct file_system_type autofs_fs_type = {
++struct file_system_type autofs_fs_type = {
+ 	.owner		= THIS_MODULE,
+ 	.name		= &quot;autofs&quot;,
+ 	.mount		= autofs_mount,
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="02001" href="msg02001.html">[PATCH 6/6] autofs - add strictexpire mount option</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+<li><strong><a name="02000" href="msg02000.html">[PATCH 5/6] autofs - change catatonic setting to a bit flag</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+<li><strong><a name="01999" href="msg01999.html">[PATCH 4/6] autofs - use struct for mount params</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+<li><strong><a name="01998" href="msg01998.html">[PATCH 3/6] autofs - refactor super block info init</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+<li><strong><a name="01997" href="msg01997.html">[PATCH 2/6] autofs - fix possible inode leak in autofs_fill_super()</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01995.html">[ANNOUNCE] autofs 5.1.5 release</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01997.html">[PATCH 2/6] autofs - fix possible inode leak in autofs_fill_super()</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01995.html">[ANNOUNCE] autofs 5.1.5 release</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01997.html">[PATCH 2/6] autofs - fix possible inode leak in autofs_fill_super()</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01996"><strong>Date</strong></a></li>
+<li><a href="index.html#01996"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>
