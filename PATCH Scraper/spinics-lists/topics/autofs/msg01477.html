@@ -1,0 +1,443 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 24/37] autofs&#45;5.1.2 &#45; add master read wait option -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Mon, 24 Oct 2016 18:19:38 &#45;0700 -->
+<!--X-Message-Id: 20161025011932.7778.57328.stgit@pluto.themaw.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20161025010014.7778.69274.stgit@pluto.themaw.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 24/37] autofs-5.1.2 - add master read wait option &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 24/37] autofs-5.1.2 - add master read wait option &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 24/37] autofs-5.1.2 - add master read wait option</h1>
+[<a href="msg01476.html">Date Prev</a>][<a href="msg01478.html">Date Next</a>][<a href="msg01476.html">Thread Prev</a>][<a href="msg01478.html">Thread Next</a>][<a href="maillist.html#01477">Date Index</a>][<a href="index.html#01477">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 24/37] autofs-5.1.2 - add master read wait option</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 25 Oct 2016 09:19:33 +0800</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg01453.html">20161025010014.7778.69274.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg01453.html">20161025010014.7778.69274.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>User-agent</em>: StGit/0.17.1-dirty</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Add command line and configuration options to set the amount of time to
+wait for the master map to become available at program start.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ CHANGELOG                      |    1 +
+ daemon/automount.c             |   11 +++++++++--
+ include/defaults.h             |    2 ++
+ lib/defaults.c                 |   17 +++++++++++++++++
+ man/autofs.conf.5.in           |    5 +++++
+ man/automount.8                |    4 ++++
+ redhat/autofs.conf.default.in  |    7 +++++++
+ samples/autofs.conf.default.in |    7 +++++++
+ 8 files changed, 52 insertions(+), 2 deletions(-)
+
+diff --git a/CHANGELOG b/CHANGELOG
+index d1bc1e1..576f52a 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -21,6 +21,7 @@ xx/xx/2016 autofs-5.1.3
+ - fix create_client() RPC client handling.
+ - update and add README for old autofs schema.
+ - wait for master map available at start.
++- add master read wait option.
+ 
+ 15/06/2016 autofs-5.1.2
+ =======================
+diff --git a/daemon/automount.c b/daemon/automount.c
+index 14af9ff..72c980e 100644
+--- a/daemon/automount.c
++++ b/daemon/automount.c
+@@ -2103,10 +2103,11 @@ int main(int argc, char *argv[])
+ 	unsigned ghost, logging, daemon_check;
+ 	unsigned dumpmaps, foreground, have_global_options;
+ 	unsigned master_read;
++	int master_wait;
+ 	time_t timeout;
+ 	time_t age = monotonic_time(NULL);
+ 	struct rlimit rlim;
+-	const char *options = &quot;+hp:t:vmdD:fVrO:l:n:CF&quot;;
++	const char *options = &quot;+hp:t:vmdD:fVrO:l:n:CFM&quot;;
+ 	static const struct option long_options[] = {
+ 		{&quot;help&quot;, 0, 0, 'h'},
+ 		{&quot;pid-file&quot;, 1, 0, 'p'},
+@@ -2123,6 +2124,7 @@ int main(int argc, char *argv[])
+ 		{&quot;set-log-priority&quot;, 1, 0, 'l'},
+ 		{&quot;dont-check-daemon&quot;, 0, 0, 'C'},
+ 		{&quot;force&quot;, 0, 0, 'F'},
++		{&quot;master-wait&quot;, 1, 0, 'M'},
+ 		{0, 0, 0, 0}
+ 	};
+ 
+@@ -2143,6 +2145,7 @@ int main(int argc, char *argv[])
+ 	nfs_mount_uses_string_options = check_nfs_mount_version(&amp;vers, &amp;check);
+ 
+ 	kpkt_len = get_kpkt_len();
++	master_wait = defaults_get_master_wait();
+ 	timeout = defaults_get_timeout();
+ 	ghost = defaults_get_browse_mode();
+ 	logging = defaults_get_logging();
+@@ -2202,6 +2205,10 @@ int main(int argc, char *argv[])
+ 			dumpmaps = 1;
+ 			break;
+ 
++		case 'M':
++			master_wait = getnumopt(optarg, opt);
++			break;
++
+ 		case 'O':
+ 			if (!have_global_options) {
+ 				global_options = strdup(optarg);
+@@ -2525,7 +2532,7 @@ int main(int argc, char *argv[])
+ 		 * a signal is received, in which case exit returning an
+ 		 * error.
+ 		 */
+-		if (!do_master_read_master(master_list, -1)) {
++		if (!do_master_read_master(master_list, master_wait)) {
+ 			logerr(&quot;%s: failed to read master map!&quot;, program);
+ 			master_kill(master_list);
+ 			release_flag_file();
+diff --git a/include/defaults.h b/include/defaults.h
+index 8db2bb1..80db18d 100644
+--- a/include/defaults.h
++++ b/include/defaults.h
+@@ -25,6 +25,7 @@
+ #define DEFAULT_MASTER_MAP_NAME	&quot;auto.master&quot;
+ 
+ #define DEFAULT_TIMEOUT			&quot;600&quot;
++#define DEFAULT_MASTER_WAIT		&quot;-1&quot;
+ #define DEFAULT_NEGATIVE_TIMEOUT	&quot;60&quot;
+ #define DEFAULT_MOUNT_WAIT		&quot;-1&quot;
+ #define DEFAULT_UMOUNT_WAIT		&quot;12&quot;
+@@ -152,6 +153,7 @@ void defaults_conf_release(void);
+ const char *defaults_get_master_map(void);
+ int defaults_master_set(void);
+ unsigned int defaults_get_timeout(void);
++int defaults_get_master_wait(void);
+ unsigned int defaults_get_negative_timeout(void);
+ unsigned int defaults_get_browse_mode(void);
+ unsigned int defaults_get_logging(void);
+diff --git a/lib/defaults.c b/lib/defaults.c
+index ae76513..5fa4a2b 100644
+--- a/lib/defaults.c
++++ b/lib/defaults.c
+@@ -48,6 +48,7 @@
+ #define NAME_MASTER_MAP			&quot;master_map_name&quot;
+ 
+ #define NAME_TIMEOUT			&quot;timeout&quot;
++#define NAME_MASTER_WAIT		&quot;master_wait&quot;
+ #define NAME_NEGATIVE_TIMEOUT		&quot;negative_timeout&quot;
+ #define NAME_BROWSE_MODE		&quot;browse_mode&quot;
+ #define NAME_LOGGING			&quot;logging&quot;
+@@ -288,6 +289,11 @@ static int conf_load_autofs_defaults(void)
+ 	if (ret == CFG_FAIL)
+ 		goto error;
+ 
++	ret = conf_update(sec, NAME_MASTER_WAIT,
++			  DEFAULT_MASTER_WAIT, CONF_ENV);
++	if (ret == CFG_FAIL)
++		goto error;
++
+ 	ret = conf_update(sec, NAME_NEGATIVE_TIMEOUT,
+ 			  DEFAULT_NEGATIVE_TIMEOUT, CONF_ENV);
+ 	if (ret == CFG_FAIL)
+@@ -1569,6 +1575,17 @@ unsigned int defaults_get_timeout(void)
+ 	return (unsigned int) timeout;
+ }
+ 
++int defaults_get_master_wait(void)
++{
++	long wait;
++
++	wait = conf_get_number(autofs_gbl_sec, NAME_MASTER_WAIT);
++	if (wait &lt; 0)
++		wait = atol(DEFAULT_MASTER_WAIT);
++
++	return (int) wait;
++}
++
+ unsigned int defaults_get_negative_timeout(void)
+ {
+ 	long n_timeout;
+diff --git a/man/autofs.conf.5.in b/man/autofs.conf.5.in
+index 4405ac8..466db10 100644
+--- a/man/autofs.conf.5.in
++++ b/man/autofs.conf.5.in
+@@ -30,6 +30,11 @@ default is 10 minutes, but the default installed configuration
+ overrides this and sets the timeout to 5 minutes to be consistent
+ with earlier autofs releases.
+ .TP
++.B master_wait
++sets the default maximum time to wait for the master map to become
++available if it cannot be read at program start (program default -1,
++wait forever).
++.TP
+ .B negative_timeout
+ .br
+ Set the default timeout for caching failed key lookups (program default
+diff --git a/man/automount.8 b/man/automount.8
+index d1db4ec..601c18c 100644
+--- a/man/automount.8
++++ b/man/automount.8
+@@ -37,6 +37,10 @@ The internal program default is 10 minutes, but the default
+ installed configuration overrides this and sets the timeout
+ to 5 minutes to be consistent with earlier autofs releases.
+ .TP
++.I &quot;\-M &lt;seconds&gt;, \-\-master-wait &lt;seconds&gt;&quot;
++Set the maximum time to wait for the master map to become available
++if it cannot be read at program start.
++.TP
+ .I &quot;\-n &lt;seconds&gt;, \-\-negative\-timeout &lt;seconds&gt;&quot;
+ Set the default timeout for caching failed key lookups. The default is 60 seconds.
+ .TP
+diff --git a/redhat/autofs.conf.default.in b/redhat/autofs.conf.default.in
+index d114249..2fa8a4c 100644
+--- a/redhat/autofs.conf.default.in
++++ b/redhat/autofs.conf.default.in
+@@ -14,6 +14,13 @@
+ #
+ timeout = 300
+ #
++# master_wait - set the default maximum time to wait for the
++# 		master map to become available if it cannot
++# 		be read at program start (default -1, wait
++# 		forever).
++#
++#master_wait = -1
++#
+ # negative_timeout - set the default negative timeout for
+ # 		     failed mount attempts (default 60).
+ #
+diff --git a/samples/autofs.conf.default.in b/samples/autofs.conf.default.in
+index bc25f52..77c5999 100644
+--- a/samples/autofs.conf.default.in
++++ b/samples/autofs.conf.default.in
+@@ -14,6 +14,13 @@
+ #
+ timeout = 300
+ #
++# master_wait - set the default maximum time to wait for the
++# 		master map to become available if it cannot
++# 		be read at program start (default -1, wait
++# 		forever).
++#
++# master_wait = -1
++#
+ # negative_timeout - set the default negative timeout for
+ # 		     failed mount attempts (default 60).
+ #
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01453" href="msg01453.html">[PATCH 00/37] Current patch queue for review</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01476.html">[PATCH 23/37] autofs-5.1.2 - wait for master map available at start</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01478.html">[PATCH 25/37] autofs-5.1.2 - work around sss startup delay</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01476.html">[PATCH 23/37] autofs-5.1.2 - wait for master map available at start</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01478.html">[PATCH 25/37] autofs-5.1.2 - work around sss startup delay</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01477"><strong>Date</strong></a></li>
+<li><a href="index.html#01477"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

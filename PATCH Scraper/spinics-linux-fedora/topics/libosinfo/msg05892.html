@@ -1,0 +1,297 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [libosinfo PATCH 4/6] media: Rewrite	create_from_location* functions -->
+<!--X-From-R13: =?GFT&#45;8?d?Tnovnab=20Tvq=Q3=OOapvb?= &#60;svqrapvbNerqung.pbz> -->
+<!--X-Date: Mon, 24 Jun 2019 06:17:08 &#45;0700 -->
+<!--X-Message-Id: 20190624131650.21954&#45;5&#45;fidencio@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190624131650.21954&#45;1&#45;fidencio@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<title>[libosinfo PATCH 4/6] media: Rewrite	create_from_location* functions &mdash; libosinfo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="libosinfo: [libosinfo PATCH 4/6] media: Rewrite	create_from_location* functions">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="libosinfo" href="//feeds.feedburner.com/libosinfo">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[libosinfo PATCH 4/6] media: Rewrite	create_from_location* functions</h1>
+[<a href="msg05891.html">Date Prev</a>][<a href="msg05893.html">Date Next</a>][<a href="msg05891.html">Thread Prev</a>][<a href="msg05894.html">Thread Next</a>][<a href="maillist.html#05892">Date Index</a>][<a href="index.html#05892">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [libosinfo PATCH 4/6] media: Rewrite	create_from_location* functions</li>
+<li><em>From</em>: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 24 Jun 2019 15:16:48 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg05893.html">20190624131650.21954-1-fidencio@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg05893.html">20190624131650.21954-1-fidencio@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Let's rewrite those functions, using the
+create_from_location_with_flags* functions behind.
+
+<a  rel="nofollow" href="https://gitlab.com/libosinfo/libosinfo/issues/15">https://gitlab.com/libosinfo/libosinfo/issues/15</a>
+
+Signed-off-by: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;
+---
+ osinfo/osinfo_media.c | 53 +++++++++----------------------------------
+ 1 file changed, 11 insertions(+), 42 deletions(-)
+
+diff --git a/osinfo/osinfo_media.c b/osinfo/osinfo_media.c
+index b71a110..0c3c0e3 100644
+--- a/osinfo/osinfo_media.c
++++ b/osinfo/osinfo_media.c
+@@ -757,26 +757,10 @@ OsinfoMedia *osinfo_media_create_from_location(const gchar *location,
+                                                GCancellable *cancellable,
+                                                GError **error)
+ {
+-    CreateFromLocationData *data;
+-    OsinfoMedia *ret;
+-
+-    data = g_slice_new0(CreateFromLocationData);
+-    data-&gt;main_loop = g_main_loop_new(g_main_context_get_thread_default(),
+-                                      FALSE);
+-
+-    osinfo_media_create_from_location_async(location,
+-                                            G_PRIORITY_DEFAULT,
+-                                            cancellable,
+-                                            on_media_create_from_location_ready,
+-                                            data);
+-
+-    /* Loop till we get a reply (or time out) */
+-    g_main_loop_run(data-&gt;main_loop);
+-
+-    ret = osinfo_media_create_from_location_finish(data-&gt;res, error);
+-    create_from_location_data_free(data);
+-
+-    return ret;
++    return osinfo_media_create_from_location_with_flags(location,
++                                                        cancellable,
++                                                        error,
++                                                        OSINFO_MEDIA_DETECT_REQUIRE_BOOTABLE);
+ }
+ 
+ /**
+@@ -1331,23 +1315,12 @@ void osinfo_media_create_from_location_async(const gchar *location,
+                                              GAsyncReadyCallback callback,
+                                              gpointer user_data)
+ {
+-    CreateFromLocationAsyncData *data;
+-
+-    g_return_if_fail(location != NULL);
+-
+-    data = g_slice_new0(CreateFromLocationAsyncData);
+-    data-&gt;res = g_task_new(NULL,
+-                           cancellable,
+-                           callback,
+-                           user_data);
+-    g_task_set_priority(data-&gt;res, priority);
+-
+-    data-&gt;file = g_file_new_for_commandline_arg(location);
+-    g_file_read_async(data-&gt;file,
+-                      priority,
+-                      cancellable,
+-                      on_location_read,
+-                      data);
++    osinfo_media_create_from_location_with_flags_async(location,
++                                                       priority,
++                                                       cancellable,
++                                                       callback,
++                                                       OSINFO_MEDIA_DETECT_REQUIRE_BOOTABLE,
++                                                       user_data);
+ }
+ 
+ /**
+@@ -1363,11 +1336,7 @@ void osinfo_media_create_from_location_async(const gchar *location,
+ OsinfoMedia *osinfo_media_create_from_location_finish(GAsyncResult *res,
+                                                       GError **error)
+ {
+-    GTask *task = G_TASK(res);
+-
+-    g_return_val_if_fail(error == NULL || *error == NULL, NULL);
+-
+-    return g_task_propagate_pointer(task, error);
++    return osinfo_media_create_from_location_with_flags_finish(res, error);
+ }
+ 
+ /**
+-- 
+2.21.0
+
+_______________________________________________
+Libosinfo mailing list
+Libosinfo@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libosinfo">https://www.redhat.com/mailman/listinfo/libosinfo</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05891.html">[libosinfo PATCH 3/6] media: Add	create_from_location_with_flags* APIs</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05893.html">[libosinfo PATCH 0/6] A few fixes/improvements related	to media detect</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05891.html">[libosinfo PATCH 3/6] media: Add	create_from_location_with_flags* APIs</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05894.html">[libosinfo PATCH 2/6] media: Add OsinfoMediaDetectFlags</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05892"><strong>Date</strong></a></li>
+<li><a href="index.html#05892"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

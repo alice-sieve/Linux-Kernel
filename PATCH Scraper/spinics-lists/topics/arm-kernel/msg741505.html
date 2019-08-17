@@ -1,0 +1,291 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v5 3/5] drm: dw&#45;hdmi&#45;i2s: Use fixed id for codec device -->
+<!--X-From-R13: Qurat&#45;Kv Quvnat &#60;plpuvnatNpuebzvhz.bet> -->
+<!--X-Date: Wed, 17 Jul 2019 01:35:16 &#45;0700 -->
+<!--X-Message-Id: 20190717083327.47646&#45;4&#45;cychiang@chromium.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190717083327.47646&#45;1&#45;cychiang@chromium.org -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH v5 3/5] drm: dw-hdmi-i2s: Use fixed id for codec device">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH v5 3/5] drm: dw-hdmi-i2s: Use fixed id for codec device &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH v5 3/5] drm: dw-hdmi-i2s: Use fixed id for codec device</h1>
+[<a href="msg741504.html">Date Prev</a>][<a href="msg741506.html">Date Next</a>][<a href="msg741504.html">Thread Prev</a>][<a href="msg741506.html">Thread Next</a>][<a href="maillist.html#741505">Date Index</a>][<a href="threads.html#741505">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v5 3/5] drm: dw-hdmi-i2s: Use fixed id for codec device</li>
+<li><em>From</em>: Cheng-Yi Chiang &lt;cychiang@xxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 17 Jul 2019 16:33:25 +0800</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg741502.html">20190717083327.47646-1-cychiang@chromium.org</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The problem of using auto ID is that the device name will be like
+hdmi-audio-codec.&lt;id number&gt;.auto.
+
+The number might be changed when there are other platform devices being
+created before hdmi-audio-codec device.
+Use a fixed name so machine driver can set codec name on the DAI link.
+
+Using the fixed name should be fine because there will only be one
+hdmi-audio-codec device.
+
+Fix the codec name in rockchip rk3288_hdmi_analog machine driver.
+
+Signed-off-by: Cheng-Yi Chiang &lt;cychiang@xxxxxxxxxxxx&gt;
+---
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c | 2 +-
+ sound/soc/rockchip/rk3288_hdmi_analog.c             | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
+index ca56783fae47..bc608f9258be 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
+@@ -135,7 +135,7 @@ static int snd_dw_hdmi_probe(struct platform_device *pdev)
+ 
+ 	memset(&amp;pdevinfo, 0, sizeof(pdevinfo));
+ 	pdevinfo.parent		= pdev-&gt;dev.parent;
+-	pdevinfo.id		= PLATFORM_DEVID_AUTO;
++	pdevinfo.id		= PLATFORM_DEVID_NONE;
+ 	pdevinfo.name		= HDMI_CODEC_DRV_NAME;
+ 	pdevinfo.data		= &amp;pdata;
+ 	pdevinfo.size_data	= sizeof(pdata);
+diff --git a/sound/soc/rockchip/rk3288_hdmi_analog.c b/sound/soc/rockchip/rk3288_hdmi_analog.c
+index 767700c34ee2..8286025a8747 100644
+--- a/sound/soc/rockchip/rk3288_hdmi_analog.c
++++ b/sound/soc/rockchip/rk3288_hdmi_analog.c
+@@ -15,6 +15,7 @@
+ #include &lt;linux/gpio.h&gt;
+ #include &lt;linux/of_gpio.h&gt;
+ #include &lt;sound/core.h&gt;
++#include &lt;sound/hdmi-codec.h&gt;
+ #include &lt;sound/jack.h&gt;
+ #include &lt;sound/pcm.h&gt;
+ #include &lt;sound/pcm_params.h&gt;
+@@ -142,7 +143,7 @@ static const struct snd_soc_ops rk_ops = {
+ SND_SOC_DAILINK_DEFS(audio,
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
+ 	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, NULL),
+-			   COMP_CODEC(&quot;hdmi-audio-codec.2.auto&quot;, &quot;i2s-hifi&quot;)),
++			   COMP_CODEC(HDMI_CODEC_DRV_NAME, &quot;i2s-hifi&quot;)),
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
+ 
+ static struct snd_soc_dai_link rk_dailink = {
+-- 
+2.22.0.510.g264f2c817a-goog
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="741502" href="msg741502.html">[PATCH v5 0/5] Add HDMI jack support on RK3288</a></strong>
+<ul><li><em>From:</em> Cheng-Yi Chiang</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741504.html">[PATCH v5 2/5] drm: bridge: dw-hdmi: Report connector status using callback</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741506.html">[PATCH v5 4/5] ASoC: rockchip_max98090: Add dai_link for HDMI</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741504.html">[PATCH v5 2/5] drm: bridge: dw-hdmi: Report connector status using callback</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741506.html">[PATCH v5 4/5] ASoC: rockchip_max98090: Add dai_link for HDMI</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741505"><strong>Date</strong></a></li>
+<li><a href="threads.html#741505"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

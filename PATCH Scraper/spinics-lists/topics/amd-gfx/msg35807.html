@@ -1,0 +1,434 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 1/2] drm/amdgpu: Dump PDEs and PTEs on VM faults (v3) -->
+<!--X-From-R13: "Yhruyvat, Tryvk" &#60;Tryvk.YhruyvatNnzq.pbz> -->
+<!--X-Date: Fri, 12 Jul 2019 23:42:40 &#45;0700 -->
+<!--X-Message-Id: 20190713064211.20047&#45;1&#45;Felix.Kuehling@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 1/2] drm/amdgpu: Dump PDEs and PTEs on VM faults (v3)">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 1/2] drm/amdgpu: Dump PDEs and PTEs on VM faults (v3) &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 1/2] drm/amdgpu: Dump PDEs and PTEs on VM faults (v3)</h1>
+[<a href="msg35806.html">Date Prev</a>][<a href="msg35808.html">Date Next</a>][<a href="msg35806.html">Thread Prev</a>][<a href="msg35808.html">Thread Next</a>][<a href="maillist.html#35807">Date Index</a>][<a href="index.html#35807">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: &quot;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&quot; &lt;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 1/2] drm/amdgpu: Dump PDEs and PTEs on VM faults (v3)</li>
+<li><em>From</em>: &quot;Kuehling, Felix&quot; &lt;Felix.Kuehling@xxxxxxx&gt;</li>
+<li><em>Date</em>: Sat, 13 Jul 2019 06:42:31 +0000</li>
+<li><em>Accept-language</em>: en-US</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Walk page table for the faulting address and dump PDEs and PTEs at
+all levels. Also flag discrepancies where a PDE points to a different
+address than the next level PDB or PTB BO.
+
+v2:
+* Fix address shift for GFXv8
+* Redo PDB/PTB address checking to work on all generations
+
+v3:
+* Simplified pde address and flag check
+
+Signed-off-by: Felix Kuehling &lt;Felix.Kuehling@xxxxxxx&gt;
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c |  5 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.h |  2 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c  | 79 ++++++++++++++++++++++++-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h  |  7 ++-
+ drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c   |  6 +-
+ drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c   |  5 +-
+ 6 files changed, 95 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+index bbbf069efb77..78440748c87f 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@ -1505,9 +1505,8 @@ static bool amdgpu_ttm_bo_eviction_valuable(struct ttm_buffer_object *bo,
+  * This is used to access VRAM that backs a buffer object via MMIO
+  * access for debugging purposes.
+  */
+-static int amdgpu_ttm_access_memory(struct ttm_buffer_object *bo,
+-				    unsigned long offset,
+-				    void *buf, int len, int write)
++int amdgpu_ttm_access_memory(struct ttm_buffer_object *bo, unsigned long offset,
++			     void *buf, int len, int write)
+ {
+ 	struct amdgpu_bo *abo = ttm_to_amdgpu_bo(bo);
+ 	struct amdgpu_device *adev = amdgpu_ttm_adev(abo-&gt;tbo.bdev);
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.h
+index bccb8c49e597..cffbafffa9d7 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.h
+@@ -83,6 +83,8 @@ void amdgpu_ttm_fini(struct amdgpu_device *adev);
+ void amdgpu_ttm_set_buffer_funcs_status(struct amdgpu_device *adev,
+ 					bool enable);
+ 
++int amdgpu_ttm_access_memory(struct ttm_buffer_object *bo, unsigned long offset,
++			     void *buf, int len, int write);
+ int amdgpu_copy_buffer(struct amdgpu_ring *ring, uint64_t src_offset,
+ 		       uint64_t dst_offset, uint32_t byte_count,
+ 		       struct reservation_object *resv,
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+index 1951f2abbdbc..64ee46eaa041 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+@@ -544,6 +544,78 @@ static void amdgpu_vm_pt_next_dfs(struct amdgpu_device *adev,
+ 	     amdgpu_vm_pt_continue_dfs((start), (entry));			\
+ 	     (entry) = (cursor).entry, amdgpu_vm_pt_next_dfs((adev), &amp;(cursor)))
+ 
++/**
++ * amdgpu_vm_dump_pte - dump PTEs along a page table walk
++ *
++ * @adev: amdgpu device pointer
++ * @vm: VM address space
++ * @addr: virtual address
++ *
++ * Walks the page table of @vm at the given @addr and prints the PDEs
++ * and PTEs along the way on a single line.
++ */
++void amdgpu_vm_dump_pte(struct amdgpu_device *adev, struct amdgpu_vm *vm,
++			uint64_t addr)
++{
++	static const char *level_entry[4] = {&quot;PDE2&quot;, &quot;PDE1&quot;, &quot;PDE0&quot;, &quot;PTE&quot;};
++	static const char *level_block[4] = {&quot;PDB2&quot;, &quot;PDB1&quot;, &quot;PDB0&quot;, &quot;PTB&quot;};
++	struct amdgpu_vm_pt_cursor cursor;
++	uint64_t pde_addr, pde_flags, last_pde;
++	char buf[128];
++	int i = 0;
++
++	amdgpu_gmc_get_pde_for_bo(vm-&gt;root.base.bo, adev-&gt;vm_manager.root_level,
++				  &amp;pde_addr, &amp;pde_flags);
++	last_pde = pde_addr | pde_flags;
++
++	amdgpu_vm_pt_start(adev, vm, addr &gt;&gt; PAGE_SHIFT, &amp;cursor);
++
++	do {
++		unsigned int mask, shift, idx;
++		struct amdgpu_bo *bo;
++		uint64_t pte;
++
++		mask = amdgpu_vm_entries_mask(adev, cursor.level);
++		shift = amdgpu_vm_level_shift(adev, cursor.level);
++		idx = (cursor.pfn &gt;&gt; shift) &amp; mask;
++
++		bo = cursor.entry-&gt;base.bo;
++		if (bo) {
++			/* Flag discrepancy between previous level PDE
++			 * and the actual address of this PTB or PDB.
++			 */
++			amdgpu_gmc_get_pde_for_bo(bo, cursor.level,
++						  &amp;pde_addr, &amp;pde_flags);
++			if ((pde_addr | pde_flags) != last_pde)
++				i += snprintf(buf + i, sizeof(buf) - i, &quot;!&quot;);
++
++			amdgpu_ttm_access_memory(&amp;bo-&gt;tbo, idx * sizeof(pte),
++						 &amp;pte, sizeof(pte), false);
++			i += snprintf(buf + i, sizeof(buf) - i,
++				      &quot;%s[%d]=0x%llx &quot;,
++				      level_entry[cursor.level], idx, pte);
++			last_pde = pte;
++		} else {
++			/* Flag discrepancy if previous level PDE had
++			 * a valid entry but there is no PTB or PDB BO.
++			 */
++			if ((last_pde &amp; AMDGPU_PTE_VALID) &amp;&amp;
++			    !(last_pde &amp; AMDGPU_PDE_PTE))
++				i += snprintf(buf + i, sizeof(buf) - i, &quot;!&quot;);
++			i += snprintf(buf + i, sizeof(buf) - i,
++				      &quot;no %s &quot;, level_block[cursor.level]);
++			last_pde = 0;
++		}
++
++		++cursor.level;
++		cursor.parent = cursor.entry;
++		if (!cursor.entry-&gt;entries)
++			break;
++		cursor.entry = &amp;cursor.entry-&gt;entries[idx];
++	} while (cursor.entry);
++	dev_err(adev-&gt;dev, &quot;%s&quot;, buf);
++}
++
+ /**
+  * amdgpu_vm_get_pd_bo - add the VM PD to a validation list
+  *
+@@ -3081,8 +3153,9 @@ int amdgpu_vm_ioctl(struct drm_device *dev, void *data, struct drm_file *filp)
+  * @pasid: PASID identifier for VM
+  * @task_info: task_info to fill.
+  */
+-void amdgpu_vm_get_task_info(struct amdgpu_device *adev, unsigned int pasid,
+-			 struct amdgpu_task_info *task_info)
++struct amdgpu_vm *amdgpu_vm_get_task_info(struct amdgpu_device *adev,
++					  unsigned int pasid,
++					  struct amdgpu_task_info *task_info)
+ {
+ 	struct amdgpu_vm *vm;
+ 	unsigned long flags;
+@@ -3094,6 +3167,8 @@ void amdgpu_vm_get_task_info(struct amdgpu_device *adev, unsigned int pasid,
+ 		*task_info = vm-&gt;task_info;
+ 
+ 	spin_unlock_irqrestore(&amp;adev-&gt;vm_manager.pasid_lock, flags);
++
++	return vm;
+ }
+ 
+ /**
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
+index 489a162ca620..6a8b833d180e 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
+@@ -348,6 +348,8 @@ int amdgpu_vm_init(struct amdgpu_device *adev, struct amdgpu_vm *vm,
+ int amdgpu_vm_make_compute(struct amdgpu_device *adev, struct amdgpu_vm *vm, unsigned int pasid);
+ void amdgpu_vm_release_compute(struct amdgpu_device *adev, struct amdgpu_vm *vm);
+ void amdgpu_vm_fini(struct amdgpu_device *adev, struct amdgpu_vm *vm);
++void amdgpu_vm_dump_pte(struct amdgpu_device *adev, struct amdgpu_vm *vm,
++			uint64_t addr);
+ void amdgpu_vm_get_pd_bo(struct amdgpu_vm *vm,
+ 			 struct list_head *validated,
+ 			 struct amdgpu_bo_list_entry *entry);
+@@ -401,8 +403,9 @@ bool amdgpu_vm_need_pipeline_sync(struct amdgpu_ring *ring,
+ 				  struct amdgpu_job *job);
+ void amdgpu_vm_check_compute_bug(struct amdgpu_device *adev);
+ 
+-void amdgpu_vm_get_task_info(struct amdgpu_device *adev, unsigned int pasid,
+-			     struct amdgpu_task_info *task_info);
++struct amdgpu_vm *amdgpu_vm_get_task_info(struct amdgpu_device *adev,
++					  unsigned int pasid,
++					  struct amdgpu_task_info *task_info);
+ 
+ void amdgpu_vm_set_task_info(struct amdgpu_vm *vm);
+ 
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
+index 8bf2ba310fd9..18207ecfd85c 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
+@@ -1448,9 +1448,10 @@ static int gmc_v8_0_process_interrupt(struct amdgpu_device *adev,
+ 
+ 	if (printk_ratelimit()) {
+ 		struct amdgpu_task_info task_info;
++		struct amdgpu_vm *vm;
+ 
+ 		memset(&amp;task_info, 0, sizeof(struct amdgpu_task_info));
+-		amdgpu_vm_get_task_info(adev, entry-&gt;pasid, &amp;task_info);
++		vm = amdgpu_vm_get_task_info(adev, entry-&gt;pasid, &amp;task_info);
+ 
+ 		dev_err(adev-&gt;dev, &quot;GPU fault detected: %d 0x%08x for process %s pid %d thread %s pid %d\n&quot;,
+ 			entry-&gt;src_id, entry-&gt;src_data[0], task_info.process_name,
+@@ -1461,6 +1462,9 @@ static int gmc_v8_0_process_interrupt(struct amdgpu_device *adev,
+ 			status);
+ 		gmc_v8_0_vm_decode_fault(adev, status, addr, mc_client,
+ 					 entry-&gt;pasid);
++		if (vm)
++			amdgpu_vm_dump_pte(adev, vm, (uint64_t)addr
++					   &lt;&lt; AMDGPU_GPU_PAGE_SHIFT);
+ 	}
+ 
+ 	vmid = REG_GET_FIELD(status, VM_CONTEXT1_PROTECTION_FAULT_STATUS,
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+index bd5d36944481..f27e88af4016 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+@@ -331,9 +331,10 @@ static int gmc_v9_0_process_interrupt(struct amdgpu_device *adev,
+ 
+ 	if (printk_ratelimit()) {
+ 		struct amdgpu_task_info task_info;
++		struct amdgpu_vm *vm;
+ 
+ 		memset(&amp;task_info, 0, sizeof(struct amdgpu_task_info));
+-		amdgpu_vm_get_task_info(adev, entry-&gt;pasid, &amp;task_info);
++		vm = amdgpu_vm_get_task_info(adev, entry-&gt;pasid, &amp;task_info);
+ 
+ 		dev_err(adev-&gt;dev,
+ 			&quot;[%s] %s page fault (src_id:%u ring:%u vmid:%u &quot;
+@@ -349,6 +350,8 @@ static int gmc_v9_0_process_interrupt(struct amdgpu_device *adev,
+ 			dev_err(adev-&gt;dev,
+ 				&quot;VM_L2_PROTECTION_FAULT_STATUS:0x%08X\n&quot;,
+ 				status);
++		if (vm)
++			amdgpu_vm_dump_pte(adev, vm, addr);
+ 	}
+ 
+ 	return 0;
+-- 
+2.17.1
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="36067" href="msg36067.html">Re: [PATCH 1/2] drm/amdgpu: Dump PDEs and PTEs on VM faults (v3)</a></strong>
+<ul><li><em>From:</em> Christian K&#xF6;nig</li></ul></li>
+<li><strong><a name="35808" href="msg35808.html">[PATCH 2/2] drm/amdgpu: Fix silent amdgpu_bo_move failures</a></strong>
+<ul><li><em>From:</em> Kuehling, Felix</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35806.html">[PATCH 1/1] drm/amdgpu: Dump PDEs and PTEs on VM faults (v2)</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35808.html">[PATCH 2/2] drm/amdgpu: Fix silent amdgpu_bo_move failures</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35806.html">[PATCH 1/1] drm/amdgpu: Dump PDEs and PTEs on VM faults (v2)</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35808.html">[PATCH 2/2] drm/amdgpu: Fix silent amdgpu_bo_move failures</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35807"><strong>Date</strong></a></li>
+<li><a href="index.html#35807"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

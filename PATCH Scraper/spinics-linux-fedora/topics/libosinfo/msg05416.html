@@ -1,0 +1,358 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [libosinfo PATCH v3 3/6] db: Deal with "all" tree	architectures -->
+<!--X-From-R13: =?GFT&#45;8?d?Tnovnab=20Tvq=Q3=OOapvb?= &#60;svqrapvbNerqung.pbz> -->
+<!--X-Date: Tue, 2 Apr 2019 03:19:03 &#45;0700 -->
+<!--X-Message-Id: 20190402101851.2007&#45;4&#45;fidencio@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190402101851.2007&#45;1&#45;fidencio@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<title>[libosinfo PATCH v3 3/6] db: Deal with &quot;all&quot; tree	architectures &mdash; libosinfo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="libosinfo: [libosinfo PATCH v3 3/6] db: Deal with &quot;all&quot; tree	architectures">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="libosinfo" href="//feeds.feedburner.com/libosinfo">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[libosinfo PATCH v3 3/6] db: Deal with &quot;all&quot; tree	architectures</h1>
+[<a href="msg05415.html">Date Prev</a>][<a href="msg05417.html">Date Next</a>][<a href="msg05415.html">Thread Prev</a>][<a href="msg05417.html">Thread Next</a>][<a href="maillist.html#05416">Date Index</a>][<a href="index.html#05416">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [libosinfo PATCH v3 3/6] db: Deal with &quot;all&quot; tree	architectures</li>
+<li><em>From</em>: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue,  2 Apr 2019 12:18:48 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg05413.html">20190402101851.2007-1-fidencio@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg05413.html">20190402101851.2007-1-fidencio@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Tree with &quot;all&quot; architecture are used as a fallback when guessing an OS
+from a tree.
+
+Knowing that, any entry with &quot;all&quot; architecture should not be considered
+when first comparing the trees, thus those are skipped and, later on,
+if no match has been found, those are used.
+
+<a  rel="nofollow" href="https://gitlab.com/libosinfo/libosinfo/issues/20">https://gitlab.com/libosinfo/libosinfo/issues/20</a>
+
+Signed-off-by: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;
+---
+ osinfo/osinfo_db.c | 80 ++++++++++++++++++++++++++++++----------------
+ 1 file changed, 52 insertions(+), 28 deletions(-)
+
+diff --git a/osinfo/osinfo_db.c b/osinfo/osinfo_db.c
+index 136cf79..0c89aef 100644
+--- a/osinfo/osinfo_db.c
++++ b/osinfo/osinfo_db.c
+@@ -742,49 +742,32 @@ gboolean osinfo_db_identify_media(OsinfoDb *db, OsinfoMedia *media)
+     return TRUE;
+ }
+ 
+-
+-/**
+- * osinfo_db_guess_os_from_tree:
+- * @db: the database
+- * @tree: the installation tree
+- * @matched_tree: (out) (transfer none) (allow-none): the matched operating
+- * system tree
+- *
+- * Guess operating system given an #OsinfoTree object.
+- *
+- * Returns: (transfer none): the operating system, or NULL if guessing failed
+- */
+-OsinfoOs *osinfo_db_guess_os_from_tree(OsinfoDb *db,
+-                                       OsinfoTree *tree,
+-                                       OsinfoTree **matched_tree)
++static gboolean compare_tree(OsinfoTree *tree,
++                             GList *oss,
++                             OsinfoOs **ret_os,
++                             OsinfoTree **matched,
++                             GList **fallback_oss)
+ {
+-    OsinfoOs *ret = NULL;
+-    GList *oss = NULL;
+     GList *os_iter;
+     const gchar *treeinfo_family;
+     const gchar *treeinfo_variant;
+     const gchar *treeinfo_version;
+     const gchar *treeinfo_arch;
+ 
+-    g_return_val_if_fail(OSINFO_IS_DB(db), NULL);
+-    g_return_val_if_fail(tree != NULL, NULL);
+-
+     treeinfo_family = osinfo_tree_get_treeinfo_family(tree);
+     treeinfo_variant = osinfo_tree_get_treeinfo_variant(tree);
+     treeinfo_version = osinfo_tree_get_treeinfo_version(tree);
+     treeinfo_arch = osinfo_tree_get_treeinfo_arch(tree);
+ 
+-    oss = osinfo_list_get_elements(OSINFO_LIST(db-&gt;priv-&gt;oses));
+     for (os_iter = oss; os_iter; os_iter = os_iter-&gt;next) {
+         OsinfoOs *os = OSINFO_OS(os_iter-&gt;data);
+         OsinfoTreeList *tree_list = osinfo_os_get_tree_list(os);
+         GList *trees = osinfo_list_get_elements(OSINFO_LIST(tree_list));
+         GList *tree_iter;
+ 
+-        //trees = g_list_sort(trees, tree_family_compare);
+-
+         for (tree_iter = trees; tree_iter; tree_iter = tree_iter-&gt;next) {
+             OsinfoTree *os_tree = OSINFO_TREE(tree_iter-&gt;data);
++            const gchar *os_tree_arch = NULL;
+             const gchar *os_treeinfo_family;
+             const gchar *os_treeinfo_variant;
+             const gchar *os_treeinfo_version;
+@@ -793,6 +776,14 @@ OsinfoOs *osinfo_db_guess_os_from_tree(OsinfoDb *db,
+             if (!osinfo_tree_has_treeinfo(os_tree))
+                 continue;
+ 
++            os_tree_arch = osinfo_tree_get_architecture(os_tree);
++            if (fallback_oss != NULL) {
++                if (g_str_equal(os_tree_arch, &quot;all&quot;)) {
++                    *fallback_oss = g_list_prepend(*fallback_oss, os);
++                    continue;
++                }
++            }
++
+             os_treeinfo_family = osinfo_tree_get_treeinfo_family(os_tree);
+             os_treeinfo_variant = osinfo_tree_get_treeinfo_variant(os_tree);
+             os_treeinfo_version = osinfo_tree_get_treeinfo_version(os_tree);
+@@ -802,9 +793,9 @@ OsinfoOs *osinfo_db_guess_os_from_tree(OsinfoDb *db,
+                 match_regex(os_treeinfo_variant, treeinfo_variant) &amp;&amp;
+                 match_regex(os_treeinfo_version, treeinfo_version) &amp;&amp;
+                 match_regex(os_treeinfo_arch, treeinfo_arch)) {
+-                ret = os;
+-                if (matched_tree != NULL)
+-                    *matched_tree = os_tree;
++                *ret_os = os;
++                if (matched != NULL)
++                    *matched = os_tree;
+                 break;
+             }
+         }
+@@ -812,11 +803,44 @@ OsinfoOs *osinfo_db_guess_os_from_tree(OsinfoDb *db,
+         g_list_free(trees);
+         g_object_unref(tree_list);
+ 
+-        if (ret)
+-            break;
++        if (*ret_os != NULL)
++            return TRUE;
+     }
+ 
++    return FALSE;
++}
++
++/**
++ * osinfo_db_guess_os_from_tree:
++ * @db: the database
++ * @tree: the installation tree
++ * @matched_tree: (out) (transfer none) (allow-none): the matched operating
++ * system tree
++ *
++ * Guess operating system given an #OsinfoTree object.
++ *
++ * Returns: (transfer none): the operating system, or NULL if guessing failed
++ */
++OsinfoOs *osinfo_db_guess_os_from_tree(OsinfoDb *db,
++                                       OsinfoTree *tree,
++                                       OsinfoTree **matched_tree)
++{
++    OsinfoOs *ret = NULL;
++    GList *oss = NULL;
++    GList *fallback_oss = NULL;
++
++    g_return_val_if_fail(OSINFO_IS_DB(db), NULL);
++    g_return_val_if_fail(tree != NULL, NULL);
++
++    oss = osinfo_list_get_elements(OSINFO_LIST(db-&gt;priv-&gt;oses));
++    if (compare_tree(tree, oss, &amp;ret, matched_tree, &amp;fallback_oss))
++        goto end;
++
++    compare_tree(tree, fallback_oss, &amp;ret, matched_tree, NULL);
++
++ end:
+     g_list_free(oss);
++    g_list_free(fallback_oss);
+ 
+     return ret;
+ }
+-- 
+2.20.1
+
+_______________________________________________
+Libosinfo mailing list
+Libosinfo@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libosinfo">https://www.redhat.com/mailman/listinfo/libosinfo</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05415.html">[libosinfo PATCH v3 2/6] db: Rename os_* to	os_treeinfo_* in guess_os_from_tree()</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05417.html">[libosinfo PATCH v3 4/6] test-db: Add test for guessing	tree from OS</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05415.html">[libosinfo PATCH v3 2/6] db: Rename os_* to	os_treeinfo_* in guess_os_from_tree()</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05417.html">[libosinfo PATCH v3 4/6] test-db: Add test for guessing	tree from OS</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05416"><strong>Date</strong></a></li>
+<li><a href="index.html#05416"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

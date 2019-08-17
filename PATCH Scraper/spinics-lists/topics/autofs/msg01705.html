@@ -1,0 +1,319 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 19/35] autofs&#45;5.1.3 &#45; also check flag file exe name -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Sun, 15 Oct 2017 22:11:02 &#45;0700 -->
+<!--X-Message-Id: 150813047531.25695.7074710238580737551.stgit@pluto.themaw.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 150813019190.25695.13810689562896522990.stgit@pluto.themaw.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 19/35] autofs-5.1.3 - also check flag file exe name &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 19/35] autofs-5.1.3 - also check flag file exe name &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 19/35] autofs-5.1.3 - also check flag file exe name</h1>
+[<a href="msg01704.html">Date Prev</a>][<a href="msg01706.html">Date Next</a>][<a href="msg01704.html">Thread Prev</a>][<a href="msg01706.html">Thread Next</a>][<a href="maillist.html#01705">Date Index</a>][<a href="index.html#01705">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 19/35] autofs-5.1.3 - also check flag file exe name</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 16 Oct 2017 13:07:55 +0800</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg01722.html">150813019190.25695.13810689562896522990.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg01722.html">150813019190.25695.13810689562896522990.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>User-agent</em>: StGit/0.17.1-dirty</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>automount(8) uses a flag file if it needs to check for multiple
+invocations of itself at startup.
+
+The check to see if a flag file is owned by an existing automount(8)
+process can return a false positive because it doesn't also check the
+name of the executable of the given pid.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+Reported-by: Doron Cohen &lt;doron@xxxxxxx&gt;
+---
+ CHANGELOG     |    1 +
+ daemon/flag.c |   35 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 36 insertions(+)
+
+diff --git a/CHANGELOG b/CHANGELOG
+index af8b099c..1b5c69ee 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -17,6 +17,7 @@ xx/xx/2017 autofs-5.1.4
+ - add some more debug logging to get_nfs_info().
+ - add some more debug logging to get_supported_ver_and_cost().
+ - fix ipv6 proto option handling.
++- also check flag file exe name.
+ 
+ 24/05/2017 autofs-5.1.3
+ =======================
+diff --git a/daemon/flag.c b/daemon/flag.c
+index db9a4bde..99f26847 100644
+--- a/daemon/flag.c
++++ b/daemon/flag.c
+@@ -33,12 +33,43 @@
+ #define MAX_PIDSIZE	20
+ #define FLAG_FILE	AUTOFS_FLAG_DIR &quot;/autofs-running&quot;
+ 
++#define EXE_SELF	&quot;/proc/self/exe&quot;
++#define EXE_PID		&quot;/proc/%u/exe&quot;
++
+ /* Flag for already existing flag file. */
+ static int we_created_flagfile = 0;
+ 
+ /* file descriptor of flag file */
+ static int fd = -1;
+ 
++static int check_pid_exe_name(pid_t pid)
++{
++	char self_name[PATH_MAX + 1];
++	char pid_name[PATH_MAX + 1];
++	char exe_pid[MAX_PIDSIZE + 1];
++	int len, ret = 0;
++
++	len = readlink(EXE_SELF, self_name, PATH_MAX);
++	if (len == -1 || len == PATH_MAX)
++		goto out;
++	else
++		self_name[len] = 0;
++
++	len = snprintf(exe_pid, MAX_PIDSIZE, EXE_PID, pid);
++	if (len &gt;= MAX_PIDSIZE)
++		goto out;
++
++	len = readlink(exe_pid, pid_name, PATH_MAX);
++	if (len == -1 || len == PATH_MAX)
++		goto out;
++	else
++		pid_name[len] = 0;
++
++	ret = !strcmp(self_name, pid_name);
++out:
++	return ret;
++}
++
+ static int flag_is_owned(int fd)
+ {
+ 	int pid = 0, tries = 3;
+@@ -83,6 +114,10 @@ static int flag_is_owned(int fd)
+ 		 */
+ 		if (ret == -1 &amp;&amp; errno == ESRCH)
+ 			return 0;
++
++		/* If there is a process check if it is automount */
++		if (!check_pid_exe_name(pid))
++			return 0;
+ 	} else {
+ 		/*
+ 		 * Odd, no pid in file - so what should we do?
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01722" href="msg01722.html">[PATCH 00/35] Current autofs patch queue (lets try again)</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01704.html">[PATCH 18/35] autofs-5.1.3 - fix ipv6 proto option handling</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01706.html">[PATCH 20/35] autofs-5.1.3 - fix possible map instance memory leak</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01704.html">[PATCH 18/35] autofs-5.1.3 - fix ipv6 proto option handling</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01706.html">[PATCH 20/35] autofs-5.1.3 - fix possible map instance memory leak</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01705"><strong>Date</strong></a></li>
+<li><a href="index.html#01705"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

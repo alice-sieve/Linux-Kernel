@@ -1,0 +1,277 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 2/3] ath6kl: Fix wrong regulatory domain disconnection. -->
+<!--X-From-R13: Bvreer Zr [ntbhebh &#60;yrzntbhcNtznvy.pbz> -->
+<!--X-Date: Fri, 1 Jul 2016 09:11:04 &#45;0700 -->
+<!--X-Message-Id: 20160701161005.30341&#45;3&#45;plemagourou@aldebaran.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20160701161005.30341&#45;1&#45;plemagourou@aldebaran.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux ATH6KL: [PATCH 2/3] ath6kl: Fix wrong regulatory domain disconnection.">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 2/3] ath6kl: Fix wrong regulatory domain disconnection. (Linux ATH6KL)</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ATH6KL" href="//feedproxy.google.com/LinuxATH6KL">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:6308783764" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 2/3] ath6kl: Fix wrong regulatory domain disconnection.</h1>
+[<a href="msg00225.html">Date Prev</a>][<a href="msg00228.html">Date Next</a>][<a href="msg00225.html">Thread Prev</a>][<a href="msg00229.html">Thread Next</a>][<a href="maillist.html#00226">Date Index</a>][<a href="index.html#00226">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: kvalo@xxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH 2/3] ath6kl: Fix wrong regulatory domain disconnection.</li>
+<li><em>From</em>: Pierre Le Magourou &lt;lemagoup@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri,  1 Jul 2016 18:10:04 +0200</li>
+<li><em>Cc</em>: Pierre Le Magourou &lt;plemagourou@xxxxxxxxxxxxx&gt;, ath6kl@xxxxxxxxxxxxxxxxxxx,        linux-wireless@xxxxxxxxxxxxxxx, jmassot@xxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg00227.html">20160701161005.30341-1-plemagourou@aldebaran.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>One minute after a successful connection, the kernel checks if the
+frequency and the channel width are well configured for the country we
+are in. (regulatory domain)
+
+ath6kl driver was setting the NL80211_CHAN_HT20 channel without checking
+for the HT capabilities. (we should have NL80211_CHAN_NO_HT in our
+case because the firmware did not support HT)
+
+This patch adds a check on ht_cap.ht_supported in order to create the
+channel corresponding to the firmware capabilities.
+
+Signed-off-by: Pierre Le Magourou &lt;plemagourou@xxxxxxxxxxxxx&gt;
+---
+ drivers/net/wireless/ath/ath6kl/cfg80211.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath6kl/cfg80211.c b/drivers/net/wireless/ath/ath6kl/cfg80211.c
+index 4e11ba0..c9c4d7f 100644
+--- a/drivers/net/wireless/ath/ath6kl/cfg80211.c
++++ b/drivers/net/wireless/ath/ath6kl/cfg80211.c
+@@ -1104,7 +1104,8 @@ void ath6kl_cfg80211_ch_switch_notify(struct ath6kl_vif *vif, int freq,
+ 
+ 	cfg80211_chandef_create(&amp;chandef,
+ 				ieee80211_get_channel(vif-&gt;ar-&gt;wiphy, freq),
+-				(mode == WMI_11G_HT20) ?
++				(mode == WMI_11G_HT20 &amp;&amp;
++				 ath6kl_band_2ghz.ht_cap.ht_supported) ?
+ 					NL80211_CHAN_HT20 : NL80211_CHAN_NO_HT);
+ 
+ 	mutex_lock(&amp;vif-&gt;wdev.mtx);
+-- 
+2.9.0
+
+
+_______________________________________________
+ath6kl mailing list
+ath6kl@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/ath6kl">http://lists.infradead.org/mailman/listinfo/ath6kl</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="00227" href="msg00227.html">[PATCH 0/3] ath6kl: Fix tethering problems</a></strong>
+<ul><li><em>From:</em> Pierre Le Magourou</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00225.html">[PATCH 1/3] ath6kl: Fix WLAN tethering authentication problem.</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00228.html">Re: [PATCH 3/3] ath6kl: Unset IFF_LOWER_UP flag on AP mode leave.</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00225.html">[PATCH 1/3] ath6kl: Fix WLAN tethering authentication problem.</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00229.html">[PATCH v2 0/3] ath6kl: Fix tethering problems</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00226"><strong>Date</strong></a></li>
+<li><a href="index.html#00226"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-wireless/>[Linux&nbsp;Wireless]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-bluetooth/>[Linux&nbsp;Bluetooth]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-wpan/>[Linux&nbsp;WPAN]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/netdev/>[Linux&nbsp;Netdev]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/newbies/>[Kernel&nbsp;Newbies]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ide/>[IDE]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/netfilter/>[Netfilter]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[MIPS&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[ARM&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Linux&nbsp;Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/raid/>[Linux&nbsp;RAID]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ataraid/>[Linux&nbsp;ATA&nbsp;RAID]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/samba/>[Samba]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

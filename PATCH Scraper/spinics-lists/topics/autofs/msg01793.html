@@ -1,0 +1,570 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH 3/3] autofs &#45; fix AT_NO_AUTOMOUNT not being honored -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Wed, 29 Nov 2017 16:00:46 &#45;0800 -->
+<!--X-Message-Id: ca2890e3&#45;e8c1&#45;d535&#45;d613&#45;3cd21cdd4b28@themaw.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 149438991819.26550.11290804420751932707.stgit@pluto.themaw.net -->
+<!--X-Reference: 149438992850.26550.14370272866390445786.stgit@pluto.themaw.net -->
+<!--X-Reference: 874lpo2y9e.fsf@notabene.neil.brown.name -->
+<!--X-Reference: ed908288&#45;536c&#45;d34a&#45;6d3d&#45;c21bb8fdfc62@themaw.net -->
+<!--X-Reference: 864efc64&#45;c430&#45;a862&#45;3e98&#45;fe5ce2535329@themaw.net -->
+<!--X-Reference: 20171127160147.GA27613@qualcomm.com -->
+<!--X-Reference: fe35e57a&#45;df04&#45;3e77&#45;a717&#45;48483c01701a@themaw.net -->
+<!--X-Reference: 20171128002935.GC27898@qualcomm.com -->
+<!--X-Reference: 87a7z5yjbs.fsf@notabene.neil.brown.name -->
+<!--X-Reference: ae8e93be&#45;8e3f&#45;ffd8&#45;9043&#45;13737230d18d@themaw.net -->
+<!--X-Reference: 87lgipwxwo.fsf@notabene.neil.brown.name -->
+<!--X-Reference: aeedaa64&#45;5b1e&#45;a6e7&#45;29f0&#45;576de17eabf4@themaw.net -->
+<!--X-Reference: 87efohwn21.fsf@notabene.neil.brown.name -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</h1>
+[<a href="msg01792.html">Date Prev</a>][<a href="msg01794.html">Date Next</a>][<a href="msg01791.html">Thread Prev</a>][<a href="msg01792.html">Thread Next</a>][<a href="maillist.html#01793">Date Index</a>][<a href="index.html#01793">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: NeilBrown &lt;neilb@xxxxxxxx&gt;, Mike Marion &lt;mmarion@xxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 30 Nov 2017 08:00:22 +0800</li>
+<li><em>Cc</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;,        Kernel Mailing List &lt;linux-kernel@xxxxxxxxxxxxxxx&gt;,        linux-fsdevel &lt;linux-fsdevel@xxxxxxxxxxxxxxx&gt;,        Al Viro &lt;viro@xxxxxxxxxxxxxxxxxx&gt;, David Howells &lt;dhowells@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg01791.html">87efohwn21.fsf@notabene.neil.brown.name</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg01593.html">149438991819.26550.11290804420751932707.stgit@pluto.themaw.net</a>&gt; &lt;<a href="msg01595.html">149438992850.26550.14370272866390445786.stgit@pluto.themaw.net</a>&gt; &lt;<a href="msg01764.html">874lpo2y9e.fsf@notabene.neil.brown.name</a>&gt; &lt;<a href="msg01765.html">ed908288-536c-d34a-6d3d-c21bb8fdfc62@themaw.net</a>&gt; &lt;<a href="msg01766.html">864efc64-c430-a862-3e98-fe5ce2535329@themaw.net</a>&gt; &lt;<a href="msg01779.html">20171127160147.GA27613@qualcomm.com</a>&gt; &lt;<a href="msg01780.html">fe35e57a-df04-3e77-a717-48483c01701a@themaw.net</a>&gt; &lt;<a href="msg01781.html">20171128002935.GC27898@qualcomm.com</a>&gt; &lt;<a href="msg01783.html">87a7z5yjbs.fsf@notabene.neil.brown.name</a>&gt; &lt;<a href="msg01787.html">ae8e93be-8e3f-ffd8-9043-13737230d18d@themaw.net</a>&gt; &lt;<a href="msg01789.html">87lgipwxwo.fsf@notabene.neil.brown.name</a>&gt; &lt;<a href="msg01790.html">aeedaa64-5b1e-a6e7-29f0-576de17eabf4@themaw.net</a>&gt; &lt;<a href="msg01791.html">87efohwn21.fsf@notabene.neil.brown.name</a>&gt;</li>
+<li><em>User-agent</em>: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101 Thunderbird/52.3.0</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On 29/11/17 15:39, NeilBrown wrote:
+&gt; On Wed, Nov 29 2017, Ian Kent wrote:
+&gt; 
+&gt;&gt; On 29/11/17 11:45, NeilBrown wrote:
+&gt;&gt;&gt; On Wed, Nov 29 2017, Ian Kent wrote:
+&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; Adding Al Viro to the Cc list as I believe Stephen Whitehouse and
+&gt;&gt;&gt;&gt; Al have discussed something similar, please feel free to chime in
+&gt;&gt;&gt;&gt; with your thoughts Al.
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; On 29/11/17 09:17, NeilBrown wrote:
+&gt;&gt;&gt;&gt;&gt; On Tue, Nov 28 2017, Mike Marion wrote:
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;&gt; On Tue, Nov 28, 2017 at 07:43:05AM +0800, Ian Kent wrote:
+&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; I think the situation is going to get worse before it gets better.
+&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; On recent Fedora and kernel, with a large map and heavy mount activity
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; I see:
+&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; systemd, udisksd, gvfs-udisks2-volume-monitor, gvfsd-trash,
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; gnome-settings-daemon, packagekitd and gnome-shell
+&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; all go crazy consuming large amounts of CPU.
+&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;&gt; Yep.  I'm not even worried about the CPU usage as much (yet, I'm sure 
+&gt;&gt;&gt;&gt;&gt;&gt; it'll be more of a problem as time goes on).  We have pretty huge
+&gt;&gt;&gt;&gt;&gt;&gt; direct maps and our initial startup tests on a new host with the link vs
+&gt;&gt;&gt;&gt;&gt;&gt; file took &gt;6 hours.  That's not a typo.  We worked with Suse engineering 
+&gt;&gt;&gt;&gt;&gt;&gt; to come up with a fix, which should've been pushed here some time ago.
+&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;&gt; Then, there's shutdowns (and reboots). They also took a long time (on
+&gt;&gt;&gt;&gt;&gt;&gt; the order of 20+min) because it would walk the entire /proc/mounts
+&gt;&gt;&gt;&gt;&gt;&gt; &quot;unmounting&quot; things.  Also fixed now.  That one had something to do in
+&gt;&gt;&gt;&gt;&gt;&gt; SMP code as if you used a single CPU/core, it didn't take long at all.
+&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;&gt; Just got a fix for the suse grub2-mkconfig script to fix their parsing 
+&gt;&gt;&gt;&gt;&gt;&gt; looking for the root dev to skip over fstype autofs
+&gt;&gt;&gt;&gt;&gt;&gt; (probe_nfsroot_device function).
+&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; The symlink change was probably the start, now a number of applications
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; now got directly to the proc file system for this information.
+&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; For large mount tables and many processes accessing the mount table
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; (probably reading the whole thing, either periodically or on change
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; notification) the current system does not scale well at all.
+&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;&gt; We use Clearcase in some instances as well, and that's yet another thing
+&gt;&gt;&gt;&gt;&gt;&gt; adding mounts, and its startup is very slow, due to the size of
+&gt;&gt;&gt;&gt;&gt;&gt; /proc/mounts.  
+&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;&gt; It's definitely something that's more than just autofs and probably
+&gt;&gt;&gt;&gt;&gt;&gt; going to get worse, as you say.
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt; If we assume that applications are going to want to read
+&gt;&gt;&gt;&gt;&gt; /proc/self/mount* a log, we probably need to make it faster.
+&gt;&gt;&gt;&gt;&gt; I performed a simple experiment where I mounted 1000 tmpfs filesystems,
+&gt;&gt;&gt;&gt;&gt; copied /proc/self/mountinfo to /tmp/mountinfo, then
+&gt;&gt;&gt;&gt;&gt; ran 4 for loops in parallel catting one of these files to /dev/null 1000 times.
+&gt;&gt;&gt;&gt;&gt; On a single CPU VM:
+&gt;&gt;&gt;&gt;&gt;   For /tmp/mountinfo, each group of 1000 cats took about 3 seconds.
+&gt;&gt;&gt;&gt;&gt;   For /proc/self/mountinfo, each group of 1000 cats took about 14 seconds.
+&gt;&gt;&gt;&gt;&gt; On a 4 CPU VM
+&gt;&gt;&gt;&gt;&gt;   /tmp/mountinfo: 1.5secs
+&gt;&gt;&gt;&gt;&gt;   /proc/self/mountinfo: 3.5 secs
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt; Using &quot;perf record&quot; it appears that most of the cost is repeated calls
+&gt;&gt;&gt;&gt;&gt; to prepend_path, with a small contribution from the fact that each read
+&gt;&gt;&gt;&gt;&gt; only returns 4K rather than the 128K that cat asks for.
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt; If we could hang a cache off struct mnt_namespace and use it instead of
+&gt;&gt;&gt;&gt;&gt; iterating the mount table - using rcu and ns-&gt;event to ensure currency -
+&gt;&gt;&gt;&gt;&gt; we should be able to minimize the cost of this increased use of
+&gt;&gt;&gt;&gt;&gt; /proc/self/mount*.
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt; I suspect that the best approach would be implement a cache at the
+&gt;&gt;&gt;&gt;&gt; seq_file level.
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt; One possible problem might be if applications assume that a read will
+&gt;&gt;&gt;&gt;&gt; always return a whole number of lines (it currently does).  To be
+&gt;&gt;&gt;&gt;&gt; sure we remain safe, we would only be able to use the cache for
+&gt;&gt;&gt;&gt;&gt; a read() syscall which reads the whole file.
+&gt;&gt;&gt;&gt;&gt; How big do people see /proc/self/mount* getting?  What size reads
+&gt;&gt;&gt;&gt;&gt; does 'strace' show the various programs using to read it?
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; Buffer size almost always has a significant impact on IO so that's
+&gt;&gt;&gt;&gt; likely a big factor but the other aspect of this is notification
+&gt;&gt;&gt;&gt; of changes.
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; The risk is improving the IO efficiency might just allow a higher
+&gt;&gt;&gt;&gt; rate of processing of change notifications and similar symptoms
+&gt;&gt;&gt;&gt; to what we have now.
+&gt;&gt;&gt;
+&gt;&gt;&gt; That's an issue that we should be able to get empirical data on.
+&gt;&gt;&gt; Are these systems that demonstrate problems actually showing a high
+&gt;&gt;&gt; rate of changes to the mount table, or is the mount table being
+&gt;&gt;&gt; read frequently despite not changing?
+&gt;&gt;&gt; To find out you could use a program like one of the answers to:
+&gt;&gt;&gt;
+&gt;&gt;&gt; <a  rel="nofollow" href="https://stackoverflow.com/questions/5070801/monitoring-mount-point-changes-via-proc-mounts">https://stackoverflow.com/questions/5070801/monitoring-mount-point-changes-via-proc-mounts</a>
+&gt;&gt;&gt;
+&gt;&gt;&gt; or instrument the kernel to add a counter to 'struct mnt_namespace' and
+&gt;&gt;&gt; have mounts_open_common() increment that counter and report the value as
+&gt;&gt;&gt; well as ns-&gt;event.  The long term ratio of the two numbers might be
+&gt;&gt;&gt; interesting.
+&gt;&gt;
+&gt;&gt; One scenario is, under heavy mount activity, the CPU usage of processes
+&gt;&gt; systemd, udisksd2, gvfs-udisks2-volume-monitor, gvfsd-trash,
+&gt;&gt; gnome-settings-daemon and packagekitd (and possibly gnome-shell, might
+&gt;&gt; be a false positive though) grow to consume all available CPU.
+&gt; 
+&gt; OK, that's pretty clearly caused by lots of changes happening in quick
+&gt; succession.
+&gt; The current poll support in the kernel is slightly non-optimal in that
+&gt; it could trigger more events than necessary, but it probably doesn't
+&gt; make a big difference.
+&gt; 
+&gt; The current code means that poll/select will report an event if there
+&gt; has been an event since the last time that poll/select reported an
+&gt; event.
+&gt; It is only necessary to report an event if these has been one since the
+&gt; last time that the first record in the file was read.
+&gt; So if there are a sequence of events, then the file is read, a
+&gt; subsequent poll will report another event where there isn't really one.
+&gt; This would only be noticed if there was a delay between the event being
+&gt; reported in the kernel, and the read happening.
+&gt; 
+&gt; You could test by removing
+&gt; 		m-&gt;poll_event = event;
+&gt; from mounts_poll() and adding something like:
+&gt;  if (*pos == 0) m-&gt;poll_event = p-&gt;ns-&gt;event;
+&gt; to m_start().
+&gt; 
+&gt; 
+&gt;&gt;
+&gt;&gt; The processes gvfs-udisks2-volume-monitor and gnome-settings-daemon 
+&gt;&gt; (and possibly packagekitd, might be false positive) continue to use
+&gt;&gt; excessive CPU when the mount table is large but there is no mount/umount
+&gt;&gt; activity.
+&gt; 
+&gt; That is strange.  I wonder if something could be triggering phantom
+&gt; events in some way.. Do they eventually settle, or does this continue
+&gt; for hours.  Is there an easy way I could reproduce?
+
+Any large direct mount map will do it, it's the mounting (and subsequent
+umount) of the autofs direct mount triggers that see the problematic
+behavior.
+
+Something like (I've called it mkdmap.c) should be sufficient:
+
+#include &lt;stdio.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+
+char mount1[] = &quot;gandalf:/usr/local/etc&quot;;
+char dir1[] = &quot;/direct/etc/&quot;;
+char mount2[] = &quot;gandalf:/usr/local/bin&quot;;
+char dir2[] = &quot;/direct/bin/&quot;;
+char mount3[] = &quot;gandalf:/usr/local/lib&quot;;
+char dir3[] = &quot;/direct/lib/&quot;;
+char mount4[] = &quot;gandalf:/usr/local/man&quot;;
+char dir4[] = &quot;/direct/man/&quot;;
+char mount5[] = &quot;gandalf:/usr/local/share&quot;;
+char dir5[] = &quot;/direct/share/&quot;;
+
+void pmap(char p)
+{
+        char tem[80];
+        char dir[100];
+        int i;
+
+        sprintf(tem, &quot;%cXXXXXX&quot;, p);
+
+        for (i=0; i &lt; 1000; i++) {
+                char *tname;
+
+                strcpy(dir, dir1);
+                strcat(dir, tem);
+                tname = mktemp(dir);
+                printf(&quot;%s\t%s\n&quot;, tname, mount1);
+
+                strcpy(dir, dir2);
+                strcat(dir, tem);
+                tname = mktemp(dir);
+                printf(&quot;%s\t%s\n&quot;, tname, mount2);
+
+                strcpy(dir, dir3);
+                strcat(dir, tem);
+                tname = mktemp(dir);
+                printf(&quot;%s\t%s\n&quot;, tname, mount3);
+
+                strcpy(dir, dir4);
+                strcat(dir, tem);
+                tname = mktemp(dir);
+                printf(&quot;%s\t%s\n&quot;, tname, mount4);
+
+                strcpy(dir, dir5);
+                strcat(dir, tem);
+                tname = mktemp(dir);
+                printf(&quot;%s\t%s\n&quot;, tname, mount5);
+        }
+}
+
+int main(int argc, char **argv)
+{
+        pmap('a');
+        pmap('b');
+        pmap('c');
+        pmap('d');
+        pmap('e');
+        pmap('f');
+}
+
+This will print 30,000 direct mount map entries to stdout.
+
+It isn't necessary for the server (gandalf in this case) to be valid but
+might be worth changing to something sensible for your environment.
+
+My testing was done using F26, I'd be interested to know what happens
+with other environments.
+
+&gt; 
+&gt;&gt;
+&gt;&gt; In this case heavy mount activity means starting autofs with a direct
+&gt;&gt; mount map of 15k+ entries.
+&gt; 
+&gt; I'll try that tomorrow and see what happens.  Would bind mounts be
+&gt; enough?
+
+It's not necessary to actually trigger mounts, as I say above.
+
+Starting autofs with a large direct mount map, wait for a while to observe
+which processes continue to consume resources when the mount table isn't
+changing any more then shutdown autofs should be enough.
+
+&gt; 
+&gt;&gt;
+&gt;&gt; The shutdown can be a problem too but umount(2) is just too slow for it
+&gt;&gt; to be as pronounced a problem as what we see at startup. The umount
+&gt;&gt; slowness appears to be constant. I'm not sure if it's proportional in any
+&gt;&gt; way to the number of mounts present on the system.
+&gt; 
+&gt; Changing synchronize_rcu() in namespace_unlock() to
+&gt; synchronize_rcu_expedited() makes umount much faster.  Al has the patch
+&gt; but hasn't responded.  Using &quot;umount -c&quot;, which systemd now does, can
+&gt; also help I think.
+&gt; 
+&gt;&gt;
+&gt;&gt;&gt;
+&gt;&gt;&gt;
+&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; The suggestion is that a system that allows for incremental (diff
+&gt;&gt;&gt;&gt; type) update notification is needed to allow mount table propagation
+&gt;&gt;&gt;&gt; to scale well.
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; That implies some as yet undefined user &lt;-&gt; kernel communication
+&gt;&gt;&gt;&gt; protocol.
+&gt;&gt;&gt;
+&gt;&gt;&gt; I can almost conceive a mountinfo variant where new entries always
+&gt;&gt;&gt; appear at the end and deletions appear as just &quot;$mnt_id&quot;.
+&gt;&gt;&gt; struct proc_mounts would contain a bitmap similar to mnt_id_ida which
+&gt;&gt;&gt; records which ids have been reported to this file.  When an event is
+&gt;&gt;&gt; noticed it checks for deletions and reports them before anything else.
+&gt;&gt;&gt; Keeping track of location in the ns-&gt;list list might be tricky.  It
+&gt;&gt;&gt; could be done with a new 64bit never-reused mnt id, though some other
+&gt;&gt;&gt; approach might be possible.
+&gt;&gt;&gt;
+&gt;&gt;&gt; An app would read to the end, then poll/select for exceptional events
+&gt;&gt;&gt; and keep reading.
+&gt;&gt;
+&gt;&gt; Keeping track of modifications is certainly one of the problems and this
+&gt;&gt; sounds like a good start to resolving it ....
+&gt;&gt;
+&gt;&gt; I believe the current preferred delivery of this to be a shared library
+&gt;&gt; interface available to user space that talks to the kernel to obtain the
+&gt;&gt; needed information.
+&gt; 
+&gt; Any suggests at the sort of interface?  If I provided a pollable fd, and
+&gt; a function which given the fd and a 'struct mntent' (or similar) would
+&gt; fill in the mntent if info was available, would that be likely to suit?
+&gt; Not that I'm promising anything but having a framework helps guide
+&gt; thoughts.
+
+One difficulty we face with this is the lack of a framework to build
+ideas upon.
+
+It's complicated by the need for what's done to be extensible to handling
+general file system event notification.
+
+That's hind of a contradiction in itself as getting mount table information,
+notifications or otherwise, probably requires a call directly to the kernel
+so that current-&gt;fs can be used to select the correct mounts list for the
+requesting process namespace while general notification events imply a
+disjoint system.
+
+Ian
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01593" href="msg01593.html">[PATCH 1/3] autofs - make disc device user accessible</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+<li><strong><a name="01595" href="msg01595.html">[PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+<li><strong><a name="01764" href="msg01764.html">Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+<ul><li><em>From:</em> NeilBrown</li></ul></li>
+<li><strong><a name="01765" href="msg01765.html">Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+<li><strong><a name="01766" href="msg01766.html">Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+<li><strong><a name="01779" href="msg01779.html">Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+<ul><li><em>From:</em> Mike Marion</li></ul></li>
+<li><strong><a name="01780" href="msg01780.html">Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+<li><strong><a name="01781" href="msg01781.html">Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+<ul><li><em>From:</em> Mike Marion</li></ul></li>
+<li><strong><a name="01783" href="msg01783.html">Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+<ul><li><em>From:</em> NeilBrown</li></ul></li>
+<li><strong><a name="01787" href="msg01787.html">Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+<li><strong><a name="01789" href="msg01789.html">Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+<ul><li><em>From:</em> NeilBrown</li></ul></li>
+<li><strong><a name="01790" href="msg01790.html">Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+<li><strong><a name="01791" href="msg01791.html">Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+<ul><li><em>From:</em> NeilBrown</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01792.html">Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01794.html">[PATCH] Fix two typos</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01791.html">Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01792.html">Re: [PATCH 3/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01793"><strong>Date</strong></a></li>
+<li><a href="index.html#01793"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

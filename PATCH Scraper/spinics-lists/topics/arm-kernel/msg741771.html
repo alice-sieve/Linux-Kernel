@@ -1,0 +1,295 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2 0/9] Exynos Adaptive Supply Voltage support -->
+<!--X-From-R13: Elyjrfgre @njebpxv &#60;f.anjebpxvNfnzfhat.pbz> -->
+<!--X-Date: Thu, 18 Jul 2019 07:31:35 &#45;0700 -->
+<!--X-Message-Id: 20190718143044.25066&#45;1&#45;s.nawrocki@samsung.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: CGME20190718143117eucas1p1e534b9075d10fbbbe427c66192205eb1@eucas1p1.samsung.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH v2 0/9] Exynos Adaptive Supply Voltage support">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH v2 0/9] Exynos Adaptive Supply Voltage support &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH v2 0/9] Exynos Adaptive Supply Voltage support</h1>
+[<a href="msg741770.html">Date Prev</a>][<a href="msg741772.html">Date Next</a>][<a href="msg741762.html">Thread Prev</a>][<a href="msg741772.html">Thread Next</a>][<a href="maillist.html#741771">Date Index</a>][<a href="threads.html#741771">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v2 0/9] Exynos Adaptive Supply Voltage support</li>
+<li><em>From</em>: Sylwester Nawrocki &lt;s.nawrocki@xxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 18 Jul 2019 16:30:35 +0200</li>
+<li><em>Cms-type</em>: 201P</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This is second iteration of patch series adding ASV (Adaptive Supply 
+Voltage) support for Exynos SoCs. The first one can be found at:
+<a  rel="nofollow" href="https://lore.kernel.org/lkml/20190404171735.12815-1-s.nawrocki@xxxxxxxxxxx">https://lore.kernel.org/lkml/20190404171735.12815-1-s.nawrocki@xxxxxxxxxxx</a>
+
+The main changes comparing to the first (RFC) version are:
+ - moving ASV data tables from DT to the driver,
+ - converting the chipid and the ASV drivers to use regmap,
+ - converting the ASV driver to proper platform driver.
+
+I tried the opp-supported-hw bitmask approach as in the Qualcomm CPUFreq
+DT bindings but it resulted in too many OPPs and DT nodes, around 200
+per CPU cluster. So the ASV OPP tables are now in the ASV driver, as in
+downstream kernels.  I might give it a try and restrucure these tables
+to avoid data repetition.
+
+This patch set includes Exynos CHIPID driver posted by Pankaj Dubey and
+futher improved by Bartlomiej Zolnierkiewicz [1].
+
+Tested on Odroid XU3, XU3 Lite, XU4.
+
+One of the things on TODO list is support for the Adaptive Body Bias.
+This will require modifications on the cpufreq driver side in order to 
+support multiple voltage regulators and changes in the OPP framework 
+to support adding OPPs with multiple voltages.
+
+[1] <a  rel="nofollow" href="https://lkml.org/lkml/2018/11/15/908">https://lkml.org/lkml/2018/11/15/908</a>
+
+Pankaj Dubey (3):
+  soc: samsung: Add exynos chipid driver support
+  ARM: EXYNOS: enable exynos_chipid for ARCH_EXYNOS
+  ARM64: EXYNOS: enable exynos_chipid for ARCH_EXYNOS
+
+Sylwester Nawrocki (6):
+  soc: samsung: Convert exynos-chipid driver to use the regmap API
+  soc: samsung: Add Exynos Adaptive Supply Voltage driver
+  ARM: EXYNOS: Enable exynos-asv driver for ARCH_EXYNOS
+  soc: samsung: Update the CHIP ID DT binding documentation
+  ARM: dts: Add &quot;syscon&quot; compatible string to chipid node
+  ARM: dts: Add samsung,asv-bin property for odroidxu3-lite
+
+ .../bindings/arm/samsung/exynos-chipid.txt    |  10 +-
+ arch/arm/boot/dts/exynos5.dtsi                |   4 +-
+ .../boot/dts/exynos5422-odroidxu3-lite.dts    |   4 +
+ arch/arm/mach-exynos/Kconfig                  |   2 +
+ arch/arm64/Kconfig.platforms                  |   1 +
+ drivers/soc/samsung/Kconfig                   |  16 +
+ drivers/soc/samsung/Makefile                  |   5 +
+ drivers/soc/samsung/exynos-asv.c              | 185 +++++++
+ drivers/soc/samsung/exynos-asv.h              |  82 +++
+ drivers/soc/samsung/exynos-chipid.c           | 104 ++++
+ drivers/soc/samsung/exynos5422-asv.c          | 499 ++++++++++++++++++
+ drivers/soc/samsung/exynos5422-asv.h          |  25 +
+ include/linux/soc/samsung/exynos-chipid.h     |  48 ++
+ 13 files changed, 981 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/soc/samsung/exynos-asv.c
+ create mode 100644 drivers/soc/samsung/exynos-asv.h
+ create mode 100644 drivers/soc/samsung/exynos-chipid.c
+ create mode 100644 drivers/soc/samsung/exynos5422-asv.c
+ create mode 100644 drivers/soc/samsung/exynos5422-asv.h
+ create mode 100644 include/linux/soc/samsung/exynos-chipid.h
+
+-- 
+2.17.1
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741770.html">Re: [PATCH RFC 3/8] dt-bindings: exynos: Add ASV tables binding documentation</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741772.html">[PATCH v2 1/9] soc: samsung: Add exynos chipid driver support</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741762.html">[PATCH v2] serial: 8250-mtk: modify mtk uart power and clock management</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741772.html">[PATCH v2 1/9] soc: samsung: Add exynos chipid driver support</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741771"><strong>Date</strong></a></li>
+<li><a href="threads.html#741771"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

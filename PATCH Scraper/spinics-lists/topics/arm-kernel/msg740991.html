@@ -1,0 +1,315 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 1/2] bus: imx&#45;weim: optionally enable burst clock mode -->
+<!--X-From-R13: Eira Hna Ofoebrpx &#60;gurfira73Ntznvy.pbz> -->
+<!--X-Date: Fri, 12 Jul 2019 13:43:30 &#45;0700 -->
+<!--X-Message-Id: 20190712204316.16783&#45;1&#45;TheSven73@gmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH 1/2] bus: imx-weim: optionally enable burst clock mode">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH 1/2] bus: imx-weim: optionally enable burst clock mode &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH 1/2] bus: imx-weim: optionally enable burst clock mode</h1>
+[<a href="msg740990.html">Date Prev</a>][<a href="msg740992.html">Date Next</a>][<a href="msg740988.html">Thread Prev</a>][<a href="msg740992.html">Thread Next</a>][<a href="maillist.html#740991">Date Index</a>][<a href="threads.html#740991">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 1/2] bus: imx-weim: optionally enable burst clock mode</li>
+<li><em>From</em>: Sven Van Asbroeck &lt;thesven73@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 12 Jul 2019 16:43:15 -0400</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>To enable burst clock mode, add the fsl,burst-clk-enable
+property to the weim bus's devicetree node.
+
+Example:
+weim: weim@21b8000 {
+	compatible = &quot;fsl,imx6q-weim&quot;;
+	reg = &lt;0x021b8000 0x4000&gt;;
+	clocks = &lt;&amp;clks 196&gt;;
+	#address-cells = &lt;2&gt;;
+	#size-cells = &lt;1&gt;;
+	ranges = &lt;0 0 0x08000000 0x08000000&gt;;
+	fsl,weim-cs-gpr = &lt;&amp;gpr&gt;;
+	fsl,burst-clk-enable;
+
+	client-device@0,0 {
+		compatible = &quot;something&quot;;
+		reg = &lt;0 0 0x02000000&gt;;
+		#address-cells = &lt;1&gt;;
+		#size-cells = &lt;1&gt;;
+		bank-width = &lt;2&gt;;
+		fsl,weim-cs-timing = &lt;0x00620081 0x00000001 0x1c022000
+				0x0000c000 0x1404a38e 0x00000000&gt;;
+	};
+};
+
+Signed-off-by: Sven Van Asbroeck &lt;TheSven73@xxxxxxxxx&gt;
+---
+ drivers/bus/imx-weim.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/drivers/bus/imx-weim.c b/drivers/bus/imx-weim.c
+index db74334ca5ef..cb7d5504a22a 100644
+--- a/drivers/bus/imx-weim.c
++++ b/drivers/bus/imx-weim.c
+@@ -19,6 +19,8 @@ struct imx_weim_devtype {
+ 	unsigned int	cs_count;
+ 	unsigned int	cs_regs_count;
+ 	unsigned int	cs_stride;
++	unsigned int	wcr_offset;
++	unsigned int	wcr_bcm;
+ };
+ 
+ static const struct imx_weim_devtype imx1_weim_devtype = {
+@@ -37,6 +39,8 @@ static const struct imx_weim_devtype imx50_weim_devtype = {
+ 	.cs_count	= 4,
+ 	.cs_regs_count	= 6,
+ 	.cs_stride	= 0x18,
++	.wcr_offset	= 0x90,
++	.wcr_bcm	= BIT(0),
+ };
+ 
+ static const struct imx_weim_devtype imx51_weim_devtype = {
+@@ -192,6 +196,7 @@ static int __init weim_parse_dt(struct platform_device *pdev,
+ 	struct device_node *child;
+ 	int ret, have_child = 0;
+ 	struct cs_timing_state ts = {};
++	u32 reg;
+ 
+ 	if (devtype == &amp;imx50_weim_devtype) {
+ 		ret = imx_weim_gpr_setup(pdev);
+@@ -199,6 +204,17 @@ static int __init weim_parse_dt(struct platform_device *pdev,
+ 			return ret;
+ 	}
+ 
++	if (of_property_read_bool(pdev-&gt;dev.of_node, &quot;fsl,burst-clk-enable&quot;)) {
++		if (devtype-&gt;wcr_bcm) {
++			reg = readl(base + devtype-&gt;wcr_offset);
++			writel(reg | devtype-&gt;wcr_bcm,
++				base + devtype-&gt;wcr_offset);
++		} else {
++			dev_err(&amp;pdev-&gt;dev, &quot;burst clk mode not supported.\n&quot;);
++			return -EINVAL;
++		}
++	}
++
+ 	for_each_available_child_of_node(pdev-&gt;dev.of_node, child) {
+ 		ret = weim_timing_setup(&amp;pdev-&gt;dev, child, base, devtype, &amp;ts);
+ 		if (ret)
+-- 
+2.17.1
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="740992" href="msg740992.html">[PATCH 2/2] dt-bindings: bus: imx-weim: document optional burst clock mode</a></strong>
+<ul><li><em>From:</em> Sven Van Asbroeck</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg740990.html">Re: [PATCH] dma: ste_dma40: fix unneeded variable warning</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg740992.html">[PATCH 2/2] dt-bindings: bus: imx-weim: document optional burst clock mode</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg740988.html">[PATCH 2/3 v2] dt-bindings: gpio: aspeed: Add SGPIO support</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg740992.html">[PATCH 2/2] dt-bindings: bus: imx-weim: document optional burst clock mode</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#740991"><strong>Date</strong></a></li>
+<li><a href="threads.html#740991"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

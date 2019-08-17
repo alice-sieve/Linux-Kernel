@@ -1,0 +1,298 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2] ALSA: usb&#45;audio: fix Line6 Helix audio	format rates -->
+<!--X-From-R13: @vpbyn Zhatuv &#60;avpx83bynNtznvy.pbz> -->
+<!--X-Date: Sun, 7 Jul 2019 01:29:22 &#45;0700 -->
+<!--X-Message-Id: 20190707082734.25829&#45;1&#45;nick83ola@gmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH v2] ALSA: usb-audio: fix Line6 Helix audio	format rates &mdash; ALSA Devel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH v2] ALSA: usb-audio: fix Line6 Helix audio	format rates &mdash; ALSA Devel</title>
+<link rel="alternate" type="application/rss+xml" title="ALSA Devel" href="//feedproxy.google.com/AlsaDevel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v2] ALSA: usb-audio: fix Line6 Helix audio	format rates</h1>
+[<a href="msg93595.html">Date Prev</a>][<a href="msg93597.html">Date Next</a>][<a href="msg93590.html">Thread Prev</a>][<a href="msg93598.html">Thread Next</a>][<a href="maillist.html#93596">Date Index</a>][<a href="threads.html#93596">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: alsa-devel@xxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH v2] ALSA: usb-audio: fix Line6 Helix audio	format rates</li>
+<li><em>From</em>: Nicola Lunghi &lt;nick83ola@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Sun,  7 Jul 2019 09:27:34 +0100</li>
+<li><em>Cc</em>: Jussi Laako &lt;jussi@xxxxxxxxxxxxx&gt;, linux-kernel@xxxxxxxxxxxxxxx,        Greg Kroah-Hartman &lt;gregkh@xxxxxxxxxxxxxxxxxxx&gt;,        Takashi Iwai &lt;tiwai@xxxxxxxx&gt;, Thomas Gleixner &lt;tglx@xxxxxxxxxxxxx&gt;,        Nicola Lunghi &lt;nick83ola@xxxxxxxxx&gt;,        Allison Randal &lt;allison@xxxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Line6 Helix and HX stomp devices don't support retrieving
+the number of clock sample rate.
+
+Add a quirk to set it to 48Khz by default.
+
+Signed-off-by: Nicola Lunghi &lt;nick83ola@xxxxxxxxx&gt;
+---
+ sound/usb/format.c | 46 +++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 43 insertions(+), 3 deletions(-)
+
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index c02b51a82775..31780dfb8eb9 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -285,6 +285,33 @@ static int parse_uac2_sample_rate_range(struct snd_usb_audio *chip,
+ 	return nr_rates;
+ }
+ 
++/* Line6 Helix series don't support the UAC2_CS_RANGE usb function
++ * call. Return a static table of known clock rates.
++ */
++static int line6_parse_audio_format_rates_quirk(struct snd_usb_audio *chip,
++						struct audioformat *fp)
++{
++	switch (chip-&gt;usb_id) {
++	case USB_ID(0x0E41, 0x4241): /* Line6 Helix */
++	case USB_ID(0x0E41, 0x4242): /* Line6 Helix Rack */
++	case USB_ID(0x0E41, 0x4244): /* Line6 Helix LT */
++	case USB_ID(0x0E41, 0x4246): /* Line6 HX-Stomp */
++		/* supported rates: 48Khz */
++		kfree(fp-&gt;rate_table);
++		fp-&gt;rate_table = kmalloc(sizeof(int), GFP_KERNEL);
++		if (!fp-&gt;rate_table)
++			return -ENOMEM;
++		fp-&gt;nr_rates = 1;
++		fp-&gt;rate_min = 48000;
++		fp-&gt;rate_max = 48000;
++		fp-&gt;rates = SNDRV_PCM_RATE_48000;
++		fp-&gt;rate_table[0] = 48000;
++		return 0;
++	}
++
++	return -ENODEV;
++}
++
+ /*
+  * parse the format descriptor and stores the possible sample rates
+  * on the audioformat table (audio class v2 and v3).
+@@ -294,7 +321,7 @@ static int parse_audio_format_rates_v2v3(struct snd_usb_audio *chip,
+ {
+ 	struct usb_device *dev = chip-&gt;dev;
+ 	unsigned char tmp[2], *data;
+-	int nr_triplets, data_size, ret = 0;
++	int nr_triplets, data_size, ret, ret_l6 = 0;
+ 	int clock = snd_usb_clock_find_source(chip, fp-&gt;protocol,
+ 					      fp-&gt;clock, false);
+ 
+@@ -313,9 +340,22 @@ static int parse_audio_format_rates_v2v3(struct snd_usb_audio *chip,
+ 			      tmp, sizeof(tmp));
+ 
+ 	if (ret &lt; 0) {
+-		dev_err(&amp;dev-&gt;dev,
+-			&quot;%s(): unable to retrieve number of sample rates (clock %d)\n&quot;,
++		/* line6 helix devices don't support UAC2_CS_CONTROL_SAM_FREQ call */
++		ret_l6 = line6_parse_audio_format_rates_quirk(chip, fp);
++		if (ret_l6 == -ENODEV) {
++			/* no line6 device found continue showing the error */
++			dev_err(&amp;dev-&gt;dev,
++				&quot;%s(): unable to retrieve number of sample rates (clock %d)\n&quot;,
++				__func__, clock);
++			goto err;
++		}
++		if (ret_l6 == 0) {
++			dev_info(&amp;dev-&gt;dev,
++				&quot;%s(): unable to retrieve number of sample rates: set it to a predefined value (clock %d).\n&quot;,
+ 				__func__, clock);
++			return 0;
++		}
++		ret = ret_l6;
+ 		goto err;
+ 	}
+ 
+-- 
+2.19.1
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@xxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://mailman.alsa-project.org/mailman/listinfo/alsa-devel">https://mailman.alsa-project.org/mailman/listinfo/alsa-devel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="93598" href="msg93598.html">Re:  [PATCH v2] ALSA: usb-audio: fix Line6 Helix audio	format rates</a></strong>
+<ul><li><em>From:</em> Takashi Iwai</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg93595.html">[PATCH 5/6] ALSA: firewire-digi00x: fix wrong	reference count for stream functionality at error path of	rawmidi interface</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg93597.html">Re:  [PATCH 0/6] ALSA: firewire: fix wrong reference	count for stream functionality at error path of rawmidi interface</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg93590.html">[PATCH 0/6] ALSA: firewire: fix wrong reference count	for stream functionality at error path of rawmidi interface</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg93598.html">Re:  [PATCH v2] ALSA: usb-audio: fix Line6 Helix audio	format rates</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#93596"><strong>Date</strong></a></li>
+<li><a href="threads.html#93596"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/alsa-user/>[ALSA&nbsp;User]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/pulse-audio/>[Pulse&nbsp;Audio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=http://yosemitephotos.net/>[Photo&nbsp;Sharing]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/linux-sound/>[Linux&nbsp;Sound]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-media/>[Video&nbsp;4&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gimp/>[Gimp]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,737 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] kmem: update n option to dump memory block -->
+<!--X-From-R13: [nfnlbfuv [vmhzn &#60;zflf.zvmhznNtznvy.pbz> -->
+<!--X-Date: Mon, 1 Oct 2018 12:01:47 &#45;0700 -->
+<!--X-Message-Id: 20181001190020.29435&#45;1&#45;msys.mizuma@gmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH] kmem: update n option to dump memory block &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  [PATCH] kmem: update n option to dump memory block</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] kmem: update n option to dump memory block</h1>
+[<a href="msg07599.html">Date Prev</a>][<a href="msg07601.html">Date Next</a>][<a href="msg07598.html">Thread Prev</a>][<a href="msg07601.html">Thread Next</a>][<a href="maillist.html#07600">Date Index</a>][<a href="index.html#07600">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] kmem: update n option to dump memory block</li>
+<li><em>From</em>: Masayoshi Mizuma &lt;msys.mizuma@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon,  1 Oct 2018 15:00:20 -0400</li>
+<li><em>Cc</em>: Masayoshi Mizuma &lt;m.mizuma@xxxxxxxxxxxxxx&gt;</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Masayoshi Mizuma &lt;m.mizuma@xxxxxxxxxxxxxx&gt;
+
+Update for the &quot;kmem -n&quot; option to also dump memory block.
+Currently, &quot;kmem -n&quot; shows the memory section only. This
+patch gets available the memory block as well if 'memory_block'
+structure and 'memory_subsys' symbol exist.
+The memory block information is useful to investigate memory
+hot-plug issue.
+
+Signed-off-by: Masayoshi Mizuma &lt;m.mizuma@xxxxxxxxxxxxxx&gt;
+---
+ defs.h   |   8 ++
+ memory.c | 412 +++++++++++++++++++++++++++++++++++++++++++++++++------
+ 2 files changed, 379 insertions(+), 41 deletions(-)
+
+diff --git a/defs.h b/defs.h
+index 5b64bb7..f707c64 100644
+--- a/defs.h
++++ b/defs.h
+@@ -2049,6 +2049,14 @@ struct offset_table {                    /* stash of commonly-used offsets */
+         long pci_bus_self;
+ 	long device_kobj;
+ 	long kobject_name;
++	long memory_block_dev;
++	long memory_block_start_section_nr;
++	long mem_section_pageblock_flags;
++	long memory_block_state;
++	long memory_block_nid;
++	long bus_type_p;
++	long device_private_device;
++	long device_private_knode_bus;
+ };
+ 
+ struct size_table {         /* stash of commonly-used sizes */
+diff --git a/memory.c b/memory.c
+index ea25047..c7a4787 100644
+--- a/memory.c
++++ b/memory.c
+@@ -254,14 +254,16 @@ static void PG_reserved_flag_init(void);
+ static void PG_slab_flag_init(void);
+ static ulong nr_blockdev_pages(void);
+ void sparse_mem_init(void);
+-void dump_mem_sections(int);
++void dump_mem_block_and_sections(int);
++void _dump_mem_block_and_sections(void);
++void dump_mem_sections(void);
+ void list_mem_sections(void);
+ ulong sparse_decode_mem_map(ulong, ulong);
+ char *read_mem_section(ulong);
+ ulong nr_to_section(ulong);
+ int valid_section(ulong);
+ int section_has_mem_map(ulong);
+-ulong section_mem_map_addr(ulong);
++ulong section_mem_map_addr(ulong, int);
+ ulong valid_section_nr(ulong);
+ ulong pfn_to_map(ulong);
+ static int get_nodes_online(void);
+@@ -5528,7 +5530,7 @@ dump_mem_map_SPARSEMEM(struct meminfo *mi)
+ 			pc-&gt;curcmd_flags |= HEADER_PRINTED;
+ 		}
+ 
+-		pp = section_mem_map_addr(section);
++		pp = section_mem_map_addr(section, 0);
+ 		pp = sparse_decode_mem_map(pp, section_nr);
+ 		phys = (physaddr_t) section_nr * PAGES_PER_SECTION() * PAGESIZE();
+ 		section_size = PAGES_PER_SECTION();
+@@ -13389,7 +13391,7 @@ is_page_ptr(ulong addr, physaddr_t *phys)
+ 		nr_mem_sections = vt-&gt;max_mem_section_nr+1;
+ 	        for (nr = 0; nr &lt; nr_mem_sections ; nr++) {
+ 	                if ((sec_addr = valid_section_nr(nr))) {
+-	                        coded_mem_map = section_mem_map_addr(sec_addr);
++	                        coded_mem_map = section_mem_map_addr(sec_addr, 0);
+ 	                        mem_map = sparse_decode_mem_map(coded_mem_map, nr);
+ 				end_mem_map = mem_map + (PAGES_PER_SECTION() * SIZE(page));
+ 
+@@ -16355,7 +16357,7 @@ dump_memory_nodes(int initialize)
+ 	}
+ 
+ 	if (IS_SPARSEMEM())
+-		dump_mem_sections(initialize);
++		dump_mem_block_and_sections(initialize);
+ }
+ 
+ /*
+@@ -17140,7 +17142,7 @@ section_has_mem_map(ulong addr)
+ }
+ 
+ ulong 
+-section_mem_map_addr(ulong addr)
++section_mem_map_addr(ulong addr, int raw)
+ {   
+ 	char *mem_section;
+ 	ulong map;
+@@ -17148,7 +17150,8 @@ section_mem_map_addr(ulong addr)
+ 	if ((mem_section = read_mem_section(addr))) {
+ 		map = ULONG(mem_section + 
+ 			OFFSET(mem_section_section_mem_map));
+-		map &amp;= SECTION_MAP_MASK;
++		if (!raw)
++			map &amp;= SECTION_MAP_MASK;
+ 		return map;
+ 	}
+ 	return 0;
+@@ -17179,7 +17182,7 @@ pfn_to_map(ulong pfn)
+ 
+ 	if (section_has_mem_map(section)) {
+ 		page_offset = pfn - section_nr_to_pfn(section_nr);
+-		coded_mem_map = section_mem_map_addr(section);
++		coded_mem_map = section_mem_map_addr(section, 0);
+ 		mem_map = sparse_decode_mem_map(coded_mem_map, section_nr) +
+ 			(page_offset * SIZE(page));
+ 		return mem_map;
+@@ -17188,16 +17191,365 @@ pfn_to_map(ulong pfn)
+ 	return 0;
+ }
+ 
+-void 
+-dump_mem_sections(int initialize)
++struct memory_block_info {
++	ulong memory_block;
++	ulong start_sec;
++	ulong start_pfn;
++	ulong nid;
++	char state[24];
++	char name[32];
++};
++
++#define MIN_MEMORY_BLOCK_SIZE     (1UL &lt;&lt; _SECTION_SIZE_BITS)
++
++#define MEM_ONLINE              (1&lt;&lt;0)
++#define MEM_GOING_OFFLINE       (1&lt;&lt;1)
++#define MEM_OFFLINE             (1&lt;&lt;2)
++#define MEM_GOING_ONLINE        (1&lt;&lt;3)
++#define MEM_CANCEL_ONLINE       (1&lt;&lt;4)
++#define MEM_CANCEL_OFFLINE      (1&lt;&lt;5)
++
++static void
++fill_memory_block_state(ulong memblock, char *buf)
+ {
+-	ulong nr, max, addr;
+-	ulong nr_mem_sections;
++	ulong state;
++
++	memset(buf, 0, sizeof(*buf) * BUFSIZE);
++
++	readmem(memblock + OFFSET(memory_block_state), KVADDR, &amp;state,
++		sizeof(void *), &quot;memory_block state&quot;, FAULT_ON_ERROR);
++
++	switch (state) {
++	case MEM_ONLINE:
++		sprintf(buf, &quot;%s&quot;, &quot;ONLINE&quot;);
++		break;
++	case MEM_GOING_OFFLINE:
++		sprintf(buf, &quot;%s&quot;, &quot;GOING_OFFLINE&quot;);
++		break;
++	case MEM_OFFLINE:
++		sprintf(buf, &quot;%s&quot;, &quot;OFFLINE&quot;);
++		break;
++	case MEM_GOING_ONLINE:
++		sprintf(buf, &quot;%s&quot;, &quot;GOING_ONLINE&quot;);
++		break;
++	case MEM_CANCEL_ONLINE:
++		sprintf(buf, &quot;%s&quot;, &quot;CANCEL_ONLINE&quot;);
++		break;
++	case MEM_CANCEL_OFFLINE:
++		sprintf(buf, &quot;%s&quot;,  &quot;CANCEL_OFFLINE&quot;);
++		break;
++	default:
++		sprintf(buf, &quot;%s&quot;, &quot;UNKNOWN&quot;);
++	}
++}
++
++static void
++fill_mem_section_state(ulong state, char *buf)
++{
++	int bufidx = 0, others = 0;
++
++	memset(buf, 0, sizeof(*buf) * BUFSIZE);
++
++#define printflag(X) sprintf(buf + bufidx, X, others++ ? &quot;|&quot; : &quot;&quot;)
++
++	if (state &amp; SECTION_MARKED_PRESENT)
++		bufidx += printflag(&quot;%sPRESENT&quot;);
++	if (state &amp; SECTION_HAS_MEM_MAP)
++		bufidx += printflag(&quot;%sHAS_MEMMAP&quot;);
++	if (state &amp; SECTION_IS_ONLINE)
++		bufidx += printflag(&quot;%sONLINE&quot;);
++}
++
++static ulong
++pfn_to_phys(ulong pfn)
++{
++	return pfn &lt;&lt; PAGE_SHIFT;
++}
++
++static ulong
++get_memory_block_size(void)
++{
++	static ulong blksz;
++
++	if (blksz)
++		return blksz;
++
++	if (symbol_exists(&quot;memory_block_size_probed&quot;))
++		get_symbol_data(&quot;memory_block_size_probed&quot;, sizeof(ulong),
++				&amp;blksz);
++	else
++		blksz = MIN_MEMORY_BLOCK_SIZE;
++
++	return blksz;
++}
++
++static void
++fill_memory_block_name(ulong memblock, char *name)
++{
++	ulong kobj, value;
++
++	memset(name, 0, sizeof(*name) * BUFSIZE);
++
++	kobj = memblock + OFFSET(memory_block_dev) + OFFSET(device_kobj);
++
++	readmem(kobj + OFFSET(kobject_name),
++		KVADDR, &amp;value, sizeof(void *), &quot;kobject name&quot;,
++		FAULT_ON_ERROR);
++
++	read_string(value, name, BUFSIZE-1);
++}
++
++static void
++fill_memory_block_info(ulong mb, struct memory_block_info *mbi)
++{
++	ulong start, start_pfn, nid;
++	char statebuf[BUFSIZE];
++	char name[BUFSIZE];
++
++	readmem(mb + OFFSET(memory_block_start_section_nr), KVADDR,
++		&amp;start, sizeof(void *), &quot;memory_block start_section_nr&quot;,
++		FAULT_ON_ERROR);
++
++	start_pfn = section_nr_to_pfn(start);
++	fill_memory_block_state(mb, statebuf);
++	fill_memory_block_name(mb, name);
++
++	mbi-&gt;memory_block = mb;
++	mbi-&gt;start_sec = start;
++	mbi-&gt;start_pfn = start_pfn;
++	strncpy(mbi-&gt;state, statebuf, sizeof(mbi-&gt;state));
++	strncpy(mbi-&gt;name, name, sizeof(mbi-&gt;name));
++	if (MEMBER_EXISTS(&quot;memory_block&quot;, &quot;nid&quot;)) {
++		readmem(mb + OFFSET(memory_block_nid), KVADDR, &amp;nid,
++			sizeof(void *), &quot;memory_block nid&quot;, FAULT_ON_ERROR);
++		mbi-&gt;nid = nid;
++	}
++}
++
++static void
++init_memory_block(void)
++{
++	MEMBER_OFFSET_INIT(bus_type_p, &quot;bus_type&quot;, &quot;p&quot;);
++	MEMBER_OFFSET_INIT(subsys_private_klist_devices,
++				&quot;subsys_private&quot;, &quot;klist_devices&quot;);
++	MEMBER_OFFSET_INIT(klist_k_list, &quot;klist&quot;, &quot;k_list&quot;);
++	MEMBER_OFFSET_INIT(klist_node_n_node, &quot;klist_node&quot;, &quot;n_node&quot;);
++	MEMBER_OFFSET_INIT(device_private_knode_bus,
++				&quot;device_private&quot;, &quot;knode_bus&quot;);
++	MEMBER_OFFSET_INIT(device_private_device, &quot;device_private&quot;, &quot;device&quot;);
++	MEMBER_OFFSET_INIT(memory_block_dev, &quot;memory_block&quot;, &quot;dev&quot;);
++	MEMBER_OFFSET_INIT(memory_block_start_section_nr,
++				&quot;memory_block&quot;, &quot;start_section_nr&quot;);
++	MEMBER_OFFSET_INIT(memory_block_state, &quot;memory_block&quot;, &quot;state&quot;);
++	if (MEMBER_EXISTS(&quot;memory_block&quot;, &quot;nid&quot;))
++		MEMBER_OFFSET_INIT(memory_block_nid, &quot;memory_block&quot;, &quot;nid&quot;);
++}
++
++static struct memory_block_info*
++parse_memory_block(void)
++{
++	ulong memory_subsys = symbol_value(&quot;memory_subsys&quot;);
++	ulong private, klist, memory_block, device;
++	ulong *klistbuf;
++	int klistcnt, i;
++	struct list_data list_data, *ld;
++	struct memory_block_info *memory_block_info;
++
++	init_memory_block();
++
++	readmem(memory_subsys + OFFSET(bus_type_p), KVADDR, &amp;private,
++		sizeof(void *), &quot;memory_subsys.private&quot;, FAULT_ON_ERROR);
++	klist = private + OFFSET(subsys_private_klist_devices) +
++					OFFSET(klist_k_list);
++	ld = &amp;list_data;
++	BZERO(ld, sizeof(struct list_data));
++
++	ld-&gt;start = klist;
++	ld-&gt;end = klist;
++	ld-&gt;list_head_offset = OFFSET(klist_node_n_node) +
++					OFFSET(device_private_knode_bus);
++	hq_open();
++	klistcnt = do_list(ld);
++	klistbuf = (ulong *)GETBUF(klistcnt * sizeof(ulong));
++	klistcnt = retrieve_list(klistbuf, klistcnt);
++	hq_close();
++
++	memory_block_info = calloc(klistcnt + 1,
++					sizeof(struct memory_block_info));
++	if (!memory_block_info)
++		error(FATAL, &quot;cannot allocate memory for memory_block_info\n&quot;);
++
++	for (i = 0; i &lt; klistcnt; i++) {
++		readmem(klistbuf[i] + OFFSET(device_private_device), KVADDR,
++			&amp;device, sizeof(void *), &quot;device_private device&quot;,
++			FAULT_ON_ERROR);
++		memory_block = device - OFFSET(memory_block_dev);
++		fill_memory_block_info(memory_block, &amp;memory_block_info[i]);
++	}
++	FREEBUF(klistbuf);
++
++	return memory_block_info;
++}
++
++static struct memory_block_info*
++get_memory_block_info(ulong pfn, struct memory_block_info *mbi_tbl)
++{
++	int i;
++
++	for (i = 0; mbi_tbl[i].memory_block != 0; i++)
++		if (pfn == mbi_tbl[i].start_pfn)
++			return &amp;mbi_tbl[i];
++
++	return NULL;
++}
++
++
++static int
++is_memory_block_head(ulong pfn)
++{
++	ulong nr_pages = get_memory_block_size() / PAGE_SIZE;
++
++	return (pfn % nr_pages) == 0;
++}
++
++static void
++print_memory_block(ulong pfn, ulong nr_mb_pages, struct memory_block_info *mbi)
++{
++	char buf1[BUFSIZE];
++	char buf2[BUFSIZE];
++	char buf3[BUFSIZE];
++	char buf4[BUFSIZE];
++	char buf5[BUFSIZE];
++	char buf6[BUFSIZE];
++
++	if (MEMBER_EXISTS(&quot;memory_block&quot;, &quot;nid&quot;))
++		fprintf(fp, &quot; %s %s %s - %s %s %s\n&quot;,
++			mkstring(buf1, VADDR_PRLEN, LJUST|LONG_HEX,
++			MKSTR(mbi-&gt;memory_block)),
++			mkstring(buf2, 12, CENTER, mbi-&gt;name),
++			mkstring(buf3, PADDR_PRLEN, RJUST|LONG_HEX,
++			MKSTR(pfn_to_phys(pfn))),
++			mkstring(buf4, PADDR_PRLEN, LJUST|LONG_HEX,
++			MKSTR(pfn_to_phys(pfn + nr_mb_pages) - 1)),
++			mkstring(buf5, strlen(&quot;NODE&quot;), CENTER|LONG_DEC,
++			MKSTR(mbi-&gt;nid)),
++			mkstring(buf6, strlen(&quot;CANCEL_OFFLINE&quot;), LJUST,
++			mbi-&gt;state));
++	else
++		fprintf(fp, &quot; %s %s %s - %s %s\n&quot;,
++			mkstring(buf1, VADDR_PRLEN, LJUST|LONG_HEX,
++			MKSTR(mbi-&gt;memory_block)),
++			mkstring(buf2, 10, CENTER, mbi-&gt;name),
++			mkstring(buf3, PADDR_PRLEN, RJUST|LONG_HEX,
++			MKSTR(pfn_to_phys(pfn))),
++			mkstring(buf4, PADDR_PRLEN, LJUST|LONG_HEX,
++			MKSTR(pfn_to_phys(pfn + nr_mb_pages) - 1)),
++			mkstring(buf5, strlen(&quot;CANCEL_OFFLINE&quot;), LJUST,
++			mbi-&gt;state));
++}
++
++static void
++do_mem_block_and_sections(int print_memblk, struct memory_block_info *mbi_tbl)
++{
++	ulong nr, addr;
++	ulong nr_mem_sections, nr_mb_pages;
+ 	ulong coded_mem_map, mem_map, pfn;
++	struct memory_block_info *mbi;
++	char mb_hdr[BUFSIZE];
++	char ms_hdr[BUFSIZE];
++	char statebuf[BUFSIZE];
+ 	char buf1[BUFSIZE];
+ 	char buf2[BUFSIZE];
+ 	char buf3[BUFSIZE];
+ 	char buf4[BUFSIZE];
++	char buf5[BUFSIZE];
++
++	nr_mb_pages = PAGES_PER_SECTION() *
++			get_memory_block_size() / MIN_MEMORY_BLOCK_SIZE;
++
++	if (MEMBER_EXISTS(&quot;memory_block&quot;, &quot;nid&quot;))
++		sprintf(mb_hdr, &quot;\n%s %s %s     %s %s\n&quot;,
++			mkstring(buf1, VADDR_PRLEN, CENTER|LJUST, &quot;MEM_BLOCK&quot;),
++			mkstring(buf2, 10, CENTER, &quot;NAME&quot;),
++			mkstring(buf3, PADDR_PRLEN*2 + 2, CENTER, &quot;PHYSICAL RANGE&quot;),
++			mkstring(buf4, strlen(&quot;NODE&quot;), CENTER, &quot;NODE&quot;),
++			mkstring(buf5, strlen(&quot;CANCEL_OFFLINE&quot;), LJUST, &quot;STATE&quot;));
++	else
++		sprintf(mb_hdr, &quot;\n%s %s %s     %s\n&quot;,
++			mkstring(buf1, VADDR_PRLEN, CENTER|LJUST, &quot;MEM_BLOCK&quot;),
++			mkstring(buf2, 10, CENTER, &quot;NAME&quot;),
++			mkstring(buf3, PADDR_PRLEN*2, CENTER, &quot;PHYSICAL RANGE&quot;),
++			mkstring(buf4, strlen(&quot;CANCEL_OFFLINE&quot;), LJUST, &quot;STATE&quot;));
++
++	sprintf(ms_hdr, &quot;NR     %s  %s  %s  %s %s\n&quot;,
++		mkstring(buf1, VADDR_PRLEN, CENTER|LJUST, &quot;SECTION&quot;),
++		mkstring(buf2, MAX(VADDR_PRLEN, strlen(&quot;CODED_MEM_MAP&quot;)),
++		CENTER|LJUST, &quot;CODED_MEM_MAP&quot;),
++		mkstring(buf3, VADDR_PRLEN, CENTER|LJUST, &quot;MEM_MAP&quot;),
++		mkstring(buf4, 12, CENTER, &quot;PFN&quot;),
++		mkstring(buf5, 12, LJUST, &quot;STATE&quot;));
++
++	if (!print_memblk)
++		fprintf(fp, &quot;%s&quot;, ms_hdr);
++
++	nr_mem_sections = NR_MEM_SECTIONS();
++	for (nr = 0; nr &lt; nr_mem_sections ; nr++) {
++		addr = valid_section_nr(nr);
++		if (addr) {
++			coded_mem_map = section_mem_map_addr(addr, 0);
++			mem_map = sparse_decode_mem_map(coded_mem_map, nr);
++			pfn = section_nr_to_pfn(nr);
++			fill_mem_section_state(section_mem_map_addr(addr, 1),
++						statebuf);
++
++			if ((print_memblk) &amp;&amp; (is_memory_block_head(pfn))) {
++				mbi = get_memory_block_info(pfn, mbi_tbl);
++				fprintf(fp, &quot;%s&quot;, mb_hdr);
++				print_memory_block(pfn, nr_mb_pages, mbi);
++				fprintf(fp, &quot;%s&quot;, ms_hdr);
++			}
++
++			fprintf(fp, &quot;%5ld  %s  %s  %s  %s %s\n&quot;,
++				nr,
++				mkstring(buf1, VADDR_PRLEN,
++				CENTER|LONG_HEX, MKSTR(addr)),
++				mkstring(buf2, MAX(VADDR_PRLEN,
++				strlen(&quot;CODED_MEM_MAP&quot;)),
++				CENTER|LONG_HEX|RJUST, MKSTR(coded_mem_map)),
++				mkstring(buf3, VADDR_PRLEN,
++				CENTER|LONG_HEX|RJUST, MKSTR(mem_map)),
++				pc-&gt;output_radix == 10 ?
++				mkstring(buf4, 12,
++				LONG_DEC|LJUST, MKSTR(pfn)) :
++				mkstring(buf4, 12,
++				LONG_HEX|LJUST, MKSTR(pfn)),
++				mkstring(buf5, 12, LJUST, statebuf));
++		}
++	}
++}
++
++
++void
++dump_mem_sections(void)
++{
++	do_mem_block_and_sections(0, NULL);
++}
++
++void
++_dump_mem_block_and_sections(void)
++{
++	struct memory_block_info *mbi_tbl;
++
++	mbi_tbl = parse_memory_block();
++	do_mem_block_and_sections(1, mbi_tbl);
++	free(mbi_tbl);
++}
++
++void
++dump_mem_block_and_sections(int initialize)
++{
++	ulong nr, max;
++	ulong nr_mem_sections;
+ 
+ 	nr_mem_sections = NR_MEM_SECTIONS();
+ 
+@@ -17212,34 +17564,12 @@ dump_mem_sections(int initialize)
+ 
+ 	fprintf(fp, &quot;\n&quot;);
+ 	pad_line(fp, BITS32() ? 59 : 67, '-');
+-        fprintf(fp, &quot;\n\nNR  %s  %s  %s  PFN\n&quot;,
+-                mkstring(buf1, VADDR_PRLEN, CENTER|LJUST, &quot;SECTION&quot;),
+-                mkstring(buf2, MAX(VADDR_PRLEN,strlen(&quot;CODED_MEM_MAP&quot;)), 
+-		CENTER|LJUST, &quot;CODED_MEM_MAP&quot;),
+-                mkstring(buf3, VADDR_PRLEN, CENTER|LJUST, &quot;MEM_MAP&quot;));
+-
+-	for (nr = 0; nr &lt; nr_mem_sections ; nr++) {
+-		if ((addr = valid_section_nr(nr))) {
+-			coded_mem_map = section_mem_map_addr(addr);
+-			mem_map = sparse_decode_mem_map(coded_mem_map,nr);
+-			pfn = section_nr_to_pfn(nr);
+-
+-        		fprintf(fp, &quot;%2ld  %s  %s  %s  %s\n&quot;,
+-                		nr,
+-                		mkstring(buf1, VADDR_PRLEN,
+-                        	CENTER|LONG_HEX, MKSTR(addr)),
+-                		mkstring(buf2, MAX(VADDR_PRLEN,
+-				strlen(&quot;CODED_MEM_MAP&quot;)),
+-                        	CENTER|LONG_HEX|RJUST, MKSTR(coded_mem_map)),
+-                		mkstring(buf3, VADDR_PRLEN,
+-                        	CENTER|LONG_HEX|RJUST, MKSTR(mem_map)),
+-				pc-&gt;output_radix == 10 ?
+-                		mkstring(buf4, VADDR_PRLEN,
+-                        	LONG_DEC|LJUST, MKSTR(pfn)) :
+-                		mkstring(buf4, VADDR_PRLEN,
+-                        	LONG_HEX|LJUST, MKSTR(pfn)));
+-		}
+-	}
++	fprintf(fp, &quot;\n\n&quot;);
++	if ((!STRUCT_EXISTS(&quot;memory_block&quot;)) ||
++				(!symbol_exists(&quot;memory_subsys&quot;)))
++		dump_mem_sections();
++	else
++		_dump_mem_block_and_sections();
+ }
+ 
+ void 
+@@ -17251,7 +17581,7 @@ list_mem_sections(void)
+ 
+ 	for (nr = 0; nr &lt;= nr_mem_sections ; nr++) {
+ 		if ((addr = valid_section_nr(nr))) {
+-			coded_mem_map = section_mem_map_addr(addr);
++			coded_mem_map = section_mem_map_addr(addr, 0);
+ 			fprintf(fp,
+ 			    &quot;nr=%ld section = %lx coded_mem_map=%lx pfn=%ld mem_map=%lx\n&quot;,
+ 				nr,
+-- 
+2.19.0
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07602" href="msg07602.html">Re:  [PATCH] kmem: update n option to dump memory block</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+<li><strong><a name="07601" href="msg07601.html">Re:  [PATCH 1/2] ppc64/opal: add a flag to determine if the kernel is running on OPAL firmware</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07599.html">[PATCH 2/2] ppc64/opal: Improve bt output when R1 falls in OPAL range</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07601.html">Re:  [PATCH 1/2] ppc64/opal: add a flag to determine if the kernel is running on OPAL firmware</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07598.html">[PATCH 1/2] ppc64/opal: add a flag to determine if the kernel is running on OPAL firmware</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07601.html">Re:  [PATCH 1/2] ppc64/opal: add a flag to determine if the kernel is running on OPAL firmware</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07600"><strong>Date</strong></a></li>
+<li><a href="index.html#07600"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

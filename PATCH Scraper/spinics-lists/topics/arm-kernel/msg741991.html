@@ -1,0 +1,336 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] SoC: rockchip: rockchip_max98090: Enable MICBIAS for headset keypress detection -->
+<!--X-From-R13: Saevp Pnyyrgob v Ereen &#60;raevp.onyyrgobNpbyynoben.pbz> -->
+<!--X-Date: Fri, 19 Jul 2019 10:39:53 &#45;0700 -->
+<!--X-Message-Id: 20190719173929.24065&#45;1&#45;enric.balletbo@collabora.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH] SoC: rockchip: rockchip_max98090: Enable MICBIAS for headset keypress detection">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH] SoC: rockchip: rockchip_max98090: Enable MICBIAS for headset keypress detection &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH] SoC: rockchip: rockchip_max98090: Enable MICBIAS for headset keypress detection</h1>
+[<a href="msg741990.html">Date Prev</a>][<a href="msg741992.html">Date Next</a>][<a href="msg741990.html">Thread Prev</a>][<a href="msg741992.html">Thread Next</a>][<a href="maillist.html#741991">Date Index</a>][<a href="threads.html#741991">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] SoC: rockchip: rockchip_max98090: Enable MICBIAS for headset keypress detection</li>
+<li><em>From</em>: Enric Balletbo i Serra &lt;enric.balletbo@xxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 19 Jul 2019 19:39:29 +0200</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The TS3A227E says that the headset keypress detection needs the MICBIAS
+power in order to report the key events to ensure proper operation
+The headset keypress detection needs the MICBIAS power in order to report
+the key events all the time as long as MIC is present. So MICBIAS pin
+is forced on when a MICROPHONE is detected.
+
+On Veyron Minnie I observed that if the MICBIAS power is not present and
+the key press detection is activated (just because it is enabled when you
+insert a headset), it randomly reports a keypress on insert.
+E.g. (KEY_PLAYPAUSE)
+
+ Event: (SW_HEADPHONE_INSERT), value 1
+ Event: (SW_MICROPHONE_INSERT), value 1
+ Event: -------------- SYN_REPORT ------------
+ Event: (KEY_PLAYPAUSE), value 1
+
+Userspace thinks that KEY_PLAYPAUSE is pressed and produces the annoying
+effect that the media player starts a play/pause loop.
+
+Note that, although most of the time the key reported is the one
+associated with BTN_0, not always this is true. On my tests I also saw
+different keys reported
+
+Signed-off-by: Enric Balletbo i Serra &lt;enric.balletbo@xxxxxxxxxxxxx&gt;
+---
+Some notes about the patch
+
+Steps to test (userspace GNOME3):
+1. Play audio using a media player
+2. Make sure the Internal MIC is selected as audio input device and
+doesn't switches when you insert the headset.
+3. Insert a headset (with buttons)
+
+Audio switches to headphones and you can hear that enters on a loop
+play/pause if the KEY_PLAYPAUSE was reported. Also you can check that
+press to any headset button doesn't work.
+
+The part where the datasheet says that power must be supplied in order
+to have keypress detection work is in page 44 of [1]
+
+&quot;
+The TS3A227E can monitor the microphone line of a 4-pole headset to
+detect up to 4 key presses/releases and report the key press events
+back to the host. The key press detection must be activated manually
+by setting the KP Enable bit of the Device Settings 2 register. To
+ensure proper operation the MICBIAS voltage must be applied to MICP
+before enabling key press detection.
+&quot;
+
+[1]  <a  rel="nofollow" href="http://www.ti.com/lit/ds/symlink/ts3a227e.pdf">http://www.ti.com/lit/ds/symlink/ts3a227e.pdf</a>
+
+ sound/soc/rockchip/rockchip_max98090.c | 32 ++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
+index c5fc24675a33..782e534d4c0d 100644
+--- a/sound/soc/rockchip/rockchip_max98090.c
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -61,6 +61,37 @@ static const struct snd_kcontrol_new rk_mc_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH(&quot;Speaker&quot;),
+ };
+ 
++static int rk_jack_event(struct notifier_block *nb, unsigned long event,
++			 void *data)
++{
++	struct snd_soc_jack *jack = (struct snd_soc_jack *)data;
++	struct snd_soc_dapm_context *dapm = &amp;jack-&gt;card-&gt;dapm;
++
++	if (event &amp; SND_JACK_MICROPHONE)
++		snd_soc_dapm_force_enable_pin(dapm, &quot;MICBIAS&quot;);
++	else
++		snd_soc_dapm_disable_pin(dapm, &quot;MICBIAS&quot;);
++
++	snd_soc_dapm_sync(dapm);
++
++	return 0;
++}
++
++static struct notifier_block rk_jack_nb = {
++	.notifier_call = rk_jack_event,
++};
++
++static int rk_init(struct snd_soc_pcm_runtime *runtime)
++{
++	/*
++	 * The jack has already been created in the rk_98090_headset_init()
++	 * function.
++	 */
++	snd_soc_jack_notifier_register(&amp;headset_jack, &amp;rk_jack_nb);
++
++	return 0;
++}
++
+ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
+ {
+@@ -119,6 +150,7 @@ SND_SOC_DAILINK_DEFS(hifi,
+ static struct snd_soc_dai_link rk_dailink = {
+ 	.name = &quot;max98090&quot;,
+ 	.stream_name = &quot;Audio&quot;,
++	.init = rk_init,
+ 	.ops = &amp;rk_aif1_ops,
+ 	/* set max98090 as slave */
+ 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+-- 
+2.20.1
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741990.html">[PATCH] arm64: Force SSBS on context switch</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741992.html">[PATCH] SoC: rockchip-max98090: Remove MICBIAS as supply of input pin IN34</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741990.html">[PATCH] arm64: Force SSBS on context switch</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741992.html">[PATCH] SoC: rockchip-max98090: Remove MICBIAS as supply of input pin IN34</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741991"><strong>Date</strong></a></li>
+<li><a href="threads.html#741991"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH V34 22/29] Lock down tracing and perf kprobes when in confidentiality mode -->
+<!--X-From-R13: [nggurj Uneergg &#60;znggurjtneerggNtbbtyr.pbz> -->
+<!--X-Date: Fri, 21 Jun 2019 17:07:17 &#45;0700 -->
+<!--X-Message-Id: 20190622000358.19895&#45;23&#45;matthewgarrett@google.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190622000358.19895&#45;1&#45;matthewgarrett@google.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, [PATCH V34 22/29] Lock down tracing and perf kprobes when in confidentiality mode">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- [PATCH V34 22/29] Lock down tracing and perf kprobes when in confidentiality mode</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH V34 22/29] Lock down tracing and perf kprobes when in confidentiality mode</h1>
+[<a href="msg29208.html">Date Prev</a>][<a href="msg29210.html">Date Next</a>][<a href="msg29208.html">Thread Prev</a>][<a href="msg29257.html">Thread Next</a>][<a href="maillist.html#29209">Date Index</a>][<a href="index.html#29209">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH V34 22/29] Lock down tracing and perf kprobes when in confidentiality mode</li>
+<li><em>From</em>: Matthew Garrett &lt;matthewgarrett@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 21 Jun 2019 17:03:51 -0700</li>
+<li><em>Cc</em>: linux-security-module@xxxxxxxxxxxxxxx, linux-kernel@xxxxxxxxxxxxxxx,        linux-api@xxxxxxxxxxxxxxx, David Howells &lt;dhowells@xxxxxxxxxx&gt;,        Alexei Starovoitov &lt;alexei.starovoitov@xxxxxxxxx&gt;,        Matthew Garrett &lt;mjg59@xxxxxxxxxx&gt;,        &quot;Naveen N . Rao&quot; &lt;naveen.n.rao@xxxxxxxxxxxxx&gt;,        Anil S Keshavamurthy &lt;anil.s.keshavamurthy@xxxxxxxxx&gt;,        davem@xxxxxxxxxxxxx, Masami Hiramatsu &lt;mhiramat@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29183.html">20190622000358.19895-1-matthewgarrett@google.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg29183.html">20190622000358.19895-1-matthewgarrett@google.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: David Howells &lt;dhowells@xxxxxxxxxx&gt;
+
+Disallow the creation of perf and ftrace kprobes when the kernel is
+locked down in confidentiality mode by preventing their registration.
+This prevents kprobes from being used to access kernel memory to steal
+crypto data, but continues to allow the use of kprobes from signed
+modules.
+
+Reported-by: Alexei Starovoitov &lt;alexei.starovoitov@xxxxxxxxx&gt;
+Signed-off-by: David Howells &lt;dhowells@xxxxxxxxxx&gt;
+Signed-off-by: Matthew Garrett &lt;mjg59@xxxxxxxxxx&gt;
+Cc: Naveen N. Rao &lt;naveen.n.rao@xxxxxxxxxxxxx&gt;
+Cc: Anil S Keshavamurthy &lt;anil.s.keshavamurthy@xxxxxxxxx&gt;
+Cc: davem@xxxxxxxxxxxxx
+Cc: Masami Hiramatsu &lt;mhiramat@xxxxxxxxxx&gt;
+---
+ include/linux/security.h     | 1 +
+ kernel/trace/trace_kprobe.c  | 5 +++++
+ security/lockdown/lockdown.c | 1 +
+ 3 files changed, 7 insertions(+)
+
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 3875f6df2ecc..e6e3e2403474 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -96,6 +96,7 @@ enum lockdown_reason {
+ 	LOCKDOWN_MMIOTRACE,
+ 	LOCKDOWN_INTEGRITY_MAX,
+ 	LOCKDOWN_KCORE,
++	LOCKDOWN_KPROBES,
+ 	LOCKDOWN_CONFIDENTIALITY_MAX,
+ };
+ 
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index 5d5129b05df7..5a76a0f79d48 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -11,6 +11,7 @@
+ #include &lt;linux/uaccess.h&gt;
+ #include &lt;linux/rculist.h&gt;
+ #include &lt;linux/error-injection.h&gt;
++#include &lt;linux/security.h&gt;
+ 
+ #include &quot;trace_dynevent.h&quot;
+ #include &quot;trace_kprobe_selftest.h&quot;
+@@ -415,6 +416,10 @@ static int __register_trace_kprobe(struct trace_kprobe *tk)
+ {
+ 	int i, ret;
+ 
++	ret = security_locked_down(LOCKDOWN_KPROBES);
++	if (ret)
++		return ret;
++
+ 	if (trace_probe_is_registered(&amp;tk-&gt;tp))
+ 		return -EINVAL;
+ 
+diff --git a/security/lockdown/lockdown.c b/security/lockdown/lockdown.c
+index 4c9b324dfc55..5a08c17f224d 100644
+--- a/security/lockdown/lockdown.c
++++ b/security/lockdown/lockdown.c
+@@ -32,6 +32,7 @@ static char *lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX+1] = {
+ 	[LOCKDOWN_MMIOTRACE] = &quot;unsafe mmio&quot;,
+ 	[LOCKDOWN_INTEGRITY_MAX] = &quot;integrity&quot;,
+ 	[LOCKDOWN_KCORE] = &quot;/proc/kcore access&quot;,
++	[LOCKDOWN_KPROBES] = &quot;use of kprobes&quot;,
+ 	[LOCKDOWN_CONFIDENTIALITY_MAX] = &quot;confidentiality&quot;,
+ };
+ 
+-- 
+2.22.0.410.gd8fdbe21b5-goog
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="29262" href="msg29262.html">Re: [PATCH V34 22/29] Lock down tracing and perf kprobes when in confidentiality mode</a></strong>
+<ul><li><em>From:</em> Masami Hiramatsu</li></ul></li>
+<li><strong><a name="29257" href="msg29257.html">Re: [PATCH V34 22/29] Lock down tracing and perf kprobes when in confidentiality mode</a></strong>
+<ul><li><em>From:</em> Kees Cook</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29183" href="msg29183.html">[PATCH V34 00/29] Lockdown as an LSM</a></strong>
+<ul><li><em>From:</em> Matthew Garrett</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29208.html">[PATCH V34 27/29] tracefs: Restrict tracefs when the kernel is locked down</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29210.html">[PATCH V34 19/29] Lock down module params that specify hardware parameters (eg. ioport)</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29208.html">[PATCH V34 27/29] tracefs: Restrict tracefs when the kernel is locked down</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29257.html">Re: [PATCH V34 22/29] Lock down tracing and perf kprobes when in confidentiality mode</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29209"><strong>Date</strong></a></li>
+<li><a href="index.html#29209"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

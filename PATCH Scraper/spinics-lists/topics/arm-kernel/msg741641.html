@@ -1,0 +1,728 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH RFC 03/18] ARM: dts: bcm283x: Move BCM2835/6/7 specific to bcm2835&#45;common.dtsi -->
+<!--X-From-R13: Egrsna Inuera &#60;jnuerafgNtzk.arg> -->
+<!--X-Date: Wed, 17 Jul 2019 12:51:21 &#45;0700 -->
+<!--X-Message-Id: 1563393026&#45;17118&#45;4&#45;git&#45;send&#45;email&#45;wahrenst@gmx.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1563393026&#45;17118&#45;1&#45;git&#45;send&#45;email&#45;wahrenst@gmx.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH RFC 03/18] ARM: dts: bcm283x: Move BCM2835/6/7 specific to bcm2835-common.dtsi">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH RFC 03/18] ARM: dts: bcm283x: Move BCM2835/6/7 specific to bcm2835-common.dtsi &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH RFC 03/18] ARM: dts: bcm283x: Move BCM2835/6/7 specific to bcm2835-common.dtsi</h1>
+[<a href="msg741640.html">Date Prev</a>][<a href="msg741642.html">Date Next</a>][<a href="msg741640.html">Thread Prev</a>][<a href="msg741642.html">Thread Next</a>][<a href="maillist.html#741641">Date Index</a>][<a href="threads.html#741641">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH RFC 03/18] ARM: dts: bcm283x: Move BCM2835/6/7 specific to bcm2835-common.dtsi</li>
+<li><em>From</em>: Stefan Wahren &lt;wahrenst@xxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 17 Jul 2019 21:50:11 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg741651.html">1563393026-17118-1-git-send-email-wahrenst@gmx.net</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>As preparation we want all common BCM2835/6/7/8 functions in bcm283x.dtsi
+and all BCM2835/6/7 specific in the new bcm2835-common.dtsi.
+
+Signed-off-by: Stefan Wahren &lt;wahrenst@xxxxxxx&gt;
+---
+ arch/arm/boot/dts/bcm2835-common.dtsi | 173 ++++++++++++++++++++++++++++++++++
+ arch/arm/boot/dts/bcm2835.dtsi        |   1 +
+ arch/arm/boot/dts/bcm2836.dtsi        |   1 +
+ arch/arm/boot/dts/bcm2837.dtsi        |   1 +
+ arch/arm/boot/dts/bcm283x.dtsi        | 158 ++-----------------------------
+ 5 files changed, 182 insertions(+), 152 deletions(-)
+ create mode 100644 arch/arm/boot/dts/bcm2835-common.dtsi
+
+diff --git a/arch/arm/boot/dts/bcm2835-common.dtsi b/arch/arm/boot/dts/bcm2835-common.dtsi
+new file mode 100644
+index 0000000..2791ff7
+--- /dev/null
++++ b/arch/arm/boot/dts/bcm2835-common.dtsi
+@@ -0,0 +1,173 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/* This include file covers the common peripherals and configuration between
++ * bcm2835, bcm2836 and bcm2837 implementations.
++ */
++
++/ {
++	interrupt-parent = &lt;&amp;intc&gt;;
++
++	soc {
++		timer@7e003000 {
++			compatible = &quot;brcm,bcm2835-system-timer&quot;;
++			reg = &lt;0x7e003000 0x1000&gt;;
++			interrupts = &lt;1 0&gt;, &lt;1 1&gt;, &lt;1 2&gt;, &lt;1 3&gt;;
++			/* This could be a reference to BCM2835_CLOCK_TIMER,
++			 * but we don't have the driver using the common clock
++			 * support yet.
++			 */
++			clock-frequency = &lt;1000000&gt;;
++		};
++
++		dma: dma@7e007000 {
++			compatible = &quot;brcm,bcm2835-dma&quot;;
++			reg = &lt;0x7e007000 0xf00&gt;;
++			interrupts = &lt;1 16&gt;,
++				     &lt;1 17&gt;,
++				     &lt;1 18&gt;,
++				     &lt;1 19&gt;,
++				     &lt;1 20&gt;,
++				     &lt;1 21&gt;,
++				     &lt;1 22&gt;,
++				     &lt;1 23&gt;,
++				     &lt;1 24&gt;,
++				     &lt;1 25&gt;,
++				     &lt;1 26&gt;,
++				     /* dma channel 11-14 share one irq */
++				     &lt;1 27&gt;,
++				     &lt;1 27&gt;,
++				     &lt;1 27&gt;,
++				     &lt;1 27&gt;,
++				     /* unused shared irq for all channels */
++				     &lt;1 28&gt;;
++			interrupt-names = &quot;dma0&quot;,
++					  &quot;dma1&quot;,
++					  &quot;dma2&quot;,
++					  &quot;dma3&quot;,
++					  &quot;dma4&quot;,
++					  &quot;dma5&quot;,
++					  &quot;dma6&quot;,
++					  &quot;dma7&quot;,
++					  &quot;dma8&quot;,
++					  &quot;dma9&quot;,
++					  &quot;dma10&quot;,
++					  &quot;dma11&quot;,
++					  &quot;dma12&quot;,
++					  &quot;dma13&quot;,
++					  &quot;dma14&quot;,
++					  &quot;dma-shared-all&quot;;
++			#dma-cells = &lt;1&gt;;
++			brcm,dma-channel-mask = &lt;0x7f35&gt;;
++		};
++
++		intc: interrupt-controller@7e00b200 {
++			compatible = &quot;brcm,bcm2835-armctrl-ic&quot;;
++			reg = &lt;0x7e00b200 0x200&gt;;
++			interrupt-controller;
++			#interrupt-cells = &lt;2&gt;;
++		};
++
++		pm: watchdog@7e100000 {
++			compatible = &quot;brcm,bcm2835-pm&quot;, &quot;brcm,bcm2835-pm-wdt&quot;;
++			#power-domain-cells = &lt;1&gt;;
++			#reset-cells = &lt;1&gt;;
++			reg = &lt;0x7e100000 0x114&gt;,
++			      &lt;0x7e00a000 0x24&gt;;
++			clocks = &lt;&amp;clocks BCM2835_CLOCK_V3D&gt;,
++				 &lt;&amp;clocks BCM2835_CLOCK_PERI_IMAGE&gt;,
++				 &lt;&amp;clocks BCM2835_CLOCK_H264&gt;,
++				 &lt;&amp;clocks BCM2835_CLOCK_ISP&gt;;
++			clock-names = &quot;v3d&quot;, &quot;peri_image&quot;, &quot;h264&quot;, &quot;isp&quot;;
++			system-power-controller;
++		};
++
++		thermal: thermal@7e212000 {
++			compatible = &quot;brcm,bcm2835-thermal&quot;;
++			reg = &lt;0x7e212000 0x8&gt;;
++			clocks = &lt;&amp;clocks BCM2835_CLOCK_TSENS&gt;;
++			#thermal-sensor-cells = &lt;0&gt;;
++			status = &quot;disabled&quot;;
++		};
++
++		v3d: v3d@7ec00000 {
++			compatible = &quot;brcm,bcm2835-v3d&quot;;
++			reg = &lt;0x7ec00000 0x1000&gt;;
++			interrupts = &lt;1 10&gt;;
++		};
++	};
++
++	usbphy: phy {
++		compatible = &quot;usb-nop-xceiv&quot;;
++		#phy-cells = &lt;0&gt;;
++	};
++};
++
++&amp;cpu_thermal {
++	thermal-sensors = &lt;&amp;thermal&gt;;
++};
++
++&amp;gpio {
++	i2c_slave_gpio18: i2c_slave_gpio18 {
++		brcm,pins = &lt;18 19 20 21&gt;;
++		brcm,function = &lt;BCM2835_FSEL_ALT3&gt;;
++	};
++
++	jtag_gpio4: jtag_gpio4 {
++		brcm,pins = &lt;4 5 6 12 13&gt;;
++		brcm,function = &lt;BCM2835_FSEL_ALT5&gt;;
++	};
++
++	pwm0_gpio12: pwm0_gpio12 {
++		brcm,pins = &lt;12&gt;;
++		brcm,function = &lt;BCM2835_FSEL_ALT0&gt;;
++	};
++	pwm0_gpio18: pwm0_gpio18 {
++		brcm,pins = &lt;18&gt;;
++		brcm,function = &lt;BCM2835_FSEL_ALT5&gt;;
++	};
++	pwm0_gpio40: pwm0_gpio40 {
++		brcm,pins = &lt;40&gt;;
++		brcm,function = &lt;BCM2835_FSEL_ALT0&gt;;
++	};
++	pwm1_gpio13: pwm1_gpio13 {
++		brcm,pins = &lt;13&gt;;
++		brcm,function = &lt;BCM2835_FSEL_ALT0&gt;;
++	};
++	pwm1_gpio19: pwm1_gpio19 {
++		brcm,pins = &lt;19&gt;;
++		brcm,function = &lt;BCM2835_FSEL_ALT5&gt;;
++	};
++	pwm1_gpio41: pwm1_gpio41 {
++		brcm,pins = &lt;41&gt;;
++		brcm,function = &lt;BCM2835_FSEL_ALT0&gt;;
++	};
++	pwm1_gpio45: pwm1_gpio45 {
++		brcm,pins = &lt;45&gt;;
++		brcm,function = &lt;BCM2835_FSEL_ALT0&gt;;
++	};
++};
++
++&amp;hdmi {
++	dmas = &lt;&amp;dma 17&gt;;
++	dma-names = &quot;audio-rx&quot;;
++};
++
++&amp;i2s {
++	dmas = &lt;&amp;dma 2&gt;, &lt;&amp;dma 3&gt;;
++	dma-names = &quot;tx&quot;, &quot;rx&quot;;
++};
++
++&amp;sdhost {
++	dmas = &lt;&amp;dma 13&gt;;
++	dma-names = &quot;rx-tx&quot;;
++};
++
++&amp;spi {
++	dmas = &lt;&amp;dma 6&gt;, &lt;&amp;dma 7&gt;;
++	dma-names = &quot;tx&quot;, &quot;rx&quot;;
++};
++
++&amp;usb {
++	phys = &lt;&amp;usbphy&gt;;
++	phy-names = &quot;usb2-phy&quot;;
++};
+diff --git a/arch/arm/boot/dts/bcm2835.dtsi b/arch/arm/boot/dts/bcm2835.dtsi
+index a5c3824..53bf457 100644
+--- a/arch/arm/boot/dts/bcm2835.dtsi
++++ b/arch/arm/boot/dts/bcm2835.dtsi
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include &quot;bcm283x.dtsi&quot;
++#include &quot;bcm2835-common.dtsi&quot;
+
+ / {
+ 	compatible = &quot;brcm,bcm2835&quot;;
+diff --git a/arch/arm/boot/dts/bcm2836.dtsi b/arch/arm/boot/dts/bcm2836.dtsi
+index c933e84..82d6c46 100644
+--- a/arch/arm/boot/dts/bcm2836.dtsi
++++ b/arch/arm/boot/dts/bcm2836.dtsi
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include &quot;bcm283x.dtsi&quot;
++#include &quot;bcm2835-common.dtsi&quot;
+
+ / {
+ 	compatible = &quot;brcm,bcm2836&quot;;
+diff --git a/arch/arm/boot/dts/bcm2837.dtsi b/arch/arm/boot/dts/bcm2837.dtsi
+index beb6c50..9e95fee 100644
+--- a/arch/arm/boot/dts/bcm2837.dtsi
++++ b/arch/arm/boot/dts/bcm2837.dtsi
+@@ -1,4 +1,5 @@
+ #include &quot;bcm283x.dtsi&quot;
++#include &quot;bcm2835-common.dtsi&quot;
+
+ / {
+ 	compatible = &quot;brcm,bcm2837&quot;;
+diff --git a/arch/arm/boot/dts/bcm283x.dtsi b/arch/arm/boot/dts/bcm283x.dtsi
+index 2d191fc..1104e4c 100644
+--- a/arch/arm/boot/dts/bcm283x.dtsi
++++ b/arch/arm/boot/dts/bcm283x.dtsi
+@@ -18,7 +18,6 @@
+ / {
+ 	compatible = &quot;brcm,bcm2835&quot;;
+ 	model = &quot;BCM2835&quot;;
+-	interrupt-parent = &lt;&amp;intc&gt;;
+ 	#address-cells = &lt;1&gt;;
+ 	#size-cells = &lt;1&gt;;
+
+@@ -36,8 +35,6 @@
+ 			polling-delay-passive = &lt;0&gt;;
+ 			polling-delay = &lt;1000&gt;;
+
+-			thermal-sensors = &lt;&amp;thermal&gt;;
+-
+ 			trips {
+ 				cpu-crit {
+ 					temperature	= &lt;80000&gt;;
+@@ -56,83 +53,17 @@
+ 		#address-cells = &lt;1&gt;;
+ 		#size-cells = &lt;1&gt;;
+
+-		timer@7e003000 {
+-			compatible = &quot;brcm,bcm2835-system-timer&quot;;
+-			reg = &lt;0x7e003000 0x1000&gt;;
+-			interrupts = &lt;1 0&gt;, &lt;1 1&gt;, &lt;1 2&gt;, &lt;1 3&gt;;
+-			/* This could be a reference to BCM2835_CLOCK_TIMER,
+-			 * but we don't have the driver using the common clock
+-			 * support yet.
+-			 */
+-			clock-frequency = &lt;1000000&gt;;
+-		};
+-
+ 		txp@7e004000 {
+ 			compatible = &quot;brcm,bcm2835-txp&quot;;
+ 			reg = &lt;0x7e004000 0x20&gt;;
+ 			interrupts = &lt;1 11&gt;;
+ 		};
+
+-		dma: dma@7e007000 {
+-			compatible = &quot;brcm,bcm2835-dma&quot;;
+-			reg = &lt;0x7e007000 0xf00&gt;;
+-			interrupts = &lt;1 16&gt;,
+-				     &lt;1 17&gt;,
+-				     &lt;1 18&gt;,
+-				     &lt;1 19&gt;,
+-				     &lt;1 20&gt;,
+-				     &lt;1 21&gt;,
+-				     &lt;1 22&gt;,
+-				     &lt;1 23&gt;,
+-				     &lt;1 24&gt;,
+-				     &lt;1 25&gt;,
+-				     &lt;1 26&gt;,
+-				     /* dma channel 11-14 share one irq */
+-				     &lt;1 27&gt;,
+-				     &lt;1 27&gt;,
+-				     &lt;1 27&gt;,
+-				     &lt;1 27&gt;,
+-				     /* unused shared irq for all channels */
+-				     &lt;1 28&gt;;
+-			interrupt-names = &quot;dma0&quot;,
+-					  &quot;dma1&quot;,
+-					  &quot;dma2&quot;,
+-					  &quot;dma3&quot;,
+-					  &quot;dma4&quot;,
+-					  &quot;dma5&quot;,
+-					  &quot;dma6&quot;,
+-					  &quot;dma7&quot;,
+-					  &quot;dma8&quot;,
+-					  &quot;dma9&quot;,
+-					  &quot;dma10&quot;,
+-					  &quot;dma11&quot;,
+-					  &quot;dma12&quot;,
+-					  &quot;dma13&quot;,
+-					  &quot;dma14&quot;,
+-					  &quot;dma-shared-all&quot;;
+-			#dma-cells = &lt;1&gt;;
+-			brcm,dma-channel-mask = &lt;0x7f35&gt;;
+-		};
+-
+-		intc: interrupt-controller@7e00b200 {
+-			compatible = &quot;brcm,bcm2835-armctrl-ic&quot;;
+-			reg = &lt;0x7e00b200 0x200&gt;;
+-			interrupt-controller;
+-			#interrupt-cells = &lt;2&gt;;
+-		};
+-
+-		pm: watchdog@7e100000 {
+-			compatible = &quot;brcm,bcm2835-pm&quot;, &quot;brcm,bcm2835-pm-wdt&quot;;
+-			#power-domain-cells = &lt;1&gt;;
+-			#reset-cells = &lt;1&gt;;
+-			reg = &lt;0x7e100000 0x114&gt;,
+-			      &lt;0x7e00a000 0x24&gt;;
+-			clocks = &lt;&amp;clocks BCM2835_CLOCK_V3D&gt;,
+-				 &lt;&amp;clocks BCM2835_CLOCK_PERI_IMAGE&gt;,
+-				 &lt;&amp;clocks BCM2835_CLOCK_H264&gt;,
+-				 &lt;&amp;clocks BCM2835_CLOCK_ISP&gt;;
+-			clock-names = &quot;v3d&quot;, &quot;peri_image&quot;, &quot;h264&quot;, &quot;isp&quot;;
+-			system-power-controller;
++		mailbox: mailbox@7e00b880 {
++			compatible = &quot;brcm,bcm2835-mbox&quot;;
++			reg = &lt;0x7e00b880 0x40&gt;;
++			interrupts = &lt;0 1&gt;;
++			#mbox-cells = &lt;0&gt;;
+ 		};
+
+ 		clocks: cprman@7e101000 {
+@@ -155,13 +86,6 @@
+ 			interrupts = &lt;2 29&gt;;
+ 		};
+
+-		mailbox: mailbox@7e00b880 {
+-			compatible = &quot;brcm,bcm2835-mbox&quot;;
+-			reg = &lt;0x7e00b880 0x40&gt;;
+-			interrupts = &lt;0 1&gt;;
+-			#mbox-cells = &lt;0&gt;;
+-		};
+-
+ 		gpio: gpio@7e200000 {
+ 			compatible = &quot;brcm,bcm2835-gpio&quot;;
+ 			reg = &lt;0x7e200000 0xb4&gt;;
+@@ -184,8 +108,7 @@
+ 			interrupt-controller;
+ 			#interrupt-cells = &lt;2&gt;;
+
+-			/* Defines pin muxing groups according to
+-			 * BCM2835-ARM-Peripherals.pdf page 102.
++			/* Defines common pin muxing groups
+ 			 *
+ 			 * While each pin can have its mux selected
+ 			 * for various functions individually, some
+@@ -263,15 +186,7 @@
+ 				brcm,pins = &lt;44 45&gt;;
+ 				brcm,function = &lt;BCM2835_FSEL_ALT2&gt;;
+ 			};
+-			i2c_slave_gpio18: i2c_slave_gpio18 {
+-				brcm,pins = &lt;18 19 20 21&gt;;
+-				brcm,function = &lt;BCM2835_FSEL_ALT3&gt;;
+-			};
+
+-			jtag_gpio4: jtag_gpio4 {
+-				brcm,pins = &lt;4 5 6 12 13&gt;;
+-				brcm,function = &lt;BCM2835_FSEL_ALT5&gt;;
+-			};
+ 			jtag_gpio22: jtag_gpio22 {
+ 				brcm,pins = &lt;22 23 24 25 26 27&gt;;
+ 				brcm,function = &lt;BCM2835_FSEL_ALT4&gt;;
+@@ -286,35 +201,6 @@
+ 				brcm,function = &lt;BCM2835_FSEL_ALT2&gt;;
+ 			};
+
+-			pwm0_gpio12: pwm0_gpio12 {
+-				brcm,pins = &lt;12&gt;;
+-				brcm,function = &lt;BCM2835_FSEL_ALT0&gt;;
+-			};
+-			pwm0_gpio18: pwm0_gpio18 {
+-				brcm,pins = &lt;18&gt;;
+-				brcm,function = &lt;BCM2835_FSEL_ALT5&gt;;
+-			};
+-			pwm0_gpio40: pwm0_gpio40 {
+-				brcm,pins = &lt;40&gt;;
+-				brcm,function = &lt;BCM2835_FSEL_ALT0&gt;;
+-			};
+-			pwm1_gpio13: pwm1_gpio13 {
+-				brcm,pins = &lt;13&gt;;
+-				brcm,function = &lt;BCM2835_FSEL_ALT0&gt;;
+-			};
+-			pwm1_gpio19: pwm1_gpio19 {
+-				brcm,pins = &lt;19&gt;;
+-				brcm,function = &lt;BCM2835_FSEL_ALT5&gt;;
+-			};
+-			pwm1_gpio41: pwm1_gpio41 {
+-				brcm,pins = &lt;41&gt;;
+-				brcm,function = &lt;BCM2835_FSEL_ALT0&gt;;
+-			};
+-			pwm1_gpio45: pwm1_gpio45 {
+-				brcm,pins = &lt;45&gt;;
+-				brcm,function = &lt;BCM2835_FSEL_ALT0&gt;;
+-			};
+-
+ 			sdhost_gpio48: sdhost_gpio48 {
+ 				brcm,pins = &lt;48 49 50 51 52 53&gt;;
+ 				brcm,function = &lt;BCM2835_FSEL_ALT0&gt;;
+@@ -410,8 +296,6 @@
+ 			reg = &lt;0x7e202000 0x100&gt;;
+ 			interrupts = &lt;2 24&gt;;
+ 			clocks = &lt;&amp;clocks BCM2835_CLOCK_VPU&gt;;
+-			dmas = &lt;&amp;dma 13&gt;;
+-			dma-names = &quot;rx-tx&quot;;
+ 			status = &quot;disabled&quot;;
+ 		};
+
+@@ -419,10 +303,6 @@
+ 			compatible = &quot;brcm,bcm2835-i2s&quot;;
+ 			reg = &lt;0x7e203000 0x24&gt;;
+ 			clocks = &lt;&amp;clocks BCM2835_CLOCK_PCM&gt;;
+-
+-			dmas = &lt;&amp;dma 2&gt;,
+-			       &lt;&amp;dma 3&gt;;
+-			dma-names = &quot;tx&quot;, &quot;rx&quot;;
+ 			status = &quot;disabled&quot;;
+ 		};
+
+@@ -431,8 +311,6 @@
+ 			reg = &lt;0x7e204000 0x200&gt;;
+ 			interrupts = &lt;2 22&gt;;
+ 			clocks = &lt;&amp;clocks BCM2835_CLOCK_VPU&gt;;
+-			dmas = &lt;&amp;dma 6&gt;, &lt;&amp;dma 7&gt;;
+-			dma-names = &quot;tx&quot;, &quot;rx&quot;;
+ 			#address-cells = &lt;1&gt;;
+ 			#size-cells = &lt;0&gt;;
+ 			status = &quot;disabled&quot;;
+@@ -490,14 +368,6 @@
+
+ 		};
+
+-		thermal: thermal@7e212000 {
+-			compatible = &quot;brcm,bcm2835-thermal&quot;;
+-			reg = &lt;0x7e212000 0x8&gt;;
+-			clocks = &lt;&amp;clocks BCM2835_CLOCK_TSENS&gt;;
+-			#thermal-sensor-cells = &lt;0&gt;;
+-			status = &quot;disabled&quot;;
+-		};
+-
+ 		aux: aux@7e215000 {
+ 			compatible = &quot;brcm,bcm2835-aux&quot;;
+ 			#clock-cells = &lt;1&gt;;
+@@ -620,8 +490,6 @@
+ 			clocks = &lt;&amp;clocks BCM2835_PLLH_PIX&gt;,
+ 				 &lt;&amp;clocks BCM2835_CLOCK_HSM&gt;;
+ 			clock-names = &quot;pixel&quot;, &quot;hdmi&quot;;
+-			dmas = &lt;&amp;dma 17&gt;;
+-			dma-names = &quot;audio-rx&quot;;
+ 			status = &quot;disabled&quot;;
+ 		};
+
+@@ -633,15 +501,6 @@
+ 			#size-cells = &lt;0&gt;;
+ 			clocks = &lt;&amp;clk_usb&gt;;
+ 			clock-names = &quot;otg&quot;;
+-			phys = &lt;&amp;usbphy&gt;;
+-			phy-names = &quot;usb2-phy&quot;;
+-		};
+-
+-		v3d: v3d@7ec00000 {
+-			compatible = &quot;brcm,bcm2835-v3d&quot;;
+-			reg = &lt;0x7ec00000 0x1000&gt;;
+-			interrupts = &lt;1 10&gt;;
+-			power-domains = &lt;&amp;pm BCM2835_POWER_DOMAIN_GRAFX_V3D&gt;;
+ 		};
+
+ 		vc4: gpu {
+@@ -671,9 +530,4 @@
+ 			clock-frequency = &lt;480000000&gt;;
+ 		};
+ 	};
+-
+-	usbphy: phy {
+-		compatible = &quot;usb-nop-xceiv&quot;;
+-		#phy-cells = &lt;0&gt;;
+-	};
+ };
+--
+2.7.4
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="741651" href="msg741651.html">[PATCH RFC 00/18] ARM: Add minimal Raspberry Pi 4 support</a></strong>
+<ul><li><em>From:</em> Stefan Wahren</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741640.html">[PATCH RFC 05/18] ARM: dts: bcm283x: Define memory at board level</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741642.html">[PATCH RFC 12/18] dt-bindings: pinctrl: bcm2835: Add brcm, bcm2838 compatible</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741640.html">[PATCH RFC 05/18] ARM: dts: bcm283x: Define memory at board level</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741642.html">[PATCH RFC 12/18] dt-bindings: pinctrl: bcm2835: Add brcm, bcm2838 compatible</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741641"><strong>Date</strong></a></li>
+<li><a href="threads.html#741641"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

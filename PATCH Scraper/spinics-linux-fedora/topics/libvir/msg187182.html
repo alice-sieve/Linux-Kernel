@@ -1,0 +1,374 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v1 17/31] virhostdevtest: Test virNVMeDevice	assignment -->
+<!--X-From-R13: [vpuny Bevibmavx &#60;zcevibmaNerqung.pbz> -->
+<!--X-Date: Thu, 11 Jul 2019 08:55:05 &#45;0700 -->
+<!--X-Message-Id: 546b4a6df6c532d77b744ca0ee73d391f73cf49c.1562859733.git.mprivozn@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1562859733.git.mprivozn@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v1 17/31] virhostdevtest: Test virNVMeDevice	assignment</title>
+<meta name="description" content="libvirt: [PATCH v1 17/31] virhostdevtest: Test virNVMeDevice	assignment">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v1 17/31] virhostdevtest: Test virNVMeDevice	assignment</h1>
+[<a href="msg187181.html">Date Prev</a>][<a href="msg187183.html">Date Next</a>][<a href="msg187490.html">Thread Prev</a>][<a href="msg187481.html">Thread Next</a>][<a href="maillist.html#187182">Date Index</a>][<a href="index.html#187182">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v1 17/31] virhostdevtest: Test virNVMeDevice	assignment</li>
+<li><em>From</em>: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 11 Jul 2019 17:54:04 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187163.html">cover.1562859733.git.mprivozn@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187163.html">cover.1562859733.git.mprivozn@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Signed-off-by: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;
+---
+ tests/virhostdevtest.c | 97 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 97 insertions(+)
+
+diff --git a/tests/virhostdevtest.c b/tests/virhostdevtest.c
+index 7d15a87797..e34959c4f1 100644
+--- a/tests/virhostdevtest.c
++++ b/tests/virhostdevtest.c
+@@ -48,6 +48,9 @@ VIR_LOG_INIT(&quot;tests.hostdevtest&quot;);
+ # define CHECK_PCI_LIST_COUNT(list, cnt) \
+     CHECK_LIST_COUNT(list, cnt, virPCIDeviceListCount)
+ 
++# define CHECK_NVME_LIST_COUNT(list, cnt) \
++    CHECK_LIST_COUNT(list, cnt, virNVMeDeviceListCount)
++
+ # define TEST_STATE_DIR abs_builddir &quot;/hostdevmgr&quot;
+ static const char *drv_name = &quot;test_driver&quot;;
+ static const char *dom_name = &quot;test_domain&quot;;
+@@ -57,6 +60,36 @@ static int nhostdevs = 3;
+ static virDomainHostdevDefPtr hostdevs[] = {NULL, NULL, NULL};
+ static virPCIDevicePtr dev[] = {NULL, NULL, NULL};
+ static virHostdevManagerPtr mgr;
++static const size_t ndisks = 3;
++static virDomainDiskDefPtr disks[] = {NULL, NULL, NULL};
++static const char *diskXML[] = {
++    &quot;&lt;disk type='nvme' device='disk'&gt;&quot;
++    &quot;  &lt;driver name='qemu' type='raw'/&gt;&quot;
++    &quot;  &lt;source type='pci' managed='yes' namespace='1'&gt;&quot;
++    &quot;    &lt;address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/&gt;&quot;
++    &quot;  &lt;/source&gt;&quot;
++    &quot;  &lt;target dev='vda' bus='virtio'/&gt;&quot;
++    &quot;  &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/&gt;&quot;
++    &quot;&lt;/disk&gt;&quot;,
++
++    &quot;&lt;disk type='nvme' device='disk'&gt;&quot;
++    &quot;  &lt;driver name='qemu' type='raw'/&gt;&quot;
++    &quot;  &lt;source type='pci' managed='yes' namespace='2'&gt;&quot;
++    &quot;    &lt;address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/&gt;&quot;
++    &quot;  &lt;/source&gt;&quot;
++    &quot;  &lt;target dev='vdb' bus='virtio'/&gt;&quot;
++    &quot;  &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/&gt;&quot;
++    &quot;&lt;/disk&gt;&quot;,
++
++    &quot;&lt;disk type='nvme' device='disk'&gt;&quot;
++    &quot;  &lt;driver name='qemu' type='raw'/&gt;&quot;
++    &quot;  &lt;source type='pci' managed='no' namespace='1'&gt;&quot;
++    &quot;    &lt;address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/&gt;&quot;
++    &quot;  &lt;/source&gt;&quot;
++    &quot;  &lt;target dev='vdc' bus='virtio'/&gt;&quot;
++    &quot;  &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/&gt;&quot;
++    &quot;&lt;/disk&gt;&quot;
++};
+ 
+ static void
+ myCleanup(void)
+@@ -67,6 +100,9 @@ myCleanup(void)
+          virDomainHostdevDefFree(hostdevs[i]);
+     }
+ 
++    for (i = 0; i &lt; ndisks; i++)
++        virDomainDiskDefFree(disks[i]);
++
+     if (mgr) {
+         if (!getenv(&quot;LIBVIRT_SKIP_CLEANUP&quot;))
+             virFileDeleteTree(mgr-&gt;stateDir);
+@@ -75,6 +111,7 @@ myCleanup(void)
+         virObjectUnref(mgr-&gt;activeUSBHostdevs);
+         virObjectUnref(mgr-&gt;inactivePCIHostdevs);
+         virObjectUnref(mgr-&gt;activeSCSIHostdevs);
++        virObjectUnref(mgr-&gt;activeNVMeHostdevs);
+         VIR_FREE(mgr-&gt;stateDir);
+         VIR_FREE(mgr);
+     }
+@@ -107,6 +144,11 @@ myInit(void)
+         virPCIDeviceSetStubDriver(dev[i], VIR_PCI_STUB_DRIVER_KVM);
+     }
+ 
++    for (i = 0; i &lt; ndisks; i++) {
++        if (!(disks[i] = virDomainDiskDefParse(diskXML[i], NULL, NULL, 0)))
++            goto cleanup;
++    }
++
+     if (VIR_ALLOC(mgr) &lt; 0)
+         goto cleanup;
+     if ((mgr-&gt;activePCIHostdevs = virPCIDeviceListNew()) == NULL)
+@@ -117,6 +159,8 @@ myInit(void)
+         goto cleanup;
+     if ((mgr-&gt;activeSCSIHostdevs = virSCSIDeviceListNew()) == NULL)
+         goto cleanup;
++    if ((mgr-&gt;activeNVMeHostdevs = virNVMeDeviceListNew()) == NULL)
++        goto cleanup;
+     if (VIR_STRDUP(mgr-&gt;stateDir, TEST_STATE_DIR) &lt; 0)
+         goto cleanup;
+     if (virFileMakePath(mgr-&gt;stateDir) &lt; 0)
+@@ -550,6 +594,58 @@ testVirHostdevOther(const void *opaque ATTRIBUTE_UNUSED)
+     return ret;
+ }
+ 
++static int
++testNVMeDiskRoundtrip(const void *opaque ATTRIBUTE_UNUSED)
++{
++    int ret = -1;
++
++    /* Don't rely on a state that previous test cases might have
++     * left the manager in. Start with a clean slate. */
++    virHostdevReAttachPCIDevices(mgr, drv_name, dom_name,
++                                 hostdevs, nhostdevs, NULL);
++
++    CHECK_NVME_LIST_COUNT(mgr-&gt;activeNVMeHostdevs, 0);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, 0);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, 0);
++
++    /* Firstly, attach all NVMe disks */
++    if (virHostdevPrepareNVMeDevices(mgr, drv_name, dom_name, disks, ndisks) &lt; 0)
++        goto cleanup;
++
++    CHECK_NVME_LIST_COUNT(mgr-&gt;activeNVMeHostdevs, 3);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, 2);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, 0);
++
++    /* Now, try to detach the first one. */
++    if (virHostdevReAttachNVMeDevices(mgr, drv_name, dom_name, disks, 1) &lt; 0)
++        goto cleanup;
++
++    CHECK_NVME_LIST_COUNT(mgr-&gt;activeNVMeHostdevs, 2);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, 2);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, 0);
++
++    /* And the last one */
++    if (virHostdevReAttachNVMeDevices(mgr, drv_name, dom_name, &amp;disks[2], 1) &lt; 0)
++        goto cleanup;
++
++    CHECK_NVME_LIST_COUNT(mgr-&gt;activeNVMeHostdevs, 1);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, 1);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, 0);
++
++    /* Finally, detach the middle one */
++    if (virHostdevReAttachNVMeDevices(mgr, drv_name, dom_name, &amp;disks[1], 1) &lt; 0)
++        goto cleanup;
++
++    CHECK_NVME_LIST_COUNT(mgr-&gt;activeNVMeHostdevs, 0);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;activePCIHostdevs, 0);
++    CHECK_PCI_LIST_COUNT(mgr-&gt;inactivePCIHostdevs, 0);
++
++    ret = 0;
++ cleanup:
++    return ret;
++}
++
++
+ # define FAKEROOTDIRTEMPLATE abs_builddir &quot;/fakerootdir-XXXXXX&quot;
+ 
+ static int
+@@ -588,6 +684,7 @@ mymain(void)
+     DO_TEST(testVirHostdevRoundtripManaged);
+     DO_TEST(testVirHostdevRoundtripMixed);
+     DO_TEST(testVirHostdevOther);
++    DO_TEST(testNVMeDiskRoundtrip);
+ 
+     myCleanup();
+ 
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187181.html">[PATCH v1 24/31] qemu: Create NVMe disk in domain	namespace</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187183.html">[PATCH v1 23/31] qemu_domain: Introduce NVMe path getting	helpers</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187490.html">Re:  [PATCH v1 24/31] qemu: Create NVMe disk in domain namespace</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187481.html">Re:  [PATCH v1 17/31] virhostdevtest: Test virNVMeDevice assignment</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187182"><strong>Date</strong></a></li>
+<li><a href="index.html#187182"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

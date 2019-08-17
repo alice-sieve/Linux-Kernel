@@ -1,0 +1,297 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Fix for an abort in vm_stat_init() without	CONFIG_NUMA -->
+<!--X-From-R13: Ynmhuvgb Vntvb &#60;x&#45;untvbNno.wc.arp.pbz> -->
+<!--X-Date: Wed, 22 Aug 2018 08:12:41 &#45;0700 -->
+<!--X-Message-Id: 1534950753&#45;29495&#45;1&#45;git&#45;send&#45;email&#45;k&#45;hagio@ab.jp.nec.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH] Fix for an abort in vm_stat_init() without	CONFIG_NUMA &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  [PATCH] Fix for an abort in vm_stat_init() without	CONFIG_NUMA</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] Fix for an abort in vm_stat_init() without	CONFIG_NUMA</h1>
+[<a href="msg07567.html">Date Prev</a>][<a href="msg07569.html">Date Next</a>][<a href="msg07566.html">Thread Prev</a>][<a href="msg07569.html">Thread Next</a>][<a href="maillist.html#07568">Date Index</a>][<a href="index.html#07568">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Fix for an abort in vm_stat_init() without	CONFIG_NUMA</li>
+<li><em>From</em>: Kazuhito Hagio &lt;k-hagio@xxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 22 Aug 2018 11:12:33 -0400</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>With recent kernels without CONFIG_NUMA (including Fedora 32-bit),
+the vm_stat_init() function aborts when getting numa_stat_item
+enum items, (probably) because it is not defined.
+
+  crash&gt; kmem -V
+  double free or corruption (!prev)
+  Aborted (core dumped) 
+
+We can avoid the abort by checking whether the length of the
+vm_numa_stat array is also not zero.
+
+This patch tested OK with the following kernels:
+  4.17.0-0.rc5.git3.1.fc29.i686
+  4.18.0-0.rc5.git4.1.fc29.x86_64
+  3.10.0-862.el7.x86_64
+
+Signed-off-by: Kazuhito Hagio &lt;k-hagio@xxxxxxxxxxxxx&gt;
+---
+ defs.h    |  1 +
+ memory.c  | 10 ++++++----
+ symbols.c |  4 ++++
+ 3 files changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/defs.h b/defs.h
+index f569a62..6fdb478 100644
+--- a/defs.h
++++ b/defs.h
+@@ -2220,6 +2220,7 @@ struct array_table {
+ 	int height_to_maxnodes;
+ 	int task_struct_rlim;
+ 	int signal_struct_rlim;
++	int vm_numa_stat;
+ };
+ 
+ /*
+diff --git a/memory.c b/memory.c
+index 7c0cb5f..e02ba68 100644
+--- a/memory.c
++++ b/memory.c
+@@ -17454,11 +17454,12 @@ vm_stat_init(void)
+ 		} else if (symbol_exists(&quot;vm_zone_stat&quot;) &amp;&amp;
+ 			get_symbol_type(&quot;vm_zone_stat&quot;,
+ 			NULL, NULL) == TYPE_CODE_ARRAY) {
+-			if (symbol_exists(&quot;vm_numa_stat&quot;)) {
++			if (symbol_exists(&quot;vm_numa_stat&quot;) &amp;&amp;
++			    get_array_length(&quot;vm_numa_stat&quot;, NULL, 0)) {
+ 				vt-&gt;nr_vm_stat_items =
+ 					get_array_length(&quot;vm_zone_stat&quot;, NULL, 0)
+ 					+ get_array_length(&quot;vm_node_stat&quot;, NULL, 0) 
+-					+ get_array_length(&quot;vm_numa_stat&quot;, NULL, 0);
++					+ ARRAY_LENGTH(vm_numa_stat);
+ 				split_vmstat = 2;
+ 				enumerator_value(&quot;NR_VM_ZONE_STAT_ITEMS&quot;, &amp;zone_cnt);
+ 				enumerator_value(&quot;NR_VM_NODE_STAT_ITEMS&quot;, &amp;node_cnt);
+@@ -17599,7 +17600,7 @@ dump_vm_stat(char *item, long *retval, ulong zone)
+ 	buf = GETBUF(sizeof(ulong) * vt-&gt;nr_vm_stat_items);
+ 
+ 	if (symbol_exists(&quot;vm_node_stat&quot;) &amp;&amp; symbol_exists(&quot;vm_zone_stat&quot;) &amp;&amp;
+-	    symbol_exists(&quot;vm_numa_stat&quot;))
++	    symbol_exists(&quot;vm_numa_stat&quot;) &amp;&amp; ARRAY_LENGTH(vm_numa_stat))
+ 		split_vmstat = 2;
+ 	else if (symbol_exists(&quot;vm_node_stat&quot;) &amp;&amp; symbol_exists(&quot;vm_zone_stat&quot;))
+ 		split_vmstat = 1;
+@@ -17666,7 +17667,8 @@ dump_vm_stat(char *item, long *retval, ulong zone)
+ 			if (!zone) {
+ 				if ((i == node_start) &amp;&amp; symbol_exists(&quot;vm_node_stat&quot;)) 
+ 					fprintf(fp, &quot;\n  VM_NODE_STAT:\n&quot;); 
+-				if ((i == numa_start) &amp;&amp; symbol_exists(&quot;vm_numa_stat&quot;)) 
++				if ((i == numa_start) &amp;&amp; symbol_exists(&quot;vm_numa_stat&quot;)
++				    &amp;&amp; ARRAY_LENGTH(vm_numa_stat))
+ 					fprintf(fp, &quot;\n  VM_NUMA_STAT:\n&quot;); 
+ 			}
+ 			fprintf(fp, &quot;%s%s: %ld\n&quot;,
+diff --git a/symbols.c b/symbols.c
+index df84ee2..bee60ba 100644
+--- a/symbols.c
++++ b/symbols.c
+@@ -8457,6 +8457,8 @@ builtin_array_length(char *s, int len, int *two_dim)
+ 		lenptr = &amp;array_table.task_struct_rlim;
+ 	else if (STREQ(s, &quot;signal_struct.rlim&quot;))
+ 		lenptr = &amp;array_table.signal_struct_rlim;
++	else if (STREQ(s, &quot;vm_numa_stat&quot;))
++		lenptr = &amp;array_table.vm_numa_stat;
+ 
+ 	if (!lenptr)                /* not stored */
+ 		return(len);        
+@@ -10594,6 +10596,8 @@ dump_offset_table(char *spec, ulong makestruct)
+ 		ARRAY_LENGTH(task_struct_rlim));
+ 	fprintf(fp, &quot;            signal_struct_rlim: %d\n&quot;,
+ 		ARRAY_LENGTH(signal_struct_rlim));
++	fprintf(fp, &quot;                  vm_numa_stat: %d\n&quot;,
++		ARRAY_LENGTH(vm_numa_stat));
+ 
+ 	if (spec) {
+ 		int in_size_table, in_array_table, arrays, offsets, sizes;
+-- 
+1.8.3.1
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07569" href="msg07569.html">Re:  [PATCH] Fix for an abort in vm_stat_init() without CONFIG_NUMA</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07567.html">Re:  [PATCH] Fix the extension trace.so for RHEL7.6</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07569.html">Re:  [PATCH] Fix for an abort in vm_stat_init() without CONFIG_NUMA</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07566.html">[PATCH] Fix the extension trace.so for RHEL7.6</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07569.html">Re:  [PATCH] Fix for an abort in vm_stat_init() without CONFIG_NUMA</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07568"><strong>Date</strong></a></li>
+<li><a href="index.html#07568"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

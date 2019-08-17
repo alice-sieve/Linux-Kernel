@@ -1,0 +1,353 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH RFC 00/18] ARM: Add minimal Raspberry Pi 4 support -->
+<!--X-From-R13: Egrsna Inuera &#60;jnuerafgNtzk.arg> -->
+<!--X-Date: Wed, 17 Jul 2019 12:54:47 &#45;0700 -->
+<!--X-Message-Id: 1563393026&#45;17118&#45;1&#45;git&#45;send&#45;email&#45;wahrenst@gmx.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH RFC 00/18] ARM: Add minimal Raspberry Pi 4 support">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH RFC 00/18] ARM: Add minimal Raspberry Pi 4 support &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH RFC 00/18] ARM: Add minimal Raspberry Pi 4 support</h1>
+[<a href="msg741650.html">Date Prev</a>][<a href="msg741652.html">Date Next</a>][<a href="msg741621.html">Thread Prev</a>][<a href="msg741640.html">Thread Next</a>][<a href="maillist.html#741651">Date Index</a>][<a href="threads.html#741651">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH RFC 00/18] ARM: Add minimal Raspberry Pi 4 support</li>
+<li><em>From</em>: Stefan Wahren &lt;wahrenst@xxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 17 Jul 2019 21:50:08 +0200</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This series adds minimal support for the new Raspberry Pi 4, so we are able
+to login via debug UART.
+
+Patch 1-5:   Prepare platform and DTS for the new SoC BMC2838
+Patch 6-9:   Enable support for emmc2 on BCM2838
+Patch 10-14: Enable pinctrl for BCM2838
+Patch 15:    Enable SPI support for BCM2838
+Patch 16-18: Add Raspberry Pi 4 DTS support
+
+Unfortunately the Raspberry Pi Foundation didn't released a
+peripheral documentation for the new SoC yet. So we only have a preliminary
+datasheet [1] and reduced schematics [2].
+
+This series is marked as RFC because some parts (e.g. pinctrl) are still
+work in progress.
+
+[1] - <a  rel="nofollow" href="https://www.raspberrypi.org/documentation/hardware/raspberrypi/bcm2711/rpi_DATA_2711_1p0_preliminary.pdf">https://www.raspberrypi.org/documentation/hardware/raspberrypi/bcm2711/rpi_DATA_2711_1p0_preliminary.pdf</a>
+[2] - <a  rel="nofollow" href="https://www.raspberrypi.org/documentation/hardware/raspberrypi/schematics/rpi_SCH_4b_4p0_reduced.pdf">https://www.raspberrypi.org/documentation/hardware/raspberrypi/schematics/rpi_SCH_4b_4p0_reduced.pdf</a>
+
+Discussible things:
+- SoC compatible BCM2711 (as on the SoC label) vs BCM2838 (existing naming scheme)
+- ARCH membership ARCH_BCM2835 vs ARCH_BCMSTB
+...
+
+
+Al Cooper (1):
+  pinctrl: bcm2835: bcm7211: Add support for 7211 pull-up functionality
+
+Martin Sperl (1):
+  spi: bcm2835: enable shared interrupt support
+
+Phil Elwell (2):
+  ARM: bcm2835: DMA can only address 1GB
+  ARM: bcm2835: Add bcm2838 compatible string
+
+Stefan Wahren (14):
+  ARM: bcm283x: Reduce register ranges for UART, SPI and I2C
+  ARM: dts: bcm283x: Move BCM2835/6/7 specific to bcm2835-common.dtsi
+  ARM: dts: bcm283x: Define MMC interfaces at board level
+  ARM: dts: bcm283x: Define memory at board level
+  dt-bindings: bcm2835-cprman: Add bcm2838 support
+  clk: bcm2835: Add BCM2838_CLOCK_EMMC2 support
+  dt-bindings: sdhci-iproc: Add brcm,bcm2838-emmc2
+  mmc: sdhci-iproc: Add support for emmc2 of the BCM2838
+  pinctrl: bcm2835: Fix BCM7211 pinconf handling
+  dt-bindings: pinctrl: bcm2835: Add brcm,bcm2838 compatible
+  pinctrl: bcm2835: Add BCM2838 support
+  HACK: pinctrl: bcm2835: Implement legacy pull for BCM7211
+  dt-bindings: bcm: Add Raspberry Pi 4 B
+  ARM: dts: Add minimal Raspberry Pi 4 support
+
+ .../devicetree/bindings/arm/bcm/brcm,bcm2835.txt   |   4 +
+ .../bindings/clock/brcm,bcm2835-cprman.txt         |   4 +-
+ .../devicetree/bindings/mmc/brcm,sdhci-iproc.txt   |   4 +-
+ .../bindings/pinctrl/brcm,bcm2835-gpio.txt         |   1 +
+ arch/arm/boot/dts/Makefile                         |   1 +
+ arch/arm/boot/dts/bcm2835-common.dtsi              | 173 ++++++
+ arch/arm/boot/dts/bcm2835-rpi-a-plus.dts           |  12 +
+ arch/arm/boot/dts/bcm2835-rpi-a.dts                |  12 +
+ arch/arm/boot/dts/bcm2835-rpi-b-plus.dts           |  12 +
+ arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts           |  12 +
+ arch/arm/boot/dts/bcm2835-rpi-b.dts                |  12 +
+ arch/arm/boot/dts/bcm2835-rpi-cm1-io1.dts          |   7 +
+ arch/arm/boot/dts/bcm2835-rpi-cm1.dtsi             |   5 +
+ arch/arm/boot/dts/bcm2835-rpi-zero-w.dts           |  12 +
+ arch/arm/boot/dts/bcm2835-rpi-zero.dts             |  12 +
+ arch/arm/boot/dts/bcm2835-rpi.dtsi                 |  18 -
+ arch/arm/boot/dts/bcm2835.dtsi                     |   1 +
+ arch/arm/boot/dts/bcm2836-rpi-2-b.dts              |   8 +
+ arch/arm/boot/dts/bcm2836.dtsi                     |   1 +
+ arch/arm/boot/dts/bcm2837-rpi-3-a-plus.dts         |   1 +
+ arch/arm/boot/dts/bcm2837-rpi-3-b-plus.dts         |   1 +
+ arch/arm/boot/dts/bcm2837-rpi-3-b.dts              |   1 +
+ arch/arm/boot/dts/bcm2837-rpi-cm3-io3.dts          |   7 +
+ arch/arm/boot/dts/bcm2837-rpi-cm3.dtsi             |   1 +
+ arch/arm/boot/dts/bcm2837.dtsi                     |   1 +
+ arch/arm/boot/dts/bcm2838-rpi-4-b.dts              | 120 ++++
+ arch/arm/boot/dts/bcm2838.dtsi                     | 657 +++++++++++++++++++++
+ arch/arm/boot/dts/bcm283x.dtsi                     | 166 +-----
+ arch/arm/mach-bcm/board_bcm2835.c                  |   2 +
+ drivers/clk/bcm/clk-bcm2835.c                      |  33 +-
+ drivers/mmc/host/sdhci-iproc.c                     |   9 +
+ drivers/pinctrl/bcm/pinctrl-bcm2835.c              |  97 ++-
+ drivers/spi/spi-bcm2835.c                          |   8 +-
+ include/dt-bindings/clock/bcm2835.h                |   2 +
+ 34 files changed, 1232 insertions(+), 185 deletions(-)
+ create mode 100644 arch/arm/boot/dts/bcm2835-common.dtsi
+ create mode 100644 arch/arm/boot/dts/bcm2838-rpi-4-b.dts
+ create mode 100644 arch/arm/boot/dts/bcm2838.dtsi
+
+--
+2.7.4
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="741848" href="msg741848.html">Re: [PATCH RFC 00/18] ARM: Add minimal Raspberry Pi 4 support</a></strong>
+<ul><li><em>From:</em> Eric Anholt</li></ul></li>
+<li><strong><a name="741653" href="msg741653.html">[PATCH RFC 07/18] clk: bcm2835: Add BCM2838_CLOCK_EMMC2 support</a></strong>
+<ul><li><em>From:</em> Stefan Wahren</li></ul></li>
+<li><strong><a name="741652" href="msg741652.html">[PATCH RFC 10/18] pinctrl: bcm2835: bcm7211: Add support for 7211 pull-up functionality</a></strong>
+<ul><li><em>From:</em> Stefan Wahren</li></ul></li>
+<li><strong><a name="741650" href="msg741650.html">[PATCH RFC 02/18] ARM: bcm2835: DMA can only address 1GB</a></strong>
+<ul><li><em>From:</em> Stefan Wahren</li></ul></li>
+<li><strong><a name="741649" href="msg741649.html">[PATCH RFC 08/18] dt-bindings: sdhci-iproc: Add brcm,bcm2838-emmc2</a></strong>
+<ul><li><em>From:</em> Stefan Wahren</li></ul></li>
+<li><strong><a name="741648" href="msg741648.html">[PATCH RFC 11/18] pinctrl: bcm2835: Fix BCM7211 pinconf handling</a></strong>
+<ul><li><em>From:</em> Stefan Wahren</li></ul></li>
+<li><strong><a name="741647" href="msg741647.html">[PATCH RFC 06/18] dt-bindings: bcm2835-cprman: Add bcm2838 support</a></strong>
+<ul><li><em>From:</em> Stefan Wahren</li></ul></li>
+<li><strong><a name="741646" href="msg741646.html">[PATCH RFC 01/18] ARM: bcm283x: Reduce register ranges for UART, SPI and I2C</a></strong>
+<ul><li><em>From:</em> Stefan Wahren</li></ul></li>
+<li><strong><a name="741645" href="msg741645.html">[PATCH RFC 04/18] ARM: dts: bcm283x: Define MMC interfaces at board level</a></strong>
+<ul><li><em>From:</em> Stefan Wahren</li></ul></li>
+<li><strong><a name="741644" href="msg741644.html">[PATCH RFC 09/18] mmc: sdhci-iproc: Add support for emmc2 of the BCM2838</a></strong>
+<ul><li><em>From:</em> Stefan Wahren</li></ul></li>
+<li><strong><a name="741643" href="msg741643.html">[PATCH RFC 13/18] pinctrl: bcm2835: Add BCM2838 support</a></strong>
+<ul><li><em>From:</em> Stefan Wahren</li></ul></li>
+<li><strong><a name="741642" href="msg741642.html">[PATCH RFC 12/18] dt-bindings: pinctrl: bcm2835: Add brcm, bcm2838 compatible</a></strong>
+<ul><li><em>From:</em> Stefan Wahren</li></ul></li>
+<li><strong><a name="741641" href="msg741641.html">[PATCH RFC 03/18] ARM: dts: bcm283x: Move BCM2835/6/7 specific to bcm2835-common.dtsi</a></strong>
+<ul><li><em>From:</em> Stefan Wahren</li></ul></li>
+<li><strong><a name="741640" href="msg741640.html">[PATCH RFC 05/18] ARM: dts: bcm283x: Define memory at board level</a></strong>
+<ul><li><em>From:</em> Stefan Wahren</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741650.html">[PATCH RFC 02/18] ARM: bcm2835: DMA can only address 1GB</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741652.html">[PATCH RFC 10/18] pinctrl: bcm2835: bcm7211: Add support for 7211 pull-up functionality</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741621.html">[PATCH] arm64: entry: SP Alignment Fault doesn't write to FAR_EL1</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741640.html">[PATCH RFC 05/18] ARM: dts: bcm283x: Define memory at board level</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741651"><strong>Date</strong></a></li>
+<li><a href="threads.html#741651"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

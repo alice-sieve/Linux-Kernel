@@ -1,0 +1,411 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [libosinfo PATCH v2 5/7] db: Add identify_tree() API -->
+<!--X-From-R13: =?GFT&#45;8?d?Tnovnab=20Tvq=Q3=OOapvb?= &#60;svqrapvbNerqung.pbz> -->
+<!--X-Date: Wed, 26 Jun 2019 04:27:31 &#45;0700 -->
+<!--X-Message-Id: 20190626112710.18532&#45;6&#45;fidencio@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190626112710.18532&#45;1&#45;fidencio@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<title>[libosinfo PATCH v2 5/7] db: Add identify_tree() API &mdash; libosinfo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="libosinfo: [libosinfo PATCH v2 5/7] db: Add identify_tree() API">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="libosinfo" href="//feeds.feedburner.com/libosinfo">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[libosinfo PATCH v2 5/7] db: Add identify_tree() API</h1>
+[<a href="msg05913.html">Date Prev</a>][<a href="msg05915.html">Date Next</a>][<a href="msg05913.html">Thread Prev</a>][<a href="msg05916.html">Thread Next</a>][<a href="maillist.html#05914">Date Index</a>][<a href="index.html#05914">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [libosinfo PATCH v2 5/7] db: Add identify_tree() API</li>
+<li><em>From</em>: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 26 Jun 2019 13:27:08 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg05915.html">20190626112710.18532-1-fidencio@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg05915.html">20190626112710.18532-1-fidencio@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Similarly to identify_media() API, let's add a osinfo_db_identify_tree()
+API, which is going to simplify a bit tree detection code on the apps
+level.
+
+Signed-off-by: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;
+---
+ osinfo/libosinfo.syms |   2 +
+ osinfo/osinfo_db.c    | 105 ++++++++++++++++++++++++++++++++++++++++++
+ osinfo/osinfo_db.h    |   2 +
+ tests/test-db.c       |  30 ++++++++++++
+ 4 files changed, 139 insertions(+)
+
+diff --git a/osinfo/libosinfo.syms b/osinfo/libosinfo.syms
+index 4e96f16..016d167 100644
+--- a/osinfo/libosinfo.syms
++++ b/osinfo/libosinfo.syms
+@@ -586,6 +586,8 @@ LIBOSINFO_1.5.0 {
+ 
+ LIBOSINFO_1.6.0 {
+     global:
++	osinfo_db_identify_tree;
++
+ 	osinfo_media_create_from_location_with_flags;
+ 	osinfo_media_create_from_location_with_flags_async;
+ 	osinfo_media_create_from_location_with_flags_finish;
+diff --git a/osinfo/osinfo_db.c b/osinfo/osinfo_db.c
+index c4cd1e4..56b868c 100644
+--- a/osinfo/osinfo_db.c
++++ b/osinfo/osinfo_db.c
+@@ -875,6 +875,111 @@ OsinfoOs *osinfo_db_guess_os_from_tree(OsinfoDb *db,
+     return ret;
+ }
+ 
++static void fill_tree(OsinfoDb *db, OsinfoTree *tree,
++                      OsinfoTree *matched_tree,
++                      OsinfoOs *os)
++{
++    const gchar *id;
++    const gchar *kernel_path;
++    const gchar *initrd_path;
++    const gchar *boot_iso_path;
++    const gchar *arch;
++    const gchar *url;
++    gboolean has_treeinfo;
++    GList *variants, *node;
++
++    id = osinfo_entity_get_id(OSINFO_ENTITY(matched_tree));
++    g_object_set(G_OBJECT(tree), &quot;id&quot;, id, NULL);
++
++    arch = osinfo_tree_get_architecture(matched_tree);
++    if (arch != NULL)
++        g_object_set(G_OBJECT(tree), &quot;architecture&quot;, arch, NULL);
++    url = osinfo_tree_get_url(matched_tree);
++    if (url != NULL)
++        g_object_set(G_OBJECT(tree), &quot;url&quot;, url, NULL);
++    variants = osinfo_entity_get_param_value_list(OSINFO_ENTITY(matched_tree),
++                                                  &quot;variant&quot;);
++    for (node = variants; node != NULL; node = node-&gt;next)
++        osinfo_entity_add_param(OSINFO_ENTITY(tree),
++                                &quot;variant&quot;,
++                                (gchar *) node-&gt;data);
++    g_list_free(variants);
++    kernel_path = osinfo_tree_get_kernel_path(matched_tree);
++    if (kernel_path != NULL)
++        g_object_set(G_OBJECT(tree), &quot;kernel&quot;, kernel_path, NULL);
++
++    initrd_path = osinfo_tree_get_initrd_path(matched_tree);
++    if (initrd_path != NULL)
++        g_object_set(G_OBJECT(tree), &quot;initrd&quot;, initrd_path, NULL);
++
++    boot_iso_path = osinfo_tree_get_boot_iso_path(matched_tree);
++    if (boot_iso_path != NULL)
++        g_object_set(G_OBJECT(tree), &quot;boot-iso&quot;, boot_iso_path, NULL);
++
++    has_treeinfo = osinfo_tree_has_treeinfo(matched_tree);
++    if (has_treeinfo) {
++        const gchar *treeinfo_family;
++        const gchar *treeinfo_variant;
++        const gchar *treeinfo_version;
++        const gchar *treeinfo_arch;
++
++        treeinfo_family = osinfo_tree_get_treeinfo_family(matched_tree);
++        if (treeinfo_family != NULL)
++            g_object_set(G_OBJECT(tree), &quot;treeinfo-family&quot;, treeinfo_family, NULL);
++
++        treeinfo_variant = osinfo_tree_get_treeinfo_variant(matched_tree);
++        if (treeinfo_variant != NULL)
++            g_object_set(G_OBJECT(tree), &quot;treeinfo-variant&quot;, treeinfo_variant, NULL);
++
++        treeinfo_version = osinfo_tree_get_treeinfo_version(matched_tree);
++        if (treeinfo_version != NULL)
++            g_object_set(G_OBJECT(tree), &quot;treeinfo-version&quot;, treeinfo_version, NULL);
++
++        treeinfo_arch = osinfo_tree_get_treeinfo_arch(matched_tree);
++        if (treeinfo_arch != NULL)
++            g_object_set(G_OBJECT(tree), &quot;treeinfo-arch&quot;, treeinfo_arch, NULL);
++
++        g_object_set(G_OBJECT(tree), &quot;has-treeinfo&quot;, TRUE, NULL);
++    }
++
++    if (os != NULL)
++        osinfo_tree_set_os(tree, os);
++}
++
++/**
++ * osinfo_db_identify_tree:
++ * @db: an #OsinfoDb database
++ * @tree: the installation tree
++ * data
++ *
++ * Try to match a newly created @tree with a tree description from @db.
++ * If found, @tree will be filled with the corresponding information
++ * stored in @db. In particular, after a call to osinfo_db_identify_tree(), if
++ * the tree could be identified, its OsinfoEntify::id and OsinfoMedia::os
++ * properties will be set.
++ *
++ * Returns: TRUE if @tree was found in @db, FALSE otherwise
++ */
++gboolean osinfo_db_identify_tree(OsinfoDb *db,
++                                 OsinfoTree *tree)
++{
++    OsinfoTree *matched_tree;
++    OsinfoOs *matched_os;
++
++    g_return_val_if_fail(OSINFO_IS_TREE(tree), FALSE);
++    g_return_val_if_fail(OSINFO_IS_DB(db), FALSE);
++
++    matched_os = osinfo_db_guess_os_from_tree(db, tree,
++                                              &amp;matched_tree);
++    if (matched_os == NULL) {
++        return FALSE;
++    }
++
++    fill_tree(db, tree, matched_tree, matched_os);
++
++    return TRUE;
++}
++
+ struct osinfo_db_populate_values_args {
+     GHashTable *values;
+     const gchar *property;
+diff --git a/osinfo/osinfo_db.h b/osinfo/osinfo_db.h
+index 90d7493..7702739 100644
+--- a/osinfo/osinfo_db.h
++++ b/osinfo/osinfo_db.h
+@@ -110,6 +110,8 @@ gboolean osinfo_db_identify_media(OsinfoDb *db,
+ OsinfoOs *osinfo_db_guess_os_from_tree(OsinfoDb *db,
+                                        OsinfoTree *tree,
+                                        OsinfoTree **matched_tree);
++gboolean osinfo_db_identify_tree(OsinfoDb *db,
++                                 OsinfoTree *tree);
+ 
+ // Get me all unique values for property &quot;vendor&quot; among operating systems
+ GList *osinfo_db_unique_values_for_property_in_os(OsinfoDb *db, const gchar *propName);
+diff --git a/tests/test-db.c b/tests/test-db.c
+index abe8ad5..b7f83d7 100644
+--- a/tests/test-db.c
++++ b/tests/test-db.c
+@@ -528,6 +528,35 @@ test_guess_os_from_tree(void)
+ }
+ 
+ 
++static void
++test_identify_tree(void)
++{
++    OsinfoLoader *loader = osinfo_loader_new();
++    OsinfoDb *db;
++    OsinfoTree *tree;
++
++    GError *error = NULL;
++
++    osinfo_loader_process_path(loader, SRCDIR &quot;/tests/dbdata&quot;, &amp;error);
++    g_assert_no_error(error);
++    db = osinfo_loader_get_db(loader);
++
++    /* Matching against an &quot;all&quot; architecture&quot; */
++    tree = create_tree(&quot;x86_64&quot;, FALSE);
++    g_assert_true(osinfo_db_identify_tree(db, tree));
++    g_assert_cmpstr(osinfo_tree_get_architecture(tree), ==, &quot;all&quot;);
++    g_object_unref(tree);
++
++    /* Matching against a known architecture, which has to have precendence */
++    tree = create_tree(&quot;i686&quot;, TRUE);
++    g_assert_true(osinfo_db_identify_tree(db, tree));
++    g_assert_cmpstr(osinfo_tree_get_architecture(tree), ==, &quot;i686&quot;);
++    g_object_unref(tree);
++
++    g_object_unref(loader);
++}
++
++
+ int
+ main(int argc, char *argv[])
+ {
+@@ -543,6 +572,7 @@ main(int argc, char *argv[])
+     g_test_add_func(&quot;/db/rel_os&quot;, test_rel_os);
+     g_test_add_func(&quot;/db/identify_media&quot;, test_identify_media);
+     g_test_add_func(&quot;/db/guess_os_from_tree&quot;, test_guess_os_from_tree);
++    g_test_add_func(&quot;/db/identify_tree&quot;, test_identify_tree);
+ 
+     /* Upfront so we don't confuse valgrind */
+     osinfo_entity_get_type();
+-- 
+2.21.0
+
+_______________________________________________
+Libosinfo mailing list
+Libosinfo@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libosinfo">https://www.redhat.com/mailman/listinfo/libosinfo</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05913.html">[libosinfo PATCH v2 2/7] tree: Don't set &quot;has-treeinfo&quot;	property's default to TRUE</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05915.html">[libosinfo PATCH v2 0/7] Add osinfo_db_identify_tree()	API</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05913.html">[libosinfo PATCH v2 2/7] tree: Don't set &quot;has-treeinfo&quot;	property's default to TRUE</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05916.html">[libosinfo PATCH v2 3/7] tree: Add treeinfo-* properties</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05914"><strong>Date</strong></a></li>
+<li><a href="index.html#05914"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

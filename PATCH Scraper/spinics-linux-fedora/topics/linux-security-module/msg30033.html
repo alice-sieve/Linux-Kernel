@@ -1,0 +1,395 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH V36 01/29] security: Support early LSMs -->
+<!--X-From-R13: Qnfrl Epunhsyre &#60;pnfrlNfpunhsyre&#45;pn.pbz> -->
+<!--X-Date: Thu, 18 Jul 2019 13:02:30 &#45;0700 -->
+<!--X-Message-Id: 9312127b&#45;f98a&#45;b10b&#45;1059&#45;8a1380cc0047@schaufler&#45;ca.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190718194415.108476&#45;1&#45;matthewgarrett@google.com -->
+<!--X-Reference: 20190718194415.108476&#45;2&#45;matthewgarrett@google.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, Re: [PATCH V36 01/29] security: Support early LSMs">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- Re: [PATCH V36 01/29] security: Support early LSMs</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re: [PATCH V36 01/29] security: Support early LSMs</h1>
+[<a href="msg30032.html">Date Prev</a>][<a href="msg30034.html">Date Next</a>][<a href="msg30032.html">Thread Prev</a>][Thread Next][<a href="maillist.html#30033">Date Index</a>][<a href="index.html#30033">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH V36 01/29] security: Support early LSMs</li>
+<li><em>From</em>: Casey Schaufler &lt;casey@xxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 18 Jul 2019 13:02:25 -0700</li>
+<li><em>Cc</em>: linux-security-module@xxxxxxxxxxxxxxx, linux-kernel@xxxxxxxxxxxxxxx,        linux-api@xxxxxxxxxxxxxxx, Matthew Garrett &lt;mjg59@xxxxxxxxxx&gt;,        Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg30032.html">20190718194415.108476-2-matthewgarrett@google.com</a>&gt;</li>
+<li><em>Openpgp</em>: preference=signencrypt</li>
+<li><em>References</em>: &lt;<a href="msg30003.html">20190718194415.108476-1-matthewgarrett@google.com</a>&gt; &lt;<a href="msg30032.html">20190718194415.108476-2-matthewgarrett@google.com</a>&gt;</li>
+<li><em>User-agent</em>: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101 Thunderbird/60.8.0</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On 7/18/2019 12:43 PM, Matthew Garrett wrote:
+&gt; The lockdown module is intended to allow for kernels to be locked down
+&gt; early in boot - sufficiently early that we don't have the ability to
+&gt; kmalloc() yet. Add support for early initialisation of some LSMs, and
+&gt; then add them to the list of names when we do full initialisation later.
+&gt; Early LSMs are initialised in link order and cannot be overridden via
+&gt; boot parameters, and cannot make use of kmalloc() (since the allocator
+&gt; isn't initialised yet).
+&gt;
+&gt; Signed-off-by: Matthew Garrett &lt;mjg59@xxxxxxxxxx&gt;
+&gt; Acked-by: Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;
+
+
+Acked-by: Casey Schaufler &lt;casey@xxxxxxxxxxxxxxxx&gt;
+
+&gt; ---
+&gt;  include/asm-generic/vmlinux.lds.h |  8 ++++-
+&gt;  include/linux/lsm_hooks.h         |  6 ++++
+&gt;  include/linux/security.h          |  1 +
+&gt;  init/main.c                       |  1 +
+&gt;  security/security.c               | 50 ++++++++++++++++++++++++++-----
+&gt;  5 files changed, 57 insertions(+), 9 deletions(-)
+&gt;
+&gt; diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+&gt; index ca42182992a5..6cc6174a2a4c 100644
+&gt; --- a/include/asm-generic/vmlinux.lds.h
+&gt; +++ b/include/asm-generic/vmlinux.lds.h
+&gt; @@ -215,8 +215,13 @@
+&gt;  			__start_lsm_info = .;				\
+&gt;  			KEEP(*(.lsm_info.init))				\
+&gt;  			__end_lsm_info = .;
+&gt; +#define EARLY_LSM_TABLE()	. = ALIGN(8);				\
+&gt; +			__start_early_lsm_info = .;			\
+&gt; +			KEEP(*(.early_lsm_info.init))			\
+&gt; +			__end_early_lsm_info = .;
+&gt;  #else
+&gt;  #define LSM_TABLE()
+&gt; +#define EARLY_LSM_TABLE()
+&gt;  #endif
+&gt;  
+&gt;  #define ___OF_TABLE(cfg, name)	_OF_TABLE_##cfg(name)
+&gt; @@ -616,7 +621,8 @@
+&gt;  	ACPI_PROBE_TABLE(irqchip)					\
+&gt;  	ACPI_PROBE_TABLE(timer)						\
+&gt;  	EARLYCON_TABLE()						\
+&gt; -	LSM_TABLE()
+&gt; +	LSM_TABLE()							\
+&gt; +	EARLY_LSM_TABLE()
+&gt;  
+&gt;  #define INIT_TEXT							\
+&gt;  	*(.init.text .init.text.*)					\
+&gt; diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+&gt; index df1318d85f7d..aebb0e032072 100644
+&gt; --- a/include/linux/lsm_hooks.h
+&gt; +++ b/include/linux/lsm_hooks.h
+&gt; @@ -2104,12 +2104,18 @@ struct lsm_info {
+&gt;  };
+&gt;  
+&gt;  extern struct lsm_info __start_lsm_info[], __end_lsm_info[];
+&gt; +extern struct lsm_info __start_early_lsm_info[], __end_early_lsm_info[];
+&gt;  
+&gt;  #define DEFINE_LSM(lsm)							\
+&gt;  	static struct lsm_info __lsm_##lsm				\
+&gt;  		__used __section(.lsm_info.init)			\
+&gt;  		__aligned(sizeof(unsigned long))
+&gt;  
+&gt; +#define DEFINE_EARLY_LSM(lsm)						\
+&gt; +	static struct lsm_info __early_lsm_##lsm			\
+&gt; +		__used __section(.early_lsm_info.init)			\
+&gt; +		__aligned(sizeof(unsigned long))
+&gt; +
+&gt;  #ifdef CONFIG_SECURITY_SELINUX_DISABLE
+&gt;  /*
+&gt;   * Assuring the safety of deleting a security module is up to
+&gt; diff --git a/include/linux/security.h b/include/linux/security.h
+&gt; index 5f7441abbf42..66a2fcbe6ab0 100644
+&gt; --- a/include/linux/security.h
+&gt; +++ b/include/linux/security.h
+&gt; @@ -195,6 +195,7 @@ int unregister_blocking_lsm_notifier(struct notifier_block *nb);
+&gt;  
+&gt;  /* prototypes */
+&gt;  extern int security_init(void);
+&gt; +extern int early_security_init(void);
+&gt;  
+&gt;  /* Security operations */
+&gt;  int security_binder_set_context_mgr(struct task_struct *mgr);
+&gt; diff --git a/init/main.c b/init/main.c
+&gt; index ff5803b0841c..0fefca3fd43c 100644
+&gt; --- a/init/main.c
+&gt; +++ b/init/main.c
+&gt; @@ -593,6 +593,7 @@ asmlinkage __visible void __init start_kernel(void)
+&gt;  	boot_cpu_init();
+&gt;  	page_address_init();
+&gt;  	pr_notice(&quot;%s&quot;, linux_banner);
+&gt; +	early_security_init();
+&gt;  	setup_arch(&amp;command_line);
+&gt;  	mm_init_cpumask(&amp;init_mm);
+&gt;  	setup_command_line(command_line);
+&gt; diff --git a/security/security.c b/security/security.c
+&gt; index 250ee2d76406..90f1e291c800 100644
+&gt; --- a/security/security.c
+&gt; +++ b/security/security.c
+&gt; @@ -33,6 +33,7 @@
+&gt;  
+&gt;  /* How many LSMs were built into the kernel? */
+&gt;  #define LSM_COUNT (__end_lsm_info - __start_lsm_info)
+&gt; +#define EARLY_LSM_COUNT (__end_early_lsm_info - __start_early_lsm_info)
+&gt;  
+&gt;  struct security_hook_heads security_hook_heads __lsm_ro_after_init;
+&gt;  static BLOCKING_NOTIFIER_HEAD(blocking_lsm_notifier_chain);
+&gt; @@ -277,6 +278,8 @@ static void __init ordered_lsm_parse(const char *order, const char *origin)
+&gt;  static void __init lsm_early_cred(struct cred *cred);
+&gt;  static void __init lsm_early_task(struct task_struct *task);
+&gt;  
+&gt; +static int lsm_append(const char *new, char **result);
+&gt; +
+&gt;  static void __init ordered_lsm_init(void)
+&gt;  {
+&gt;  	struct lsm_info **lsm;
+&gt; @@ -323,6 +326,26 @@ static void __init ordered_lsm_init(void)
+&gt;  	kfree(ordered_lsms);
+&gt;  }
+&gt;  
+&gt; +int __init early_security_init(void)
+&gt; +{
+&gt; +	int i;
+&gt; +	struct hlist_head *list = (struct hlist_head *) &amp;security_hook_heads;
+&gt; +	struct lsm_info *lsm;
+&gt; +
+&gt; +	for (i = 0; i &lt; sizeof(security_hook_heads) / sizeof(struct hlist_head);
+&gt; +	     i++)
+&gt; +		INIT_HLIST_HEAD(&amp;list[i]);
+&gt; +
+&gt; +	for (lsm = __start_early_lsm_info; lsm &lt; __end_early_lsm_info; lsm++) {
+&gt; +		if (!lsm-&gt;enabled)
+&gt; +			lsm-&gt;enabled = &amp;lsm_enabled_true;
+&gt; +		prepare_lsm(lsm);
+&gt; +		initialize_lsm(lsm);
+&gt; +	}
+&gt; +
+&gt; +	return 0;
+&gt; +}
+&gt; +
+&gt;  /**
+&gt;   * security_init - initializes the security framework
+&gt;   *
+&gt; @@ -330,14 +353,18 @@ static void __init ordered_lsm_init(void)
+&gt;   */
+&gt;  int __init security_init(void)
+&gt;  {
+&gt; -	int i;
+&gt; -	struct hlist_head *list = (struct hlist_head *) &amp;security_hook_heads;
+&gt; +	struct lsm_info *lsm;
+&gt;  
+&gt;  	pr_info(&quot;Security Framework initializing\n&quot;);
+&gt;  
+&gt; -	for (i = 0; i &lt; sizeof(security_hook_heads) / sizeof(struct hlist_head);
+&gt; -	     i++)
+&gt; -		INIT_HLIST_HEAD(&amp;list[i]);
+&gt; +	/*
+&gt; +	 * Append the names of the early LSM modules now that kmalloc() is
+&gt; +	 * available
+&gt; +	 */
+&gt; +	for (lsm = __start_early_lsm_info; lsm &lt; __end_early_lsm_info; lsm++) {
+&gt; +		if (lsm-&gt;enabled)
+&gt; +			lsm_append(lsm-&gt;name, &amp;lsm_names);
+&gt; +	}
+&gt;  
+&gt;  	/* Load LSMs in specified order. */
+&gt;  	ordered_lsm_init();
+&gt; @@ -384,7 +411,7 @@ static bool match_last_lsm(const char *list, const char *lsm)
+&gt;  	return !strcmp(last, lsm);
+&gt;  }
+&gt;  
+&gt; -static int lsm_append(char *new, char **result)
+&gt; +static int lsm_append(const char *new, char **result)
+&gt;  {
+&gt;  	char *cp;
+&gt;  
+&gt; @@ -422,8 +449,15 @@ void __init security_add_hooks(struct security_hook_list *hooks, int count,
+&gt;  		hooks[i].lsm = lsm;
+&gt;  		hlist_add_tail_rcu(&amp;hooks[i].list, hooks[i].head);
+&gt;  	}
+&gt; -	if (lsm_append(lsm, &amp;lsm_names) &lt; 0)
+&gt; -		panic(&quot;%s - Cannot get early memory.\n&quot;, __func__);
+&gt; +
+&gt; +	/*
+&gt; +	 * Don't try to append during early_security_init(), we'll come back
+&gt; +	 * and fix this up afterwards.
+&gt; +	 */
+&gt; +	if (slab_is_available()) {
+&gt; +		if (lsm_append(lsm, &amp;lsm_names) &lt; 0)
+&gt; +			panic(&quot;%s - Cannot get early memory.\n&quot;, __func__);
+&gt; +	}
+&gt;  }
+&gt;  
+&gt;  int call_blocking_lsm_notifier(enum lsm_event event, void *data)
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="30003" href="msg30003.html">[PATCH V36 00/29] security: Add kernel lockdown functionality</a></strong>
+<ul><li><em>From:</em> Matthew Garrett</li></ul></li>
+<li><strong><a name="30032" href="msg30032.html">[PATCH V36 01/29] security: Support early LSMs</a></strong>
+<ul><li><em>From:</em> Matthew Garrett</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg30032.html">[PATCH V36 01/29] security: Support early LSMs</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg30034.html">Re: [PATCH V36 02/29] security: Add a &quot;locked down&quot; LSM hook</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg30032.html">[PATCH V36 01/29] security: Support early LSMs</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#30033"><strong>Date</strong></a></li>
+<li><a href="index.html#30033"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

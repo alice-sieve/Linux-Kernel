@@ -1,0 +1,391 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 5/5] libvirt_nss: Report newer addresses first -->
+<!--X-From-R13: [vpuny Bevibmavx &#60;zcevibmaNerqung.pbz> -->
+<!--X-Date: Sat, 13 Jul 2019 03:59:12 &#45;0700 -->
+<!--X-Message-Id: 34130559f6c7ff29bb0a57f53f76372559cfcb8c.1563015448.git.mprivozn@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1563015448.git.mprivozn@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 5/5] libvirt_nss: Report newer addresses first</title>
+<meta name="description" content="libvirt: [PATCH 5/5] libvirt_nss: Report newer addresses first">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 5/5] libvirt_nss: Report newer addresses first</h1>
+[<a href="msg187376.html">Date Prev</a>][<a href="msg187378.html">Date Next</a>][<a href="msg187390.html">Thread Prev</a>][<a href="msg187395.html">Thread Next</a>][<a href="maillist.html#187377">Date Index</a>][<a href="index.html#187377">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 5/5] libvirt_nss: Report newer addresses first</li>
+<li><em>From</em>: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Sat, 13 Jul 2019 12:58:38 +0200</li>
+<li><em>Cc</em>: abologna@xxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187373.html">cover.1563015448.git.mprivozn@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187373.html">cover.1563015448.git.mprivozn@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Ideally, a software that's translating domain names would iterate
+over all addresses the NSS returned, but some software does not
+bother (e.g. ping). What happens is that for instance when
+installing a guest, it's assigned one IP address but once it's
+installed and rebooted it gets a different IP address (because
+client ID used for the first DHCP traffic when installing the
+guest was generated dynamically and never saved so after reboot
+the guest generated new ID which resulted in different IP address
+to be assigned). This results in 'ping $domain' not working
+properly as it still pings the old IP address. Well, it might -
+NSS plugin does not guarantee any order of addresses.
+
+To resolve this problem, we can sort the array just before
+returning it to the caller (ping) so that the newer IP addresses
+come before older ones.
+
+Reported-by: Andrea Bolognani &lt;abologna@xxxxxxxxxx&gt;
+Signed-off-by: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;
+---
+ tests/nssdata/virbr0.status |  6 +++---
+ tests/nsstest.c             | 21 ++++++++-------------
+ tools/nss/libvirt_nss.c     | 30 ++++++++++++++++++++++++++++++
+ 3 files changed, 41 insertions(+), 16 deletions(-)
+
+diff --git a/tests/nssdata/virbr0.status b/tests/nssdata/virbr0.status
+index d040774269..783efb1dfb 100644
+--- a/tests/nssdata/virbr0.status
++++ b/tests/nssdata/virbr0.status
+@@ -3,19 +3,19 @@
+         &quot;ip-address&quot;: &quot;192.168.122.197&quot;,
+         &quot;mac-address&quot;: &quot;52:54:00:a4:6f:91&quot;,
+         &quot;hostname&quot;: &quot;fedora&quot;,
+-        &quot;expiry-time&quot;: 1900000000
++        &quot;expiry-time&quot;: 1900000003
+     },
+     {
+         &quot;ip-address&quot;: &quot;192.168.122.198&quot;,
+         &quot;mac-address&quot;: &quot;52:54:00:a4:6f:92&quot;,
+         &quot;hostname&quot;: &quot;fedora&quot;,
+-        &quot;expiry-time&quot;: 1900000000
++        &quot;expiry-time&quot;: 1900000002
+     },
+     {
+         &quot;ip-address&quot;: &quot;192.168.122.254&quot;,
+         &quot;mac-address&quot;: &quot;52:54:00:3a:b5:0c&quot;,
+         &quot;hostname&quot;: &quot;gentoo&quot;,
+-        &quot;expiry-time&quot;: 2000000000
++        &quot;expiry-time&quot;: 2000000001
+     },
+     {
+         &quot;ip-address&quot;: &quot;192.168.122.2&quot;,
+diff --git a/tests/nsstest.c b/tests/nsstest.c
+index d43c59c4a2..4118c31cef 100644
+--- a/tests/nsstest.c
++++ b/tests/nsstest.c
+@@ -46,7 +46,7 @@ testGetHostByName(const void *opaque)
+     char buf[BUF_SIZE] = { 0 };
+     char **addrList;
+     int rv, tmp_errno = 0, tmp_herrno = 0;
+-    size_t i = 0, j = 0;
++    size_t i = 0;
+ 
+     memset(&amp;resolved, 0, sizeof(resolved));
+ 
+@@ -117,6 +117,7 @@ testGetHostByName(const void *opaque)
+     }
+ 
+     addrList = resolved.h_addr_list;
++    i = 0;
+     while (*addrList) {
+         virSocketAddr sa;
+         char *ipAddr;
+@@ -135,14 +136,10 @@ testGetHostByName(const void *opaque)
+             goto cleanup;
+         }
+ 
+-        for (j = 0; data-&gt;ipAddr[j]; j++) {
+-            if (STREQ(data-&gt;ipAddr[j], ipAddr))
+-                break;
+-        }
+-
+-        if (!data-&gt;ipAddr[j]) {
++        if (STRNEQ_NULLABLE(data-&gt;ipAddr[i], ipAddr)) {
+             virReportError(VIR_ERR_INTERNAL_ERROR,
+-                           &quot;Unexpected address %s&quot;, ipAddr);
++                           &quot;Unexpected address %s, expecting %s&quot;,
++                           ipAddr, NULLSTR(data-&gt;ipAddr[i]));
+             VIR_FREE(ipAddr);
+             goto cleanup;
+         }
+@@ -152,12 +149,10 @@ testGetHostByName(const void *opaque)
+         i++;
+     }
+ 
+-    for (j = 0; data-&gt;ipAddr[j]; j++)
+-        ;
+-
+-    if (i != j) {
++    if (data-&gt;ipAddr[i]) {
+         virReportError(VIR_ERR_INTERNAL_ERROR,
+-                       &quot;Expected %zu addresses, got %zu&quot;, j, i);
++                       &quot;Expected %s address, got NULL&quot;,
++                       data-&gt;ipAddr[i]);
+         goto cleanup;
+     }
+ 
+diff --git a/tools/nss/libvirt_nss.c b/tools/nss/libvirt_nss.c
+index b0e118bf37..519046a4e0 100644
+--- a/tools/nss/libvirt_nss.c
++++ b/tools/nss/libvirt_nss.c
+@@ -76,9 +76,29 @@ do { \
+ typedef struct {
+     unsigned char addr[16];
+     int af;
++    long long expirytime;
+ } leaseAddress;
+ 
+ 
++static int
++leaseAddressSorter(const void *a,
++                   const void *b)
++{
++    const leaseAddress *la = a;
++    const leaseAddress *lb = b;
++
++    return lb-&gt;expirytime - la-&gt;expirytime;
++}
++
++
++static void
++sortAddr(leaseAddress *tmpAddress,
++         size_t ntmpAddress)
++{
++    qsort(tmpAddress, ntmpAddress, sizeof(*tmpAddress), leaseAddressSorter);
++}
++
++
+ static int
+ appendAddr(const char *name ATTRIBUTE_UNUSED,
+            leaseAddress **tmpAddress,
+@@ -89,6 +109,7 @@ appendAddr(const char *name ATTRIBUTE_UNUSED,
+     const char *ipAddr;
+     virSocketAddr sa;
+     int family;
++    long long expirytime;
+     size_t i;
+ 
+     if (!(ipAddr = virJSONValueObjectGetString(lease, &quot;ip-address&quot;))) {
+@@ -109,6 +130,12 @@ appendAddr(const char *name ATTRIBUTE_UNUSED,
+         return 0;
+     }
+ 
++    if (virJSONValueObjectGetNumberLong(lease, &quot;expiry-time&quot;, &amp;expirytime) &lt; 0) {
++        /* A lease cannot be present without expiry-time */
++        ERROR(&quot;expiry-time field missing for %s&quot;, name);
++        return -1;
++    }
++
+     for (i = 0; i &lt; *ntmpAddress; i++) {
+         if (memcmp((*tmpAddress)[i].addr,
+                    (family == AF_INET ?
+@@ -125,6 +152,7 @@ appendAddr(const char *name ATTRIBUTE_UNUSED,
+         return -1;
+     }
+ 
++    (*tmpAddress)[*ntmpAddress].expirytime = expirytime;
+     (*tmpAddress)[*ntmpAddress].af = family;
+     memcpy((*tmpAddress)[*ntmpAddress].addr,
+            (family == AF_INET ?
+@@ -325,6 +353,8 @@ findLease(const char *name,
+ 
+ #endif /* defined(LIBVIRT_NSS_GUEST) */
+ 
++    sortAddr(tmpAddress, ntmpAddress);
++
+     VIR_STEAL_PTR(*address, tmpAddress);
+     *naddress = ntmpAddress;
+     ntmpAddress = 0;
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187376.html">[PATCH 1/5] libvirt_nss: Use VIR_STEAL_PTR() in	findLease()</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187378.html">[PATCH 3/5] libvirt_nss: Drop some needless cleanup labels</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187390.html">Re:  [PATCH 1/5] libvirt_nss: Use VIR_STEAL_PTR() in findLease()</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187395.html">Re:  [PATCH 5/5] libvirt_nss: Report newer addresses first</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187377"><strong>Date</strong></a></li>
+<li><a href="index.html#187377"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Enable &#45;&#45;force and &#45;&#45;backup arguments in	copyfile module -->
+<!--X-From-R13: [nephf Znhre &#60;znephfynhreNalp.ee.pbz> -->
+<!--X-Date: Tue, 14 Dec 2010 17:44:40 &#45;0800 -->
+<!--X-Message-Id: 201012142042.06617.marcuslauer@nyc.rr.com -->
+<!--X-Content-Type: multipart/mixed -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Universal Network Connector, [PATCH] Enable --force and --backup arguments in	copyfile module">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Fedora Universal Network Connector &mdash; [PATCH] Enable --force and --backup arguments in	copyfile module</title>
+<link rel="alternate" type="application/rss+xml" title="Fedora Universal Network Connector" href="//feeds.feedburner.com/FedoraUniversalNetworkConnector">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] Enable --force and --backup arguments in	copyfile module</h1>
+[<a href="msg01708.html">Date Prev</a>][<a href="msg01710.html">Date Next</a>][<a href="msg01708.html">Thread Prev</a>][<a href="msg01711.html">Thread Next</a>][<a href="maillist.html#01709">Date Index</a>][<a href="index.html#01709">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Enable --force and --backup arguments in	copyfile module</li>
+<li><em>From</em>: Marcus Lauer &lt;<a href="mailto:marcuslauer@DOMAIN.HIDDEN">marcuslauer@xxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Tue, 14 Dec 2010 20:42:06 -0500</li>
+<li><em>Reply-to</em>: <a href="mailto:marcuslauer@DOMAIN.HIDDEN">marcuslauer@xxxxxxxxxx</a></li>
+<li><em>User-agent</em>: KMail/1.13.3 (Linux/2.6.33.7-desktop-2mnb; KDE/4.4.3; x86_64; ; )</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>        This patch enables two options to copyfile: --force and --backup.  My 
+earlier patch from the e-mail entitled &quot;[PATCH] Add checksumming feature to 
+copyfile module&quot; must be applied to the func source before this patch is 
+applied.
+
+        My earlier patch caused func to calculate a checksum for the source 
+and target files (the latter only if it exists).  If the checksums are 
+identical then the target file is not overwritten.  The --force options skips 
+this check.  The checksum is not calculated on either the overlord or minion 
+and the target file will be overwritten even if it is identical to the source 
+file.
+
+        The --backup option creates a dated backup of the target file before 
+it is overwritten.  This takes advantage of the already-present _backuplocal 
+function in the CopyFile class.  The backup is only created prior to 
+overwriting the target file, e.g if the source and target checksums differ or 
+if --force is enabled.
+
+        It looks as though the original copyfile function of the CopyFile 
+class automatically did a backup every time.  Making a backup is not the 
+default in my code.
+
+--
+Marcus
+</pre><pre>diff -rupN func/func//minion/modules/copyfile.py func.new/func//minion/modules/copyfile.py
+--- func/func//minion/modules/copyfile.py	2010-12-14 19:16:55.000000000 -0500
++++ func.new/func//minion/modules/copyfile.py	2010-12-14 20:16:18.000000000 -0500
+@@ -59,16 +59,20 @@ class CopyFile(func_module.FuncModule):
+         hexdig = thissum.hexdigest()
+         return hexdig
+ 
+-    def open(self, filepath, remote_sum, mode=None, uid=-1, gid=-1):
++    def open(self, filepath, remote_sum, mode=None, uid=-1, gid=-1, backup=False, force=False):
+         dirpath = os.path.dirname(filepath)
+         if not os.path.exists(dirpath):
+             os.makedirs(dirpath)
+ 
+         if os.path.exists(filepath):
+-            local_sum = self.checksum(filepath)
++	    if not force:
++                local_sum = self.checksum(filepath)
++                if remote_sum == local_sum:
++                    return 0
+ 
+-	    if remote_sum == local_sum:
+-                return 0
++	    if backup:
++                if not self._backuplocal(filepath):
++                    return -1
+ 
+         # Create empty file
+         try:
+diff -rupN func/func//overlord/cmd_modules/copyfile.py func.new/func//overlord/cmd_modules/copyfile.py
+--- func/func//overlord/cmd_modules/copyfile.py	2010-12-14 19:16:37.000000000 -0500
++++ func.new/func//overlord/cmd_modules/copyfile.py	2010-12-14 19:09:38.000000000 -0500
+@@ -34,6 +34,8 @@ class CopyFile(base_command.BaseCommand)
+                                action=&quot;store&quot;)
+         self.parser.add_option(&quot;&quot;, &quot;--remotepath&quot;, dest=&quot;remotepath&quot;,
+                                 action=&quot;store&quot;)
++        self.parser.add_option(&quot;&quot;, &quot;--backup&quot;, dest=&quot;backup&quot;,
++                               action=&quot;store_true&quot;)
+         self.parser.add_option(&quot;&quot;, &quot;--force&quot;, dest=&quot;force&quot;,
+                                action=&quot;store_true&quot;)
+         self.parser.add_option(&quot;-v&quot;, &quot;--verbose&quot;, dest=&quot;verbose&quot;,
+@@ -50,4 +52,4 @@ class CopyFile(base_command.BaseCommand)
+         self.server_spec = self.parentCommand.server_spec
+         self.getOverlord()
+ 
+-        return self.overlord_obj.local.copyfile.send(self.options.filename, self.options.remotepath)
++        return self.overlord_obj.local.copyfile.send(self.options.filename, self.options.remotepath, self.options.backup, self.options.force)
+diff -rupN func/func//overlord/modules/copyfile.py func.new/func//overlord/modules/copyfile.py
+--- func/func//overlord/modules/copyfile.py	2010-12-14 19:16:55.000000000 -0500
++++ func.new/func//overlord/modules/copyfile.py	2010-12-14 20:17:23.000000000 -0500
+@@ -38,7 +38,7 @@ class copyfile(overlord_module.BaseModul
+         hexdig = thissum.hexdigest()
+         return hexdig
+ 
+-    def send(self, localpath, remotepath, bufsize=60000):
++    def send(self, localpath, remotepath, backup=None, force=None, bufsize=60000):
+         try:
+             f = open(localpath, &quot;r&quot;)
+         except IOError, e:
+@@ -49,9 +49,13 @@ class copyfile(overlord_module.BaseModul
+         mode = stat.S_IMODE(st.st_mode)
+         uid = st.st_uid
+         gid = st.st_gid
+-	local_sum = self.checksum(localpath)
+ 
+-        open_result = self.parent.run(&quot;copyfile&quot;, &quot;open&quot;, [remotepath, local_sum, mode, uid, gid])
++	if force:
++            local_sum = -1
++        else:
++            local_sum = self.checksum(localpath)
++
++        open_result = self.parent.run(&quot;copyfile&quot;, &quot;open&quot;, [remotepath, local_sum, mode, uid, gid, backup, force])
+ 
+         while True:
+             data=f.read(bufsize)
+</pre><pre>_______________________________________________
+Func-list mailing list
+Func-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/func-list">https://www.redhat.com/mailman/listinfo/func-list</a></pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01708.html">Func and OpenNode</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01710.html">Re:  Func and OpenNode</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01708.html">Func and OpenNode</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01711.html">func - security model</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01709"><strong>Date</strong></a></li>
+<li><a href="index.html#01709"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/netdev/>[Linux&nbsp;Networking]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fll/>[Fedora&nbsp;Legacy&nbsp;List]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z//biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

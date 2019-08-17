@@ -1,0 +1,512 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 1/3] configs: correct cpu accounting configuration -->
+<!--X-From-R13: Bnhy Pbyyr &#60;crobyyrNgvfpnyv.ay> -->
+<!--X-Date: Tue, 13 Nov 2018 08:57:45 &#45;0800 -->
+<!--X-Message-Id: 16d7b4e4c38422f5818367a8c487ccae780780c3.1542035702.git.pebolle@tiscali.nl -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1542035702.git.pebolle@tiscali.nl -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description content="[PATCH 1/3] configs: correct cpu accounting configuration &mdash; Fedora Linux Kernel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 1/3] configs: correct cpu accounting configuration &mdash; Fedora Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Fedora Linux Kernel" href="//feeds.feedburner.com/FedoraKernel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 1/3] configs: correct cpu accounting configuration</h1>
+[<a href="msg07341.html">Date Prev</a>][<a href="msg07343.html">Date Next</a>][<a href="msg07341.html">Thread Prev</a>][<a href="msg07344.html">Thread Next</a>][<a href="maillist.html#07342">Date Index</a>][<a href="index.html#07342">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 1/3] configs: correct cpu accounting configuration</li>
+<li><em>From</em>: Paul Bolle &lt;pebolle@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 13 Nov 2018 17:57:19 +0100</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg07343.html">cover.1542035702.git.pebolle@tiscali.nl</a>&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg07343.html">cover.1542035702.git.pebolle@tiscali.nl</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The shipped .config files all have CONFIG_TICK_CPU_ACCOUNTING and
+CONFIG_VIRT_CPU_ACCOUNTING_NATIVE set. The x86_64 .config files
+additionaly have CONFIG_VIRT_CPU_ACCOUNTING_GEN set.
+
+This is wrong because each .config should have just one of these three
+set. As a result the build generates
+    [...]:warning: override: VIRT_CPU_ACCOUNTING_NATIVE changes choice state
+
+24 times and
+    [...]:warning: override: VIRT_CPU_ACCOUNTING_GEN changes choice state
+
+4 times. So let's make sure the shipped .config files only have one of
+these three Kconfig macros set (ie, the one that's relevant for that
+.config target).
+
+Signed-off-by: Paul Bolle &lt;pebolle@xxxxxxxxxx&gt;
+---
+ configs/fedora/generic/CONFIG_VIRT_CPU_ACCOUNTING_NATIVE      | 2 +-
+ .../fedora/generic/powerpc/CONFIG_VIRT_CPU_ACCOUNTING_NATIVE  | 1 +
+ configs/fedora/generic/s390x/CONFIG_TICK_CPU_ACCOUNTING       | 1 +
+ .../fedora/generic/s390x/CONFIG_VIRT_CPU_ACCOUNTING_NATIVE    | 1 +
+ configs/fedora/generic/x86/x86_64/CONFIG_TICK_CPU_ACCOUNTING  | 1 +
+ kernel-aarch64-debug.config                                   | 2 +-
+ kernel-aarch64.config                                         | 2 +-
+ kernel-armv7hl-debug.config                                   | 2 +-
+ kernel-armv7hl-lpae-debug.config                              | 2 +-
+ kernel-armv7hl-lpae.config                                    | 2 +-
+ kernel-armv7hl.config                                         | 2 +-
+ kernel-i686-debug.config                                      | 2 +-
+ kernel-i686.config                                            | 2 +-
+ kernel-s390x-debug.config                                     | 2 +-
+ kernel-s390x.config                                           | 2 +-
+ kernel-x86_64-debug.config                                    | 4 ++--
+ kernel-x86_64.config                                          | 4 ++--
+ 17 files changed, 19 insertions(+), 15 deletions(-)
+ create mode 100644 configs/fedora/generic/powerpc/CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+ create mode 100644 configs/fedora/generic/s390x/CONFIG_TICK_CPU_ACCOUNTING
+ create mode 100644 configs/fedora/generic/s390x/CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+ create mode 100644 configs/fedora/generic/x86/x86_64/CONFIG_TICK_CPU_ACCOUNTING
+
+diff --git a/configs/fedora/generic/CONFIG_VIRT_CPU_ACCOUNTING_NATIVE b/configs/fedora/generic/CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+index ddcbbab11f1b..44cd250a7c26 100644
+--- a/configs/fedora/generic/CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
++++ b/configs/fedora/generic/CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+@@ -1 +1 @@
+-CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
++# CONFIG_VIRT_CPU_ACCOUNTING_NATIVE is not set
+diff --git a/configs/fedora/generic/powerpc/CONFIG_VIRT_CPU_ACCOUNTING_NATIVE b/configs/fedora/generic/powerpc/CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+new file mode 100644
+index 000000000000..ddcbbab11f1b
+--- /dev/null
++++ b/configs/fedora/generic/powerpc/CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+@@ -0,0 +1 @@
++CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
+diff --git a/configs/fedora/generic/s390x/CONFIG_TICK_CPU_ACCOUNTING b/configs/fedora/generic/s390x/CONFIG_TICK_CPU_ACCOUNTING
+new file mode 100644
+index 000000000000..c1c90776ed06
+--- /dev/null
++++ b/configs/fedora/generic/s390x/CONFIG_TICK_CPU_ACCOUNTING
+@@ -0,0 +1 @@
++# CONFIG_TICK_CPU_ACCOUNTING is not set
+diff --git a/configs/fedora/generic/s390x/CONFIG_VIRT_CPU_ACCOUNTING_NATIVE b/configs/fedora/generic/s390x/CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+new file mode 100644
+index 000000000000..ddcbbab11f1b
+--- /dev/null
++++ b/configs/fedora/generic/s390x/CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+@@ -0,0 +1 @@
++CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
+diff --git a/configs/fedora/generic/x86/x86_64/CONFIG_TICK_CPU_ACCOUNTING b/configs/fedora/generic/x86/x86_64/CONFIG_TICK_CPU_ACCOUNTING
+new file mode 100644
+index 000000000000..c1c90776ed06
+--- /dev/null
++++ b/configs/fedora/generic/x86/x86_64/CONFIG_TICK_CPU_ACCOUNTING
+@@ -0,0 +1 @@
++# CONFIG_TICK_CPU_ACCOUNTING is not set
+diff --git a/kernel-aarch64-debug.config b/kernel-aarch64-debug.config
+index 9b46a9fc6903..c4525217e399 100644
+--- a/kernel-aarch64-debug.config
++++ b/kernel-aarch64-debug.config
+@@ -6849,7 +6849,7 @@ CONFIG_VIDEO_V4L2_SUBDEV_API=y
+ # CONFIG_VIDEO_ZORAN is not set
+ # CONFIG_VIPERBOARD_ADC is not set
+ # CONFIG_VIRT_CPU_ACCOUNTING_GEN is not set
+-CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
++# CONFIG_VIRT_CPU_ACCOUNTING_NATIVE is not set
+ # CONFIG_VIRT_DRIVERS is not set
+ CONFIG_VIRTIO_BALLOON=m
+ CONFIG_VIRTIO_BLK=m
+diff --git a/kernel-aarch64.config b/kernel-aarch64.config
+index 85799ab098da..ac9a5d9f22bf 100644
+--- a/kernel-aarch64.config
++++ b/kernel-aarch64.config
+@@ -6826,7 +6826,7 @@ CONFIG_VIDEO_V4L2_SUBDEV_API=y
+ # CONFIG_VIDEO_ZORAN is not set
+ # CONFIG_VIPERBOARD_ADC is not set
+ # CONFIG_VIRT_CPU_ACCOUNTING_GEN is not set
+-CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
++# CONFIG_VIRT_CPU_ACCOUNTING_NATIVE is not set
+ # CONFIG_VIRT_DRIVERS is not set
+ CONFIG_VIRTIO_BALLOON=m
+ CONFIG_VIRTIO_BLK=m
+diff --git a/kernel-armv7hl-debug.config b/kernel-armv7hl-debug.config
+index 53c03b29554d..6f19a855fdad 100644
+--- a/kernel-armv7hl-debug.config
++++ b/kernel-armv7hl-debug.config
+@@ -7327,7 +7327,7 @@ CONFIG_VIDEO_V4L2_SUBDEV_API=y
+ # CONFIG_VIDEO_ZORAN is not set
+ # CONFIG_VIPERBOARD_ADC is not set
+ # CONFIG_VIRT_CPU_ACCOUNTING_GEN is not set
+-CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
++# CONFIG_VIRT_CPU_ACCOUNTING_NATIVE is not set
+ # CONFIG_VIRT_DRIVERS is not set
+ CONFIG_VIRTIO_BALLOON=m
+ CONFIG_VIRTIO_BLK=m
+diff --git a/kernel-armv7hl-lpae-debug.config b/kernel-armv7hl-lpae-debug.config
+index b21c4930a203..56f2d738d784 100644
+--- a/kernel-armv7hl-lpae-debug.config
++++ b/kernel-armv7hl-lpae-debug.config
+@@ -6885,7 +6885,7 @@ CONFIG_VIDEO_V4L2_SUBDEV_API=y
+ # CONFIG_VIDEO_ZORAN is not set
+ # CONFIG_VIPERBOARD_ADC is not set
+ # CONFIG_VIRT_CPU_ACCOUNTING_GEN is not set
+-CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
++# CONFIG_VIRT_CPU_ACCOUNTING_NATIVE is not set
+ # CONFIG_VIRT_DRIVERS is not set
+ CONFIG_VIRTIO_BALLOON=m
+ CONFIG_VIRTIO_BLK=m
+diff --git a/kernel-armv7hl-lpae.config b/kernel-armv7hl-lpae.config
+index 8ed390e0026f..2e61fcd3f35f 100644
+--- a/kernel-armv7hl-lpae.config
++++ b/kernel-armv7hl-lpae.config
+@@ -6863,7 +6863,7 @@ CONFIG_VIDEO_V4L2_SUBDEV_API=y
+ # CONFIG_VIDEO_ZORAN is not set
+ # CONFIG_VIPERBOARD_ADC is not set
+ # CONFIG_VIRT_CPU_ACCOUNTING_GEN is not set
+-CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
++# CONFIG_VIRT_CPU_ACCOUNTING_NATIVE is not set
+ # CONFIG_VIRT_DRIVERS is not set
+ CONFIG_VIRTIO_BALLOON=m
+ CONFIG_VIRTIO_BLK=m
+diff --git a/kernel-armv7hl.config b/kernel-armv7hl.config
+index 730a29f5d2dd..0abab63d2282 100644
+--- a/kernel-armv7hl.config
++++ b/kernel-armv7hl.config
+@@ -7305,7 +7305,7 @@ CONFIG_VIDEO_V4L2_SUBDEV_API=y
+ # CONFIG_VIDEO_ZORAN is not set
+ # CONFIG_VIPERBOARD_ADC is not set
+ # CONFIG_VIRT_CPU_ACCOUNTING_GEN is not set
+-CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
++# CONFIG_VIRT_CPU_ACCOUNTING_NATIVE is not set
+ # CONFIG_VIRT_DRIVERS is not set
+ CONFIG_VIRTIO_BALLOON=m
+ CONFIG_VIRTIO_BLK=m
+diff --git a/kernel-i686-debug.config b/kernel-i686-debug.config
+index cedf94274d9d..485a254951e1 100644
+--- a/kernel-i686-debug.config
++++ b/kernel-i686-debug.config
+@@ -6397,7 +6397,7 @@ CONFIG_VIDEO_VIA_CAMERA=m
+ # CONFIG_VIDEO_ZORAN is not set
+ # CONFIG_VIPERBOARD_ADC is not set
+ # CONFIG_VIRT_CPU_ACCOUNTING_GEN is not set
+-CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
++# CONFIG_VIRT_CPU_ACCOUNTING_NATIVE is not set
+ CONFIG_VIRT_DRIVERS=y
+ CONFIG_VIRTIO_BALLOON=m
+ CONFIG_VIRTIO_BLK=m
+diff --git a/kernel-i686.config b/kernel-i686.config
+index 77268ca04a20..2904e921a0b0 100644
+--- a/kernel-i686.config
++++ b/kernel-i686.config
+@@ -6375,7 +6375,7 @@ CONFIG_VIDEO_VIA_CAMERA=m
+ # CONFIG_VIDEO_ZORAN is not set
+ # CONFIG_VIPERBOARD_ADC is not set
+ # CONFIG_VIRT_CPU_ACCOUNTING_GEN is not set
+-CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
++# CONFIG_VIRT_CPU_ACCOUNTING_NATIVE is not set
+ CONFIG_VIRT_DRIVERS=y
+ CONFIG_VIRTIO_BALLOON=m
+ CONFIG_VIRTIO_BLK=m
+diff --git a/kernel-s390x-debug.config b/kernel-s390x-debug.config
+index 21c0d8c2b199..2cdf22b19146 100644
+--- a/kernel-s390x-debug.config
++++ b/kernel-s390x-debug.config
+@@ -5320,7 +5320,7 @@ CONFIG_THRUSTMASTER_FF=y
+ CONFIG_TI_ADS1015=m
+ # CONFIG_TI_ADS7950 is not set
+ # CONFIG_TI_ADS8688 is not set
+-CONFIG_TICK_CPU_ACCOUNTING=y
++# CONFIG_TICK_CPU_ACCOUNTING is not set
+ # CONFIG_TI_CPSW_ALE is not set
+ # CONFIG_TI_DAC082S085 is not set
+ # CONFIG_TI_DAC5571 is not set
+diff --git a/kernel-s390x.config b/kernel-s390x.config
+index 98db056dff7d..111e594d1caf 100644
+--- a/kernel-s390x.config
++++ b/kernel-s390x.config
+@@ -5296,7 +5296,7 @@ CONFIG_THRUSTMASTER_FF=y
+ CONFIG_TI_ADS1015=m
+ # CONFIG_TI_ADS7950 is not set
+ # CONFIG_TI_ADS8688 is not set
+-CONFIG_TICK_CPU_ACCOUNTING=y
++# CONFIG_TICK_CPU_ACCOUNTING is not set
+ # CONFIG_TI_CPSW_ALE is not set
+ # CONFIG_TI_DAC082S085 is not set
+ # CONFIG_TI_DAC5571 is not set
+diff --git a/kernel-x86_64-debug.config b/kernel-x86_64-debug.config
+index c13f760689b4..a6d918522b0d 100644
+--- a/kernel-x86_64-debug.config
++++ b/kernel-x86_64-debug.config
+@@ -5788,7 +5788,7 @@ CONFIG_THUNDERBOLT_NET=m
+ CONFIG_TI_ADS1015=m
+ # CONFIG_TI_ADS7950 is not set
+ # CONFIG_TI_ADS8688 is not set
+-CONFIG_TICK_CPU_ACCOUNTING=y
++# CONFIG_TICK_CPU_ACCOUNTING is not set
+ # CONFIG_TI_CPSW_ALE is not set
+ # CONFIG_TI_DAC082S085 is not set
+ # CONFIG_TI_DAC5571 is not set
+@@ -6436,7 +6436,7 @@ CONFIG_VIDEO_VIA_CAMERA=m
+ # CONFIG_VIDEO_ZORAN is not set
+ # CONFIG_VIPERBOARD_ADC is not set
+ CONFIG_VIRT_CPU_ACCOUNTING_GEN=y
+-CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
++# CONFIG_VIRT_CPU_ACCOUNTING_NATIVE is not set
+ CONFIG_VIRT_DRIVERS=y
+ CONFIG_VIRTIO_BALLOON=m
+ CONFIG_VIRTIO_BLK=m
+diff --git a/kernel-x86_64.config b/kernel-x86_64.config
+index d74202ec08e2..8d263b69d88c 100644
+--- a/kernel-x86_64.config
++++ b/kernel-x86_64.config
+@@ -5766,7 +5766,7 @@ CONFIG_THUNDERBOLT_NET=m
+ CONFIG_TI_ADS1015=m
+ # CONFIG_TI_ADS7950 is not set
+ # CONFIG_TI_ADS8688 is not set
+-CONFIG_TICK_CPU_ACCOUNTING=y
++# CONFIG_TICK_CPU_ACCOUNTING is not set
+ # CONFIG_TI_CPSW_ALE is not set
+ # CONFIG_TI_DAC082S085 is not set
+ # CONFIG_TI_DAC5571 is not set
+@@ -6414,7 +6414,7 @@ CONFIG_VIDEO_VIA_CAMERA=m
+ # CONFIG_VIDEO_ZORAN is not set
+ # CONFIG_VIPERBOARD_ADC is not set
+ CONFIG_VIRT_CPU_ACCOUNTING_GEN=y
+-CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
++# CONFIG_VIRT_CPU_ACCOUNTING_NATIVE is not set
+ CONFIG_VIRT_DRIVERS=y
+ CONFIG_VIRTIO_BALLOON=m
+ CONFIG_VIRTIO_BLK=m
+-- 
+2.17.2
+_______________________________________________
+kernel mailing list -- kernel@xxxxxxxxxxxxxxxxxxxxxxx
+To unsubscribe send an email to kernel-leave@xxxxxxxxxxxxxxxxxxxxxxx
+Fedora Code of Conduct: <a  rel="nofollow" href="https://getfedora.org/code-of-conduct.html">https://getfedora.org/code-of-conduct.html</a>
+List Guidelines: <a  rel="nofollow" href="https://fedoraproject.org/wiki/Mailing_list_guidelines">https://fedoraproject.org/wiki/Mailing_list_guidelines</a>
+List Archives: <a  rel="nofollow" href="https://lists.fedoraproject.org/archives/list/kernel@xxxxxxxxxxxxxxxxxxxxxxx">https://lists.fedoraproject.org/archives/list/kernel@xxxxxxxxxxxxxxxxxxxxxxx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="07343" href="msg07343.html">[PATCH 0/3] Fix all Kconfig &quot;override&quot; warnings</a></strong>
+<ul><li><em>From:</em> Paul Bolle</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07341.html">[PATCH 2/3] configs: correct memory configuration</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07343.html">[PATCH 0/3] Fix all Kconfig &quot;override&quot; warnings</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07341.html">[PATCH 2/3] configs: correct memory configuration</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07344.html">[PATCH 3/3] configs: use CONFIG_UNWINDER_ORC only in x86/x86_64</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07342"><strong>Date</strong></a></li>
+<li><a href="index.html#07342"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;General&nbsp;Discussion]</a>
+&nbsp;
+&nbsp;
+<a href=http://lists.linuxcoding.com/rhl/>[Older&nbsp;Fedora&nbsp;Users&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-advisory-board/>[Fedora&nbsp;Advisory&nbsp;Board]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-security/>[Fedora&nbsp;Security]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-devel-java/>[Fedora&nbsp;Devel&nbsp;Java]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-legacy/>[Fedora&nbsp;Legacy]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ataraid/>[ATA&nbsp;RAID]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-marketing/>[Fedora&nbsp;Marketing]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-mentors/>[Fedora&nbsp;Mentors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-package-announce/>[Fedora&nbsp;Package&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-package-review/>[Fedora&nbsp;Package&nbsp;Review]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-music/>[Fedora&nbsp;Music]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-packaging/>[Fedora&nbsp;Packaging]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos/>[Centos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/coolkey/>[Coolkey]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/yum/>[Yum&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/tux/>[Tux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-art/>[Fedora&nbsp;Art]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-docs/>[Fedora&nbsp;Docs]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[USB]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

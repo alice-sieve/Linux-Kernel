@@ -1,0 +1,500 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 3/3] drm/sun4i: sun8i&#45;csc: Add support for color encoding and range -->
+<!--X-From-R13: Xrearw Exenorp &#60;wrearw.fxenorpNfvby.arg> -->
+<!--X-Date: Sat, 13 Jul 2019 05:06:57 &#45;0700 -->
+<!--X-Message-Id: 20190713120346.30349&#45;4&#45;jernej.skrabec@siol.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190713120346.30349&#45;1&#45;jernej.skrabec@siol.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH 3/3] drm/sun4i: sun8i-csc: Add support for color encoding and range">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH 3/3] drm/sun4i: sun8i-csc: Add support for color encoding and range &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH 3/3] drm/sun4i: sun8i-csc: Add support for color encoding and range</h1>
+[<a href="msg741015.html">Date Prev</a>][<a href="msg741017.html">Date Next</a>][<a href="msg741014.html">Thread Prev</a>][<a href="msg742022.html">Thread Next</a>][<a href="mail2.html#741016">Date Index</a>][<a href="threads.html#741016">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 3/3] drm/sun4i: sun8i-csc: Add support for color encoding and range</li>
+<li><em>From</em>: Jernej Skrabec &lt;jernej.skrabec@xxxxxxxx&gt;</li>
+<li><em>Date</em>: Sat, 13 Jul 2019 14:03:46 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg741015.html">20190713120346.30349-1-jernej.skrabec@siol.net</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Conversion from YUV to RGB depends on range (limited or full) and
+encoding (BT.601 or BT.709). Current code doesn't consider this and
+always uses BT.601 encoding and limited range.
+
+Fix this by introducing new CSC matrices, which are selected based on
+range and encoding parameters.
+
+Signed-off-by: Jernej Skrabec &lt;jernej.skrabec@xxxxxxxx&gt;
+---
+ drivers/gpu/drm/sun4i/sun8i_csc.c      | 144 ++++++++++++++++++++-----
+ drivers/gpu/drm/sun4i/sun8i_csc.h      |   6 +-
+ drivers/gpu/drm/sun4i/sun8i_vi_layer.c |   4 +-
+ 3 files changed, 126 insertions(+), 28 deletions(-)
+
+diff --git a/drivers/gpu/drm/sun4i/sun8i_csc.c b/drivers/gpu/drm/sun4i/sun8i_csc.c
+index e07b7876d89b..70c792d052fe 100644
+--- a/drivers/gpu/drm/sun4i/sun8i_csc.c
++++ b/drivers/gpu/drm/sun4i/sun8i_csc.c
+@@ -18,16 +18,59 @@ static const u32 ccsc_base[2][2] = {
+  * First tree values in each line are multiplication factor and last
+  * value is constant, which is added at the end.
+  */
+-static const u32 yuv2rgb[] = {
+-	0x000004A8, 0x00000000, 0x00000662, 0xFFFC845A,
+-	0x000004A8, 0xFFFFFE6F, 0xFFFFFCBF, 0x00021DF4,
+-	0x000004A8, 0x00000813, 0x00000000, 0xFFFBAC4A,
++
++static const u32 yuv2rgb[2][2][12] = {
++	[DRM_COLOR_YCBCR_LIMITED_RANGE] = {
++		[DRM_COLOR_YCBCR_BT601] = {
++			0x000004A8, 0x00000000, 0x00000662, 0xFFFC8451,
++			0x000004A8, 0xFFFFFE6F, 0xFFFFFCC0, 0x00021E4D,
++			0x000004A8, 0x00000811, 0x00000000, 0xFFFBACA9,
++		},
++		[DRM_COLOR_YCBCR_BT709] = {
++			0x000004A8, 0x00000000, 0x0000072B, 0xFFFC1F99,
++			0x000004A8, 0xFFFFFF26, 0xFFFFFDDF, 0x00013383,
++			0x000004A8, 0x00000873, 0x00000000, 0xFFFB7BEF,
++		}
++	},
++	[DRM_COLOR_YCBCR_FULL_RANGE] = {
++		[DRM_COLOR_YCBCR_BT601] = {
++			0x00000400, 0x00000000, 0x0000059B, 0xFFFD322E,
++			0x00000400, 0xFFFFFEA0, 0xFFFFFD25, 0x00021DD5,
++			0x00000400, 0x00000716, 0x00000000, 0xFFFC74BD,
++		},
++		[DRM_COLOR_YCBCR_BT709] = {
++			0x00000400, 0x00000000, 0x0000064C, 0xFFFCD9B4,
++			0x00000400, 0xFFFFFF41, 0xFFFFFE21, 0x00014F96,
++			0x00000400, 0x0000076C, 0x00000000, 0xFFFC49EF,
++		}
++	},
+ };
+ 
+-static const u32 yvu2rgb[] = {
+-	0x000004A8, 0x00000662, 0x00000000, 0xFFFC845A,
+-	0x000004A8, 0xFFFFFCBF, 0xFFFFFE6F, 0x00021DF4,
+-	0x000004A8, 0x00000000, 0x00000813, 0xFFFBAC4A,
++static const u32 yvu2rgb[2][2][12] = {
++	[DRM_COLOR_YCBCR_LIMITED_RANGE] = {
++		[DRM_COLOR_YCBCR_BT601] = {
++			0x000004A8, 0x00000662, 0x00000000, 0xFFFC8451,
++			0x000004A8, 0xFFFFFCC0, 0xFFFFFE6F, 0x00021E4D,
++			0x000004A8, 0x00000000, 0x00000811, 0xFFFBACA9,
++		},
++		[DRM_COLOR_YCBCR_BT709] = {
++			0x000004A8, 0x0000072B, 0x00000000, 0xFFFC1F99,
++			0x000004A8, 0xFFFFFDDF, 0xFFFFFF26, 0x00013383,
++			0x000004A8, 0x00000000, 0x00000873, 0xFFFB7BEF,
++		}
++	},
++	[DRM_COLOR_YCBCR_FULL_RANGE] = {
++		[DRM_COLOR_YCBCR_BT601] = {
++			0x00000400, 0x0000059B, 0x00000000, 0xFFFD322E,
++			0x00000400, 0xFFFFFD25, 0xFFFFFEA0, 0x00021DD5,
++			0x00000400, 0x00000000, 0x00000716, 0xFFFC74BD,
++		},
++		[DRM_COLOR_YCBCR_BT709] = {
++			0x00000400, 0x0000064C, 0x00000000, 0xFFFCD9B4,
++			0x00000400, 0xFFFFFE21, 0xFFFFFF41, 0x00014F96,
++			0x00000400, 0x00000000, 0x0000076C, 0xFFFC49EF,
++		}
++	},
+ };
+ 
+ /*
+@@ -53,30 +96,74 @@ static const u32 yvu2rgb[] = {
+  * c20 c21 c22 [d2 const2]
+  */
+ 
+-static const u32 yuv2rgb_de3[] = {
+-	0x0002542a, 0x00000000, 0x0003312a, 0xffc00000,
+-	0x0002542a, 0xffff376b, 0xfffe5fc3, 0xfe000000,
+-	0x0002542a, 0x000408d3, 0x00000000, 0xfe000000,
++static const u32 yuv2rgb_de3[2][2][12] = {
++	[DRM_COLOR_YCBCR_LIMITED_RANGE] = {
++		[DRM_COLOR_YCBCR_BT601] = {
++			0x0002542A, 0x00000000, 0x0003312A, 0xFFC00000,
++			0x0002542A, 0xFFFF376B, 0xFFFE5FC3, 0xFE000000,
++			0x0002542A, 0x000408D2, 0x00000000, 0xFE000000,
++		},
++		[DRM_COLOR_YCBCR_BT709] = {
++			0x0002542A, 0x00000000, 0x000395E2, 0xFFC00000,
++			0x0002542A, 0xFFFF92D2, 0xFFFEEF27, 0xFE000000,
++			0x0002542A, 0x0004398C, 0x00000000, 0xFE000000,
++		}
++	},
++	[DRM_COLOR_YCBCR_FULL_RANGE] = {
++		[DRM_COLOR_YCBCR_BT601] = {
++			0x00020000, 0x00000000, 0x0002CDD2, 0x00000000,
++			0x00020000, 0xFFFF4FCE, 0xFFFE925D, 0xFE000000,
++			0x00020000, 0x00038B43, 0x00000000, 0xFE000000,
++		},
++		[DRM_COLOR_YCBCR_BT709] = {
++			0x00020000, 0x00000000, 0x0003264C, 0x00000000,
++			0x00020000, 0xFFFFA018, 0xFFFF1053, 0xFE000000,
++			0x00020000, 0x0003B611, 0x00000000, 0xFE000000,
++		}
++	},
+ };
+ 
+-static const u32 yvu2rgb_de3[] = {
+-	0x0002542a, 0x0003312a, 0x00000000, 0xffc00000,
+-	0x0002542a, 0xfffe5fc3, 0xffff376b, 0xfe000000,
+-	0x0002542a, 0x00000000, 0x000408d3, 0xfe000000,
++static const u32 yvu2rgb_de3[2][2][12] = {
++	[DRM_COLOR_YCBCR_LIMITED_RANGE] = {
++		[DRM_COLOR_YCBCR_BT601] = {
++			0x0002542A, 0x0003312A, 0x00000000, 0xFFC00000,
++			0x0002542A, 0xFFFE5FC3, 0xFFFF376B, 0xFE000000,
++			0x0002542A, 0x00000000, 0x000408D2, 0xFE000000,
++		},
++		[DRM_COLOR_YCBCR_BT709] = {
++			0x0002542A, 0x000395E2, 0x00000000, 0xFFC00000,
++			0x0002542A, 0xFFFEEF27, 0xFFFF92D2, 0xFE000000,
++			0x0002542A, 0x00000000, 0x0004398C, 0xFE000000,
++		}
++	},
++	[DRM_COLOR_YCBCR_FULL_RANGE] = {
++		[DRM_COLOR_YCBCR_BT601] = {
++			0x00020000, 0x0002CDD2, 0x00000000, 0x00000000,
++			0x00020000, 0xFFFE925D, 0xFFFF4FCE, 0xFE000000,
++			0x00020000, 0x00000000, 0x00038B43, 0xFE000000,
++		},
++		[DRM_COLOR_YCBCR_BT709] = {
++			0x00020000, 0x0003264C, 0x00000000, 0x00000000,
++			0x00020000, 0xFFFF1053, 0xFFFFA018, 0xFE000000,
++			0x00020000, 0x00000000, 0x0003B611, 0xFE000000,
++		}
++	},
+ };
+ 
+ static void sun8i_csc_set_coefficients(struct regmap *map, u32 base,
+-				       enum sun8i_csc_mode mode)
++				       enum sun8i_csc_mode mode,
++				       enum drm_color_encoding encoding,
++				       enum drm_color_range range)
+ {
+ 	const u32 *table;
+ 	u32 base_reg;
+ 
+ 	switch (mode) {
+ 	case SUN8I_CSC_MODE_YUV2RGB:
+-		table = yuv2rgb;
++		table = yuv2rgb[range][encoding];
+ 		break;
+ 	case SUN8I_CSC_MODE_YVU2RGB:
+-		table = yvu2rgb;
++		table = yvu2rgb[range][encoding];
+ 		break;
+ 	default:
+ 		DRM_WARN(&quot;Wrong CSC mode specified.\n&quot;);
+@@ -88,17 +175,19 @@ static void sun8i_csc_set_coefficients(struct regmap *map, u32 base,
+ }
+ 
+ static void sun8i_de3_ccsc_set_coefficients(struct regmap *map, int layer,
+-					    enum sun8i_csc_mode mode)
++					    enum sun8i_csc_mode mode,
++					    enum drm_color_encoding encoding,
++					    enum drm_color_range range)
+ {
+ 	const u32 *table;
+ 	u32 base_reg;
+ 
+ 	switch (mode) {
+ 	case SUN8I_CSC_MODE_YUV2RGB:
+-		table = yuv2rgb_de3;
++		table = yuv2rgb_de3[range][encoding];
+ 		break;
+ 	case SUN8I_CSC_MODE_YVU2RGB:
+-		table = yvu2rgb_de3;
++		table = yvu2rgb_de3[range][encoding];
+ 		break;
+ 	default:
+ 		DRM_WARN(&quot;Wrong CSC mode specified.\n&quot;);
+@@ -137,19 +226,22 @@ static void sun8i_de3_ccsc_enable(struct regmap *map, int layer, bool enable)
+ }
+ 
+ void sun8i_csc_set_ccsc_coefficients(struct sun8i_mixer *mixer, int layer,
+-				     enum sun8i_csc_mode mode)
++				     enum sun8i_csc_mode mode,
++				     enum drm_color_encoding encoding,
++				     enum drm_color_range range)
+ {
+ 	u32 base;
+ 
+ 	if (mixer-&gt;cfg-&gt;is_de3) {
+-		sun8i_de3_ccsc_set_coefficients(mixer-&gt;engine.regs,
+-						layer, mode);
++		sun8i_de3_ccsc_set_coefficients(mixer-&gt;engine.regs, layer,
++						mode, encoding, range);
+ 		return;
+ 	}
+ 
+ 	base = ccsc_base[mixer-&gt;cfg-&gt;ccsc][layer];
+ 
+-	sun8i_csc_set_coefficients(mixer-&gt;engine.regs, base, mode);
++	sun8i_csc_set_coefficients(mixer-&gt;engine.regs, base,
++				   mode, encoding, range);
+ }
+ 
+ void sun8i_csc_enable_ccsc(struct sun8i_mixer *mixer, int layer, bool enable)
+diff --git a/drivers/gpu/drm/sun4i/sun8i_csc.h b/drivers/gpu/drm/sun4i/sun8i_csc.h
+index dce4c444bcd6..f42441b1b14d 100644
+--- a/drivers/gpu/drm/sun4i/sun8i_csc.h
++++ b/drivers/gpu/drm/sun4i/sun8i_csc.h
+@@ -6,6 +6,8 @@
+ #ifndef _SUN8I_CSC_H_
+ #define _SUN8I_CSC_H_
+ 
++#include &lt;drm/drm_color_mgmt.h&gt;
++
+ struct sun8i_mixer;
+ 
+ /* VI channel CSC units offsets */
+@@ -26,7 +28,9 @@ enum sun8i_csc_mode {
+ };
+ 
+ void sun8i_csc_set_ccsc_coefficients(struct sun8i_mixer *mixer, int layer,
+-				     enum sun8i_csc_mode mode);
++				     enum sun8i_csc_mode mode,
++				     enum drm_color_encoding encoding,
++				     enum drm_color_range range);
+ void sun8i_csc_enable_ccsc(struct sun8i_mixer *mixer, int layer, bool enable);
+ 
+ #endif
+diff --git a/drivers/gpu/drm/sun4i/sun8i_vi_layer.c b/drivers/gpu/drm/sun4i/sun8i_vi_layer.c
+index 240a800217df..011924a75263 100644
+--- a/drivers/gpu/drm/sun4i/sun8i_vi_layer.c
++++ b/drivers/gpu/drm/sun4i/sun8i_vi_layer.c
+@@ -232,7 +232,9 @@ static int sun8i_vi_layer_update_formats(struct sun8i_mixer *mixer, int channel,
+ 			   SUN8I_MIXER_CHAN_VI_LAYER_ATTR_FBFMT_MASK, val);
+ 
+ 	if (fmt_info-&gt;csc != SUN8I_CSC_MODE_OFF) {
+-		sun8i_csc_set_ccsc_coefficients(mixer, channel, fmt_info-&gt;csc);
++		sun8i_csc_set_ccsc_coefficients(mixer, channel, fmt_info-&gt;csc,
++						state-&gt;color_encoding,
++						state-&gt;color_range);
+ 		sun8i_csc_enable_ccsc(mixer, channel, true);
+ 	} else {
+ 		sun8i_csc_enable_ccsc(mixer, channel, false);
+-- 
+2.22.0
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="741015" href="msg741015.html">[PATCH 0/3] drm/sun4i: Add support for color encoding and range</a></strong>
+<ul><li><em>From:</em> Jernej Skrabec</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741015.html">[PATCH 0/3] drm/sun4i: Add support for color encoding and range</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741017.html">[PATCH] tracing/fgraph: support recording function return values</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741014.html">[PATCH 2/3] drm/sun4i: sun8i_csc: Simplify register writes</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg742022.html">Re: [PATCH 0/3] drm/sun4i: Add support for color encoding and range</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="mail2.html#741016"><strong>Date</strong></a></li>
+<li><a href="threads.html#741016"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

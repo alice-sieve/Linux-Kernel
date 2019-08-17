@@ -1,0 +1,258 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v3 0/5] Add HDMI jack support on RK3288 -->
+<!--X-From-R13: Qurat&#45;Kv Quvnat &#60;plpuvnatNpuebzvhz.bet> -->
+<!--X-Date: Fri, 12 Jul 2019 03:05:56 &#45;0700 -->
+<!--X-Message-Id: 20190712100443.221322&#45;1&#45;cychiang@chromium.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH v3 0/5] Add HDMI jack support on RK3288 &mdash; ALSA Devel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH v3 0/5] Add HDMI jack support on RK3288 &mdash; ALSA Devel</title>
+<link rel="alternate" type="application/rss+xml" title="ALSA Devel" href="//feedproxy.google.com/AlsaDevel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v3 0/5] Add HDMI jack support on RK3288</h1>
+[<a href="msg93737.html">Date Prev</a>][<a href="msg93739.html">Date Next</a>][<a href="msg93737.html">Thread Prev</a>][<a href="msg93739.html">Thread Next</a>][<a href="maillist.html#93738">Date Index</a>][<a href="threads.html#93738">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: linux-kernel@xxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH v3 0/5] Add HDMI jack support on RK3288</li>
+<li><em>From</em>: Cheng-Yi Chiang &lt;cychiang@xxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 12 Jul 2019 18:04:38 +0800</li>
+<li><em>Cc</em>: alsa-devel@xxxxxxxxxxxxxxxx, dianders@xxxxxxxxxxxx,        Heiko Stuebner &lt;heiko@xxxxxxxxx&gt;, linux-rockchip@xxxxxxxxxxxxxxxxxxx,        David Airlie &lt;airlied@xxxxxxxx&gt;, dri-devel@xxxxxxxxxxxxxxxxxxxxx,        Takashi Iwai &lt;tiwai@xxxxxxxx&gt;, Liam Girdwood &lt;lgirdwood@xxxxxxxxx&gt;,        tzungbi@xxxxxxxxxxxx, Hans Verkuil &lt;hverkuil@xxxxxxxxx&gt;,        Andrzej Hajda &lt;a.hajda@xxxxxxxxxxx&gt;,        Russell King &lt;rmk+kernel@xxxxxxxxxxxxxxx&gt;,        Mark Brown &lt;broonie@xxxxxxxxxx&gt;,        Laurent Pinchart &lt;Laurent.pinchart@xxxxxxxxxxxxxxxx&gt;,        Daniel Vetter &lt;daniel@xxxxxxxx&gt;, dgreid@xxxxxxxxxxxx,        linux-arm-kernel@xxxxxxxxxxxxxxxxxxx,        Cheng-Yi Chiang &lt;cychiang@xxxxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This patch series supports HDMI jack reporting on RK3288, which uses
+DRM dw-hdmi driver and hdmi-codec codec driver.
+
+The previous discussion about reporting jack status using hdmi-notifier
+and drm_audio_component is at
+
+<a  rel="nofollow" href="https://lore.kernel.org/patchwork/patch/1083027/">https://lore.kernel.org/patchwork/patch/1083027/</a>
+
+The new approach is to use a callback mechanism that is
+specific to hdmi-codec.
+
+Changes from v2 to v3:
+- dw-hdmi-i2s-audio.c: Use fixed ID instead of auto ID.
+- rk3288_hdmi_analog.c: Use the fixed name hdmi-audio-codec for codec device.
+- rockchip_max98090: Use the fixed name hdmi-audio-codec for codec device.
+- rockchip_max98090: Fix the dependency of hdmi-codec in Kconfig.
+
+Cheng-Yi Chiang (5):
+  ASoC: hdmi-codec: Add an op to set callback function for plug event
+  drm: bridge: dw-hdmi: Report connector status using callback
+  drm: dw-hdmi-i2s: Use fixed id for codec device
+  ASoC: rockchip_max98090: Add dai_link for HDMI
+  FROMLIST: ASoC: rockchip_max98090: Add HDMI jack support
+
+ .../gpu/drm/bridge/synopsys/dw-hdmi-audio.h   |   3 +
+ .../drm/bridge/synopsys/dw-hdmi-i2s-audio.c   |  12 +-
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c     |  55 ++++++++-
+ include/sound/hdmi-codec.h                    |  16 +++
+ sound/soc/codecs/hdmi-codec.c                 |  45 +++++++
+ sound/soc/rockchip/Kconfig                    |   3 +-
+ sound/soc/rockchip/rk3288_hdmi_analog.c       |   3 +-
+ sound/soc/rockchip/rockchip_max98090.c        | 116 ++++++++++++++----
+ 8 files changed, 226 insertions(+), 27 deletions(-)
+
+-- 
+2.22.0.510.g264f2c817a-goog
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@xxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://mailman.alsa-project.org/mailman/listinfo/alsa-devel">https://mailman.alsa-project.org/mailman/listinfo/alsa-devel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="93743" href="msg93743.html">[PATCH v3 5/5] FROMLIST: ASoC: rockchip_max98090: Add	HDMI jack support</a></strong>
+<ul><li><em>From:</em> Cheng-Yi Chiang</li></ul></li>
+<li><strong><a name="93742" href="msg93742.html">[PATCH v3 4/5] ASoC: rockchip_max98090: Add dai_link	for HDMI</a></strong>
+<ul><li><em>From:</em> Cheng-Yi Chiang</li></ul></li>
+<li><strong><a name="93741" href="msg93741.html">[PATCH v3 3/5] drm: dw-hdmi-i2s: Use fixed id for	codec device</a></strong>
+<ul><li><em>From:</em> Cheng-Yi Chiang</li></ul></li>
+<li><strong><a name="93740" href="msg93740.html">[PATCH v3 2/5] drm: bridge: dw-hdmi: Report connector	status using callback</a></strong>
+<ul><li><em>From:</em> Cheng-Yi Chiang</li></ul></li>
+<li><strong><a name="93739" href="msg93739.html">[PATCH v3 1/5] ASoC: hdmi-codec: Add an op to set	callback function for plug event</a></strong>
+<ul><li><em>From:</em> Cheng-Yi Chiang</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg93737.html">[PATCH] ASoC: audio-graph-card: fix type mismatch	warning</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg93739.html">[PATCH v3 1/5] ASoC: hdmi-codec: Add an op to set	callback function for plug event</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg93737.html">[PATCH] ASoC: audio-graph-card: fix type mismatch	warning</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg93739.html">[PATCH v3 1/5] ASoC: hdmi-codec: Add an op to set	callback function for plug event</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#93738"><strong>Date</strong></a></li>
+<li><a href="threads.html#93738"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/alsa-user/>[ALSA&nbsp;User]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/pulse-audio/>[Pulse&nbsp;Audio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=http://yosemitephotos.net/>[Photo&nbsp;Sharing]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/linux-sound/>[Linux&nbsp;Sound]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-media/>[Video&nbsp;4&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gimp/>[Gimp]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

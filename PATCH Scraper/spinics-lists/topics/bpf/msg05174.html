@@ -1,0 +1,485 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH RFC 2/4] trace/bpf: Add support for attach/detach of ftrace events to BPF -->
+<!--X-From-R13: "Xbry Treanaqrf (Ubbtyr)" &#60;wbryNwbrysreanaqrf.bet> -->
+<!--X-Date: Wed, 10 Jul 2019 07:17:41 &#45;0700 -->
+<!--X-Message-Id: 20190710141548.132193&#45;3&#45;joel@joelfernandes.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190710141548.132193&#45;1&#45;joel@joelfernandes.org -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BPF: [PATCH RFC 2/4] trace/bpf: Add support for attach/detach of ftrace events to BPF">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH RFC 2/4] trace/bpf: Add support for attach/detach of ftrace events to BPF &mdash; BPF</title>
+<link rel="alternate" type="application/rss+xml" title="BPF" href="//feeds.feedburner.com/packetfilters">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH RFC 2/4] trace/bpf: Add support for attach/detach of ftrace events to BPF</h1>
+[<a href="msg05173.html">Date Prev</a>][<a href="msg05171.html">Date Next</a>][<a href="msg05173.html">Thread Prev</a>][<a href="msg05171.html">Thread Next</a>][<a href="maillist.html#05174">Date Index</a>][<a href="index.html#05174">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH RFC 2/4] trace/bpf: Add support for attach/detach of ftrace events to BPF</li>
+<li><em>From</em>: &quot;Joel Fernandes (Google)&quot; &lt;joel@xxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 10 Jul 2019 10:15:46 -0400</li>
+<li><em>Cc</em>: &quot;Joel Fernandes (Google)&quot; &lt;joel@xxxxxxxxxxxxxxxxx&gt;,        Adrian Ratiu &lt;adrian.ratiu@xxxxxxxxxxxxx&gt;,        Alexei Starovoitov &lt;ast@xxxxxxxxxx&gt;, bpf@xxxxxxxxxxxxxxx,        Brendan Gregg &lt;brendan.d.gregg@xxxxxxxxx&gt;, connoro@xxxxxxxxxx,        Daniel Borkmann &lt;daniel@xxxxxxxxxxxxx&gt;,        duyuchao &lt;yuchao.du@xxxxxxxxxx&gt;, Ingo Molnar &lt;mingo@xxxxxxxxxx&gt;,        jeffv@xxxxxxxxxx, Karim Yaghmour &lt;karim.yaghmour@xxxxxxxxxxx&gt;,        kernel-team@xxxxxxxxxxx, linux-kselftest@xxxxxxxxxxxxxxx,        Manali Shukla &lt;manalishukla14@xxxxxxxxx&gt;,        Manjo Raja Rao &lt;linux@xxxxxxxxxxxxxxxx&gt;,        Martin KaFai Lau &lt;kafai@xxxxxx&gt;,        Masami Hiramatsu &lt;mhiramat@xxxxxxxxxx&gt;, Matt Mullins &lt;mmullins@xxxxxx&gt;,        Michal Gregorczyk &lt;michalgr@xxxxxx&gt;,        Michal Gregorczyk &lt;michalgr@xxxxxxxx&gt;,        Mohammad Husain &lt;russoue@xxxxxxxxx&gt;, namhyung@xxxxxxxxxx,        namhyung@xxxxxxxxxx, netdev@xxxxxxxxxxxxxxx, paul.chaignon@xxxxxxxxx,        primiano@xxxxxxxxxx, Qais Yousef &lt;qais.yousef@xxxxxxx&gt;,        Shuah Khan &lt;shuah@xxxxxxxxxx&gt;, Song Liu &lt;songliubraving@xxxxxx&gt;,        Srinivas Ramana &lt;sramana@xxxxxxxxxxxxxx&gt;,        Steven Rostedt &lt;rostedt@xxxxxxxxxxx&gt;,        Tamir Carmeli &lt;carmeli.tamir@xxxxxxxxx&gt;, Yonghong Song &lt;yhs@xxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg05170.html">20190710141548.132193-1-joel@joelfernandes.org</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Add a new bpf file to each trace event. The following commands can be
+written into it:
+attach:&lt;fd&gt;	Attaches BPF prog fd to tracepoint
+detach:&lt;fd&gt;	Detaches BPF prog fd to tracepoint
+
+Reading the bpf file will show all the attached programs to the
+tracepoint.
+
+Signed-off-by: Joel Fernandes (Google) &lt;joel@xxxxxxxxxxxxxxxxx&gt;
+---
+ include/linux/bpf_trace.h    |   6 ++
+ include/linux/trace_events.h |   1 +
+ kernel/trace/bpf_trace.c     | 169 +++++++++++++++++++++++++++++++++++
+ kernel/trace/trace.h         |   1 +
+ kernel/trace/trace_events.c  |   9 +-
+ 5 files changed, 184 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/bpf_trace.h b/include/linux/bpf_trace.h
+index 4a593827fd87..1fe73501809c 100644
+--- a/include/linux/bpf_trace.h
++++ b/include/linux/bpf_trace.h
+@@ -9,6 +9,12 @@
+ struct bpf_raw_tracepoint {
+ 	struct bpf_raw_event_map *btp;
+ 	struct bpf_prog *prog;
++	/*
++	 * Multiple programs can be attached to a tracepoint,
++	 * All of these are linked to each other and can be reached
++	 * from the event's bpf_attach file in tracefs.
++	 */
++	struct list_head event_attached;
+ };
+ 
+ struct bpf_raw_tracepoint *bpf_raw_tracepoint_open(char *tp_name, int prog_fd);
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 8a62731673f7..525f2ac44aa3 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -371,6 +371,7 @@ struct trace_event_file {
+ 	struct trace_array		*tr;
+ 	struct trace_subsystem_dir	*system;
+ 	struct list_head		triggers;
++	struct list_head		bpf_attached;
+ 
+ 	/*
+ 	 * 32 bit flags:
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index c4b543bc617f..28621ad88c12 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1469,3 +1469,172 @@ struct bpf_raw_tracepoint *bpf_raw_tracepoint_open(char *tp_name, int prog_fd)
+ 	bpf_put_raw_tracepoint(btp);
+ 	return ERR_PTR(err);
+ }
++
++enum event_bpf_cmd { BPF_ATTACH, BPF_DETACH };
++#define BPF_CMD_BUF_LEN 32
++
++static ssize_t
++event_bpf_attach_write(struct file *filp, const char __user *ubuf,
++		    size_t cnt, loff_t *ppos)
++{
++	int err, prog_fd, cmd_num, len;
++	struct trace_event_call *call;
++	struct trace_event_file *file;
++	struct bpf_raw_tracepoint *raw_tp, *next;
++	char buf[BPF_CMD_BUF_LEN], *end, *tok;
++	enum event_bpf_cmd cmd;
++	struct bpf_prog *prog;
++	bool prog_put = true;
++
++	len = min((int)cnt, BPF_CMD_BUF_LEN - 1);
++
++	err = copy_from_user(buf, ubuf, len);
++	if (err)
++		return err;
++	buf[len] = 0;
++
++	/* Parse 2 arguments of format: &lt;cmd&gt;:&lt;fd&gt; */
++	end = &amp;buf[0];
++	cmd_num = 1;
++	while (cmd_num &lt; 3) {
++		tok = strsep(&amp;end, &quot;:&quot;);
++		if (!tok)
++			return -EINVAL;
++
++		switch (cmd_num) {
++		case 1:
++			if (!strncmp(tok, &quot;attach&quot;, 6))
++				cmd = BPF_ATTACH;
++			else if (!strncmp(tok, &quot;detach&quot;, 6))
++				cmd = BPF_DETACH;
++			else
++				return -EINVAL;
++			break;
++		case 2:
++			err = kstrtoint(tok, 10, &amp;prog_fd);
++			if (err)
++				return err;
++			break;
++		}
++		cmd_num++;
++	}
++	if (cmd_num != 3)
++		return -EINVAL;
++
++	file = event_file_data(filp);
++	/* Command is to attach fd to tracepoint */
++	if (cmd == BPF_ATTACH) {
++		mutex_lock(&amp;event_mutex);
++		call = file-&gt;event_call;
++
++		raw_tp = bpf_raw_tracepoint_open((char *)call-&gt;tp-&gt;name,
++						 prog_fd);
++		if (IS_ERR(raw_tp)) {
++			mutex_unlock(&amp;event_mutex);
++			return PTR_ERR(raw_tp);
++		}
++
++		list_add(&amp;raw_tp-&gt;event_attached, &amp;file-&gt;bpf_attached);
++		mutex_unlock(&amp;event_mutex);
++		*ppos += cnt;
++		return cnt;
++	}
++
++	/* Command is to detach fd from tracepoint */
++	prog = bpf_prog_get(prog_fd);
++	if (IS_ERR(prog))
++		return PTR_ERR(prog);
++
++	mutex_lock(&amp;event_mutex);
++	list_for_each_entry_safe(raw_tp, next, &amp;file-&gt;bpf_attached,
++				 event_attached) {
++		if (raw_tp-&gt;prog == prog) {
++			list_del(&amp;raw_tp-&gt;event_attached);
++			bpf_raw_tracepoint_close(raw_tp);
++			prog_put = false;
++			break;
++		}
++	}
++	mutex_unlock(&amp;event_mutex);
++
++	if (prog_put)
++		bpf_prog_put(prog);
++	*ppos += cnt;
++	return cnt;
++}
++
++static void *event_bpf_attach_next(struct seq_file *m, void *t, loff_t *pos)
++{
++	struct trace_event_file *file = event_file_data(m-&gt;private);
++
++	return seq_list_next(t, &amp;file-&gt;bpf_attached, pos);
++}
++
++static void *event_bpf_attach_start(struct seq_file *m, loff_t *pos)
++{
++	struct trace_event_file *event_file;
++
++	/* -&gt;stop() is called even if -&gt;start() fails */
++	mutex_lock(&amp;event_mutex);
++	event_file = event_file_data(m-&gt;private);
++	if (unlikely(!event_file))
++		return ERR_PTR(-ENODEV);
++
++	if (list_empty(&amp;event_file-&gt;bpf_attached))
++		return NULL;
++
++	return seq_list_start(&amp;event_file-&gt;bpf_attached, *pos);
++}
++
++static void event_bpf_attach_stop(struct seq_file *m, void *t)
++{
++	mutex_unlock(&amp;event_mutex);
++}
++
++static int event_bpf_attach_show(struct seq_file *m, void *v)
++{
++	struct bpf_raw_tracepoint *raw_tp;
++
++	raw_tp = list_entry(v, struct bpf_raw_tracepoint, event_attached);
++	seq_printf(m, &quot;prog id: %u\n&quot;, raw_tp-&gt;prog-&gt;aux-&gt;id);
++	return 0;
++}
++
++static const struct seq_operations event_bpf_attach_seq_ops = {
++	.start = event_bpf_attach_start,
++	.next = event_bpf_attach_next,
++	.stop = event_bpf_attach_stop,
++	.show = event_bpf_attach_show,
++};
++
++static int event_bpf_attach_open(struct inode *inode, struct file *file)
++{
++	int ret = 0;
++
++	mutex_lock(&amp;event_mutex);
++
++	if (unlikely(!event_file_data(file))) {
++		mutex_unlock(&amp;event_mutex);
++		return -ENODEV;
++	}
++
++	if (file-&gt;f_mode &amp; FMODE_READ) {
++		ret = seq_open(file, &amp;event_bpf_attach_seq_ops);
++		if (!ret) {
++			struct seq_file *m = file-&gt;private_data;
++
++			m-&gt;private = file;
++		}
++	}
++
++	mutex_unlock(&amp;event_mutex);
++
++	return ret;
++}
++
++const struct file_operations event_bpf_attach_fops = {
++	.open = event_bpf_attach_open,
++	.read = seq_read,
++	.write = event_bpf_attach_write,
++	.llseek = default_llseek,
++};
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 005f08629b8b..e33828d24eb2 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -1582,6 +1582,7 @@ extern struct list_head ftrace_events;
+ 
+ extern const struct file_operations event_trigger_fops;
+ extern const struct file_operations event_hist_fops;
++extern const struct file_operations event_bpf_attach_fops;
+ 
+ #ifdef CONFIG_HIST_TRIGGERS
+ extern int register_trigger_hist_cmd(void);
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 67851fb66b6b..79420d5efaef 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -2018,8 +2018,10 @@ event_create_dir(struct dentry *parent, struct trace_event_file *file)
+ 		trace_create_file(&quot;trigger&quot;, 0644, file-&gt;dir, file,
+ 				  &amp;event_trigger_fops);
+ 
+-		trace_create_file(&quot;bpf_attach&quot;, 0644, file-&gt;dir, file,
+-				  &amp;bpf_attach_trigger_fops);
++#ifdef CONFIG_BPF_EVENTS
++		trace_create_file(&quot;bpf&quot;, 0644, file-&gt;dir, file,
++				  &amp;event_bpf_attach_fops);
++#endif
+ 	}
+ 
+ #ifdef CONFIG_HIST_TRIGGERS
+@@ -2267,6 +2269,9 @@ trace_create_new_event(struct trace_event_call *call,
+ 	atomic_set(&amp;file-&gt;sm_ref, 0);
+ 	atomic_set(&amp;file-&gt;tm_ref, 0);
+ 	INIT_LIST_HEAD(&amp;file-&gt;triggers);
++#ifdef CONFIG_BPF_EVENTS
++	INIT_LIST_HEAD(&amp;file-&gt;bpf_attached);
++#endif
+ 	list_add(&amp;file-&gt;list, &amp;tr-&gt;events);
+ 
+ 	return file;
+-- 
+2.22.0.410.gd8fdbe21b5-goog
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="05170" href="msg05170.html">[PATCH RFC 0/4] Add support to directly attach BPF program to ftrace</a></strong>
+<ul><li><em>From:</em> Joel Fernandes (Google)</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05173.html">[PATCH RFC 1/4] Move bpf_raw_tracepoint functionality into bpf_trace.c</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05171.html">[PATCH RFC 3/4] lib/bpf: Add support for ftrace event attach and detach</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05173.html">[PATCH RFC 1/4] Move bpf_raw_tracepoint functionality into bpf_trace.c</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05171.html">[PATCH RFC 3/4] lib/bpf: Add support for ftrace event attach and detach</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05174"><strong>Date</strong></a></li>
+<li><a href="index.html#05174"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;Samsung&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-rockchip/>[Linux&nbsp;Rockchip&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-actions/>[Linux&nbsp;Actions&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-snps-arc/>[Linux&nbsp;for&nbsp;Synopsys&nbsp;ARC&nbsp;Processors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nfs/>[Linux&nbsp;NFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nilfs/>[Linux&nbsp;NILFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/vfl/>[Video&nbsp;for&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<p>
+<hr>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

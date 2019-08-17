@@ -1,0 +1,258 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] qemu: Relax os.loader&#45;>type check when validating	domain -->
+<!--X-From-R13: [vpuny Bevibmavx &#60;zcevibmaNerqung.pbz> -->
+<!--X-Date: Sat, 13 Jul 2019 00:30:20 &#45;0700 -->
+<!--X-Message-Id: 815c984bde606cf6b11f506478ed8d56eab233ad.1563002999.git.mprivozn@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH] qemu: Relax os.loader-&gt;type check when validating	domain</title>
+<meta name="description" content="libvirt: [PATCH] qemu: Relax os.loader-&gt;type check when validating	domain">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH] qemu: Relax os.loader-&gt;type check when validating	domain</h1>
+[<a href="msg187370.html">Date Prev</a>][<a href="msg187372.html">Date Next</a>][<a href="msg187369.html">Thread Prev</a>][<a href="msg187394.html">Thread Next</a>][<a href="maillist.html#187371">Date Index</a>][<a href="index.html#187371">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] qemu: Relax os.loader-&gt;type check when validating	domain</li>
+<li><em>From</em>: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Sat, 13 Jul 2019 09:29:59 +0200</li>
+<li><em>Cc</em>: abologna@xxxxxxxxxx</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>When validating a domain among all the checks there are two that
+concern VIR_DOMAIN_LOADER_TYPE_PFLASH specifically. The first
+check ensures that on x86 ACPI is enabled when UEFI is requested,
+the second ensures that UEFI is used when ACPI is requested on
+aarch64. However, check for UEFI is done by plain comparison of
+def-&gt;os.loader-&gt;type which is insufficient because we have
+def-&gt;os.firmware too.
+
+NB, this wouldn't be a problem for active domain, because on
+startup process def-&gt;os.loader-&gt;type gets filled by
+qemuFirmwareEnableFeatures(), but that's not the case for
+inactive domains.
+
+Fixes: <a  rel="nofollow" href="https://bugzilla.redhat.com/show_bug.cgi?id=1729604">https://bugzilla.redhat.com/show_bug.cgi?id=1729604</a>
+
+Signed-off-by: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;
+---
+ src/qemu/qemu_domain.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/src/qemu/qemu_domain.c b/src/qemu/qemu_domain.c
+index 0f1fda2384..ed33e31699 100644
+--- a/src/qemu/qemu_domain.c
++++ b/src/qemu/qemu_domain.c
+@@ -4221,8 +4221,9 @@ qemuDomainDefValidate(const virDomainDef *def,
+     }
+ 
+     /* On x86, UEFI requires ACPI */
+-    if (def-&gt;os.loader &amp;&amp;
+-        def-&gt;os.loader-&gt;type == VIR_DOMAIN_LOADER_TYPE_PFLASH &amp;&amp;
++    if ((def-&gt;os.firmware == VIR_DOMAIN_OS_DEF_FIRMWARE_EFI ||
++         (def-&gt;os.loader &amp;&amp;
++          def-&gt;os.loader-&gt;type == VIR_DOMAIN_LOADER_TYPE_PFLASH)) &amp;&amp;
+         ARCH_IS_X86(def-&gt;os.arch) &amp;&amp;
+         def-&gt;features[VIR_DOMAIN_FEATURE_ACPI] != VIR_TRISTATE_SWITCH_ON) {
+         virReportError(VIR_ERR_CONFIG_UNSUPPORTED, &quot;%s&quot;,
+@@ -4233,8 +4234,9 @@ qemuDomainDefValidate(const virDomainDef *def,
+     /* On aarch64, ACPI requires UEFI */
+     if (def-&gt;features[VIR_DOMAIN_FEATURE_ACPI] == VIR_TRISTATE_SWITCH_ON &amp;&amp;
+         def-&gt;os.arch == VIR_ARCH_AARCH64 &amp;&amp;
+-        (!def-&gt;os.loader ||
+-         def-&gt;os.loader-&gt;type != VIR_DOMAIN_LOADER_TYPE_PFLASH)) {
++        (def-&gt;os.firmware != VIR_DOMAIN_OS_DEF_FIRMWARE_EFI &amp;&amp;
++         (!def-&gt;os.loader ||
++          def-&gt;os.loader-&gt;type != VIR_DOMAIN_LOADER_TYPE_PFLASH))) {
+         virReportError(VIR_ERR_CONFIG_UNSUPPORTED, &quot;%s&quot;,
+                        _(&quot;ACPI requires UEFI on this architecture&quot;));
+         goto cleanup;
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187370.html">Re:  [PATCH 1/3] virNetDevOpenvswitchInterfaceStats: Optimize for speed</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187372.html">Re:  [PATCH 3/3] virCommand: use procfs to learn opened FDs</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187369.html">[PATCH] maint: RNG comment fix</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187394.html">Re:  [PATCH] qemu: Relax os.loader-&gt;type check when	validating domain</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187371"><strong>Date</strong></a></li>
+<li><a href="index.html#187371"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

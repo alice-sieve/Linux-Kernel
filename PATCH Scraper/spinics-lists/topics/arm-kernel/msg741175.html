@@ -1,0 +1,302 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH AUTOSEL 4.19 063/158] media: s5p&#45;mfc: fix reading min scratch buffer size on MFC v6/v7 -->
+<!--X-From-R13: Enfun Zriva &#60;fnfunyNxreary.bet> -->
+<!--X-Date: Mon, 15 Jul 2019 07:48:04 &#45;0700 -->
+<!--X-Message-Id: 20190715141809.8445&#45;63&#45;sashal@kernel.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715141809.8445&#45;1&#45;sashal@kernel.org -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH AUTOSEL 4.19 063/158] media: s5p-mfc: fix reading min scratch buffer size on MFC v6/v7">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH AUTOSEL 4.19 063/158] media: s5p-mfc: fix reading min scratch buffer size on MFC v6/v7 &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH AUTOSEL 4.19 063/158] media: s5p-mfc: fix reading min scratch buffer size on MFC v6/v7</h1>
+[<a href="msg741174.html">Date Prev</a>][<a href="msg741176.html">Date Next</a>][<a href="msg741173.html">Thread Prev</a>][<a href="msg741186.html">Thread Next</a>][<a href="maillist.html#741175">Date Index</a>][<a href="threads.html#741175">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH AUTOSEL 4.19 063/158] media: s5p-mfc: fix reading min scratch buffer size on MFC v6/v7</li>
+<li><em>From</em>: Sasha Levin &lt;sashal@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 10:16:34 -0400</li>
+<li><em>In-reply-to</em>: &lt;20190715141809.8445-1-sashal@kernel.org&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Marek Szyprowski &lt;m.szyprowski@xxxxxxxxxxx&gt;
+
+[ Upstream commit be22203aec440c1761ce8542c2636ac6c8951e3a ]
+
+MFC v6 and v7 has no register to read min scratch buffer size, so it has
+to be read conditionally only if hardware supports it. This fixes following
+NULL pointer exception on SoCs with MFC v6/v7:
+
+8&lt;--- cut here ---
+Unable to handle kernel NULL pointer dereference at virtual address 00000000
+pgd = f25837f9
+[00000000] *pgd=bd93d835
+Internal error: Oops: 17 [#1] PREEMPT SMP ARM
+Modules linked in: btmrvl_sdio btmrvl bluetooth mwifiex_sdio mwifiex ecdh_generic ecc
+Hardware name: SAMSUNG EXYNOS (Flattened Device Tree)
+PC is at s5p_mfc_get_min_scratch_buf_size+0x30/0x3c
+LR is at s5p_mfc_get_min_scratch_buf_size+0x28/0x3c
+...
+[&lt;c074f998&gt;] (s5p_mfc_get_min_scratch_buf_size) from [&lt;c0745bc0&gt;] (s5p_mfc_irq+0x814/0xa5c)
+[&lt;c0745bc0&gt;] (s5p_mfc_irq) from [&lt;c019a218&gt;] (__handle_irq_event_percpu+0x64/0x3f8)
+[&lt;c019a218&gt;] (__handle_irq_event_percpu) from [&lt;c019a5d8&gt;] (handle_irq_event_percpu+0x2c/0x7c)
+[&lt;c019a5d8&gt;] (handle_irq_event_percpu) from [&lt;c019a660&gt;] (handle_irq_event+0x38/0x5c)
+[&lt;c019a660&gt;] (handle_irq_event) from [&lt;c019ebc4&gt;] (handle_fasteoi_irq+0xc4/0x180)
+[&lt;c019ebc4&gt;] (handle_fasteoi_irq) from [&lt;c0199270&gt;] (generic_handle_irq+0x24/0x34)
+[&lt;c0199270&gt;] (generic_handle_irq) from [&lt;c0199888&gt;] (__handle_domain_irq+0x7c/0xec)
+[&lt;c0199888&gt;] (__handle_domain_irq) from [&lt;c04ac298&gt;] (gic_handle_irq+0x58/0x9c)
+[&lt;c04ac298&gt;] (gic_handle_irq) from [&lt;c0101ab0&gt;] (__irq_svc+0x70/0xb0)
+Exception stack(0xe73ddc60 to 0xe73ddca8)
+...
+[&lt;c0101ab0&gt;] (__irq_svc) from [&lt;c01967d8&gt;] (console_unlock+0x5a8/0x6a8)
+[&lt;c01967d8&gt;] (console_unlock) from [&lt;c01981d0&gt;] (vprintk_emit+0x118/0x2d8)
+[&lt;c01981d0&gt;] (vprintk_emit) from [&lt;c01983b0&gt;] (vprintk_default+0x20/0x28)
+[&lt;c01983b0&gt;] (vprintk_default) from [&lt;c01989b4&gt;] (printk+0x30/0x54)
+[&lt;c01989b4&gt;] (printk) from [&lt;c07500b8&gt;] (s5p_mfc_init_decode_v6+0x1d4/0x284)
+[&lt;c07500b8&gt;] (s5p_mfc_init_decode_v6) from [&lt;c07230d0&gt;] (vb2_start_streaming+0x24/0x150)
+[&lt;c07230d0&gt;] (vb2_start_streaming) from [&lt;c0724e4c&gt;] (vb2_core_streamon+0x11c/0x15c)
+[&lt;c0724e4c&gt;] (vb2_core_streamon) from [&lt;c07478b8&gt;] (vidioc_streamon+0x64/0xa0)
+[&lt;c07478b8&gt;] (vidioc_streamon) from [&lt;c0709640&gt;] (__video_do_ioctl+0x28c/0x45c)
+[&lt;c0709640&gt;] (__video_do_ioctl) from [&lt;c0709bc8&gt;] (video_usercopy+0x260/0x8a4)
+[&lt;c0709bc8&gt;] (video_usercopy) from [&lt;c02b3820&gt;] (do_vfs_ioctl+0xb0/0x9fc)
+[&lt;c02b3820&gt;] (do_vfs_ioctl) from [&lt;c02b41a0&gt;] (ksys_ioctl+0x34/0x58)
+[&lt;c02b41a0&gt;] (ksys_ioctl) from [&lt;c0101000&gt;] (ret_fast_syscall+0x0/0x28)
+Exception stack(0xe73ddfa8 to 0xe73ddff0)
+...
+---[ end trace 376cf5ba6e0bee93 ]---
+
+Signed-off-by: Marek Szyprowski &lt;m.szyprowski@xxxxxxxxxxx&gt;
+Signed-off-by: Hans Verkuil &lt;hverkuil-cisco@xxxxxxxxx&gt;
+Signed-off-by: Mauro Carvalho Chehab &lt;mchehab+samsung@xxxxxxxxxx&gt;
+Signed-off-by: Sasha Levin &lt;sashal@xxxxxxxxxx&gt;
+---
+ drivers/media/platform/s5p-mfc/s5p_mfc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/s5p-mfc/s5p_mfc.c b/drivers/media/platform/s5p-mfc/s5p_mfc.c
+index ca11f8a7569d..4b8516c35bc2 100644
+--- a/drivers/media/platform/s5p-mfc/s5p_mfc.c
++++ b/drivers/media/platform/s5p-mfc/s5p_mfc.c
+@@ -527,7 +527,8 @@ static void s5p_mfc_handle_seq_done(struct s5p_mfc_ctx *ctx,
+ 				dev);
+ 		ctx-&gt;mv_count = s5p_mfc_hw_call(dev-&gt;mfc_ops, get_mv_count,
+ 				dev);
+-		ctx-&gt;scratch_buf_size = s5p_mfc_hw_call(dev-&gt;mfc_ops,
++		if (FW_HAS_E_MIN_SCRATCH_BUF(dev))
++			ctx-&gt;scratch_buf_size = s5p_mfc_hw_call(dev-&gt;mfc_ops,
+ 						get_min_scratch_buf_size, dev);
+ 		if (ctx-&gt;img_width == 0 || ctx-&gt;img_height == 0)
+ 			ctx-&gt;state = MFCINST_ERROR;
+-- 
+2.20.1
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741174.html">Re: [PATCH] PCI: pci-bridge-emul: fix big-endian support</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741176.html">Re: [PATCH] PCI: aardvark: fix big endian support</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741173.html">[PATCH AUTOSEL 4.19 092/158] media: s5p-mfc: Make additional clocks optional</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741186.html">[PATCH 1/3] ARM: dts: gemini: Fix up confused pin settings</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741175"><strong>Date</strong></a></li>
+<li><a href="threads.html#741175"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

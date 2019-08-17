@@ -1,0 +1,292 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH V34 05/29] Restrict /dev/{mem,kmem,port} when the kernel is locked down -->
+<!--X-From-R13: Yrrf Qbbx &#60;xrrfpbbxNpuebzvhz.bet> -->
+<!--X-Date: Sat, 22 Jun 2019 16:52:50 &#45;0700 -->
+<!--X-Message-Id: 201906221648.F8F0741@keescook -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190622000358.19895&#45;1&#45;matthewgarrett@google.com -->
+<!--X-Reference: 20190622000358.19895&#45;6&#45;matthewgarrett@google.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, Re: [PATCH V34 05/29] Restrict /dev/{mem,kmem,port} when the kernel is locked down">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- Re: [PATCH V34 05/29] Restrict /dev/{mem,kmem,port} when the kernel is locked down</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re: [PATCH V34 05/29] Restrict /dev/{mem,kmem,port} when the kernel is locked down</h1>
+[<a href="msg29241.html">Date Prev</a>][<a href="msg29243.html">Date Next</a>][<a href="msg29197.html">Thread Prev</a>][<a href="msg29198.html">Thread Next</a>][<a href="maillist.html#29242">Date Index</a>][<a href="index.html#29242">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH V34 05/29] Restrict /dev/{mem,kmem,port} when the kernel is locked down</li>
+<li><em>From</em>: Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Sat, 22 Jun 2019 16:52:39 -0700</li>
+<li><em>Cc</em>: jmorris@xxxxxxxxx, linux-security-module@xxxxxxxxxxxxxxx,        linux-kernel@xxxxxxxxxxxxxxx, linux-api@xxxxxxxxxxxxxxx,        Matthew Garrett &lt;mjg59@xxxxxxxxxxxxx&gt;,        David Howells &lt;dhowells@xxxxxxxxxx&gt;,        Matthew Garrett &lt;mjg59@xxxxxxxxxx&gt;, x86@xxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29197.html">20190622000358.19895-6-matthewgarrett@google.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg29183.html">20190622000358.19895-1-matthewgarrett@google.com</a>&gt; &lt;<a href="msg29197.html">20190622000358.19895-6-matthewgarrett@google.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On Fri, Jun 21, 2019 at 05:03:34PM -0700, Matthew Garrett wrote:
+&gt; From: Matthew Garrett &lt;mjg59@xxxxxxxxxxxxx&gt;
+&gt; 
+&gt; Allowing users to read and write to core kernel memory makes it possible
+&gt; for the kernel to be subverted, avoiding module loading restrictions, and
+&gt; also to steal cryptographic information.
+&gt; 
+&gt; Disallow /dev/mem and /dev/kmem from being opened this when the kernel has
+&gt; been locked down to prevent this.
+&gt; 
+&gt; Also disallow /dev/port from being opened to prevent raw ioport access and
+&gt; thus DMA from being used to accomplish the same thing.
+&gt; 
+&gt; Signed-off-by: David Howells &lt;dhowells@xxxxxxxxxx&gt;
+&gt; Signed-off-by: Matthew Garrett &lt;mjg59@xxxxxxxxxx&gt;
+&gt; Cc: x86@xxxxxxxxxx
+&gt; ---
+&gt;  drivers/char/mem.c           | 6 +++++-
+&gt;  include/linux/security.h     | 1 +
+&gt;  security/lockdown/lockdown.c | 1 +
+&gt;  3 files changed, 7 insertions(+), 1 deletion(-)
+&gt; 
+&gt; diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+&gt; index b08dc50f9f26..93c02493f0fa 100644
+&gt; --- a/drivers/char/mem.c
+&gt; +++ b/drivers/char/mem.c
+&gt; @@ -29,8 +29,8 @@
+&gt;  #include &lt;linux/export.h&gt;
+&gt;  #include &lt;linux/io.h&gt;
+&gt;  #include &lt;linux/uio.h&gt;
+&gt; -
+&gt;  #include &lt;linux/uaccess.h&gt;
+&gt; +#include &lt;linux/security.h&gt;
+&gt;  
+&gt;  #ifdef CONFIG_IA64
+&gt;  # include &lt;linux/efi.h&gt;
+&gt; @@ -786,6 +786,10 @@ static loff_t memory_lseek(struct file *file, loff_t offset, int orig)
+&gt;  
+&gt;  static int open_port(struct inode *inode, struct file *filp)
+&gt;  {
+&gt; +	int ret = security_locked_down(LOCKDOWN_DEV_MEM);
+&gt; +
+&gt; +	if (ret)
+&gt; +		return ret;
+&gt;  	return capable(CAP_SYS_RAWIO) ? 0 : -EPERM;
+
+Usually the ordering for LSM tests tends to follow capable checks, which
+allows for things like audit to generate logs for capability rejections,
+etc. I'd expect this to be:
+
+	if (!capable(CAP_SYS_RAWIO))
+		return -EPERM;
+
+	return security_locked_down(LOCKDOWN_DEV_MEM)
+
+With that fixed:
+
+Reviewed-by: Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;
+
+-Kees
+
+&gt;  }
+&gt;  
+&gt; diff --git a/include/linux/security.h b/include/linux/security.h
+&gt; index 46d85cd63b06..200175c8605a 100644
+&gt; --- a/include/linux/security.h
+&gt; +++ b/include/linux/security.h
+&gt; @@ -83,6 +83,7 @@ enum lsm_event {
+&gt;  enum lockdown_reason {
+&gt;  	LOCKDOWN_NONE,
+&gt;  	LOCKDOWN_MODULE_SIGNATURE,
+&gt; +	LOCKDOWN_DEV_MEM,
+&gt;  	LOCKDOWN_INTEGRITY_MAX,
+&gt;  	LOCKDOWN_CONFIDENTIALITY_MAX,
+&gt;  };
+&gt; diff --git a/security/lockdown/lockdown.c b/security/lockdown/lockdown.c
+&gt; index 25a3a5b0aa9c..565c87451f0f 100644
+&gt; --- a/security/lockdown/lockdown.c
+&gt; +++ b/security/lockdown/lockdown.c
+&gt; @@ -19,6 +19,7 @@ static enum lockdown_reason kernel_locked_down;
+&gt;  static char *lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX+1] = {
+&gt;  	[LOCKDOWN_NONE] = &quot;none&quot;,
+&gt;  	[LOCKDOWN_MODULE_SIGNATURE] = &quot;unsigned module loading&quot;,
+&gt; +	[LOCKDOWN_DEV_MEM] = &quot;/dev/mem,kmem,port&quot;,
+&gt;  	[LOCKDOWN_INTEGRITY_MAX] = &quot;integrity&quot;,
+&gt;  	[LOCKDOWN_CONFIDENTIALITY_MAX] = &quot;confidentiality&quot;,
+&gt;  };
+&gt; -- 
+&gt; 2.22.0.410.gd8fdbe21b5-goog
+&gt; 
+
+-- 
+Kees Cook
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29183" href="msg29183.html">[PATCH V34 00/29] Lockdown as an LSM</a></strong>
+<ul><li><em>From:</em> Matthew Garrett</li></ul></li>
+<li><strong><a name="29197" href="msg29197.html">[PATCH V34 05/29] Restrict /dev/{mem,kmem,port} when the kernel is locked down</a></strong>
+<ul><li><em>From:</em> Matthew Garrett</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29241.html">Re: [PATCH V34 04/29] Enforce module signatures if the kernel is locked down</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29243.html">Re: [PATCH V34 06/29] kexec_load: Disable at runtime if the kernel is locked down</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29197.html">[PATCH V34 05/29] Restrict /dev/{mem,kmem,port} when the kernel is locked down</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29198.html">[PATCH V34 13/29] x86/msr: Restrict MSR access when the kernel is locked down</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29242"><strong>Date</strong></a></li>
+<li><a href="index.html#29242"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

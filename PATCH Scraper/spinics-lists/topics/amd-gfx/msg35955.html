@@ -1,0 +1,287 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 020/102] drm/amdgpu: support hdp flush for more sdma instances -->
+<!--X-From-R13: Oyrk Rrhpure &#60;nyrkqrhpureNtznvy.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 14:25:07 &#45;0700 -->
+<!--X-Message-Id: 20190715212437.31793&#45;18&#45;alexander.deucher@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715212437.31793&#45;1&#45;alexander.deucher@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 020/102] drm/amdgpu: support hdp flush for more sdma instances">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 020/102] drm/amdgpu: support hdp flush for more sdma instances &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 020/102] drm/amdgpu: support hdp flush for more sdma instances</h1>
+[<a href="msg35954.html">Date Prev</a>][<a href="msg35956.html">Date Next</a>][<a href="msg35954.html">Thread Prev</a>][<a href="msg35956.html">Thread Next</a>][<a href="maillist.html#35955">Date Index</a>][<a href="index.html#35955">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: amd-gfx@xxxxxxxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH 020/102] drm/amdgpu: support hdp flush for more sdma instances</li>
+<li><em>From</em>: Alex Deucher &lt;alexdeucher@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 16:23:15 -0500</li>
+<li><em>Cc</em>: Snow Zhang &lt;Snow.Zhang@xxxxxxx&gt;, Le Ma &lt;le.ma@xxxxxxx&gt;,        Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg35938.html">20190715212437.31793-1-alexander.deucher@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg35938.html">20190715212437.31793-1-alexander.deucher@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Le Ma &lt;le.ma@xxxxxxx&gt;
+
+The bit RSVD_ENG0 to RSVD_ENG5 in GPU_HDP_FLUSH_REQ/GPU_HDP_FLUSH_DONE
+can be leveraged for sdma instance 2~7 to poll register/memory.
+
+Signed-off-by: Le Ma &lt;le.ma@xxxxxxx&gt;
+Acked-by: Snow Zhang &lt; Snow.Zhang@xxxxxxx&gt;
+Signed-off-by: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h    |  6 ++++++
+ drivers/gpu/drm/amd/amdgpu/nbio_v7_4.c | 17 +++++++++++++++++
+ drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c |  5 +----
+ 3 files changed, 24 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+index 8575ed6713c3..e9c386cec2ad 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+@@ -651,6 +651,12 @@ struct nbio_hdp_flush_reg {
+ 	u32 ref_and_mask_cp9;
+ 	u32 ref_and_mask_sdma0;
+ 	u32 ref_and_mask_sdma1;
++	u32 ref_and_mask_sdma2;
++	u32 ref_and_mask_sdma3;
++	u32 ref_and_mask_sdma4;
++	u32 ref_and_mask_sdma5;
++	u32 ref_and_mask_sdma6;
++	u32 ref_and_mask_sdma7;
+ };
+ 
+ struct amdgpu_mmio_remap {
+diff --git a/drivers/gpu/drm/amd/amdgpu/nbio_v7_4.c b/drivers/gpu/drm/amd/amdgpu/nbio_v7_4.c
+index bfaaa327ae3c..2e1098c5c32b 100644
+--- a/drivers/gpu/drm/amd/amdgpu/nbio_v7_4.c
++++ b/drivers/gpu/drm/amd/amdgpu/nbio_v7_4.c
+@@ -31,6 +31,17 @@
+ 
+ #define smnNBIF_MGCG_CTRL_LCLK	0x1013a21c
+ 
++/*
++ * These are nbio v7_4_1 registers mask. Temporarily define these here since
++ * nbio v7_4_1 header is incomplete.
++ */
++#define GPU_HDP_FLUSH_DONE__RSVD_ENG0_MASK	0x00001000L
++#define GPU_HDP_FLUSH_DONE__RSVD_ENG1_MASK	0x00002000L
++#define GPU_HDP_FLUSH_DONE__RSVD_ENG2_MASK	0x00004000L
++#define GPU_HDP_FLUSH_DONE__RSVD_ENG3_MASK	0x00008000L
++#define GPU_HDP_FLUSH_DONE__RSVD_ENG4_MASK	0x00010000L
++#define GPU_HDP_FLUSH_DONE__RSVD_ENG5_MASK	0x00020000L
++
+ static void nbio_v7_4_remap_hdp_registers(struct amdgpu_device *adev)
+ {
+ 	WREG32_SOC15(NBIO, 0, mmREMAP_HDP_MEM_FLUSH_CNTL,
+@@ -220,6 +231,12 @@ static const struct nbio_hdp_flush_reg nbio_v7_4_hdp_flush_reg = {
+ 	.ref_and_mask_cp9 = GPU_HDP_FLUSH_DONE__CP9_MASK,
+ 	.ref_and_mask_sdma0 = GPU_HDP_FLUSH_DONE__SDMA0_MASK,
+ 	.ref_and_mask_sdma1 = GPU_HDP_FLUSH_DONE__SDMA1_MASK,
++	.ref_and_mask_sdma2 = GPU_HDP_FLUSH_DONE__RSVD_ENG0_MASK,
++	.ref_and_mask_sdma3 = GPU_HDP_FLUSH_DONE__RSVD_ENG1_MASK,
++	.ref_and_mask_sdma4 = GPU_HDP_FLUSH_DONE__RSVD_ENG2_MASK,
++	.ref_and_mask_sdma5 = GPU_HDP_FLUSH_DONE__RSVD_ENG3_MASK,
++	.ref_and_mask_sdma6 = GPU_HDP_FLUSH_DONE__RSVD_ENG4_MASK,
++	.ref_and_mask_sdma7 = GPU_HDP_FLUSH_DONE__RSVD_ENG5_MASK,
+ };
+ 
+ static void nbio_v7_4_detect_hw_virt(struct amdgpu_device *adev)
+diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c b/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
+index 1dce974e0c58..fc01502baf00 100644
+--- a/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
+@@ -627,10 +627,7 @@ static void sdma_v4_0_ring_emit_hdp_flush(struct amdgpu_ring *ring)
+ 	u32 ref_and_mask = 0;
+ 	const struct nbio_hdp_flush_reg *nbio_hf_reg = adev-&gt;nbio_funcs-&gt;hdp_flush_reg;
+ 
+-	if (ring-&gt;me == 0)
+-		ref_and_mask = nbio_hf_reg-&gt;ref_and_mask_sdma0;
+-	else
+-		ref_and_mask = nbio_hf_reg-&gt;ref_and_mask_sdma1;
++	ref_and_mask = nbio_hf_reg-&gt;ref_and_mask_sdma0 &lt;&lt; ring-&gt;me;
+ 
+ 	sdma_v4_0_wait_reg_mem(ring, 0, 1,
+ 			       adev-&gt;nbio_funcs-&gt;get_hdp_flush_done_offset(adev),
+-- 
+2.20.1
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="35938" href="msg35938.html">[PATCH 000/102] Add Arcturus support</a></strong>
+<ul><li><em>From:</em> Alex Deucher</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35954.html">[PATCH 021/102] drm/amdgpu/soc15: add Arcturus common ip blocks</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35956.html">[PATCH 019/102] drm/amdgpu: specify sdma instance 5~7 with second mmhub type</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35954.html">[PATCH 021/102] drm/amdgpu/soc15: add Arcturus common ip blocks</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35956.html">[PATCH 019/102] drm/amdgpu: specify sdma instance 5~7 with second mmhub type</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35955"><strong>Date</strong></a></li>
+<li><a href="index.html#35955"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

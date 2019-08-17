@@ -1,0 +1,441 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v1 10/31] schemas: Introduce disk type NVMe -->
+<!--X-From-R13: [vpuny Bevibmavx &#60;zcevibmaNerqung.pbz> -->
+<!--X-Date: Thu, 11 Jul 2019 08:54:47 &#45;0700 -->
+<!--X-Message-Id: 17aad25e7827405ec0d33a2fd030683c4249ef30.1562859733.git.mprivozn@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1562859733.git.mprivozn@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v1 10/31] schemas: Introduce disk type NVMe</title>
+<meta name="description" content="libvirt: [PATCH v1 10/31] schemas: Introduce disk type NVMe">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v1 10/31] schemas: Introduce disk type NVMe</h1>
+[<a href="msg187167.html">Date Prev</a>][<a href="msg187169.html">Date Next</a>][<a href="msg187488.html">Thread Prev</a>][<a href="msg187471.html">Thread Next</a>][<a href="maillist.html#187168">Date Index</a>][<a href="index.html#187168">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v1 10/31] schemas: Introduce disk type NVMe</li>
+<li><em>From</em>: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 11 Jul 2019 17:53:57 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187163.html">cover.1562859733.git.mprivozn@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187163.html">cover.1562859733.git.mprivozn@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>There is this class of PCI devices that act like disks: NVMe.
+Therefore, they are both PCI devices and disks. While we already
+have &lt;hostdev/&gt; (and can assign a NVMe device to a domain
+successfully) we don't have disk representation. There are three
+problems with PCI assignment in case of a NVMe device:
+
+1) domains with &lt;hostdev/&gt; can't be migrated
+
+2) NVMe device is assigned whole, there's no way to assign only a
+   namespace
+
+3) Because hypervisors see &lt;hostdev/&gt; they don't put block layer
+   on top of it - users don't get all the fancy features like
+   snapshots
+
+NVMe namespaces are way of splitting one continuous NVDIMM memory
+into smaller ones, effectively creating smaller NVMe-s (which can
+then be partitioned, LVMed, etc.)
+
+Because of all of this the following XML was chosen to model a
+NVMe device:
+
+  &lt;disk type='nvme' device='disk'&gt;
+    &lt;driver name='qemu' type='raw'/&gt;
+    &lt;source type='pci' managed='yes' namespace='1'&gt;
+      &lt;address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/&gt;
+    &lt;/source&gt;
+    &lt;target dev='vda' bus='virtio'/&gt;
+  &lt;/disk&gt;
+
+Signed-off-by: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;
+---
+ docs/formatdomain.html.in            | 45 +++++++++++++++++++++--
+ docs/schemas/domaincommon.rng        | 32 ++++++++++++++++
+ tests/qemuxml2argvdata/disk-nvme.xml | 55 ++++++++++++++++++++++++++++
+ 3 files changed, 129 insertions(+), 3 deletions(-)
+ create mode 100644 tests/qemuxml2argvdata/disk-nvme.xml
+
+diff --git a/docs/formatdomain.html.in b/docs/formatdomain.html.in
+index a7a6ec32a5..545578076d 100644
+--- a/docs/formatdomain.html.in
++++ b/docs/formatdomain.html.in
+@@ -2922,6 +2922,13 @@
+     &amp;lt;/backingStore&amp;gt;
+     &amp;lt;target dev='vdd' bus='virtio'/&amp;gt;
+   &amp;lt;/disk&amp;gt;
++  &amp;lt;disk type='nvme' device='disk'&amp;gt;
++    &amp;lt;driver name='qemu' type='raw'/&amp;gt;
++    &amp;lt;source type='pci' managed='yes' namespace='1'&amp;gt;
++      &amp;lt;address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/&amp;gt;
++    &amp;lt;/source&amp;gt;
++    &amp;lt;target dev='vde' bus='virtio'/&amp;gt;
++  &amp;lt;/disk&amp;gt;
+ &amp;lt;/devices&amp;gt;
+ ...&lt;/pre&gt;
+ 
+@@ -2935,7 +2942,8 @@
+             Valid values are &quot;file&quot;, &quot;block&quot;,
+             &quot;dir&quot; (&lt;span class=&quot;since&quot;&gt;since 0.7.5&lt;/span&gt;),
+             &quot;network&quot; (&lt;span class=&quot;since&quot;&gt;since 0.8.7&lt;/span&gt;), or
+-            &quot;volume&quot; (&lt;span class=&quot;since&quot;&gt;since 1.0.5&lt;/span&gt;)
++            &quot;volume&quot; (&lt;span class=&quot;since&quot;&gt;since 1.0.5&lt;/span&gt;), or
++            &quot;nvme&quot; (&lt;span class=&quot;since&quot;&gt;since 5.5.0&lt;/span&gt;)
+             and refer to the underlying source for the disk.
+             &lt;span class=&quot;since&quot;&gt;Since 0.0.3&lt;/span&gt;
+             &lt;/dd&gt;
+@@ -3118,6 +3126,31 @@
+               &lt;span class=&quot;since&quot;&gt;Since 1.0.5&lt;/span&gt;
+               &lt;/p&gt;
+               &lt;/dd&gt;
++            &lt;dt&gt;&lt;code&gt;nvme&lt;/code&gt;&lt;/dt&gt;
++              &lt;dd&gt;
++              To specify disk source for NVMe disk the &lt;code&gt;source&lt;/code&gt;
++              element has the following attributes:
++              &lt;dl&gt;
++                &lt;dt&gt;&lt;code&gt;type&lt;/code&gt;&lt;/dt&gt;
++                &lt;dd&gt;The type of address specified in &lt;code&gt;address&lt;/code&gt;
++                sub-element. Currently, only &lt;code&gt;pci&lt;/code&gt; value is
++                accepted.
++                &lt;/dd&gt;
++
++                &lt;dt&gt;&lt;code&gt;managed&lt;/code&gt;&lt;/dt&gt;
++                &lt;dd&gt;This attribute instructs libvirt to detach NVMe
++                controller automatically on domain startup (&lt;code&gt;yes&lt;/code&gt;)
++                or expect the controller to be detached by system
++                administrator (&lt;code&gt;no&lt;/code&gt;).
++                &lt;/dd&gt;
++
++                &lt;dt&gt;&lt;code&gt;namespace&lt;/code&gt;&lt;/dt&gt;
++                &lt;dd&gt;The namespace ID which should be assigned to the domain.
++                According to NVMe standard, namespace numbers start from 1,
++                including.
++                &lt;/dd&gt;
++              &lt;/dl&gt;
++              &lt;/dd&gt;
+           &lt;/dl&gt;
+         With &quot;file&quot;, &quot;block&quot;, and &quot;volume&quot;, one or more optional
+         sub-elements &lt;code&gt;seclabel&lt;/code&gt;, &lt;a href=&quot;#seclabel&quot;&gt;described
+@@ -3280,11 +3313,17 @@
+             initiator IQN needed to access the source via mandatory
+             attribute &lt;code&gt;name&lt;/code&gt;.
+           &lt;/dd&gt;
++          &lt;dt&gt;&lt;code&gt;address&lt;/code&gt;&lt;/dt&gt;
++          &lt;dd&gt;For disk of type &lt;code&gt;nvme&lt;/code&gt; this element
++            specifies the PCI address of the host NVMe
++            controller.
++            &lt;span class=&quot;since&quot;&gt;Since 5.5.0&lt;/span&gt;
++          &lt;/dd&gt;
+         &lt;/dl&gt;
+ 
+         &lt;p&gt;
+-        For a &quot;file&quot; or &quot;volume&quot; disk type which represents a cdrom or floppy
+-        (the &lt;code&gt;device&lt;/code&gt; attribute), it is possible to define
++        For a &quot;file&quot;, &quot;volume&quot; or &quot;nvme&quot; disk type which represents a cdrom or
++        floppy (the &lt;code&gt;device&lt;/code&gt; attribute), it is possible to define
+         policy what to do with the disk if the source file is not accessible.
+         (NB, &lt;code&gt;startupPolicy&lt;/code&gt; is not valid for &quot;volume&quot; disk unless
+          the specified storage volume is of &quot;file&quot; type). This is done by the
+diff --git a/docs/schemas/domaincommon.rng b/docs/schemas/domaincommon.rng
+index 31db599ab9..f367e8f6fd 100644
+--- a/docs/schemas/domaincommon.rng
++++ b/docs/schemas/domaincommon.rng
+@@ -1603,6 +1603,7 @@
+       &lt;ref name=&quot;diskSourceDir&quot;/&gt;
+       &lt;ref name=&quot;diskSourceNetwork&quot;/&gt;
+       &lt;ref name=&quot;diskSourceVolume&quot;/&gt;
++      &lt;ref name=&quot;diskSourceNvme&quot;/&gt;
+     &lt;/choice&gt;
+   &lt;/define&gt;
+ 
+@@ -1918,6 +1919,37 @@
+     &lt;/optional&gt;
+   &lt;/define&gt;
+ 
++  &lt;define name=&quot;diskSourceNvme&quot;&gt;
++    &lt;attribute name=&quot;type&quot;&gt;
++      &lt;value&gt;nvme&lt;/value&gt;
++    &lt;/attribute&gt;
++    &lt;optional&gt;
++      &lt;element name=&quot;source&quot;&gt;
++        &lt;attribute name=&quot;type&quot;&gt;
++          &lt;value&gt;pci&lt;/value&gt;
++        &lt;/attribute&gt;
++        &lt;attribute name=&quot;namespace&quot;&gt;
++          &lt;ref name=&quot;uint32&quot;/&gt;
++        &lt;/attribute&gt;
++        &lt;optional&gt;
++          &lt;attribute name=&quot;managed&quot;&gt;
++            &lt;ref name=&quot;virYesNo&quot;/&gt;
++          &lt;/attribute&gt;
++        &lt;/optional&gt;
++        &lt;element name=&quot;address&quot;&gt;
++          &lt;ref name=&quot;pciaddress&quot;/&gt;
++        &lt;/element&gt;
++        &lt;ref name=&quot;diskSourceCommon&quot;/&gt;
++        &lt;optional&gt;
++          &lt;ref name=&quot;storageStartupPolicy&quot;/&gt;
++        &lt;/optional&gt;
++        &lt;optional&gt;
++          &lt;ref name=&quot;encryption&quot;/&gt;
++        &lt;/optional&gt;
++      &lt;/element&gt;
++    &lt;/optional&gt;
++  &lt;/define&gt;
++
+   &lt;define name=&quot;diskTarget&quot;&gt;
+     &lt;data type=&quot;string&quot;&gt;
+       &lt;param name=&quot;pattern&quot;&gt;(ioemu:)?(fd|hd|sd|vd|xvd|ubd)[a-zA-Z0-9_]+&lt;/param&gt;
+diff --git a/tests/qemuxml2argvdata/disk-nvme.xml b/tests/qemuxml2argvdata/disk-nvme.xml
+new file mode 100644
+index 0000000000..0b3dbad4eb
+--- /dev/null
++++ b/tests/qemuxml2argvdata/disk-nvme.xml
+@@ -0,0 +1,55 @@
++&lt;domain type='qemu'&gt;
++  &lt;name&gt;QEMUGuest1&lt;/name&gt;
++  &lt;uuid&gt;c7a5fdbd-edaf-9455-926a-d65c16db1809&lt;/uuid&gt;
++  &lt;memory unit='KiB'&gt;219136&lt;/memory&gt;
++  &lt;currentMemory unit='KiB'&gt;219136&lt;/currentMemory&gt;
++  &lt;vcpu placement='static'&gt;1&lt;/vcpu&gt;
++  &lt;os&gt;
++    &lt;type arch='i686' machine='pc'&gt;hvm&lt;/type&gt;
++    &lt;boot dev='hd'/&gt;
++  &lt;/os&gt;
++  &lt;clock offset='utc'/&gt;
++  &lt;on_poweroff&gt;destroy&lt;/on_poweroff&gt;
++  &lt;on_reboot&gt;restart&lt;/on_reboot&gt;
++  &lt;on_crash&gt;destroy&lt;/on_crash&gt;
++  &lt;devices&gt;
++    &lt;emulator&gt;/usr/bin/qemu-system-i686&lt;/emulator&gt;
++    &lt;disk type='nvme' device='disk'&gt;
++      &lt;driver name='qemu' type='raw'/&gt;
++      &lt;source type='pci' managed='yes' namespace='1'&gt;
++        &lt;address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/&gt;
++      &lt;/source&gt;
++      &lt;target dev='vda' bus='virtio'/&gt;
++    &lt;/disk&gt;
++    &lt;disk type='nvme' device='disk'&gt;
++      &lt;driver name='qemu' type='raw'/&gt;
++      &lt;source type='pci' managed='yes' namespace='2'&gt;
++        &lt;address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/&gt;
++      &lt;/source&gt;
++      &lt;target dev='vdb' bus='virtio'/&gt;
++    &lt;/disk&gt;
++    &lt;disk type='nvme' device='disk'&gt;
++      &lt;driver name='qemu' type='raw'/&gt;
++      &lt;source type='pci' managed='no' namespace='1'&gt;
++        &lt;address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/&gt;
++      &lt;/source&gt;
++      &lt;target dev='vdc' bus='virtio'/&gt;
++    &lt;/disk&gt;
++    &lt;disk type='nvme' device='disk'&gt;
++      &lt;driver name='qemu' type='raw'/&gt;
++      &lt;source type='pci' managed='no' namespace='2'&gt;
++        &lt;address domain='0x0001' bus='0x02' slot='0x00' function='0x0'/&gt;
++        &lt;encryption format='luks'&gt;
++          &lt;secret type='passphrase' uuid='0a81f5b2-8403-7b23-c8d6-21ccc2f80d6f'/&gt;
++        &lt;/encryption&gt;
++      &lt;/source&gt;
++      &lt;target dev='vdd' bus='virtio'/&gt;
++    &lt;/disk&gt;
++    &lt;controller type='usb' index='0'/&gt;
++    &lt;controller type='pci' index='0' model='pci-root'/&gt;
++    &lt;controller type='scsi' index='0' model='virtio-scsi'/&gt;
++    &lt;input type='mouse' bus='ps2'/&gt;
++    &lt;input type='keyboard' bus='ps2'/&gt;
++    &lt;memballoon model='none'/&gt;
++  &lt;/devices&gt;
++&lt;/domain&gt;
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187167.html">[PATCH v1 03/31] virpcimock: Move actions checking one	level up</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187169.html">[PATCH v1 05/31] virpcimock: Create driver_override file	in device dirs</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187488.html">Re:  [PATCH v1 03/31] virpcimock: Move actions checking one level up</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187471.html">Re:  [PATCH v1 10/31] schemas: Introduce disk type NVMe</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187168"><strong>Date</strong></a></li>
+<li><a href="index.html#187168"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

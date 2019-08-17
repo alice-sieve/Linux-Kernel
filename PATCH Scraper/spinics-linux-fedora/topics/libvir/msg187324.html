@@ -1,0 +1,403 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 10/25] qemu: domain: Store blockjob data in the	status XML -->
+<!--X-From-R13: Brgre Yerzcn &#60;cxerzcnNerqung.pbz> -->
+<!--X-Date: Fri, 12 Jul 2019 09:06:42 &#45;0700 -->
+<!--X-Message-Id: d751b10c4665fc419eec2f83984bcaf7782df4df.1562947284.git.pkrempa@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1562947283.git.pkrempa@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 10/25] qemu: domain: Store blockjob data in the	status XML</title>
+<meta name="description" content="libvirt: [PATCH 10/25] qemu: domain: Store blockjob data in the	status XML">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 10/25] qemu: domain: Store blockjob data in the	status XML</h1>
+[<a href="msg187323.html">Date Prev</a>][<a href="msg187325.html">Date Next</a>][<a href="msg187414.html">Thread Prev</a>][<a href="msg187415.html">Thread Next</a>][<a href="maillist.html#187324">Date Index</a>][<a href="index.html#187324">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 10/25] qemu: domain: Store blockjob data in the	status XML</li>
+<li><em>From</em>: Peter Krempa &lt;pkrempa@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 12 Jul 2019 18:05:51 +0200</li>
+<li><em>Cc</em>: Peter Krempa &lt;pkrempa@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187317.html">cover.1562947283.git.pkrempa@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187317.html">cover.1562947283.git.pkrempa@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>We need to store the block job state in the status XML so that we can
+properly recover any data when reconnecting after startup and also in
+the end to be able to do any transition of the backing chain that
+happened while libvirt was not connected to the monitor.
+
+First step is to note the name, type, state and corresponding disk into
+the status XML.
+
+We also need to make sure that a broken blockjob does not make libvirt
+to lose the VM, thus many of the errors are just mark the job as
+invalid. Later on we'll cancel all invalid jobs.
+
+Signed-off-by: Peter Krempa &lt;pkrempa@xxxxxxxxxx&gt;
+---
+ src/qemu/qemu_domain.c | 123 +++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 119 insertions(+), 4 deletions(-)
+
+diff --git a/src/qemu/qemu_domain.c b/src/qemu/qemu_domain.c
+index 5af8f3b30c..59225c3ca9 100644
+--- a/src/qemu/qemu_domain.c
++++ b/src/qemu/qemu_domain.c
+@@ -32,6 +32,7 @@
+ #include &quot;qemu_migration_params.h&quot;
+ #include &quot;qemu_security.h&quot;
+ #include &quot;qemu_extdevice.h&quot;
++#include &quot;qemu_blockjob.h&quot;
+ #include &quot;viralloc.h&quot;
+ #include &quot;virlog.h&quot;
+ #include &quot;virerror.h&quot;
+@@ -2312,17 +2313,57 @@ qemuDomainObjPrivateXMLFormatAutomaticPlacement(virBufferPtr buf,
+ }
+
+
++static int
++qemuDomainObjPrivateXMLFormatBlockjobIterator(void *payload,
++                                              const void *name ATTRIBUTE_UNUSED,
++                                              void *data)
++{
++    VIR_AUTOCLEAN(virBuffer) attrBuf = VIR_BUFFER_INITIALIZER;
++    VIR_AUTOCLEAN(virBuffer) childBuf = VIR_BUFFER_INITIALIZER;
++    qemuBlockJobDataPtr job = payload;
++    virBufferPtr buf = data;
++    const char *state = qemuBlockjobStateTypeToString(job-&gt;state);
++    const char *newstate = NULL;
++
++    if (job-&gt;newstate != -1)
++        newstate = qemuBlockjobStateTypeToString(job-&gt;newstate);
++
++    virBufferSetChildIndent(&amp;childBuf, buf);
++
++    virBufferEscapeString(&amp;attrBuf, &quot; name='%s'&quot;, job-&gt;name);
++    virBufferEscapeString(&amp;attrBuf, &quot; type='%s'&quot;, qemuBlockjobTypeToString(job-&gt;type));
++    virBufferEscapeString(&amp;attrBuf, &quot; state='%s'&quot;, state);
++    virBufferEscapeString(&amp;attrBuf, &quot; newstate='%s'&quot;, newstate);
++    virBufferEscapeString(&amp;childBuf, &quot;&lt;errmsg&gt;%s&lt;/errmsg&gt;&quot;, job-&gt;errmsg);
++
++    if (job-&gt;disk)
++        virBufferEscapeString(&amp;childBuf, &quot;&lt;disk dst='%s'/&gt;\n&quot;, job-&gt;disk-&gt;dst);
++
++    return virXMLFormatElement(buf, &quot;blockjob&quot;, &amp;attrBuf, &amp;childBuf);
++}
++
++
+ static int
+ qemuDomainObjPrivateXMLFormatBlockjobs(virBufferPtr buf,
+                                        virDomainObjPtr vm)
+ {
+-    virBuffer attrBuf = VIR_BUFFER_INITIALIZER;
++    qemuDomainObjPrivatePtr priv = vm-&gt;privateData;
++    VIR_AUTOCLEAN(virBuffer) attrBuf = VIR_BUFFER_INITIALIZER;
++    VIR_AUTOCLEAN(virBuffer) childBuf = VIR_BUFFER_INITIALIZER;
+     bool bj = qemuDomainHasBlockjob(vm, false);
+
+     virBufferAsprintf(&amp;attrBuf, &quot; active='%s'&quot;,
+                       virTristateBoolTypeToString(virTristateBoolFromBool(bj)));
+
+-    return virXMLFormatElement(buf, &quot;blockjobs&quot;, &amp;attrBuf, NULL);
++    virBufferSetChildIndent(&amp;childBuf, buf);
++
++    if (virQEMUCapsGet(priv-&gt;qemuCaps, QEMU_CAPS_BLOCKDEV) &amp;&amp;
++        virHashForEach(priv-&gt;blockjobs,
++                       qemuDomainObjPrivateXMLFormatBlockjobIterator,
++                       &amp;childBuf) &lt; 0)
++        return -1;
++
++    return virXMLFormatElement(buf, &quot;blockjobs&quot;, &amp;attrBuf, &amp;childBuf);
+ }
+
+
+@@ -2662,16 +2703,90 @@ qemuDomainObjPrivateXMLParseAutomaticPlacement(xmlXPathContextPtr ctxt,
+
+
+ static int
+-qemuDomainObjPrivateXMLParseBlockjobs(qemuDomainObjPrivatePtr priv,
++qemuDomainObjPrivateXMLParseBlockjobData(virDomainObjPtr vm,
++                                         xmlNodePtr node,
++                                         xmlXPathContextPtr ctxt)
++{
++    VIR_XPATH_NODE_AUTORESTORE(ctxt);
++    virDomainDiskDefPtr disk = NULL;
++    VIR_AUTOUNREF(qemuBlockJobDataPtr) job = NULL;
++    VIR_AUTOFREE(char *) name = NULL;
++    VIR_AUTOFREE(char *) typestr = NULL;
++    int type;
++    VIR_AUTOFREE(char *) statestr = NULL;
++    int state = QEMU_BLOCKJOB_STATE_FAILED;
++    VIR_AUTOFREE(char *) diskdst = NULL;
++    VIR_AUTOFREE(char *) newstatestr = NULL;
++    int newstate = -1;
++    bool invalidData = false;
++
++    ctxt-&gt;node = node;
++
++    if (!(name = virXPathString(&quot;string(./@name)&quot;, ctxt))) {
++        VIR_WARN(&quot;malformed block job data for vm '%s'&quot;, vm-&gt;def-&gt;name);
++        return 0;
++    }
++
++    /* if the job name is known we need to register such a job so that we can
++     * clean it up */
++    if (!(typestr = virXPathString(&quot;string(./@type)&quot;, ctxt)) ||
++        (type = qemuBlockjobTypeFromString(typestr)) &lt; 0) {
++        type = QEMU_BLOCKJOB_TYPE_NONE;
++        invalidData = true;
++    }
++
++    if (!(job = qemuBlockJobDataNew(type, name)))
++        return -1;
++
++    if (!(statestr = virXPathString(&quot;string(./@state)&quot;, ctxt)) ||
++        (state = qemuBlockjobStateTypeFromString(statestr)) &lt; 0)
++        invalidData = true;
++
++    if ((newstatestr = virXPathString(&quot;string(./@newstate)&quot;, ctxt)) &amp;&amp;
++        (newstate = qemuBlockjobStateTypeFromString(newstatestr)) &lt; 0)
++        invalidData = true;
++
++    if ((diskdst = virXPathString(&quot;string(./disk/@dst)&quot;, ctxt)) &amp;&amp;
++        !(disk = virDomainDiskByName(vm-&gt;def, diskdst, false)))
++        invalidData = true;
++
++    job-&gt;state = state;
++    job-&gt;newstate = newstate;
++    job-&gt;errmsg = virXPathString(&quot;string(./errmsg)&quot;, ctxt);
++    job-&gt;invalidData = invalidData;
++
++    if (qemuBlockJobRegister(job, vm, disk) &lt; 0)
++        return -1;
++
++    return 0;
++}
++
++
++static int
++qemuDomainObjPrivateXMLParseBlockjobs(virDomainObjPtr vm,
++                                      qemuDomainObjPrivatePtr priv,
+                                       xmlXPathContextPtr ctxt)
+ {
++    VIR_AUTOFREE(xmlNodePtr *) nodes = NULL;
++    ssize_t nnodes = 0;
+     VIR_AUTOFREE(char *) active = NULL;
+     int tmp;
++    size_t i;
+
+     if ((active = virXPathString(&quot;string(./blockjobs/@active)&quot;, ctxt)) &amp;&amp;
+         (tmp = virTristateBoolTypeFromString(active)) &gt; 0)
+         priv-&gt;reconnectBlockjobs = tmp;
+
++    if (virQEMUCapsGet(priv-&gt;qemuCaps, QEMU_CAPS_BLOCKDEV)) {
++        if ((nnodes = virXPathNodeSet(&quot;./blockjobs/blockjob&quot;, ctxt, &amp;nodes)) &lt; 0)
++            return -1;
++
++        for (i = 0; i &lt; nnodes; i++) {
++            if (qemuDomainObjPrivateXMLParseBlockjobData(vm, nodes[i], ctxt) &lt; 0)
++                return -1;
++        }
++    }
++
+     return 0;
+ }
+
+@@ -3029,7 +3144,7 @@ qemuDomainObjPrivateXMLParse(xmlXPathContextPtr ctxt,
+
+     qemuDomainObjPrivateXMLParsePR(ctxt, &amp;priv-&gt;prDaemonRunning);
+
+-    if (qemuDomainObjPrivateXMLParseBlockjobs(priv, ctxt) &lt; 0)
++    if (qemuDomainObjPrivateXMLParseBlockjobs(vm, priv, ctxt) &lt; 0)
+         goto error;
+
+     qemuDomainStorageIdReset(priv);
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187323.html">[PATCH 09/25] qemu: blockjob: Add flag for invalid block	job data</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187325.html">[PATCH 11/25] qemu: blockjob: Save status XML when	modifying job state</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187414.html">Re:  [PATCH 09/25] qemu: blockjob: Add flag for invalid block job data</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187415.html">Re:  [PATCH 10/25] qemu: domain: Store blockjob data in the status XML</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187324"><strong>Date</strong></a></li>
+<li><a href="index.html#187324"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

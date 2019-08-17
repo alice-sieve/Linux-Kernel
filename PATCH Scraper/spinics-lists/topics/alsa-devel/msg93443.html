@@ -1,0 +1,334 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2 2/3] ASoC: SOF: add runtime idle callback -->
+<!--X-From-R13: Ynv Hruznara &#60;xnv.iruznaraNyvahk.vagry.pbz> -->
+<!--X-Date: Tue, 2 Jul 2019 07:18:16 &#45;0700 -->
+<!--X-Message-Id: 20190702132428.13129&#45;3&#45;kai.vehmanen@linux.intel.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190702132428.13129&#45;1&#45;kai.vehmanen@linux.intel.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH v2 2/3] ASoC: SOF: add runtime idle callback &mdash; ALSA Devel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH v2 2/3] ASoC: SOF: add runtime idle callback &mdash; ALSA Devel</title>
+<link rel="alternate" type="application/rss+xml" title="ALSA Devel" href="//feedproxy.google.com/AlsaDevel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v2 2/3] ASoC: SOF: add runtime idle callback</h1>
+[<a href="msg93442.html">Date Prev</a>][<a href="msg93444.html">Date Next</a>][<a href="msg93586.html">Thread Prev</a>][<a href="msg93587.html">Thread Next</a>][<a href="maillist.html#93443">Date Index</a>][<a href="threads.html#93443">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: broonie@xxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH v2 2/3] ASoC: SOF: add runtime idle callback</li>
+<li><em>From</em>: Kai Vehmanen &lt;kai.vehmanen@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue,  2 Jul 2019 16:24:27 +0300</li>
+<li><em>Cc</em>: tiwai@xxxxxxx, libin.yang@xxxxxxxxx, alsa-devel@xxxxxxxxxxxxxxxx,        pierre-louis.bossart@xxxxxxxxxxxxxxx, kai.vehmanen@xxxxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg93439.html">20190702132428.13129-1-kai.vehmanen@linux.intel.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg93439.html">20190702132428.13129-1-kai.vehmanen@linux.intel.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Add ability to implement a SOF device level runtime idle callback.
+
+Signed-off-by: Kai Vehmanen &lt;kai.vehmanen@xxxxxxxxxxxxxxx&gt;
+Reviewed-by: Pierre-Louis Bossart &lt;pierre-louis.bossart@xxxxxxxxxxxxxxx&gt;
+Reviewed-by: Takashi Iwai &lt;tiwai@xxxxxxx&gt;
+---
+ sound/soc/sof/intel/hda.h    | 1 +
+ sound/soc/sof/ops.h          | 8 ++++++++
+ sound/soc/sof/pm.c           | 8 ++++++++
+ sound/soc/sof/sof-acpi-dev.c | 2 +-
+ sound/soc/sof/sof-pci-dev.c  | 2 +-
+ sound/soc/sof/sof-priv.h     | 2 ++
+ 6 files changed, 21 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 73d7cc08afc22..d9c17146200b3 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -457,6 +457,7 @@ int hda_dsp_suspend(struct snd_sof_dev *sdev, int state);
+ int hda_dsp_resume(struct snd_sof_dev *sdev);
+ int hda_dsp_runtime_suspend(struct snd_sof_dev *sdev, int state);
+ int hda_dsp_runtime_resume(struct snd_sof_dev *sdev);
++int hda_dsp_runtime_idle(struct snd_sof_dev *sdev);
+ int hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev);
+ void hda_dsp_dump_skl(struct snd_sof_dev *sdev, u32 flags);
+ void hda_dsp_dump(struct snd_sof_dev *sdev, u32 flags);
+diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
+index 45a3d10911634..b9bdf45889da1 100644
+--- a/sound/soc/sof/ops.h
++++ b/sound/soc/sof/ops.h
+@@ -134,6 +134,14 @@ static inline int snd_sof_dsp_runtime_suspend(struct snd_sof_dev *sdev,
+ 	return 0;
+ }
+ 
++static inline int snd_sof_dsp_runtime_idle(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)-&gt;runtime_idle)
++		return sof_ops(sdev)-&gt;runtime_idle(sdev);
++
++	return 0;
++}
++
+ static inline int snd_sof_dsp_hw_params_upon_resume(struct snd_sof_dev *sdev)
+ {
+ 	if (sof_ops(sdev)-&gt;set_hw_params_upon_resume)
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+index 8eeb3a1029f24..278abfd10490d 100644
+--- a/sound/soc/sof/pm.c
++++ b/sound/soc/sof/pm.c
+@@ -394,6 +394,14 @@ int snd_sof_runtime_suspend(struct device *dev)
+ }
+ EXPORT_SYMBOL(snd_sof_runtime_suspend);
+ 
++int snd_sof_runtime_idle(struct device *dev)
++{
++	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
++
++	return snd_sof_dsp_runtime_idle(sdev);
++}
++EXPORT_SYMBOL(snd_sof_runtime_idle);
++
+ int snd_sof_runtime_resume(struct device *dev)
+ {
+ 	return sof_resume(dev, true);
+diff --git a/sound/soc/sof/sof-acpi-dev.c b/sound/soc/sof/sof-acpi-dev.c
+index c8dafb1ac54e2..ea7b8b8954128 100644
+--- a/sound/soc/sof/sof-acpi-dev.c
++++ b/sound/soc/sof/sof-acpi-dev.c
+@@ -116,7 +116,7 @@ static const struct sof_dev_desc sof_acpi_cherrytrail_desc = {
+ static const struct dev_pm_ops sof_acpi_pm = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(snd_sof_suspend, snd_sof_resume)
+ 	SET_RUNTIME_PM_OPS(snd_sof_runtime_suspend, snd_sof_runtime_resume,
+-			   NULL)
++			   snd_sof_runtime_idle)
+ };
+ 
+ static void sof_acpi_probe_complete(struct device *dev)
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index e2b19782f01ac..65d1bac4c6b8b 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -206,7 +206,7 @@ static const struct sof_dev_desc kbl_desc = {
+ static const struct dev_pm_ops sof_pci_pm = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(snd_sof_suspend, snd_sof_resume)
+ 	SET_RUNTIME_PM_OPS(snd_sof_runtime_suspend, snd_sof_runtime_resume,
+-			   NULL)
++			   snd_sof_runtime_idle)
+ };
+ 
+ static void sof_pci_probe_complete(struct device *dev)
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 58621db4fd31a..b8c0b2a226845 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -176,6 +176,7 @@ struct snd_sof_dsp_ops {
+ 	int (*runtime_suspend)(struct snd_sof_dev *sof_dev,
+ 			       int state); /* optional */
+ 	int (*runtime_resume)(struct snd_sof_dev *sof_dev); /* optional */
++	int (*runtime_idle)(struct snd_sof_dev *sof_dev); /* optional */
+ 	int (*set_hw_params_upon_resume)(struct snd_sof_dev *sdev); /* optional */
+ 
+ 	/* DSP clocking */
+@@ -446,6 +447,7 @@ int snd_sof_device_remove(struct device *dev);
+ 
+ int snd_sof_runtime_suspend(struct device *dev);
+ int snd_sof_runtime_resume(struct device *dev);
++int snd_sof_runtime_idle(struct device *dev);
+ int snd_sof_resume(struct device *dev);
+ int snd_sof_suspend(struct device *dev);
+ 
+-- 
+2.17.1
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@xxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://mailman.alsa-project.org/mailman/listinfo/alsa-devel">https://mailman.alsa-project.org/mailman/listinfo/alsa-devel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="93587" href="msg93587.html">Applied &quot;ASoC: SOF: add runtime idle callback&quot; to the	asoc tree</a></strong>
+<ul><li><em>From:</em> Mark Brown</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="93439" href="msg93439.html">[PATCH v2 resend 0/3] ASoC: SOF: fix suspend ordering	with runtime idle</a></strong>
+<ul><li><em>From:</em> Kai Vehmanen</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg93442.html">Re:  [PATCH 1/6] ASoC: dt-bindings: add dt bindings for WCD9340/WCD9341 audio codec</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg93444.html">[PATCH v2 resend 3/3] ASoC: SOF: Intel: implement	runtime idle for CNL/APL</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg93586.html">Applied &quot;ASoC: hdac_hdmi: report codec link up/down	status to bus&quot; to the asoc tree</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg93587.html">Applied &quot;ASoC: SOF: add runtime idle callback&quot; to the	asoc tree</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#93443"><strong>Date</strong></a></li>
+<li><a href="threads.html#93443"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/alsa-user/>[ALSA&nbsp;User]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/pulse-audio/>[Pulse&nbsp;Audio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=http://yosemitephotos.net/>[Photo&nbsp;Sharing]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/linux-sound/>[Linux&nbsp;Sound]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-media/>[Video&nbsp;4&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gimp/>[Gimp]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

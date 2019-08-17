@@ -1,0 +1,510 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v4 03/23] LSM: Infrastructure management of the key blob -->
+<!--X-From-R13: Qnfrl Epunhsyre &#60;pnfrlNfpunhsyre&#45;pn.pbz> -->
+<!--X-Date: Wed, 26 Jun 2019 12:22:51 &#45;0700 -->
+<!--X-Message-Id: 20190626192234.11725&#45;4&#45;casey@schaufler&#45;ca.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190626192234.11725&#45;1&#45;casey@schaufler&#45;ca.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, [PATCH v4 03/23] LSM: Infrastructure management of the key blob">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- [PATCH v4 03/23] LSM: Infrastructure management of the key blob</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v4 03/23] LSM: Infrastructure management of the key blob</h1>
+[<a href="msg29370.html">Date Prev</a>][<a href="msg29378.html">Date Next</a>][<a href="msg29370.html">Thread Prev</a>][<a href="msg29378.html">Thread Next</a>][<a href="maillist.html#29375">Date Index</a>][<a href="index.html#29375">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v4 03/23] LSM: Infrastructure management of the key blob</li>
+<li><em>From</em>: Casey Schaufler &lt;casey@xxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 26 Jun 2019 12:22:14 -0700</li>
+<li><em>Cc</em>: casey@xxxxxxxxxxxxxxxx, keescook@xxxxxxxxxxxx,        john.johansen@xxxxxxxxxxxxx, penguin-kernel@xxxxxxxxxxxxxxxxxxx,        paul@xxxxxxxxxxxxxx, sds@xxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29370.html">20190626192234.11725-1-casey@schaufler-ca.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg29370.html">20190626192234.11725-1-casey@schaufler-ca.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Casey Schaufler &lt;cschaufler@xxxxxxxxxxxxxxxx&gt;
+
+Move management of the key-&gt;security blob out of the
+individual security modules and into the security
+infrastructure. Instead of allocating the blobs from within
+the modules the modules tell the infrastructure how much
+space is required, and the space is allocated there.
+
+Reviewed-by: Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;
+Reviewed-by: John Johansen &lt;jojn.johansen@xxxxxxxxxxxxx&gt;
+Signed-off-by: Casey Schaufler &lt;casey@xxxxxxxxxxxxxxxx&gt;
+---
+ include/linux/lsm_hooks.h         |  1 +
+ security/security.c               | 40 ++++++++++++++++++++++++++++++-
+ security/selinux/hooks.c          | 23 +++++-------------
+ security/selinux/include/objsec.h |  7 ++++++
+ security/smack/smack.h            |  7 ++++++
+ security/smack/smack_lsm.c        | 33 ++++++++++++-------------
+ 6 files changed, 75 insertions(+), 36 deletions(-)
+
+diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+index b353482ea348..3fe39abccc8f 100644
+--- a/include/linux/lsm_hooks.h
++++ b/include/linux/lsm_hooks.h
+@@ -2050,6 +2050,7 @@ struct lsm_blob_sizes {
+ 	int	lbs_sock;
+ 	int	lbs_superblock;
+ 	int	lbs_ipc;
++	int	lbs_key;
+ 	int	lbs_msg_msg;
+ 	int	lbs_task;
+ };
+diff --git a/security/security.c b/security/security.c
+index 2c0834db7976..7cfedb90210a 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -172,6 +172,9 @@ static void __init lsm_set_blob_sizes(struct lsm_blob_sizes *needed)
+ 		blob_sizes.lbs_inode = sizeof(struct rcu_head);
+ 	lsm_set_blob_size(&amp;needed-&gt;lbs_inode, &amp;blob_sizes.lbs_inode);
+ 	lsm_set_blob_size(&amp;needed-&gt;lbs_ipc, &amp;blob_sizes.lbs_ipc);
++#ifdef CONFIG_KEYS
++	lsm_set_blob_size(&amp;needed-&gt;lbs_key, &amp;blob_sizes.lbs_key);
++#endif
+ 	lsm_set_blob_size(&amp;needed-&gt;lbs_msg_msg, &amp;blob_sizes.lbs_msg_msg);
+ 	lsm_set_blob_size(&amp;needed-&gt;lbs_sock, &amp;blob_sizes.lbs_sock);
+ 	lsm_set_blob_size(&amp;needed-&gt;lbs_superblock, &amp;blob_sizes.lbs_superblock);
+@@ -307,6 +310,9 @@ static void __init ordered_lsm_init(void)
+ 	init_debug(&quot;file blob size       = %d\n&quot;, blob_sizes.lbs_file);
+ 	init_debug(&quot;inode blob size      = %d\n&quot;, blob_sizes.lbs_inode);
+ 	init_debug(&quot;ipc blob size        = %d\n&quot;, blob_sizes.lbs_ipc);
++#ifdef CONFIG_KEYS
++	init_debug(&quot;key blob size        = %d\n&quot;, blob_sizes.lbs_key);
++#endif /* CONFIG_KEYS */
+ 	init_debug(&quot;msg_msg blob size    = %d\n&quot;, blob_sizes.lbs_msg_msg);
+ 	init_debug(&quot;sock blob size       = %d\n&quot;, blob_sizes.lbs_sock);
+ 	init_debug(&quot;superblock blob size = %d\n&quot;, blob_sizes.lbs_superblock);
+@@ -573,6 +579,29 @@ static int lsm_ipc_alloc(struct kern_ipc_perm *kip)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_KEYS
++/**
++ * lsm_key_alloc - allocate a composite key blob
++ * @key: the key that needs a blob
++ *
++ * Allocate the key blob for all the modules
++ *
++ * Returns 0, or -ENOMEM if memory can't be allocated.
++ */
++static int lsm_key_alloc(struct key *key)
++{
++	if (blob_sizes.lbs_key == 0) {
++		key-&gt;security = NULL;
++		return 0;
++	}
++
++	key-&gt;security = kzalloc(blob_sizes.lbs_key, GFP_KERNEL);
++	if (key-&gt;security == NULL)
++		return -ENOMEM;
++	return 0;
++}
++#endif /* CONFIG_KEYS */
++
+ /**
+  * lsm_msg_msg_alloc - allocate a composite msg_msg blob
+  * @mp: the msg_msg that needs a blob
+@@ -2339,12 +2368,21 @@ EXPORT_SYMBOL(security_skb_classify_flow);
+ int security_key_alloc(struct key *key, const struct cred *cred,
+ 		       unsigned long flags)
+ {
+-	return call_int_hook(key_alloc, 0, key, cred, flags);
++	int rc = lsm_key_alloc(key);
++
++	if (unlikely(rc))
++		return rc;
++	rc = call_int_hook(key_alloc, 0, key, cred, flags);
++	if (unlikely(rc))
++		security_key_free(key);
++	return rc;
+ }
+ 
+ void security_key_free(struct key *key)
+ {
+ 	call_void_hook(key_free, key);
++	kfree(key-&gt;security);
++	key-&gt;security = NULL;
+ }
+ 
+ int security_key_permission(key_ref_t key_ref,
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index 5d74ed35b728..c83ec2652eda 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -6353,11 +6353,7 @@ static int selinux_key_alloc(struct key *k, const struct cred *cred,
+ 			     unsigned long flags)
+ {
+ 	const struct task_security_struct *tsec;
+-	struct key_security_struct *ksec;
+-
+-	ksec = kzalloc(sizeof(struct key_security_struct), GFP_KERNEL);
+-	if (!ksec)
+-		return -ENOMEM;
++	struct key_security_struct *ksec = selinux_key(k);
+ 
+ 	tsec = selinux_cred(cred);
+ 	if (tsec-&gt;keycreate_sid)
+@@ -6365,18 +6361,9 @@ static int selinux_key_alloc(struct key *k, const struct cred *cred,
+ 	else
+ 		ksec-&gt;sid = tsec-&gt;sid;
+ 
+-	k-&gt;security = ksec;
+ 	return 0;
+ }
+ 
+-static void selinux_key_free(struct key *k)
+-{
+-	struct key_security_struct *ksec = k-&gt;security;
+-
+-	k-&gt;security = NULL;
+-	kfree(ksec);
+-}
+-
+ static int selinux_key_permission(key_ref_t key_ref,
+ 				  const struct cred *cred,
+ 				  unsigned perm)
+@@ -6394,7 +6381,7 @@ static int selinux_key_permission(key_ref_t key_ref,
+ 	sid = cred_sid(cred);
+ 
+ 	key = key_ref_to_ptr(key_ref);
+-	ksec = key-&gt;security;
++	ksec = selinux_key(key);
+ 
+ 	return avc_has_perm(&amp;selinux_state,
+ 			    sid, ksec-&gt;sid, SECCLASS_KEY, perm, NULL);
+@@ -6402,7 +6389,7 @@ static int selinux_key_permission(key_ref_t key_ref,
+ 
+ static int selinux_key_getsecurity(struct key *key, char **_buffer)
+ {
+-	struct key_security_struct *ksec = key-&gt;security;
++	struct key_security_struct *ksec = selinux_key(key);
+ 	char *context = NULL;
+ 	unsigned len;
+ 	int rc;
+@@ -6627,6 +6614,9 @@ struct lsm_blob_sizes selinux_blob_sizes __lsm_ro_after_init = {
+ 	.lbs_file = sizeof(struct file_security_struct),
+ 	.lbs_inode = sizeof(struct inode_security_struct),
+ 	.lbs_ipc = sizeof(struct ipc_security_struct),
++#ifdef CONFIG_KEYS
++	.lbs_key = sizeof(struct key_security_struct),
++#endif /* CONFIG_KEYS */
+ 	.lbs_msg_msg = sizeof(struct msg_security_struct),
+ 	.lbs_sock = sizeof(struct sk_security_struct),
+ 	.lbs_superblock = sizeof(struct superblock_security_struct),
+@@ -6842,7 +6832,6 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
+ 
+ #ifdef CONFIG_KEYS
+ 	LSM_HOOK_INIT(key_alloc, selinux_key_alloc),
+-	LSM_HOOK_INIT(key_free, selinux_key_free),
+ 	LSM_HOOK_INIT(key_permission, selinux_key_permission),
+ 	LSM_HOOK_INIT(key_getsecurity, selinux_key_getsecurity),
+ #endif
+diff --git a/security/selinux/include/objsec.h b/security/selinux/include/objsec.h
+index 29f02b8f8f31..3b78aa4ee98f 100644
+--- a/security/selinux/include/objsec.h
++++ b/security/selinux/include/objsec.h
+@@ -194,6 +194,13 @@ static inline struct superblock_security_struct *selinux_superblock(
+ 	return superblock-&gt;s_security + selinux_blob_sizes.lbs_superblock;
+ }
+ 
++#ifdef CONFIG_KEYS
++static inline struct key_security_struct *selinux_key(const struct key *key)
++{
++	return key-&gt;security + selinux_blob_sizes.lbs_key;
++}
++#endif /* CONFIG_KEYS */
++
+ static inline struct sk_security_struct *selinux_sock(const struct sock *sock)
+ {
+ 	return sock-&gt;sk_security + selinux_blob_sizes.lbs_sock;
+diff --git a/security/smack/smack.h b/security/smack/smack.h
+index 4ac4bf3310d7..7cc3a3382fee 100644
+--- a/security/smack/smack.h
++++ b/security/smack/smack.h
+@@ -386,6 +386,13 @@ static inline struct superblock_smack *smack_superblock(
+ 	return superblock-&gt;s_security + smack_blob_sizes.lbs_superblock;
+ }
+ 
++#ifdef CONFIG_KEYS
++static inline struct smack_known **smack_key(const struct key *key)
++{
++	return key-&gt;security + smack_blob_sizes.lbs_key;
++}
++#endif /* CONFIG_KEYS */
++
+ /*
+  * Is the directory transmuting?
+  */
+diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+index fd69e1bd841b..e9560b078efe 100644
+--- a/security/smack/smack_lsm.c
++++ b/security/smack/smack_lsm.c
+@@ -4179,23 +4179,13 @@ static void smack_inet_csk_clone(struct sock *sk,
+ static int smack_key_alloc(struct key *key, const struct cred *cred,
+ 			   unsigned long flags)
+ {
++	struct smack_known **blob = smack_key(key);
+ 	struct smack_known *skp = smk_of_task(smack_cred(cred));
+ 
+-	key-&gt;security = skp;
++	*blob = skp;
+ 	return 0;
+ }
+ 
+-/**
+- * smack_key_free - Clear the key security blob
+- * @key: the object
+- *
+- * Clear the blob pointer
+- */
+-static void smack_key_free(struct key *key)
+-{
+-	key-&gt;security = NULL;
+-}
+-
+ /**
+  * smack_key_permission - Smack access on a key
+  * @key_ref: gets to the object
+@@ -4208,6 +4198,8 @@ static void smack_key_free(struct key *key)
+ static int smack_key_permission(key_ref_t key_ref,
+ 				const struct cred *cred, unsigned perm)
+ {
++	struct smack_known **blob;
++	struct smack_known *skp;
+ 	struct key *keyp;
+ 	struct smk_audit_info ad;
+ 	struct smack_known *tkp = smk_of_task(smack_cred(cred));
+@@ -4227,7 +4219,9 @@ static int smack_key_permission(key_ref_t key_ref,
+ 	 * If the key hasn't been initialized give it access so that
+ 	 * it may do so.
+ 	 */
+-	if (keyp-&gt;security == NULL)
++	blob = smack_key(keyp);
++	skp = *blob;
++	if (skp == NULL)
+ 		return 0;
+ 	/*
+ 	 * This should not occur
+@@ -4247,8 +4241,8 @@ static int smack_key_permission(key_ref_t key_ref,
+ 		request |= MAY_READ;
+ 	if (perm &amp; (KEY_NEED_WRITE | KEY_NEED_LINK | KEY_NEED_SETATTR))
+ 		request |= MAY_WRITE;
+-	rc = smk_access(tkp, keyp-&gt;security, request, &amp;ad);
+-	rc = smk_bu_note(&quot;key access&quot;, tkp, keyp-&gt;security, request, rc);
++	rc = smk_access(tkp, skp, request, &amp;ad);
++	rc = smk_bu_note(&quot;key access&quot;, tkp, skp, request, rc);
+ 	return rc;
+ }
+ 
+@@ -4263,11 +4257,12 @@ static int smack_key_permission(key_ref_t key_ref,
+  */
+ static int smack_key_getsecurity(struct key *key, char **_buffer)
+ {
+-	struct smack_known *skp = key-&gt;security;
++	struct smack_known **blob = smack_key(key);
++	struct smack_known *skp = *blob;
+ 	size_t length;
+ 	char *copy;
+ 
+-	if (key-&gt;security == NULL) {
++	if (skp == NULL) {
+ 		*_buffer = NULL;
+ 		return 0;
+ 	}
+@@ -4550,6 +4545,9 @@ struct lsm_blob_sizes smack_blob_sizes __lsm_ro_after_init = {
+ 	.lbs_file = sizeof(struct smack_known *),
+ 	.lbs_inode = sizeof(struct inode_smack),
+ 	.lbs_ipc = sizeof(struct smack_known *),
++#ifdef CONFIG_KEYS
++	.lbs_key = sizeof(struct smack_known *),
++#endif /* CONFIG_KEYS */
+ 	.lbs_msg_msg = sizeof(struct smack_known *),
+ 	.lbs_sock = sizeof(struct socket_smack),
+ 	.lbs_superblock = sizeof(struct superblock_smack),
+@@ -4671,7 +4669,6 @@ static struct security_hook_list smack_hooks[] __lsm_ro_after_init = {
+  /* key management security hooks */
+ #ifdef CONFIG_KEYS
+ 	LSM_HOOK_INIT(key_alloc, smack_key_alloc),
+-	LSM_HOOK_INIT(key_free, smack_key_free),
+ 	LSM_HOOK_INIT(key_permission, smack_key_permission),
+ 	LSM_HOOK_INIT(key_getsecurity, smack_key_getsecurity),
+ #endif /* CONFIG_KEYS */
+-- 
+2.20.1
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29370" href="msg29370.html">[PATCH v4 00/23] LSM: Module stacking for AppArmor</a></strong>
+<ul><li><em>From:</em> Casey Schaufler</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29370.html">[PATCH v4 00/23] LSM: Module stacking for AppArmor</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29378.html">[PATCH v4 01/23] LSM: Infrastructure management of the superblock</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29370.html">[PATCH v4 00/23] LSM: Module stacking for AppArmor</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29378.html">[PATCH v4 01/23] LSM: Infrastructure management of the superblock</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29375"><strong>Date</strong></a></li>
+<li><a href="index.html#29375"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

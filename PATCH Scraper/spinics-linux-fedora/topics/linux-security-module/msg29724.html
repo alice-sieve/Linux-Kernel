@@ -1,0 +1,379 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v5 05/12] LSM: creation of "check_vmflags" LSM hook -->
+<!--X-From-R13: Enyingber [rfbenpn &#60;f.zrfbenpn16Ntznvy.pbz> -->
+<!--X-Date: Sat, 6 Jul 2019 03:55:54 &#45;0700 -->
+<!--X-Message-Id: 1562410493&#45;8661&#45;6&#45;git&#45;send&#45;email&#45;s.mesoraca16@gmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1562410493&#45;8661&#45;1&#45;git&#45;send&#45;email&#45;s.mesoraca16@gmail.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, [PATCH v5 05/12] LSM: creation of &quot;check_vmflags&quot; LSM hook">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- [PATCH v5 05/12] LSM: creation of &quot;check_vmflags&quot; LSM hook</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v5 05/12] LSM: creation of &quot;check_vmflags&quot; LSM hook</h1>
+[<a href="msg29723.html">Date Prev</a>][<a href="msg29725.html">Date Next</a>][<a href="msg29723.html">Thread Prev</a>][<a href="msg29725.html">Thread Next</a>][<a href="maillist.html#29724">Date Index</a>][<a href="index.html#29724">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v5 05/12] LSM: creation of &quot;check_vmflags&quot; LSM hook</li>
+<li><em>From</em>: Salvatore Mesoraca &lt;s.mesoraca16@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Sat,  6 Jul 2019 12:54:46 +0200</li>
+<li><em>Cc</em>: kernel-hardening@xxxxxxxxxxxxxxxxxx, linux-mm@xxxxxxxxx,        linux-security-module@xxxxxxxxxxxxxxx,        Alexander Viro &lt;viro@xxxxxxxxxxxxxxxxxx&gt;,        Brad Spengler &lt;spender@xxxxxxxxxxxxxx&gt;,        Casey Schaufler &lt;casey@xxxxxxxxxxxxxxxx&gt;,        Christoph Hellwig &lt;hch@xxxxxxxxxxxxx&gt;,        James Morris &lt;james.l.morris@xxxxxxxxxx&gt;, Jann Horn &lt;jannh@xxxxxxxxxx&gt;,        Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;, PaX Team &lt;pageexec@xxxxxxxxxxx&gt;,        Salvatore Mesoraca &lt;s.mesoraca16@xxxxxxxxx&gt;,        &quot;Serge E. Hallyn&quot; &lt;serge@xxxxxxxxxx&gt;,        Thomas Gleixner &lt;tglx@xxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29714.html">1562410493-8661-1-git-send-email-s.mesoraca16@gmail.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg29714.html">1562410493-8661-1-git-send-email-s.mesoraca16@gmail.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Creation of a new LSM hook to check if a given configuration of vmflags,
+for a new memory allocation request, should be allowed or not.
+It's placed in &quot;do_mmap&quot;, &quot;do_brk_flags&quot;, &quot;__install_special_mapping&quot;
+and &quot;setup_arg_pages&quot;.
+When loading an ELF, this hook is also used to determine what to do
+with an RWE PT_GNU_STACK header. This allows LSM to force the loader
+to silently ignore executable stack markings, which is useful a thing to
+do when trampoline emulation is available.
+
+Signed-off-by: Salvatore Mesoraca &lt;s.mesoraca16@xxxxxxxxx&gt;
+---
+ fs/binfmt_elf.c           |  3 ++-
+ fs/binfmt_elf_fdpic.c     |  3 ++-
+ fs/exec.c                 |  4 ++++
+ include/linux/lsm_hooks.h |  7 +++++++
+ include/linux/security.h  |  6 ++++++
+ mm/mmap.c                 | 13 +++++++++++++
+ security/security.c       |  5 +++++
+ 7 files changed, 39 insertions(+), 2 deletions(-)
+
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index 8264b46..1d98737 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -806,7 +806,8 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ 	for (i = 0; i &lt; loc-&gt;elf_ex.e_phnum; i++, elf_ppnt++)
+ 		switch (elf_ppnt-&gt;p_type) {
+ 		case PT_GNU_STACK:
+-			if (elf_ppnt-&gt;p_flags &amp; PF_X)
++			if (elf_ppnt-&gt;p_flags &amp; PF_X &amp;&amp;
++			    !security_check_vmflags(VM_EXEC|VM_READ|VM_WRITE))
+ 				executable_stack = EXSTACK_ENABLE_X;
+ 			else
+ 				executable_stack = EXSTACK_DISABLE_X;
+diff --git a/fs/binfmt_elf_fdpic.c b/fs/binfmt_elf_fdpic.c
+index d86ebd0d..6e0dee1 100644
+--- a/fs/binfmt_elf_fdpic.c
++++ b/fs/binfmt_elf_fdpic.c
+@@ -163,7 +163,8 @@ static int elf_fdpic_fetch_phdrs(struct elf_fdpic_params *params,
+ 		if (phdr-&gt;p_type != PT_GNU_STACK)
+ 			continue;
+ 
+-		if (phdr-&gt;p_flags &amp; PF_X)
++		if (phdr-&gt;p_flags &amp; PF_X &amp;&amp;
++		    !security_check_vmflags(VM_EXEC|VM_READ|VM_WRITE))
+ 			params-&gt;flags |= ELF_FDPIC_FLAG_EXEC_STACK;
+ 		else
+ 			params-&gt;flags |= ELF_FDPIC_FLAG_NOEXEC_STACK;
+diff --git a/fs/exec.c b/fs/exec.c
+index 89a500b..abf770a 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -756,6 +756,10 @@ int setup_arg_pages(struct linux_binprm *bprm,
+ 	vm_flags |= mm-&gt;def_flags;
+ 	vm_flags |= VM_STACK_INCOMPLETE_SETUP;
+ 
++	ret = security_check_vmflags(vm_flags);
++	if (ret)
++		goto out_unlock;
++
+ 	ret = mprotect_fixup(vma, &amp;prev, vma-&gt;vm_start, vma-&gt;vm_end,
+ 			vm_flags);
+ 	if (ret)
+diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+index 47f58cf..12ce609 100644
+--- a/include/linux/lsm_hooks.h
++++ b/include/linux/lsm_hooks.h
+@@ -513,6 +513,11 @@
+  *	@reqprot contains the protection requested by the application.
+  *	@prot contains the protection that will be applied by the kernel.
+  *	Return 0 if permission is granted.
++ * @check_vmflags:
++ *	Check if the requested @vmflags are allowed.
++ *	@vmflags contains the requested vmflags.
++ *	Return 0 if the operation is allowed to continue otherwise return
++ *	the appropriate error code.
+  * @file_lock:
+  *	Check permission before performing file locking operations.
+  *	Note the hook mediates both flock and fcntl style locks.
+@@ -1597,6 +1602,7 @@
+ 				unsigned long prot, unsigned long flags);
+ 	int (*file_mprotect)(struct vm_area_struct *vma, unsigned long reqprot,
+ 				unsigned long prot);
++	int (*check_vmflags)(vm_flags_t vmflags);
+ 	int (*file_lock)(struct file *file, unsigned int cmd);
+ 	int (*file_fcntl)(struct file *file, unsigned int cmd,
+ 				unsigned long arg);
+@@ -1897,6 +1903,7 @@ struct security_hook_heads {
+ 	struct hlist_head mmap_addr;
+ 	struct hlist_head mmap_file;
+ 	struct hlist_head file_mprotect;
++	struct hlist_head check_vmflags;
+ 	struct hlist_head file_lock;
+ 	struct hlist_head file_fcntl;
+ 	struct hlist_head file_set_fowner;
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 659071c..aed78eb 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -312,6 +312,7 @@ int security_mmap_file(struct file *file, unsigned long prot,
+ int security_mmap_addr(unsigned long addr);
+ int security_file_mprotect(struct vm_area_struct *vma, unsigned long reqprot,
+ 			   unsigned long prot);
++int security_check_vmflags(vm_flags_t vmflags);
+ int security_file_lock(struct file *file, unsigned int cmd);
+ int security_file_fcntl(struct file *file, unsigned int cmd, unsigned long arg);
+ void security_file_set_fowner(struct file *file);
+@@ -859,6 +860,11 @@ static inline int security_file_mprotect(struct vm_area_struct *vma,
+ 	return 0;
+ }
+ 
++static inline int security_check_vmflags(vm_flags_t vmflags)
++{
++	return 0;
++}
++
+ static inline int security_file_lock(struct file *file, unsigned int cmd)
+ {
+ 	return 0;
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 7e8c3e8a..ec9c0e3d 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1390,6 +1390,7 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
+ {
+ 	struct mm_struct *mm = current-&gt;mm;
+ 	int pkey = 0;
++	int error;
+ 
+ 	*populate = 0;
+ 
+@@ -1453,6 +1454,10 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
+ 	vm_flags |= calc_vm_prot_bits(prot, pkey) | calc_vm_flag_bits(flags) |
+ 			mm-&gt;def_flags | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC;
+ 
++	error = security_check_vmflags(vm_flags);
++	if (error)
++		return error;
++
+ 	if (flags &amp; MAP_LOCKED)
+ 		if (!can_do_mlock())
+ 			return -EPERM;
+@@ -2996,6 +3001,10 @@ static int do_brk_flags(unsigned long addr, unsigned long len, unsigned long fla
+ 		return -EINVAL;
+ 	flags |= VM_DATA_DEFAULT_FLAGS | VM_ACCOUNT | mm-&gt;def_flags;
+ 
++	error = security_check_vmflags(flags);
++	if (error)
++		return error;
++
+ 	error = get_unmapped_area(NULL, addr, len, 0, MAP_FIXED);
+ 	if (offset_in_page(error))
+ 		return error;
+@@ -3393,6 +3402,10 @@ static struct vm_area_struct *__install_special_mapping(
+ 	int ret;
+ 	struct vm_area_struct *vma;
+ 
++	ret = security_check_vmflags(vm_flags);
++	if (ret)
++		return ERR_PTR(ret);
++
+ 	vma = vm_area_alloc(mm);
+ 	if (unlikely(vma == NULL))
+ 		return ERR_PTR(-ENOMEM);
+diff --git a/security/security.c b/security/security.c
+index f493db0..3308e89 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -1421,6 +1421,11 @@ int security_file_mprotect(struct vm_area_struct *vma, unsigned long reqprot,
+ 	return call_int_hook(file_mprotect, 0, vma, reqprot, prot);
+ }
+ 
++int security_check_vmflags(vm_flags_t vmflags)
++{
++	return call_int_hook(check_vmflags, 0, vmflags);
++}
++
+ int security_file_lock(struct file *file, unsigned int cmd)
+ {
+ 	return call_int_hook(file_lock, 0, file, cmd);
+-- 
+1.9.1
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29714" href="msg29714.html">[PATCH v5 00/12] S.A.R.A. a new stacked LSM</a></strong>
+<ul><li><em>From:</em> Salvatore Mesoraca</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29723.html">[PATCH v5 07/12] LSM: creation of &quot;pagefault_handler&quot; LSM hook</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29725.html">[PATCH v5 02/12] S.A.R.A.: create framework</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29723.html">[PATCH v5 07/12] LSM: creation of &quot;pagefault_handler&quot; LSM hook</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29725.html">[PATCH v5 02/12] S.A.R.A.: create framework</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29724"><strong>Date</strong></a></li>
+<li><a href="index.html#29724"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

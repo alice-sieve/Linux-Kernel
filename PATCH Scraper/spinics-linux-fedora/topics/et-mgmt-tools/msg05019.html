@@ -1,0 +1,557 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] virt&#45;manager: Support serial and parallel devices in 'Add Hardware' -->
+<!--X-From-R13: Qbyr Dbovafba &#60;pebovafbNerqung.pbz> -->
+<!--X-Date: Thu, 9 Jul 2009 12:22:40 &#45;0700 -->
+<!--X-Message-Id: 4A564484.3030803@redhat.com -->
+<!--X-Content-Type: multipart/mixed -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Management Tools, [PATCH] virt-manager: Support serial and parallel devices in 'Add Hardware'">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="Fedora Management Tools" href="//feedproxy.google.com/Fedora/linuxManagementTools">
+<title>Fedora Management Tools -- [PATCH] virt-manager: Support serial and parallel devices in 'Add Hardware'</title>
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] virt-manager: Support serial and parallel devices in 'Add Hardware'</h1>
+[<a href="msg05018.html">Date Prev</a>][<a href="msg05020.html">Date Next</a>][<a href="msg05018.html">Thread Prev</a>][<a href="msg05031.html">Thread Next</a>][<a href="maillist.html#05019">Date Index</a>][<a href="index.html#05019">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] virt-manager: Support serial and parallel devices in 'Add Hardware'</li>
+<li><em>From</em>: Cole Robinson &lt;<a href="mailto:crobinso@DOMAIN.HIDDEN">crobinso@xxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Thu, 09 Jul 2009 15:27:00 -0400</li>
+<li><em>Reply-to</em>: Fedora/Linux Management Tools &lt;<a href="mailto:et-mgmt-tools@DOMAIN.HIDDEN">et-mgmt-tools@xxxxxxxxxx</a>&gt;</li>
+<li><em>User-agent</em>: Thunderbird 2.0.0.21 (X11/20090320)</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The attached patch implements attaching serial and parallel devices via the
+'Add Hardware' wizard in virt-manager. A couple screenshots:
+
+<a  rel="nofollow" href="http://fedorapeople.org/~crobinso/virt-manager/vmm-add-char1.png">http://fedorapeople.org/~crobinso/virt-manager/vmm-add-char1.png</a>
+<a  rel="nofollow" href="http://fedorapeople.org/~crobinso/virt-manager/vmm-add-char2.png">http://fedorapeople.org/~crobinso/virt-manager/vmm-add-char2.png</a>
+
+The options change quite a bit depending on which device type is selected: the
+associated fields and activated accordingly. The box on the right provides
+some documentation about the selected field. I snipped the actual UI diff from
+the patch since it is pretty large.
+
+Questions or comments appreciated.
+
+- Cole
+</pre><pre># HG changeset patch
+# User Cole Robinson &lt;crobinso@xxxxxxxxxx&gt;
+# Date 1247164914 14400
+# Node ID 6ba8a10d6f8f446464f2de4b566813c35c443c10
+# Parent  a39662e0da71d8108a767ca6f69f7d4ee3013d6d
+Support adding serial and parallel devices via 'Add Hardware'
+
+diff -r a39662e0da71 -r 6ba8a10d6f8f src/virtManager/addhardware.py
+--- a/src/virtManager/addhardware.py	Thu Jul 09 14:35:55 2009 -0400
++++ b/src/virtManager/addhardware.py	Thu Jul 09 14:41:54 2009 -0400
+@@ -18,14 +18,17 @@
+ # MA 02110-1301 USA.
+ #
+ 
++import os
++import logging
++import traceback
++
+ import gobject
+ import gtk
+ import gtk.gdk
+ import gtk.glade
++
+ import virtinst
+-import os
+-import logging
+-import traceback
++from virtinst import VirtualCharDevice, VirtualDevice
+ 
+ import virtManager.util as vmmutil
+ from virtManager.asyncjob import vmmAsyncJob
+@@ -45,7 +48,18 @@
+ PAGE_GRAPHICS = 4
+ PAGE_SOUND = 5
+ PAGE_HOSTDEV = 6
+-PAGE_SUMMARY = 7
++PAGE_CHAR = 7
++PAGE_SUMMARY = 8
++
++char_widget_mappings = {
++    &quot;source_path&quot; : &quot;char-path&quot;,
++    &quot;source_mode&quot; : &quot;char-mode&quot;,
++    &quot;source_host&quot; : &quot;char-host&quot;,
++    &quot;source_port&quot; : &quot;char-port&quot;,
++    &quot;bind_port&quot;: &quot;char-bind-port&quot;,
++    &quot;bind_host&quot;: &quot;char-bind-host&quot;,
++    &quot;protocol&quot; : &quot;char-use-telnet&quot;,
++}
+ 
+ class vmmAddHardware(gobject.GObject):
+     __gsignals__ = {
+@@ -56,7 +70,6 @@
+         self.__gobject_init__()
+         self.config = config
+         self.vm = vm
+-        self._dev = None
+         self.window = gtk.glade.XML(config.get_glade_dir() + &quot;/vmm-add-hardware.glade&quot;, &quot;vmm-add-hardware&quot;, domain=&quot;virt-manager&quot;)
+         self.topwin = self.window.get_widget(&quot;vmm-add-hardware&quot;)
+         self.err = vmmErrorDialog(self.topwin,
+@@ -67,6 +80,8 @@
+         self.storage_browser = None
+         self._browse_cb_id = None
+ 
++        self._dev = None
++
+         self.topwin.hide()
+         self.window.signal_autoconnect({
+             &quot;on_create_pages_switch_page&quot; : self.page_changed,
+@@ -85,11 +100,42 @@
+             &quot;on_graphics_port_auto_toggled&quot;: self.change_port_auto,
+             &quot;on_graphics_keymap_toggled&quot;: self.change_keymap,
+             &quot;on_host_device_type_changed&quot;: self.change_host_device_type,
++            &quot;on_char_device_type_changed&quot;: self.change_char_device_type,
+             &quot;on_create_help_clicked&quot;: self.show_help,
++
++            # Char dev info signals
++            &quot;char_device_type_focus&quot;: (self.update_doc, &quot;char_type&quot;),
++            &quot;char_path_focus_in&quot;: (self.update_doc, &quot;source_path&quot;),
++            &quot;char_mode_changed&quot;: (self.update_doc_changed, &quot;source_mode&quot;),
++            &quot;char_mode_focus&quot;  : (self.update_doc, &quot;source_mode&quot;),
++            &quot;char_host_focus_in&quot;: (self.update_doc, &quot;source_host&quot;),
++            &quot;char_bind_host_focus_in&quot;: (self.update_doc, &quot;bind_host&quot;),
++            &quot;char_telnet_focus_in&quot;: (self.update_doc, &quot;protocol&quot;),
+             })
+ 
+         self.set_initial_state()
+ 
++    def update_doc(self, ignore1, ignore2, param):
++        doc = self._build_doc_str(param)
++        self.window.get_widget(&quot;char-info&quot;).set_markup(doc)
++
++    def update_doc_changed(self, ignore1, param):
++        # Wrapper for update_doc and 'changed' signal
++        self.update_doc(None, None, param)
++
++    def _build_doc_str(self, param, docstr=None):
++        doc = &quot;&quot;
++        doctmpl = &quot;&lt;i&gt;%s&lt;/i&gt;&quot;
++
++        if docstr:
++            doc = doctmpl % (docstr)
++        elif self._dev:
++            devclass = self._dev.__class__
++            if hasattr(devclass, param):
++                doc = doctmpl % (getattr(devclass, param).__doc__)
++
++        return doc
++
+     def show(self):
+         self.reset_state()
+         self.topwin.show()
+@@ -195,6 +241,32 @@
+         host_dev_model.set_sort_column_id(0, gtk.SORT_ASCENDING)
+ 
+ 
++        char_devtype = self.window.get_widget(&quot;char-device-type&quot;)
++        # Type name, desc
++        char_devtype_model = gtk.ListStore(str, str)
++        char_devtype.set_model(char_devtype_model)
++        text = gtk.CellRendererText()
++        char_devtype.pack_start(text, True)
++        char_devtype.add_attribute(text, 'text', 1)
++        char_devtype_model.set_sort_column_id(0, gtk.SORT_ASCENDING)
++        for t in VirtualCharDevice.char_types:
++            desc = VirtualCharDevice.get_char_type_desc(t)
++            char_devtype_model.append([t, desc + &quot; (%s)&quot; % t])
++
++        char_mode = self.window.get_widget(&quot;char-mode&quot;)
++        # Mode name, desc
++        char_mode_model = gtk.ListStore(str, str)
++        char_mode.set_model(char_mode_model)
++        text = gtk.CellRendererText()
++        char_mode.pack_start(text, True)
++        char_mode.add_attribute(text, 'text', 1)
++        char_mode_model.set_sort_column_id(0, gtk.SORT_ASCENDING)
++        for t in VirtualCharDevice.char_modes:
++            desc = VirtualCharDevice.get_char_mode_desc(t)
++            char_mode_model.append([t, desc + &quot; (%s)&quot; % t])
++
++        self.window.get_widget(&quot;char-info-box&quot;).modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(&quot;grey&quot;))
++
+     def reset_state(self):
+         notebook = self.window.get_widget(&quot;create-pages&quot;)
+         notebook.set_current_page(0)
+@@ -283,6 +355,17 @@
+ 
+         # Set available HW options
+ 
++        # Char parameters
++        self.window.get_widget(&quot;char-device-type&quot;).set_active(0)
++        self.window.get_widget(&quot;char-path&quot;).set_text(&quot;&quot;)
++        self.window.get_widget(&quot;char-host&quot;).set_text(&quot;127.0.0.1&quot;)
++        self.window.get_widget(&quot;char-port&quot;).get_adjustment().value = 4555
++        self.window.get_widget(&quot;char-bind-host&quot;).set_text(&quot;127.0.0.1&quot;)
++        self.window.get_widget(&quot;char-bind-port&quot;).get_adjustment().value = 4556
++        self.window.get_widget(&quot;char-use-telnet&quot;).set_active(False)
++
++        # Available HW options
++
+         # FIXME: All of these needs to have better transparency.
+         # All options should be listed, but disabled with a tooltip if
+         # it can't be used.
+@@ -304,6 +387,10 @@
+         if self.vm.is_hvm():
+             model.append([&quot;Sound&quot;, gtk.STOCK_MEDIA_PLAY, PAGE_SOUND])
+ 
++        if self.vm.is_hvm():
++            model.append([&quot;Serial&quot;, gtk.STOCK_CONNECT, PAGE_CHAR])
++            model.append([&quot;Parallel&quot;, gtk.STOCK_CONNECT, PAGE_CHAR])
++
+         if self.vm.get_connection().is_nodedev_capable():
+             model.append([&quot;Physical Host Device&quot;, None, PAGE_HOSTDEV])
+ 
+@@ -467,6 +554,11 @@
+         return devbox.get_model()[devbox.get_active()]
+ 
+     def page_changed(self, notebook, page, page_number):
++        if page_number == PAGE_CHAR:
++            devtype = self.window.get_widget(&quot;char-device-type&quot;)
++            self.change_char_device_type(devtype)
++            self.set_page_char_type()
++
+         if page_number != PAGE_SUMMARY:
+             return
+ 
+@@ -570,6 +662,35 @@
+             ]
+             title = _(&quot;Sound&quot;)
+ 
++        elif hwpage == PAGE_CHAR:
++            mode = None
++
++            info_list = [
++                (_(&quot;Type:&quot;), VirtualCharDevice.get_char_type_desc(self._dev.char_type)),
++            ]
++
++            if hasattr(self._dev, &quot;source_mode&quot;):
++                mode = self._dev.source_mode.capitalize()
++            if hasattr(self._dev, &quot;source_path&quot;):
++                path = self._dev.source_path
++                label = &quot;%sPath:&quot; % (mode and mode + &quot; &quot; or &quot;&quot;)
++                info_list.append((label, path))
++
++            if hasattr(self._dev, &quot;source_host&quot;):
++                host = &quot;%s:%s&quot; % (self._dev.source_host, self._dev.source_port)
++                label = &quot;%sHost:&quot; % (mode and mode + &quot; &quot; or &quot;&quot;)
++                info_list.append((label, host))
++
++            if hasattr(self._dev, &quot;bind_host&quot;):
++                bind_host = &quot;%s:%s&quot; % (self._dev.bind_host,
++                                       self._dev.bind_port)
++                info_list.append((&quot;Bind Host:&quot;, bind_host))
++            if hasattr(self._dev, &quot;protocol&quot;):
++                proto = self._dev.protocol
++                info_list.append((_(&quot;Protocol:&quot;), proto))
++
++            title = self.get_char_type().capitalize()
++
+         elif hwpage == PAGE_HOSTDEV:
+             info_list = [
+                 (_(&quot;Type:&quot;),    self.get_config_host_device_type_info()[0]),
+@@ -600,7 +721,8 @@
+                       PAGE_INPUT: self.add_input,
+                       PAGE_GRAPHICS: self.add_graphics,
+                       PAGE_SOUND: self.add_sound,
+-                      PAGE_HOSTDEV: self.add_hostdev }
++                      PAGE_HOSTDEV: self.add_hostdev,
++                      PAGE_CHAR: self.add_device}
+ 
+         try:
+             func = func_dict[hw]
+@@ -660,7 +782,10 @@
+         else:
+             return (error, details)
+ 
+-    def add_device(self, xml):
++    def add_device(self, xml=None):
++        if not xml:
++            xml = self._dev.get_xml_config()
++
+         logging.debug(&quot;Adding device:\n&quot; + xml)
+ 
+         attach_err = False
+@@ -841,6 +966,42 @@
+                                         subtype, subcap)
+         devbox.set_active(0)
+ 
++    def get_char_type(self):
++        hw_list = self.window.get_widget(&quot;hardware-type&quot;)
++        if hw_list.get_active() &lt; 0:
++            label = &quot;serial&quot;
++        else:
++            label = hw_list.get_model()[hw_list.get_active()][0]
++
++        if label.lower() == &quot;parallel&quot;:
++            return VirtualDevice.VIRTUAL_DEV_PARALLEL
++        return VirtualDevice.VIRTUAL_DEV_SERIAL
++
++    def set_page_char_type(self):
++        char_type = self.get_char_type().capitalize()
++        self.window.get_widget(&quot;char-title-label&quot;).set_markup(
++            &quot;&quot;&quot;&lt;span weight=&quot;heavy&quot; size=&quot;xx-large&quot; foreground=&quot;#FFF&quot;&gt;%s Device&lt;/span&gt;&quot;&quot;&quot; % char_type)
++
++    def change_char_device_type(self, src):
++        self.update_doc(None, None, &quot;char_type&quot;)
++
++        chartype = self.get_char_type()
++        devtype = src.get_model()[src.get_active()][0]
++        conn = self.vm.get_connection().vmm
++
++        self._dev = VirtualCharDevice.get_dev_instance(conn,
++                                                       chartype,
++                                                       devtype)
++
++        for param_name, widget_name in char_widget_mappings.items():
++            make_visible = hasattr(self._dev, param_name)
++            self.window.get_widget(widget_name).set_sensitive(make_visible)
++
++        has_mode = hasattr(self._dev, &quot;source_mode&quot;)
++
++        if has_mode and self.window.get_widget(&quot;char-mode&quot;).get_active() == -1:
++            self.window.get_widget(&quot;char-mode&quot;).set_active(0)
++
+     def validate(self, page_num):
+         if page_num == PAGE_INTRO:
+             if self.get_config_hardware_type() == None:
+@@ -987,6 +1148,48 @@
+                 return self.err.val_err(_(&quot;Host device parameter error&quot;,
+                                         str(e)))
+ 
++        elif page_num == PAGE_CHAR:
++            chartype = self.get_char_type()
++            devbox = self.window.get_widget(&quot;char-device-type&quot;)
++            devtype = devbox.get_model()[devbox.get_active()][0]
++            conn = self.vm.get_connection().vmm
++
++            devclass = VirtualCharDevice.get_dev_instance(conn, chartype,
++                                                          devtype)
++
++            source_path = self.window.get_widget(&quot;char-path&quot;).get_text()
++            source_host = self.window.get_widget(&quot;char-host&quot;).get_text()
++            bind_host = self.window.get_widget(&quot;char-bind-host&quot;).get_text()
++            source_port = self.window.get_widget(&quot;char-port&quot;).get_adjustment().value
++            bind_port = self.window.get_widget(&quot;char-bind-port&quot;).get_adjustment().value
++
++            if self.window.get_widget(&quot;char-use-telnet&quot;).get_active():
++                protocol = VirtualCharDevice.CHAR_PROTOCOL_TELNET
++            else:
++                protocol = VirtualCharDevice.CHAR_PROTOCOL_RAW
++
++            value_mappings = {
++                &quot;source_path&quot; : source_path,
++                &quot;source_host&quot; : source_host,
++                &quot;source_port&quot; : source_port,
++                &quot;bind_port&quot;: bind_port,
++                &quot;bind_host&quot;: bind_host,
++                &quot;protocol&quot;: protocol,
++            }
++
++            try:
++                self._dev = devclass
++
++                for param_name, val in value_mappings.items():
++                    if hasattr(self._dev, param_name):
++                        setattr(self._dev, param_name, val)
++
++                # Dump XML for sanity checking
++                self._dev.get_xml_config()
++            except Exception, e:
++                return self.err.val_err(_(&quot;%s device parameter error.&quot;) %
++                                        chartype.capitalize(), str(e))
++
+         return True
+ 
+     def populate_network_model(self, model):
+
+</pre><pre>_______________________________________________
+et-mgmt-tools mailing list
+et-mgmt-tools@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/et-mgmt-tools">https://www.redhat.com/mailman/listinfo/et-mgmt-tools</a></pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="05031" href="msg05031.html">Re:  [PATCH] virt-manager: Support serial and parallel	devices in 'Add Hardware'</a></strong>
+<ul><li><em>From:</em> Cole Robinson</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05018.html">[PATCH] virt-install: Add --video option</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05020.html">[PATCH] virt-manager: Support video devices in 'Add	Hardware'</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05018.html">[PATCH] virt-install: Add --video option</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05031.html">Re:  [PATCH] virt-manager: Support serial and parallel	devices in 'Add Hardware'</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05019"><strong>Date</strong></a></li>
+<li><a href="index.html#05019"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fll/>[Fedora&nbsp;Legacy&nbsp;List]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

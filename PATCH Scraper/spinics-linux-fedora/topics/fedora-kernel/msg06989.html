@@ -1,0 +1,404 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 2/2] configs: Update config generation script to use configs/fedora -->
+<!--X-From-R13: Rba Lvpxhf &#60;qmvpxhfNerqung.pbz> -->
+<!--X-Date: Wed, 13 Dec 2017 13:39:58 &#45;0800 -->
+<!--X-Message-Id: 20171213213928.12627&#45;3&#45;dzickus@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20171213213928.12627&#45;1&#45;dzickus@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description content="[PATCH 2/2] configs: Update config generation script to use configs/fedora &mdash; Fedora Linux Kernel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 2/2] configs: Update config generation script to use configs/fedora &mdash; Fedora Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Fedora Linux Kernel" href="//feeds.feedburner.com/FedoraKernel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 2/2] configs: Update config generation script to use configs/fedora</h1>
+[<a href="msg06988.html">Date Prev</a>][<a href="msg06990.html">Date Next</a>][<a href="msg06988.html">Thread Prev</a>][<a href="msg07005.html">Thread Next</a>][<a href="maillist.html#06989">Date Index</a>][<a href="index.html#06989">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 2/2] configs: Update config generation script to use configs/fedora</li>
+<li><em>From</em>: Don Zickus &lt;dzickus@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 13 Dec 2017 16:39:28 -0500</li>
+<li><em>Archived-at</em>: &lt;https://lists.fedoraproject.org/archives/list/kernel@xxxxxxxxxxxxxxxxxxxxxxx/message/UF34MGAYHKSARYWPU4NGM2RCLTBATWZP/&gt;</li>
+<li><em>Cc</em>: kernel@xxxxxxxxxxxxxxxxxxxxxxx, pbrobinson@xxxxxxxxx,        Don Zickus &lt;dzickus@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg06987.html">20171213213928.12627-1-dzickus@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The previous patch moved the configs/base-{generic,debug} to configs/fedora.
+Now we update the scripts to reflect that change.  Changing the scripts
+was straightforward.  Handling overrides that didn't use generic names
+was a little trickier.
+
+To handle random override names (well rhel), I added some extra logic
+in the config_generation script called &quot;ORDER&quot;.  This tells the scripts
+which configs to lay down first and which one overrides it.
+
+Through some testing, I realized I could simplify things and just create
+an outer 'order' loop.  This removed some duplicated code.
+
+The other change is the 'skip_if_missing' flag.  The overrides directory
+will not mimic the baseline directory layout 100%.  Ensure the baseline
+config files are all there, but allow the overrides to have missing files.
+
+Tested on my Fedora and my RHEL tree with success.
+---
+ configs/build_configs.sh  | 62 ++++++++++++++++++++++++-----------------------
+ configs/config_generation |  5 ++++
+ 2 files changed, 37 insertions(+), 30 deletions(-)
+
+diff --git a/configs/build_configs.sh b/configs/build_configs.sh
+index f345e2af..15ab6b38 100755
+--- a/configs/build_configs.sh
++++ b/configs/build_configs.sh
+@@ -6,7 +6,7 @@
+ 
+ PACKAGE_NAME=&quot;${1:-kernel}&quot; # defines the package name used
+ KVERREL=&quot;${2:-}&quot;
+-SUBARCH=&quot;${3:-}&quot; # defines a specific arch for use with rh-configs-arch-prep target
++SUBARCH=&quot;${3:-}&quot; # defines a specific arch
+ SCRIPT=&quot;$(readlink -f $0)&quot;
+ OUTPUT_DIR=&quot;$PWD&quot;
+ SCRIPT_DIR=&quot;$(dirname $SCRIPT)&quot;
+@@ -49,29 +49,31 @@ function merge_configs()
+ 	archvar=$1
+ 	arch=$(echo &quot;$archvar&quot; | cut -f1 -d&quot;-&quot;)
+ 	configs=$2
++	order=$3
+ 	name=$OUTPUT_DIR/$PACKAGE_NAME-$archvar.config
+ 	echo -n &quot;Building $name ... &quot;
+ 	touch config-merging config-merged
+ 
+-	# apply base first
+-	for config in $(echo $configs | sed -e 's/:/ /g')
++	# apply based on order
++	skip_if_missing=&quot;&quot;
++	for o in $order
+ 	do
+-		perl merge.pl config-base-$config config-merging &gt; config-merged
+-		if [ ! $? -eq 0 ]; then
+-			die &quot;Failed to merge base&quot;
+-		fi
+-		mv config-merged config-merging
+-	done
+-	for config in $(echo $configs | sed -e 's/:/ /g')
+-	do
+-		# not all override files exist
+-		test -e config-$config || continue
+-
+-		perl merge.pl config-$config config-merging &gt; config-merged
+-		if [ ! $? -eq 0 ]; then
+-			die &quot;Failed to merge configs&quot;
+-		fi
+-		mv config-merged config-merging
++		for config in $(echo $configs | sed -e 's/:/ /g')
++		do
++			cfile=&quot;config-$o-$config&quot;
++
++			test -n &quot;$skip_if_missing&quot; &amp;&amp; test ! -e $cfile &amp;&amp; continue
++
++			perl merge.pl $cfile config-merging &gt; config-merged
++			if [ ! $? -eq 0 ]; then
++				die &quot;Failed to merge $cfile&quot;
++			fi
++			mv config-merged config-merging
++		done
++
++		# first configs in $order is baseline, all files should be
++		# there.  second pass is overrides and can be missing.
++		skip_if_missing=&quot;1&quot;
+ 	done
+ 	if [ &quot;x$arch&quot; == &quot;xaarch64&quot; ]; then
+ 		echo &quot;# arm64&quot; &gt; $name
+@@ -93,22 +95,22 @@ function merge_configs()
+ 	echo &quot;done&quot;
+ }
+ 
+-glist=$(find base-generic -type d)
+-dlist=$(find base-debug -type d)
+-gllist=$(test -d generic &amp;&amp; find generic -type d)
+-dllist=$(test -d debug &amp;&amp; find debug -type d)
+-
+-for d in $glist $dlist $gllist $dllist
+-do
+-	combine_config_layer $d
+-done
+-
+ while read line
+ do
+ 	if [ $(echo &quot;$line&quot; | grep -c &quot;^#&quot;) -ne 0 ]; then
+ 		continue
+ 	elif [ $(echo &quot;$line&quot; | grep -c &quot;^$&quot;) -ne 0 ]; then
+ 		continue
++	elif [ $(echo &quot;$line&quot; | grep -c &quot;^ORDER&quot;) -ne 0 ]; then
++		order=$(echo &quot;$line&quot; | cut -f2 -d&quot;=&quot;)
++		for o in $order
++		do
++			glist=$(find $o -type d)
++			for d in $glist
++			do
++				combine_config_layer $d
++			done
++		done
+ 	else
+ 		arch=$(echo &quot;$line&quot; | cut -f1 -d&quot;=&quot;)
+ 		configs=$(echo &quot;$line&quot; | cut -f2 -d&quot;=&quot;)
+@@ -117,7 +119,7 @@ do
+ 			continue
+ 		fi
+ 
+-		merge_configs $arch $configs
++		merge_configs $arch $configs &quot;$order&quot;
+ 	fi
+ done &lt; $control_file
+ 
+diff --git a/configs/config_generation b/configs/config_generation
+index b88a5ea9..e8614c43 100644
+--- a/configs/config_generation
++++ b/configs/config_generation
+@@ -3,6 +3,11 @@
+ # the first arg is arch and variant, the second is a hierarchy of
+ # config options, lowest priority to highest
+ 
++# tells the build_configs.sh which order to build the configs.
++# this is useful when providing a separate overrides directory.
++# do not use quotes and space separate the directories.
++ORDER=fedora
++
+ # x86_64
+ x86_64=generic:generic-x86:generic-x86-x86_64
+ x86_64-debug=generic:generic-x86:generic-x86-x86_64:debug:debug-x86:debug-x86-x86_64
+-- 
+2.14.3
+_______________________________________________
+kernel mailing list -- kernel@xxxxxxxxxxxxxxxxxxxxxxx
+To unsubscribe send an email to kernel-leave@xxxxxxxxxxxxxxxxxxxxxxx
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="06987" href="msg06987.html">[PATCH 0/2] configs: Rename base-{generic,debug} to configs/fedora/</a></strong>
+<ul><li><em>From:</em> Don Zickus</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg06988.html">[PATCH 1/2] configs: Move base-debug and base-generic to configs/fedora</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg06990.html">Re: kernel-4.15.0-0.rc3.git0.1.fc28 src rpm fails to compile because of errors in ppc64p7 config file</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg06988.html">[PATCH 1/2] configs: Move base-debug and base-generic to configs/fedora</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07005.html">Re: [PATCH 0/2] configs: Rename base-{generic,debug} to configs/fedora/</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#06989"><strong>Date</strong></a></li>
+<li><a href="index.html#06989"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;General&nbsp;Discussion]</a>
+&nbsp;
+&nbsp;
+<a href=http://lists.linuxcoding.com/rhl/>[Older&nbsp;Fedora&nbsp;Users&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-advisory-board/>[Fedora&nbsp;Advisory&nbsp;Board]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-security/>[Fedora&nbsp;Security]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-devel-java/>[Fedora&nbsp;Devel&nbsp;Java]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-legacy/>[Fedora&nbsp;Legacy]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ataraid/>[ATA&nbsp;RAID]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-marketing/>[Fedora&nbsp;Marketing]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-mentors/>[Fedora&nbsp;Mentors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-package-announce/>[Fedora&nbsp;Package&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-package-review/>[Fedora&nbsp;Package&nbsp;Review]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-music/>[Fedora&nbsp;Music]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-packaging/>[Fedora&nbsp;Packaging]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos/>[Centos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/coolkey/>[Coolkey]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/yum/>[Yum&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/tux/>[Tux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-art/>[Fedora&nbsp;Art]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-docs/>[Fedora&nbsp;Docs]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[USB]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

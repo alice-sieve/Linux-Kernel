@@ -1,0 +1,343 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v4 00/23] Add support for vTPM state encryption -->
+<!--X-From-R13: Egrsna Pretre &#60;fgrsnaoNyvahk.iarg.voz.pbz> -->
+<!--X-Date: Thu, 11 Jul 2019 12:42:11 &#45;0700 -->
+<!--X-Message-Id: 20190711194151.3728114&#45;1&#45;stefanb@linux.vnet.ibm.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v4 00/23] Add support for vTPM state encryption</title>
+<meta name="description" content="libvirt: [PATCH v4 00/23] Add support for vTPM state encryption">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v4 00/23] Add support for vTPM state encryption</h1>
+[<a href="msg187235.html">Date Prev</a>][<a href="msg187238.html">Date Next</a>][<a href="msg187235.html">Thread Prev</a>][<a href="msg187238.html">Thread Next</a>][<a href="maillist.html#187236">Date Index</a>][<a href="index.html#187236">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v4 00/23] Add support for vTPM state encryption</li>
+<li><em>From</em>: Stefan Berger &lt;stefanb@xxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 11 Jul 2019 15:41:28 -0400</li>
+<li><em>Cc</em>: marcandre.lureau@xxxxxxxxxx</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>
+This series of patches addresses the RFE in BZ 172830:
+<a  rel="nofollow" href="https://bugzilla.redhat.com/show_bug.cgi?id=1728030">https://bugzilla.redhat.com/show_bug.cgi?id=1728030</a>
+
+This series of patches adds support for vTPM state encryption by passing
+the read-end of a pipe's file descriptor to 'swtpm_setup' and 'swtpm'
+where they can read a passphrase from and derive a key from that passphrase.
+
+The TPM's domain XML looks to enable state encryption looks like this:
+
+    &lt;tpm model='tpm-tis'&gt;
+      &lt;backend type='emulator' version='1.2'&gt;
+        &lt;encryption format='vtpm'&gt;
+          &lt;secret type='passphrase' uuid='2c9ceaba-c6ef-4f38-86fd-6e3adb2df5cd'/&gt;
+        &lt;/encryption&gt;
+      &lt;/backend&gt;
+      &lt;alias name='tpm0'/&gt;
+    &lt;/tpm&gt;
+
+The vTPM secret holding the passphrase looks like this:
+
+&lt;secret ephemeral='no' private='yes'&gt;
+  &lt;uuid&gt;2c9ceaba-c6ef-4f38-86fd-6e3adb2df5cd&lt;/uuid&gt;
+  &lt;description&gt;vTPM passphrase example&lt;/description&gt;
+  &lt;usage type='vtpm'&gt;
+    &lt;name&gt;vtpm_example&lt;/name&gt;
+  &lt;/usage&gt;
+&lt;/secret&gt;
+
+
+The swtpm v0.2 (upcoming) is needed that supports the command line option
+--print-capabilities returning a JSON object that identifies features added
+since v0.1. One such features is the possibility to pass a passphrase via a
+file descriptor.
+
+The patches do some refactoring of existing code on the way.
+
+  Stefan
+
+v1-&gt;v2:
+ - Added Marc-Andr&#xE9;'s R-bs
+ - Addressed comments
+ - Added patches to extend virCommand to be able to write contents of multiple
+   buffers to file descriptors for a spawned process to read from
+
+v2-&gt;v3:
+ - Fixed some pointer issues following conversion to use VIR_AUTOFREE
+
+v3-&gt;v4:
+ - Added test case for virCommandSetSendBuffer() to commantest.c
+ - Addressed other issues raised by Marc-Andr&#xE9;
+
+Stefan Berger (23):
+  secret: Add support for usage type vTPM, extend schema and test case
+  tests: Add already existing test case tpm-emulator-tpm2
+  util: Add VIR_STORAGE_ENCRYPTION_FORMAT_VTPM
+  conf: Extend TPM XML parser with encryption support
+  schema: Extend the TPM XML schema with support for encryption
+  tests: Add test for TPM XML encryption parser and formatter
+  tests: Add tests for QEMU command line generation with encrypted TPM
+  tpm: Move virtpm.c from utils dir to own tpm dir
+  tpm: Move qemuTPMEmulatorInit to virTPMEmulatorInit in virtpm.c
+  tpm: Refactor virTPMEmulatorInit to use loop
+  tpm: Check whether previously found executables were updated
+  tpm: Parse the capabilities supported by swtpm and swtpm_setup
+  utils: Implement function to pass a buffer to send via a fd to
+    virCommand
+  utils: Convert pollfd array to be allocated
+  utils: Write a maximum of MAX_PIPE_WRITE_BYTES into a pipe
+  utils: Mark inpipe as non-blocking
+  utils: Extend virCommandProcessIO to include the send buffers
+  tests: Extend command test to transfer large data to process on
+    multiple fds
+  tpm: Use fd to pass password to swtpm_setup and swtpm
+  tpm: Pass migration key passphrase via fd to swtpm
+  tpm: Check TPM XML device configuration changes after edit
+  docs: Extend Secret XML documentation with vtpm usage type
+  docs: Extend TPM docs with new encryption element
+
+ docs/formatdomain.html.in                     |  16 +
+ docs/formatsecret.html.in                     |  61 +++-
+ docs/schemas/domaincommon.rng                 |  30 ++
+ docs/schemas/secret.rng                       |  10 +
+ include/libvirt/libvirt-secret.h              |   1 +
+ po/POTFILES                                   |   2 +-
+ src/Makefile.am                               |   1 +
+ src/conf/Makefile.inc.am                      |   7 +
+ src/conf/domain_conf.c                        |  96 +++++-
+ src/conf/domain_conf.h                        |   5 +
+ src/conf/secret_conf.c                        |  13 +
+ src/conf/virtpm_conf.c                        |  36 ++
+ src/conf/virtpm_conf.h                        |  36 ++
+ src/libvirt_private.syms                      |  21 +-
+ src/qemu/Makefile.inc.am                      |   1 +
+ src/qemu/qemu_block.c                         |   1 +
+ src/qemu/qemu_driver.c                        |  28 ++
+ src/qemu/qemu_extdevice.c                     |   2 +-
+ src/qemu/qemu_extdevice.h                     |   3 +
+ src/qemu/qemu_tpm.c                           | 196 ++++++-----
+ src/security/Makefile.inc.am                  |   1 +
+ src/tpm/Makefile.inc.am                       |  20 ++
+ src/tpm/virtpm.c                              | 326 ++++++++++++++++++
+ src/{util =&gt; tpm}/virtpm.h                    |   8 +
+ src/util/Makefile.inc.am                      |   2 -
+ src/util/vircommand.c                         | 153 +++++++-
+ src/util/vircommand.h                         |   5 +
+ src/util/virsecret.c                          |   2 +-
+ src/util/virstorageencryption.c               |   2 +-
+ src/util/virstorageencryption.h               |   1 +
+ src/util/virtpm.c                             |  74 ----
+ tests/Makefile.am                             |   1 +
+ tests/commandhelper.c                         |  64 +++-
+ tests/commandtest.c                           | 112 ++++++
+ .../tpm-emulator-tpm2-enc.x86_64-latest.args  |  35 ++
+ .../tpm-emulator-tpm2-enc.xml                 |  34 ++
+ tests/qemuxml2argvtest.c                      |   1 +
+ .../tpm-emulator-tpm2-enc.xml                 |  38 ++
+ tests/qemuxml2xmltest.c                       |   2 +
+ tests/secretxml2xmlin/usage-vtpm.xml          |   7 +
+ tests/secretxml2xmltest.c                     |   1 +
+ 41 files changed, 1283 insertions(+), 172 deletions(-)
+ create mode 100644 src/conf/virtpm_conf.c
+ create mode 100644 src/conf/virtpm_conf.h
+ create mode 100644 src/tpm/Makefile.inc.am
+ create mode 100644 src/tpm/virtpm.c
+ rename src/{util =&gt; tpm}/virtpm.h (77%)
+ delete mode 100644 src/util/virtpm.c
+ create mode 100644 tests/qemuxml2argvdata/tpm-emulator-tpm2-enc.x86_64-latest.args
+ create mode 100644 tests/qemuxml2argvdata/tpm-emulator-tpm2-enc.xml
+ create mode 100644 tests/qemuxml2xmloutdata/tpm-emulator-tpm2-enc.xml
+ create mode 100644 tests/secretxml2xmlin/usage-vtpm.xml
+
+-- 
+2.20.1
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187235.html">[PATCH] virsh emulatorpin,	vcpupin: omit offline CPUs from affinity map</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187238.html">[PATCH v4 02/23] tests: Add already existing test case	tpm-emulator-tpm2</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187235.html">[PATCH] virsh emulatorpin,	vcpupin: omit offline CPUs from affinity map</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187238.html">[PATCH v4 02/23] tests: Add already existing test case	tpm-emulator-tpm2</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187236"><strong>Date</strong></a></li>
+<li><a href="index.html#187236"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

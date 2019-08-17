@@ -1,0 +1,426 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [libosinfo PATCH 1/2] image: Add get_os_variants() API -->
+<!--X-From-R13: =?GFT&#45;8?d?Tnovnab=20Tvq=Q3=OOapvb?= &#60;svqrapvbNerqung.pbz> -->
+<!--X-Date: Thu, 11 Apr 2019 00:46:28 &#45;0700 -->
+<!--X-Message-Id: 20190411074543.28584&#45;2&#45;fidencio@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190411074543.28584&#45;1&#45;fidencio@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<title>[libosinfo PATCH 1/2] image: Add get_os_variants() API &mdash; libosinfo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="libosinfo: [libosinfo PATCH 1/2] image: Add get_os_variants() API">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="libosinfo" href="//feeds.feedburner.com/libosinfo">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[libosinfo PATCH 1/2] image: Add get_os_variants() API</h1>
+[<a href="msg05490.html">Date Prev</a>][<a href="msg05492.html">Date Next</a>][<a href="msg05490.html">Thread Prev</a>][<a href="msg05495.html">Thread Next</a>][<a href="maillist.html#05491">Date Index</a>][<a href="index.html#05491">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [libosinfo PATCH 1/2] image: Add get_os_variants() API</li>
+<li><em>From</em>: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 11 Apr 2019 09:45:42 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg05489.html">20190411074543.28584-1-fidencio@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg05489.html">20190411074543.28584-1-fidencio@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>osinfo-db schema allows that, but libosinfo never really had an API to
+support it.
+
+In order to add get_os_variants(), (get,set)_os APIs were also added.
+
+Signed-off-by: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;
+---
+ osinfo/libosinfo.syms  |  4 +++
+ osinfo/osinfo_image.c  | 82 +++++++++++++++++++++++++++++++++++++++++-
+ osinfo/osinfo_image.h  |  4 +++
+ osinfo/osinfo_loader.c | 19 +++++++++-
+ osinfo/osinfo_os.c     |  1 +
+ 5 files changed, 108 insertions(+), 2 deletions(-)
+
+diff --git a/osinfo/libosinfo.syms b/osinfo/libosinfo.syms
+index 0152eff..db8b595 100644
+--- a/osinfo/libosinfo.syms
++++ b/osinfo/libosinfo.syms
+@@ -570,6 +570,10 @@ LIBOSINFO_1.4.0 {
+ 
+ LIBOSINFO_1.5.0 {
+     global:
++	osinfo_image_get_os;
++	osinfo_image_get_os_variants;
++	osinfo_image_set_os;
++
+ 	osinfo_install_config_get_installation_url;
+ 	osinfo_install_config_set_installation_url;
+ 
+diff --git a/osinfo/osinfo_image.c b/osinfo/osinfo_image.c
+index 31eec76..fcde244 100644
+--- a/osinfo/osinfo_image.c
++++ b/osinfo/osinfo_image.c
+@@ -47,7 +47,7 @@ G_DEFINE_TYPE(OsinfoImage, osinfo_image, OSINFO_TYPE_ENTITY);
+ 
+ struct _OsinfoImagePrivate
+ {
+-    gboolean unused;
++    GWeakRef os;
+ };
+ 
+ enum {
+@@ -131,6 +131,15 @@ osinfo_image_set_property(GObject      *object,
+     }
+ }
+ 
++static void osinfo_image_dispose(GObject *obj)
++{
++    OsinfoImage *image = OSINFO_IMAGE(obj);
++
++    g_weak_ref_clear(&amp;image-&gt;priv-&gt;os);
++
++    G_OBJECT_CLASS(osinfo_image_parent_class)-&gt;dispose(obj);
++}
++
+ static void
+ osinfo_image_finalize(GObject *object)
+ {
+@@ -145,6 +154,7 @@ osinfo_image_class_init(OsinfoImageClass *klass)
+     GObjectClass *g_klass = G_OBJECT_CLASS(klass);
+     GParamSpec *pspec;
+ 
++    g_klass-&gt;dispose = osinfo_image_dispose;
+     g_klass-&gt;finalize = osinfo_image_finalize;
+     g_klass-&gt;get_property = osinfo_image_get_property;
+     g_klass-&gt;set_property = osinfo_image_set_property;
+@@ -194,6 +204,8 @@ static void
+ osinfo_image_init(OsinfoImage *image)
+ {
+     image-&gt;priv = OSINFO_IMAGE_GET_PRIVATE(image);
++
++    g_weak_ref_init(&amp;image-&gt;priv-&gt;os, NULL);
+ }
+ 
+ OsinfoImage *osinfo_image_new(const gchar *id,
+@@ -267,3 +279,71 @@ gboolean osinfo_image_get_cloud_init(OsinfoImage *image)
+     return osinfo_entity_get_param_value_boolean_with_default
+             (OSINFO_ENTITY(image), OSINFO_IMAGE_PROP_CLOUD_INIT, FALSE);
+ }
++
++/**
++ * osinfo_image_get_os:
++ * @image: an #OsinfoImage instance
++ *
++ * Returns: (transfer full): the operating system, or NULL
++ */
++OsinfoOs *osinfo_image_get_os(OsinfoImage *image)
++{
++    g_return_val_if_fail(OSINFO_IS_IMAGE(image), NULL);
++
++    return g_weak_ref_get(&amp;image-&gt;priv-&gt;os);
++}
++
++/**
++ * osinfo_image_set_os
++ * @image: an #OsinfoImage instance
++ * @os: an #OsinfoOs instance
++ *
++ * Sets the #OsinfoOs associated to the #OsinfoImage instance.
++ */
++void osinfo_image_set_os(OsinfoImage *image, OsinfoOs *os)
++{
++    g_return_if_fail(OSINFO_IS_IMAGE(image));
++
++    g_object_ref(os);
++    g_weak_ref_set(&amp;image-&gt;priv-&gt;os, os);
++    g_object_unref(os);
++}
++
++/**
++ * osinfo_image_get_os_variants:
++ * @image: an #OsinfoImage instance
++ *
++ * Gets the varriants of the associated operating system
++ *
++ * Returns: (transfer full): the operating system variants, or NULL
++ */
++OsinfoOsVariantList *osinfo_image_get_os_variants(OsinfoImage *image)
++{
++    OsinfoOs *os;
++    OsinfoOsVariantList *os_variants;
++    OsinfoOsVariantList *image_variants;
++    GList *ids, *node;
++    OsinfoFilter *filter;
++
++    g_return_val_if_fail(OSINFO_IS_IMAGE(image), NULL);
++    os = osinfo_image_get_os(image);
++    os_variants = osinfo_os_get_variant_list(os);
++    g_object_unref(os);
++
++    ids = osinfo_entity_get_param_value_list(OSINFO_ENTITY(image),
++                                             OSINFO_IMAGE_PROP_VARIANT);
++    filter = osinfo_filter_new();
++    image_variants = osinfo_os_variantlist_new();
++    for (node = ids; node != NULL; node = node-&gt;next) {
++        osinfo_filter_clear_constraints(filter);
++        osinfo_filter_add_constraint(filter,
++                                     OSINFO_ENTITY_PROP_ID,
++                                     (const char *) node-&gt;data);
++        osinfo_list_add_filtered(OSINFO_LIST(image_variants),
++                                 OSINFO_LIST(os_variants),
++                                 filter);
++    }
++    g_object_unref(os_variants);
++
++    return image_variants;
++}
+diff --git a/osinfo/osinfo_image.h b/osinfo/osinfo_image.h
+index 6dff3e1..2121f0b 100644
+--- a/osinfo/osinfo_image.h
++++ b/osinfo/osinfo_image.h
+@@ -47,6 +47,7 @@ typedef struct _OsinfoImagePrivate OsinfoImagePrivate;
+ #define OSINFO_IMAGE_PROP_FORMAT            &quot;format&quot;
+ #define OSINFO_IMAGE_PROP_URL               &quot;url&quot;
+ #define OSINFO_IMAGE_PROP_CLOUD_INIT        &quot;cloud-init&quot;
++#define OSINFO_IMAGE_PROP_VARIANT           &quot;variant&quot;
+ 
+ /* object */
+ struct _OsinfoImage
+@@ -75,5 +76,8 @@ const gchar *osinfo_image_get_architecture(OsinfoImage *image);
+ const gchar *osinfo_image_get_format(OsinfoImage *image);
+ const gchar *osinfo_image_get_url(OsinfoImage *image);
+ gboolean osinfo_image_get_cloud_init(OsinfoImage *image);
++OsinfoOs *osinfo_image_get_os(OsinfoImage *image);
++void osinfo_image_set_os(OsinfoImage *image, OsinfoOs *os);
++OsinfoOsVariantList *osinfo_image_get_os_variants(OsinfoImage *image);
+ 
+ #endif /* __OSINFO_IMAGE_H__ */
+diff --git a/osinfo/osinfo_loader.c b/osinfo/osinfo_loader.c
+index 84c25e5..05e9d98 100644
+--- a/osinfo/osinfo_loader.c
++++ b/osinfo/osinfo_loader.c
+@@ -1311,7 +1311,9 @@ static OsinfoImage *osinfo_loader_image(OsinfoLoader *loader,
+         { OSINFO_IMAGE_PROP_URL, G_TYPE_STRING },
+         { NULL, G_TYPE_INVALID }
+     };
+-
++    xmlNodePtr *nodes = NULL;
++    gint nnodes;
++    guint i;
+     gchar *arch = (gchar *)xmlGetProp(root, BAD_CAST &quot;arch&quot;);
+     gchar *format = (gchar *)xmlGetProp(root,
+                                         BAD_CAST OSINFO_IMAGE_PROP_FORMAT);
+@@ -1321,6 +1323,21 @@ static OsinfoImage *osinfo_loader_image(OsinfoLoader *loader,
+     xmlFree(arch);
+     xmlFree(format);
+ 
++    nnodes = osinfo_loader_nodeset(&quot;./variant&quot;, loader, ctxt, &amp;nodes, err);
++    if (error_is_set(err)) {
++        g_object_unref(image);
++        return NULL;
++    }
++
++    for (i = 0; i &lt; nnodes; i++) {
++        gchar *variant_id = (gchar *)xmlGetProp(nodes[i], BAD_CAST &quot;id&quot;);
++        osinfo_entity_add_param(OSINFO_ENTITY(image),
++                                OSINFO_IMAGE_PROP_VARIANT,
++                                variant_id);
++        xmlFree(variant_id);
++    }
++    g_free(nodes);
++
+     osinfo_loader_entity(loader, OSINFO_ENTITY(image), keys, ctxt, root, err);
+     if (cloud_init) {
+         osinfo_entity_set_param(OSINFO_ENTITY(image),
+diff --git a/osinfo/osinfo_os.c b/osinfo/osinfo_os.c
+index 47affce..e458a45 100644
+--- a/osinfo/osinfo_os.c
++++ b/osinfo/osinfo_os.c
+@@ -708,6 +708,7 @@ void osinfo_os_add_image(OsinfoOs *os, OsinfoImage *image)
+     g_return_if_fail(OSINFO_IS_IMAGE(image));
+ 
+     osinfo_list_add(OSINFO_LIST(os-&gt;priv-&gt;images), OSINFO_ENTITY(image));
++    osinfo_image_set_os(image, os);
+ }
+ 
+ /**
+-- 
+2.20.1
+
+_______________________________________________
+Libosinfo mailing list
+Libosinfo@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libosinfo">https://www.redhat.com/mailman/listinfo/libosinfo</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05490.html">[libosinfo PATCH 2/2] test-image: Expand the tests to	consider variants</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05492.html">libosinfo signatures</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05490.html">[libosinfo PATCH 2/2] test-image: Expand the tests to	consider variants</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05495.html">Re:  [libosinfo PATCH 0/2] Add API to get Images' OS Variants</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05491"><strong>Date</strong></a></li>
+<li><a href="index.html#05491"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

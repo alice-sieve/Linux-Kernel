@@ -1,0 +1,829 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: PATCH (Re: Changes to copyfile functionality) -->
+<!--X-From-R13: [nephf Znhre &#60;znephfynhreNalp.ee.pbz> -->
+<!--X-Date: Tue, 18 Sep 2012 17:02:10 &#45;0700 -->
+<!--X-Message-Id: 5490746.zctAery5dJ@workstation -->
+<!--X-Content-Type: multipart/mixed -->
+<!--X-Reference: 6043053.tietnCiud8@workstation -->
+<!--X-Reference: 1516049.GHgS9JY1gj@workstation -->
+<!--X-Reference: 2974980.53ogoT3kWX@workstation -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Universal Network Connector, PATCH (Re: Changes to copyfile functionality)">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Fedora Universal Network Connector &mdash; PATCH (Re: Changes to copyfile functionality)</title>
+<link rel="alternate" type="application/rss+xml" title="Fedora Universal Network Connector" href="//feeds.feedburner.com/FedoraUniversalNetworkConnector">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">PATCH (Re: Changes to copyfile functionality)</h1>
+[<a href="msg02080.html">Date Prev</a>][<a href="msg02082.html">Date Next</a>][<a href="msg02078.html">Thread Prev</a>][<a href="msg02082.html">Thread Next</a>][<a href="maillist.html#02081">Date Index</a>][<a href="index.html#02081">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: PATCH (Re: Changes to copyfile functionality)</li>
+<li><em>From</em>: Marcus Lauer &lt;<a href="mailto:marcuslauer@DOMAIN.HIDDEN">marcuslauer@xxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Tue, 18 Sep 2012 20:01:41 -0400</li>
+<li><em>Delivered-to</em>: <a href="mailto:func@DOMAIN.HIDDEN">func@xxxxxxxxxxxxxxxxxxxxxx</a></li>
+<li><em>In-reply-to</em>: &lt;2974980.53ogoT3kWX@workstation&gt;</li>
+<li><em>References</em>: &lt;6043053.tietnCiud8@workstation&gt; &lt;1516049.GHgS9JY1gj@workstation&gt;	&lt;2974980.53ogoT3kWX@workstation&gt;</li>
+<li><em>Reply-to</em>: Marcus Lauer &lt;<a href="mailto:marcuslauer@DOMAIN.HIDDEN">marcuslauer@xxxxxxxxxx</a>&gt;, <a href="mailto:func@DOMAIN.HIDDEN">func@xxxxxxxxxxxxxxxxxxxxxx</a></li>
+<li><em>User-agent</em>: KMail/4.7.2 (Linux/3.1.10-1.16-desktop; KDE/4.7.2; x86_64; ; )</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>        Attached is an updated version of this patch which makes two more 
+changes to the CopyFile minion.
+
+        One major change is that it now tries to use the pyxattr library to 
+copy extended attributes (including SELinux contexts) from the target file to 
+the tempfile.  Pyxattr is not a core library but it is packaged for RHEL5 and 
+6.  If this library is not available then it falls back to calling chcon.
+
+        The other major change is that it explicitly looks for a SELinux 
+config file.  If one is present then it will consider a failure to copy the 
+SELinux contexts from the target file to the tempfile to be an error and will 
+exit.  Previously it just kept going when this failed.
+
+        The remaining changes are organizational, e.g. moving the &quot;from 
+subprocess import...&quot; to the top.
+
+--
+Marcus
+
+
+
+On Monday, September 03, 2012 04:29:28 PM Marcus Lauer wrote:
+&gt;         Since part #1 of my three-part plan is proving troublesome I moved
+&gt; ahead on #2.
+&gt; 
+&gt;         Although part #3 of my original plan borrows some code from #1 it
+&gt; does not require #1.  If this patch is accepted then I will move ahead on
+&gt; #3.
+&gt; 
+&gt;         This patch changes copyfile in two ways:
+&gt; 
+&gt; 1. Copyfile now opens a tempfile on the minion and appends data to this
+&gt; tempfile, then moves the tempfile over the target file after all of the data
+&gt; has been appended.
+&gt; 
+&gt;         The advantage of this is that updating the target file is atomic, or
+&gt; as close to it as possible in python.  This minimizes the chance of some
+&gt; program accessing an empty or half-complete file.  If the file in question
+&gt; were a server config file... surely you can imagine how this could be a
+&gt; problem.
+&gt; 
+&gt;         The tempfiles are created in the same directory as the target file
+&gt; (for security) and have the same name as the target file but with the
+&gt; extension &quot;.functmp&quot;.  Permissions are set on this file during the &quot;open&quot;
+&gt; stage, while it is still zero-size.
+&gt; 
+&gt; 2. Copyfile has a new option called &quot;retainperms&quot; (&quot;--retainperms&quot; at the
+&gt; command line).  It is &quot;False&quot; by default.
+&gt; 
+&gt;         Currently func tries to give the new file on the minion the same
+&gt; attributes (permissions and uid/gid) as the file on the overlord.  The
+&gt; SELinux context of the new file is not set (and does not change).  This
+&gt; overrides this behavior to make the permissions, flags, uid, gid and
+&gt; SELinux contexts of the new file identical to the existing file (if any) on
+&gt; the minion.
+&gt; 
+&gt;         This is intended to deal with the situation in which the file on the
+&gt; overlord has different permissions than the files on the minions and the
+&gt; user does not want to overwrite them.  Perhaps the overlord computer does
+&gt; not have the same users and groups as the minions?  I figured this might be
+&gt; useful for someone.
+&gt; 
+&gt; 
+&gt;         On a related note, does anyone think it would be worthwhile to have
+&gt; copyfile copy the SELinux contexts of the source file to the target?  How
+&gt; about making command-line options to allow the user to specify the desired
+&gt; mode, uid, gid, contexts, etc.?
+&gt; 
+&gt; --
+&gt; Marcus
+&gt; 
+&gt; On Saturday, August 25, 2012 04:55:09 PM Marcus Lauer wrote:
+&gt; &gt;         Attached are my original patch and a git-patch which
+&gt; &gt;         contains the
+&gt; &gt; 
+&gt; &gt; same code.  These implement  changes I called #1 in my previous e-mail.
+&gt; &gt; 
+&gt; &gt;         #2 doesn't seem too hard.  CopyFile.open will have to
+&gt; &gt;         open a
+&gt; &gt; 
+&gt; &gt; tempfile rather than the target file.  It already returns the filepath
+&gt; &gt; on
+&gt; &gt; success. Append already uses the return value of CopyFile.open as the
+&gt; &gt; file to append to.  After appending has finished there needs to be a
+&gt; &gt; CopyFile.move function called by the overlord which takes both paths and
+&gt; &gt; moves the tempfile over the source file.  Making sure the
+&gt; &gt; ownership/permissions/SELinux attributes of the target file do not
+&gt; &gt; change
+&gt; &gt; could be is important so had better be careful about that.
+&gt; &gt; 
+&gt; &gt;         Once this is in place #3 is almost trivial.  The
+&gt; &gt;         overlord needs to&gt; 
+&gt; &gt; calculate the MD5 of the source file.  The code for doing this is also
+&gt; &gt; needed by #1 and is included in my patches.  That MD5 should be passed
+&gt; &gt; to
+&gt; &gt; the CopyFile.move function.  It should calculate the MD5 of the tempfile
+&gt; &gt; and if they don't match just delete the tempfile and return an error
+&gt; &gt; instead of moving it.  I figure that this MD5 check should be optional
+&gt; &gt; so I will also create a flag to enable it.
+&gt; &gt; 
+&gt; &gt;         Can anyone see any issues with this general design?  If
+&gt; &gt;         not I'll get&gt; 
+&gt; &gt; working on it when I have the time.
+&gt; &gt; 
+&gt; &gt; --
+&gt; &gt; Marcus
+&gt; &gt; 
+&gt; &gt; On Friday, August 24, 2012 07:32:14 PM you wrote:
+&gt; &gt; &gt; Copyfile could most certainly use some TLC, so let me know if I can
+&gt; &gt; &gt; help,
+&gt; &gt; &gt; that would certainly be of help if you'd like to work on that.  The
+&gt; &gt; &gt; list has indeed changed to lists.fedorahosted.com, so definitely
+&gt; &gt; &gt; use that one.
+&gt; &gt; &gt; 
+&gt; &gt; &gt; Would you mind shooting me your original patch as well?  Thanks very
+&gt; &gt; &gt; much!&gt;
+&gt; &gt; &gt; On Fri, Aug 24, 2012 at 7:22 PM, Marcus Lauer
+&gt; 
+&gt; &lt;marcuslauer@xxxxxxxxxx&gt;wrote:
+&gt; &gt; &gt; &gt;          It seems to me that there are at least three
+&gt; &gt; &gt; &gt;          improvements which
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; &gt; should be made to copyfile:
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; &gt; 1. If the file on the overlord and minion are the same, that
+&gt; &gt; &gt; &gt; file
+&gt; &gt; &gt; &gt; should not
+&gt; &gt; &gt; &gt; be copied.  This saves bandwidth/processing time.
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; &gt; 2. Overwriting the file on the minion should be atomic, e.g. the
+&gt; &gt; &gt; &gt; file on the
+&gt; &gt; &gt; &gt; overlord should be copied to a tempfile on the minion then moved
+&gt; &gt; &gt; &gt; to
+&gt; &gt; &gt; &gt; overwrite
+&gt; &gt; &gt; &gt; the target file as a final step.  Right now if funcd dies or
+&gt; &gt; &gt; &gt; something
+&gt; &gt; &gt; &gt; goes wrong mid-copy you end up with half a file on the minion.
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; &gt; 3. There should be an option (off by default) such that if the
+&gt; &gt; &gt; &gt; file
+&gt; &gt; &gt; &gt; which
+&gt; &gt; &gt; &gt; has
+&gt; &gt; &gt; &gt; been copied over to the minion is not identical to the file on
+&gt; &gt; &gt; &gt; the
+&gt; &gt; &gt; &gt; overlord it
+&gt; &gt; &gt; &gt; is re-copied, or at least does not overwrite the file on the
+&gt; &gt; &gt; &gt; minion.
+&gt; &gt; &gt; &gt; This won't work for some files (busy logfiles) but for most
+&gt; &gt; &gt; &gt; files it
+&gt; &gt; &gt; &gt; seems like an
+&gt; &gt; &gt; &gt; extra bit of reliability which most people would want in most
+&gt; &gt; &gt; &gt; situations.
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; &gt;         I submitted a patch (though not a git-patch...
+&gt; &gt; &gt; &gt;         my
+&gt; &gt; &gt; &gt;         bad!)
+&gt; &gt; &gt; &gt;         back in
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; &gt; January 2011 which implements #1, but imperfectly.  The overlord
+&gt; &gt; &gt; &gt; still
+&gt; &gt; &gt; &gt; has to
+&gt; &gt; &gt; &gt; send a (small) packet to the minion for each 60KB chunk of
+&gt; &gt; &gt; &gt; target
+&gt; &gt; &gt; &gt; file.
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; &gt;        Would anyone be bothered terribly if I worked on
+&gt; &gt; &gt; &gt;        #2
+&gt; &gt; &gt; &gt;        and
+&gt; &gt; &gt; &gt;        #3?  While
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; &gt; I am
+&gt; &gt; &gt; &gt; at it I will try to find a way to fix up my patch for #1 as
+&gt; &gt; &gt; &gt; well.
+&gt; &gt; &gt; &gt; There is some overlap between these patches.  Both will involve
+&gt; &gt; &gt; &gt; calculating an MD5 hash
+&gt; &gt; &gt; &gt; of the file on the overlord, for example.
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; &gt;         P.S. Is the new mailing list on fedorahosted.org
+&gt; &gt; &gt; &gt;         live
+&gt; &gt; &gt; &gt;         yet?  I am
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; &gt; sending this message to both just in case.
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; &gt; --
+&gt; &gt; &gt; &gt; Marcus
+&gt; &gt; &gt; &gt; _______________________________________________
+&gt; &gt; &gt; &gt; func mailing list
+&gt; &gt; &gt; &gt; func@xxxxxxxxxxxxxxxxxxxxxx
+&gt; &gt; &gt; &gt; <a  rel="nofollow" href="https://lists.fedorahosted.org/mailman/listinfo/func">https://lists.fedorahosted.org/mailman/listinfo/func</a>
+&gt; &gt; &gt; 
+&gt; &gt; &gt; --
+&gt; &gt; &gt; Steve Salevan
+&gt; &gt; &gt; steve@xxxxxxxxxx</pre><pre>&gt;From e45bc0b5774e68beb09e4bfab0f112bd9c9fa5c8 Mon Sep 17 00:00:00 2001
+From: Marcus Lauer &lt;marcuslauer@xxxxxxxxxx&gt;
+Date: Wed, 12 Sep 2012 18:29:54 -0400
+Subject: [PATCH 1/5] CopyFile: make tempfile on minion first then move it
+ over target. Add --retainperms flag.
+
+---
+ func/minion/modules/copyfile.py       |  102 ++++++++++++++++++++++++++-------
+ func/overlord/cmd_modules/copyfile.py |    4 +-
+ func/overlord/modules/copyfile.py     |    9 ++-
+ 3 files changed, 90 insertions(+), 25 deletions(-)
+
+diff --git a/func/minion/modules/copyfile.py b/func/minion/modules/copyfile.py
+index 61c6a4f..5e47c1d 100644
+--- a/func/minion/modules/copyfile.py
++++ b/func/minion/modules/copyfile.py
+@@ -26,12 +26,12 @@ import time
+ import shutil
+ 
+ import func_module
+-
++from func import utils as func_utils
+ 
+ class CopyFile(func_module.FuncModule):
+ 
+     version = &quot;0.0.1&quot;
+-    api_version = &quot;0.0.2&quot;
++    api_version = &quot;0.0.3&quot;
+     description = &quot;Allows for smart copying of a file.&quot;
+ 
+     def _checksum_blob(self, blob):
+@@ -40,7 +40,6 @@ class CopyFile(func_module.FuncModule):
+         return thissum.hexdigest()
+ 
+     def checksum(self, thing):
+-
+         CHUNK=2**16
+         thissum = hashlib.new('sha1')
+         if os.path.exists(thing):
+@@ -57,47 +56,106 @@ class CopyFile(func_module.FuncModule):
+ 
+         return thissum.hexdigest()
+ 
+-    def open(self, filepath, mode=None, uid=-1, gid=-1):
++    def open(self, filepath, retainperms=True, mode=None, uid=-1, gid=-1):
+         dirpath = os.path.dirname(filepath)
+         if not os.path.exists(dirpath):
+             os.makedirs(dirpath)
+ 
+-        # Create empty file
++        # Create an empty tempfile in the target directory.
++	writetarget = filepath + '.functmp'
++
+         try:
+-            fo = open(filepath, 'w')
++            fo = open(writetarget, 'w')
+             fo.close()
+             del fo
+         except (IOError, OSError), e:
+             # XXX logger output here
+             return -1
+ 
+-        try:
+-            # we could intify the mode here if it's a string
+-            if mode:
+-                os.chmod(filepath, mode)
+-            if uid != -1 or gid != -1:
+-                os.chown(filepath, uid, gid)
+-        except (IOError, OSError), e:
+-            return -1
++	if retainperms:
++            # Make the attributes of the tempfile match the target file.
++            if os.path.isfile(filepath):
++                try:
++                    # Copy the mode of the existing file.
++                    shutil.copystat(filepath,writetarget)
++
++                    # Copy the uid/gid of the existing file.
++                    fileinfo = os.stat(filepath)
++                    os.chown(writetarget,fileinfo[4],fileinfo[5])
+ 
+-        return filepath
++                    # Copy the file attributes (lsattr) of the existing file.
++                    from subprocess import call, Popen, PIPE, STDOUT
++                    command_string = &quot;lsattr &quot; + filepath + &quot; | cut -d ' ' -f 1 | sed -s s/\-//g&quot;
++                    lsattr_result = Popen(command_string, shell=True, stdout=PIPE, stderr=None, close_fds=True)
++                    file_attribs = lsattr_result.stdout.read()
++                    attribstring = &quot;=&quot; + file_attribs.rstrip('\n')
++                    chattr_result = call([&quot;chattr&quot;, attribstring, writetarget], stdout=None, stderr=None)
++
++                    # Copy the SELinux attribs of the existing file.
++                    refstring = &quot;--reference=&quot; + filepath
++                    selinx_result = call([&quot;chcon&quot;, refstring, writetarget], stdout=None, stderr=None)
++                except (IOError, OSError), e:
++	            os.unlink(writetarget)
++                    return -1
++
++        else:
++            # Set the mode and ownership of the file to match the server.
++            try:
++                # we could intify the mode here if it's a string
++                if mode:
++                    os.chmod(writetarget, mode)
++                if uid != -1 or gid != -1:
++                    os.chown(writetarget, uid, gid)
++            except (IOError, OSError), e:
++	        os.unlink(writetarget)
++                return -1
+ 
+-    def append(self, filepath, filebuf):
+-        if not os.path.exists(filepath):
+-            # file disaperead
++        return writetarget
++
++    def append(self, open_result, filebuf):
++        hostname = func_utils.get_hostname_by_route()
++        writetarget = open_result[hostname]
++
++	# If the result of the open function was 0 (or -1), do not append, return the same value.
++        if type(writetarget) == type(0):
++            return writetarget
++
++        if not os.path.exists(writetarget):
++            # file disappeared
+             return -1
+ 
+         try:
+-            fo = open(filepath, 'a')
++            fo = open(writetarget, 'a')
+             fo.write(filebuf.data)
+             fo.close()
+             del fo
+         except (IOError, OSError), e:
+-            # XXX logger output here
++            # Clean up by removing the tempfile, then return an error.
++            os.unlink(writetarget)
+             return -1
+ 
+-        return 1
++        return writetarget
++
++    def move(self, filepath, append_result):
++        hostname = func_utils.get_hostname_by_route()
++	writetarget = append_result[hostname]
++
++        # If the result of the append function was 0 (or -1), just return the same value.
++	if type(writetarget) == type(0):
++	    return writetarget
+ 
++        if not os.path.exists(writetarget):
++            # file disappeared
++            return -1
++
++        try:
++	    shutil.move(writetarget,filepath)
++	except (IOError, OSError), e:
++	    # Clean up by removing the tempfile, then return an error.
++	    os.unlink(writetarget)
++            return -1
++
++	return 1
+ 
+     def copyfile(self, filepath, filebuf, mode=0644, uid=0, gid=0, force=None):
+         # -1 = problem file was not copied
+@@ -159,3 +217,5 @@ class CopyFile(func_module.FuncModule):
+             #XXX logger output here
+             return False
+         return True
++
++
+diff --git a/func/overlord/cmd_modules/copyfile.py b/func/overlord/cmd_modules/copyfile.py
+index 3f2263d..3796515 100644
+--- a/func/overlord/cmd_modules/copyfile.py
++++ b/func/overlord/cmd_modules/copyfile.py
+@@ -38,6 +38,8 @@ class CopyFile(base_command.BaseCommand):
+                                action=&quot;store_true&quot;)
+         self.parser.add_option(&quot;-v&quot;, &quot;--verbose&quot;, dest=&quot;verbose&quot;,
+                                action=&quot;store_true&quot;)
++        self.parser.add_option(&quot;&quot;, &quot;--retainperms&quot;, dest=&quot;retainperms&quot;,
++                               action=&quot;store_true&quot;)
+ 
+     def handleOptions(self, options):
+         self.verbose = self.options.verbose
+@@ -50,4 +52,4 @@ class CopyFile(base_command.BaseCommand):
+         self.server_spec = self.parentCommand.server_spec
+         self.getOverlord()
+ 
+-        return self.overlord_obj.local.copyfile.send(self.options.filename, self.options.remotepath)
++        return self.overlord_obj.local.copyfile.send(self.options.filename, self.options.remotepath, self.options.retainperms)
+diff --git a/func/overlord/modules/copyfile.py b/func/overlord/modules/copyfile.py
+index 9f385a9..e9c0a1d 100644
+--- a/func/overlord/modules/copyfile.py
++++ b/func/overlord/modules/copyfile.py
+@@ -5,9 +5,10 @@ import sys
+ import xmlrpclib
+ 
+ from func.overlord import overlord_module
++import func.minion.modules.copyfile as CopyFile
+ 
+ class copyfile(overlord_module.BaseModule):
+-    def send(self, localpath, remotepath, bufsize=60000):
++    def send(self, localpath, remotepath, retainperms, bufsize=60000):
+         try:
+             f = open(localpath, &quot;r&quot;)
+         except IOError, e:
+@@ -19,13 +20,15 @@ class copyfile(overlord_module.BaseModule):
+         uid = st.st_uid
+         gid = st.st_gid
+ 
+-        self.parent.run(&quot;copyfile&quot;, &quot;open&quot;, [remotepath, mode, uid, gid])
++        open_result = self.parent.run(&quot;copyfile&quot;, &quot;open&quot;, [remotepath, retainperms, mode, uid, gid])
+ 
+         while True:
+             data=f.read(bufsize)
+             if data:
+-                self.parent.run(&quot;copyfile&quot;, &quot;append&quot;, [remotepath, xmlrpclib.Binary(data)])
++                append_result = self.parent.run(&quot;copyfile&quot;, &quot;append&quot;, [open_result, xmlrpclib.Binary(data)])
+             else:
+                 break
+ 
++        self.parent.run(&quot;copyfile&quot;, &quot;move&quot;, [remotepath, append_result])
++
+         return True
+-- 
+1.7.7
+
+
+&gt;From adc1748d8491695ca5ea6b05292647ed2904a9ed Mon Sep 17 00:00:00 2001
+From: Marcus Lauer &lt;marcuslauer@xxxxxxxxxx&gt;
+Date: Mon, 17 Sep 2012 18:20:11 -0400
+Subject: [PATCH 2/5] CopyFile: try using pyxattr to copy SELinux contexts.
+
+---
+ func/minion/modules/copyfile.py |   25 +++++++++++++++++++------
+ 1 files changed, 19 insertions(+), 6 deletions(-)
+
+diff --git a/func/minion/modules/copyfile.py b/func/minion/modules/copyfile.py
+index 5e47c1d..956eb8d 100644
+--- a/func/minion/modules/copyfile.py
++++ b/func/minion/modules/copyfile.py
+@@ -82,22 +82,35 @@ class CopyFile(func_module.FuncModule):
+                     # Copy the uid/gid of the existing file.
+                     fileinfo = os.stat(filepath)
+                     os.chown(writetarget,fileinfo[4],fileinfo[5])
++                except (IOError, OSError), e:
++                    os.unlink(writetarget)
++                    return -1
+ 
+-                    # Copy the file attributes (lsattr) of the existing file.
++                # Copy the file attributes (lsattr) of the existing file.
++                try:
+                     from subprocess import call, Popen, PIPE, STDOUT
+                     command_string = &quot;lsattr &quot; + filepath + &quot; | cut -d ' ' -f 1 | sed -s s/\-//g&quot;
+                     lsattr_result = Popen(command_string, shell=True, stdout=PIPE, stderr=None, close_fds=True)
+                     file_attribs = lsattr_result.stdout.read()
+                     attribstring = &quot;=&quot; + file_attribs.rstrip('\n')
+                     chattr_result = call([&quot;chattr&quot;, attribstring, writetarget], stdout=None, stderr=None)
+-
+-                    # Copy the SELinux attribs of the existing file.
+-                    refstring = &quot;--reference=&quot; + filepath
+-                    selinx_result = call([&quot;chcon&quot;, refstring, writetarget], stdout=None, stderr=None)
+                 except (IOError, OSError), e:
+-	            os.unlink(writetarget)
++                    os.unlink(writetarget)
+                     return -1
+ 
++                # Copy the SELinux attribs of the existing file.
++                try:
++                    import xattr
++		    SELinuxAttribs = xattr.get(filepath, 'security.selinux')
++		    xattr.set(writetarget, SELinuxAttribs)
++                except (IOError, OSError), e:
++                    try:
++                        refstring = &quot;--reference=&quot; + filepath
++                        selinx_result = call([&quot;chcon&quot;, refstring, writetarget], stdout=None, stderr=None)
++                    except (IOError, OSError), e:
++                        os.unlink(writetarget)
++                        return -1
++
+         else:
+             # Set the mode and ownership of the file to match the server.
+             try:
+-- 
+1.7.7
+
+
+&gt;From 9cb81d2cdc0e896265328aae57271129f831085c Mon Sep 17 00:00:00 2001
+From: Marcus Lauer &lt;marcuslauer@xxxxxxxxxx&gt;
+Date: Mon, 17 Sep 2012 18:57:15 -0400
+Subject: [PATCH 3/5] CopyFile: bugfixes for pyxattr usage.
+
+---
+ func/minion/modules/copyfile.py |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/func/minion/modules/copyfile.py b/func/minion/modules/copyfile.py
+index 956eb8d..986c2b5 100644
+--- a/func/minion/modules/copyfile.py
++++ b/func/minion/modules/copyfile.py
+@@ -94,7 +94,7 @@ class CopyFile(func_module.FuncModule):
+                     file_attribs = lsattr_result.stdout.read()
+                     attribstring = &quot;=&quot; + file_attribs.rstrip('\n')
+                     chattr_result = call([&quot;chattr&quot;, attribstring, writetarget], stdout=None, stderr=None)
+-                except (IOError, OSError), e:
++                except (IOError, OSError, ImportError), e:
+                     os.unlink(writetarget)
+                     return -1
+ 
+@@ -102,8 +102,8 @@ class CopyFile(func_module.FuncModule):
+                 try:
+                     import xattr
+ 		    SELinuxAttribs = xattr.get(filepath, 'security.selinux')
+-		    xattr.set(writetarget, SELinuxAttribs)
+-                except (IOError, OSError), e:
++		    xattr.set(writetarget, 'security.selinux', SELinuxAttribs)
++                except (IOError, OSError, ImportError), e:
+                     try:
+                         refstring = &quot;--reference=&quot; + filepath
+                         selinx_result = call([&quot;chcon&quot;, refstring, writetarget], stdout=None, stderr=None)
+-- 
+1.7.7
+
+
+&gt;From 1c235e8e040203c9d8188f78c2a0ac2f84a6eef7 Mon Sep 17 00:00:00 2001
+From: Marcus Lauer &lt;marcuslauer@xxxxxxxxxx&gt;
+Date: Tue, 18 Sep 2012 19:09:29 -0400
+Subject: [PATCH 4/5] CopyFile: fixes to using pyattr, detect SELinux support
+ before using chcon
+
+---
+ func/minion/modules/copyfile.py |   24 ++++++++++++++----------
+ 1 files changed, 14 insertions(+), 10 deletions(-)
+
+diff --git a/func/minion/modules/copyfile.py b/func/minion/modules/copyfile.py
+index 986c2b5..cd79c6c 100644
+--- a/func/minion/modules/copyfile.py
++++ b/func/minion/modules/copyfile.py
+@@ -27,6 +27,7 @@ import shutil
+ 
+ import func_module
+ from func import utils as func_utils
++from subprocess import call, Popen, PIPE, STDOUT
+ 
+ class CopyFile(func_module.FuncModule):
+ 
+@@ -88,7 +89,6 @@ class CopyFile(func_module.FuncModule):
+ 
+                 # Copy the file attributes (lsattr) of the existing file.
+                 try:
+-                    from subprocess import call, Popen, PIPE, STDOUT
+                     command_string = &quot;lsattr &quot; + filepath + &quot; | cut -d ' ' -f 1 | sed -s s/\-//g&quot;
+                     lsattr_result = Popen(command_string, shell=True, stdout=PIPE, stderr=None, close_fds=True)
+                     file_attribs = lsattr_result.stdout.read()
+@@ -98,18 +98,22 @@ class CopyFile(func_module.FuncModule):
+                     os.unlink(writetarget)
+                     return -1
+ 
+-                # Copy the SELinux attribs of the existing file.
++                # If the system supports extended attributes, copy them too.
+                 try:
+                     import xattr
+-		    SELinuxAttribs = xattr.get(filepath, 'security.selinux')
+-		    xattr.set(writetarget, 'security.selinux', SELinuxAttribs)
++                    AllAttribs = xattr.get_all(filepath)
++                    for Eachattr in AllAttribs:
++                        xattr.set(writetarget, Eachattr[0], Eachattr[1])
+                 except (IOError, OSError, ImportError), e:
+-                    try:
+-                        refstring = &quot;--reference=&quot; + filepath
+-                        selinx_result = call([&quot;chcon&quot;, refstring, writetarget], stdout=None, stderr=None)
+-                    except (IOError, OSError), e:
+-                        os.unlink(writetarget)
+-                        return -1
++                    # Unfortunately each different type of xattr probably needs its own command.
++		    # Here is code for copying SELinux contexts.
++                    if os.path.exists('/etc/sysconfig/selinux') or os.path.exists('/etc/selinux/config'):
++                        try:
++                            refstring = &quot;--reference=&quot; + filepath
++                            selinx_result = call([&quot;chcon&quot;, refstring, writetarget], stdout=None, stderr=None)
++                        except (IOError, OSError), e:
++                            os.unlink(writetarget)
++                            return -1
+ 
+         else:
+             # Set the mode and ownership of the file to match the server.
+-- 
+1.7.7
+
+
+&gt;From ae16c54a3d0b83eabae1b63ccbaafacca01f0b00 Mon Sep 17 00:00:00 2001
+From: Marcus Lauer &lt;marcuslauer@xxxxxxxxxx&gt;
+Date: Tue, 18 Sep 2012 19:50:53 -0400
+Subject: [PATCH 5/5] CopyFile: determine whether SELinux is in use, try chcon
+ if pyattr fails to copy SELinux contexts.
+
+---
+ func/minion/modules/copyfile.py |   10 +++++++++-
+ 1 files changed, 9 insertions(+), 1 deletions(-)
+
+diff --git a/func/minion/modules/copyfile.py b/func/minion/modules/copyfile.py
+index cd79c6c..86d12e5 100644
+--- a/func/minion/modules/copyfile.py
++++ b/func/minion/modules/copyfile.py
+@@ -99,15 +99,23 @@ class CopyFile(func_module.FuncModule):
+                     return -1
+ 
+                 # If the system supports extended attributes, copy them too.
++                if os.path.exists('/etc/sysconfig/selinux') or os.path.exists('/etc/selinux/config'):
++                    SupportsSelinux = 1
++                else:
++                    SupportsSelinux = 0
++
+                 try:
+                     import xattr
+                     AllAttribs = xattr.get_all(filepath)
++		    if ( len(AllAttribs) == 0 ) and ( SupportsSelinux == 1 ):
++                        # If the system supports SELinux then it should return at least one Attrib set.
++                        raise IOError
+                     for Eachattr in AllAttribs:
+                         xattr.set(writetarget, Eachattr[0], Eachattr[1])
+                 except (IOError, OSError, ImportError), e:
+                     # Unfortunately each different type of xattr probably needs its own command.
+ 		    # Here is code for copying SELinux contexts.
+-                    if os.path.exists('/etc/sysconfig/selinux') or os.path.exists('/etc/selinux/config'):
++                    if ( SupportsSelinux == 1 ):
+                         try:
+                             refstring = &quot;--reference=&quot; + filepath
+                             selinx_result = call([&quot;chcon&quot;, refstring, writetarget], stdout=None, stderr=None)
+-- 
+1.7.7
+
+</pre><pre>_______________________________________________
+func mailing list
+func@xxxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.fedorahosted.org/mailman/listinfo/func">https://lists.fedorahosted.org/mailman/listinfo/func</a>
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg02080.html">PATCH: Remove old &quot;copyfile&quot; method from copyfile minion code</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg02082.html">Re: PATCH (Re: Changes to copyfile functionality)</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg02078.html">PATCH (Re: Changes to copyfile functionality)</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg02082.html">Re: PATCH (Re: Changes to copyfile functionality)</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#02081"><strong>Date</strong></a></li>
+<li><a href="index.html#02081"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/netdev/>[Linux&nbsp;Networking]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fll/>[Fedora&nbsp;Legacy&nbsp;List]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z//biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

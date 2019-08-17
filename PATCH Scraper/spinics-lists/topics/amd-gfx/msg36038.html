@@ -1,0 +1,273 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 100/102] drm/amdgpu:add all VCN rings into schedule request queue -->
+<!--X-From-R13: Oyrk Rrhpure &#60;nyrkqrhpureNtznvy.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 18:28:03 &#45;0700 -->
+<!--X-Message-Id: 20190716012741.32036&#45;10&#45;alexander.deucher@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190716012741.32036&#45;1&#45;alexander.deucher@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 100/102] drm/amdgpu:add all VCN rings into schedule request queue">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 100/102] drm/amdgpu:add all VCN rings into schedule request queue &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 100/102] drm/amdgpu:add all VCN rings into schedule request queue</h1>
+[<a href="msg36037.html">Date Prev</a>][<a href="msg36039.html">Date Next</a>][<a href="msg36037.html">Thread Prev</a>][<a href="msg36039.html">Thread Next</a>][<a href="maillist.html#36038">Date Index</a>][<a href="index.html#36038">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: amd-gfx@xxxxxxxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH 100/102] drm/amdgpu:add all VCN rings into schedule request queue</li>
+<li><em>From</em>: Alex Deucher &lt;alexdeucher@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 20:27:39 -0500</li>
+<li><em>Cc</em>: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;,        Boyuan Zhang &lt;boyuan.zhang@xxxxxxx&gt;, James Zhu &lt;James.Zhu@xxxxxxx&gt;,        Leo Liu &lt;leo.liu@xxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg36029.html">20190716012741.32036-1-alexander.deucher@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg36029.html">20190716012741.32036-1-alexander.deucher@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: James Zhu &lt;James.Zhu@xxxxxxx&gt;
+
+Add all VCN instances' decode/encode/jpeg decode rings into
+drm_sched_rq list.
+
+Signed-off-by: James Zhu &lt;James.Zhu@xxxxxxx&gt;
+Reviewed-by: Leo Liu &lt;leo.liu@xxxxxxx&gt;
+Reviewed-by: Boyuan Zhang &lt;boyuan.zhang@xxxxxxx&gt;
+Signed-off-by: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c | 26 +++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
+index 86cc3092a5e1..b7b4cfa256f1 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
+@@ -75,7 +75,7 @@ static int amdgpu_ctx_init(struct amdgpu_device *adev,
+ 			   struct amdgpu_ctx *ctx)
+ {
+ 	unsigned num_entities = amdgput_ctx_total_num_entities();
+-	unsigned i, j;
++	unsigned i, j, k;
+ 	int r;
+ 
+ 	if (priority &lt; 0 || priority &gt;= DRM_SCHED_PRIORITY_MAX)
+@@ -124,7 +124,7 @@ static int amdgpu_ctx_init(struct amdgpu_device *adev,
+ 	for (i = 0; i &lt; AMDGPU_HW_IP_NUM; ++i) {
+ 		struct amdgpu_ring *rings[AMDGPU_MAX_RINGS];
+ 		struct drm_sched_rq *rqs[AMDGPU_MAX_RINGS];
+-		unsigned num_rings;
++		unsigned num_rings = 0;
+ 		unsigned num_rqs = 0;
+ 
+ 		switch (i) {
+@@ -155,16 +155,26 @@ static int amdgpu_ctx_init(struct amdgpu_device *adev,
+ 			num_rings = 1;
+ 			break;
+ 		case AMDGPU_HW_IP_VCN_DEC:
+-			rings[0] = &amp;adev-&gt;vcn.inst[0].ring_dec;
+-			num_rings = 1;
++			for (j = 0; j &lt; adev-&gt;vcn.num_vcn_inst; ++j) {
++				if (adev-&gt;vcn.harvest_config &amp; (1 &lt;&lt; j))
++					continue;
++				rings[num_rings++] = &amp;adev-&gt;vcn.inst[j].ring_dec;
++			}
+ 			break;
+ 		case AMDGPU_HW_IP_VCN_ENC:
+-			rings[0] = &amp;adev-&gt;vcn.inst[0].ring_enc[0];
+-			num_rings = 1;
++			for (j = 0; j &lt; adev-&gt;vcn.num_vcn_inst; ++j) {
++				if (adev-&gt;vcn.harvest_config &amp; (1 &lt;&lt; j))
++					continue;
++				for (k = 0; k &lt; adev-&gt;vcn.num_enc_rings; ++k)
++					rings[num_rings++] = &amp;adev-&gt;vcn.inst[j].ring_enc[k];
++			}
+ 			break;
+ 		case AMDGPU_HW_IP_VCN_JPEG:
+-			rings[0] = &amp;adev-&gt;vcn.inst[0].ring_jpeg;
+-			num_rings = 1;
++			for (j = 0; j &lt; adev-&gt;vcn.num_vcn_inst; ++j) {
++				if (adev-&gt;vcn.harvest_config &amp; (1 &lt;&lt; j))
++					continue;
++				rings[num_rings++] = &amp;adev-&gt;vcn.inst[j].ring_jpeg;
++			}
+ 			break;
+ 		}
+ 
+-- 
+2.20.1
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="36029" href="msg36029.html">[PATCH 091/102] amd/powerplay: No SW XGMI dpm for Arcturus rev 2</a></strong>
+<ul><li><em>From:</em> Alex Deucher</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg36037.html">[PATCH 101/102] drm/amdgpu: drop unused function definitions</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg36039.html">[PATCH 098/102] drm/amdgpu: enable all 8 sdma instances for Arcturus silicon</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg36037.html">[PATCH 101/102] drm/amdgpu: drop unused function definitions</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg36039.html">[PATCH 098/102] drm/amdgpu: enable all 8 sdma instances for Arcturus silicon</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#36038"><strong>Date</strong></a></li>
+<li><a href="index.html#36038"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

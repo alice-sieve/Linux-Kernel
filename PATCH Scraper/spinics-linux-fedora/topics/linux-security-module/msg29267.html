@@ -1,0 +1,305 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH V10 0/3] Add support for measuring the boot command line during kexec_file_load -->
+<!--X-From-R13: Benxune Eevinfgnin &#60;cefevin02Ntznvy.pbz> -->
+<!--X-Date: Sun, 23 Jun 2019 23:24:50 &#45;0700 -->
+<!--X-Message-Id: 20190624062331.388&#45;1&#45;prsriva02@gmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, [PATCH V10 0/3] Add support for measuring the boot command line during kexec_file_load">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- [PATCH V10 0/3] Add support for measuring the boot command line during kexec_file_load</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH V10 0/3] Add support for measuring the boot command line during kexec_file_load</h1>
+[<a href="msg29266.html">Date Prev</a>][<a href="msg29268.html">Date Next</a>][<a href="msg29264.html">Thread Prev</a>][<a href="msg29268.html">Thread Next</a>][<a href="maillist.html#29267">Date Index</a>][<a href="index.html#29267">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH V10 0/3] Add support for measuring the boot command line during kexec_file_load</li>
+<li><em>From</em>: Prakhar Srivastava &lt;prsriva02@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Sun, 23 Jun 2019 23:23:28 -0700</li>
+<li><em>Cc</em>: zohar@xxxxxxxxxxxxx, roberto.sassu@xxxxxxxxxx, vgoyal@xxxxxxxxxx,        Prakhar Srivastava &lt;prsriva02@xxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The kexec boot command line arguments are not currently being
+measured.
+
+Currently during soft reboot(kexec) 
+  - the PCRS are not reset
+  - the command line arguments used for the next kernel are not measured.
+This gives the impression to the secure boot attestation that a cold boot took
+place.
+For secure boot attestation, it is necessary to measure the kernel
+command line. For cold boot, the boot loader can be enhanced to measure 
+these parameters.
+(<a  rel="nofollow" href="https://mjg59.dreamwidth.org/48897.html">https://mjg59.dreamwidth.org/48897.html</a>)
+
+This patch set aims to address measuring the boot command line during
+soft reboot(kexec_file_load).
+
+To achive the above the patch series does the following
+  -Add a new ima hook: ima_kexec_cmdline which measures the cmdline args
+   into the ima log, behind a new ima policy entry KEXEC_CMDLINE.
+   The kexec cmdline hash is stored in the &quot;d-ng&quot; field of the template data.
+  -Since the cmldine args cannot be appraised, a new template field(buf) is
+   added. The template field contains the buffer passed(cmldine args), which
+   can be used to appraise/attest at a later stage.
+   The kexec cmdline buffer is stored as HEX in the buf field of the event_data.
+  -Call the ima_kexec_cmdline(...) hook from kexec_file_load call.
+
+The ima logs need to be carried over to the next kernel, which will be followed
+up by other patchsets for x86_64 and arm64.
+
+The kexec cmdline hash is stored in the &quot;d-ng&quot; field of the template data.
+and can be verified using
+sudo cat /sys/kernel/security/integrity/ima/ascii_runtime_measurements | 
+  grep  kexec-cmdline | cut -d' ' -f 6 | xxd -r -p | sha256sum
+
+Changelog:
+V10(since V9):
+  -rebased over next-queued-integrity
+  -code cleanup
+
+V9(since V8):
+  - code cleanup
+
+V8(since V7):
+  - added a new ima template name &quot;ima-buf&quot; 
+  - code cleanup
+
+V7:
+  - rebased to next-queued-testing
+  <a  rel="nofollow" href="https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git/log/?h=next-queued-testing">https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git/log/?h=next-queued-testing</a>
+
+V6:
+  -add a new ima hook and policy to measure the cmdline
+    args(ima_kexec_cmdline)
+  -add a new template field buf to contain the buffer measured.
+  [suggested by Mimi Zohar]
+   add new fields to ima_event_data to store/read buffer data.
+  [suggested by Roberto]
+  -call ima_kexec_cmdline from kexec_file_load path
+
+v5:
+  -add a new ima hook and policy to measure the cmdline
+    args(ima_kexec_cmdline)
+  -add a new template field buf to contain the buffer measured.
+    [suggested by Mimi Zohar]
+  -call ima_kexec_cmdline from kexec_file_load path
+
+v4:
+  - per feedback from LSM community, removed the LSM hook and renamed the
+    IMA policy to KEXEC_CMDLINE
+
+v3: (rebase changes to next-general)
+  - Add policy checks for buffer[suggested by Mimi Zohar]
+  - use the IMA_XATTR to add buffer
+  - Add kexec_cmdline used for kexec file load
+  - Add an LSM hook to allow usage by other LSM.[suggestd by Mimi Zohar]
+
+v2:
+  - Add policy checks for buffer[suggested by Mimi Zohar]
+  - Add an LSM hook to allow usage by other LSM.[suggestd by Mimi Zohar]
+  - use the IMA_XATTR to add buffer instead of sig template
+
+v1:
+  -Add kconfigs to control the ima_buffer_check
+  -measure the cmdline args suffixed with the kernel file name
+  -add the buffer to the template sig field.
+
+Prakhar Srivastava (3):
+  Add a new ima hook ima_kexec_cmdline to measure cmdline args
+  add a new ima template field buf
+  call ima_kexec_cmdline to measure the cmdline args
+
+ Documentation/ABI/testing/ima_policy      |  1 +
+ Documentation/security/IMA-templates.rst  |  2 +-
+ include/linux/ima.h                       |  2 +
+ kernel/kexec_file.c                       |  8 ++-
+ security/integrity/ima/ima.h              |  3 +
+ security/integrity/ima/ima_api.c          |  5 +-
+ security/integrity/ima/ima_init.c         |  2 +-
+ security/integrity/ima/ima_main.c         | 80 +++++++++++++++++++++++
+ security/integrity/ima/ima_policy.c       |  9 +++
+ security/integrity/ima/ima_template.c     |  2 +
+ security/integrity/ima/ima_template_lib.c | 20 ++++++
+ security/integrity/ima/ima_template_lib.h |  4 ++
+ 12 files changed, 131 insertions(+), 7 deletions(-)
+
+-- 
+2.17.1
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="29270" href="msg29270.html">[PATCH V10 2/3] IMA: Define a new template field buf</a></strong>
+<ul><li><em>From:</em> Prakhar Srivastava</li></ul></li>
+<li><strong><a name="29269" href="msg29269.html">[PATCH V10 1/3] IMA: Define a new hook to measure the kexec boot command line arguments</a></strong>
+<ul><li><em>From:</em> Prakhar Srivastava</li></ul></li>
+<li><strong><a name="29268" href="msg29268.html">[PATCH V10 3/3] KEXEC: Call ima_kexec_cmdline to measure the boot command line args</a></strong>
+<ul><li><em>From:</em> Prakhar Srivastava</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29266.html">Re: [PATCH V34 08/29] kexec_file: split KEXEC_VERIFY_SIG into KEXEC_SIG and KEXEC_SIG_FORCE</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29268.html">[PATCH V10 3/3] KEXEC: Call ima_kexec_cmdline to measure the boot command line args</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29264.html">Re: [RFC PATCH v3 09/12] LSM: x86/sgx: Introduce -&gt;enclave_load() hook for Intel SGX</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29268.html">[PATCH V10 3/3] KEXEC: Call ima_kexec_cmdline to measure the boot command line args</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29267"><strong>Date</strong></a></li>
+<li><a href="index.html#29267"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

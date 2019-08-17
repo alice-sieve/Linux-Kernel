@@ -1,0 +1,420 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re:  [PATCH for testing only] Make radix tree compatible with 4.20&#45;rc1 xarray -->
+<!--X-From-R13: Rnir Oaqrefba &#60;naqrefbaNerqung.pbz> -->
+<!--X-Date: Mon, 5 Nov 2018 07:33:30 &#45;0800 -->
+<!--X-Message-Id: 243085717.52757406.1541431417144.JavaMail.zimbra@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 886484154.50269594.1540909971080.JavaMail.zimbra@redhat.com -->
+<!--X-Reference: 1541393707&#45;27181&#45;1&#45;git&#45;send&#45;email&#45;asmadeus@codewreck.org -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Re:  [PATCH for testing only] Make radix tree compatible with 4.20-rc1 xarray &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  Re:  [PATCH for testing only] Make radix tree compatible with 4.20-rc1 xarray</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re:  [PATCH for testing only] Make radix tree compatible with 4.20-rc1 xarray</h1>
+[<a href="msg07624.html">Date Prev</a>][<a href="msg07626.html">Date Next</a>][<a href="msg07624.html">Thread Prev</a>][<a href="msg07626.html">Thread Next</a>][<a href="maillist.html#07625">Date Index</a>][<a href="index.html#07625">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re:  [PATCH for testing only] Make radix tree compatible with 4.20-rc1 xarray</li>
+<li><em>From</em>: Dave Anderson &lt;anderson@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 5 Nov 2018 10:23:37 -0500 (EST)</li>
+<li><em>Cc</em>: crash-utility@xxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg07624.html">1541393707-27181-1-git-send-email-asmadeus@codewreck.org</a>&gt;</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>
+
+----- Original Message -----
+&gt;<i> radix trees got replaced with xarrays in 4.20-rc1's f8d5d0cc145</i>
+&gt;<i> (&quot;xarray: Add definition of struct xarray&quot;) and 01959dfe77 (&quot;xarray:</i>
+&gt;<i> Define struct xa_node&quot;)</i>
+&gt;<i> </i>
+&gt;<i> Attempt to detect and support this.</i>
+&gt;<i> ---</i>
+&gt;<i> Dave Anderson wrote on Tue, Oct 30, 2018:</i>
+&gt;<i> &gt; Thanks for the heads-up -- this is a critical change w/respect to</i>
+&gt;<i> &gt; the crash utility, affecting several other parts as well as the</i>
+&gt;<i> &gt; PID/task gathering mechanism.  I don't have access to 4.20-rc1</i>
+&gt;<i> &gt; kernels in-house, or from Fedora, at the moment, so I won't be able</i>
+&gt;<i> &gt; to do any hands-on work on it for a while.  So given the insights</i>
+&gt;<i> &gt; you've gained already, by all means please continue if you can!</i>
+&gt;<i> </i>
+&gt;<i> 4.20-rc1 was not released yet so this isn't surprising :)</i>
+&gt;<i> It came out just this weekend, should probably hit rawhide soon.</i>
+
+Yeah, on Friday the guy in the cube next to me was working with a roll-your-own
+kernel from the latest upstream git tree, and he saw the crash problem.  I created
+a &quot;snap.so&quot; vmcore from it, so I can play around with it for now.
+
+&gt;<i> </i>
+&gt;<i> Meanwhile I had a second look (thanks for reminding me about the</i>
+&gt;<i> `--active` switch, I can play with `tree -t radix` more easily now); I</i>
+&gt;<i> had missed a couple more things with my initial test.</i>
+&gt;<i> Basically, we need to:</i>
+&gt;<i>  - fall back radix_tree_root to xarray, radix_tree_node to xa_node,</i>
+&gt;<i> radix_tree_root_rnode to xarray's xa_head, radix_tree_node_slots to</i>
+&gt;<i> xa_node's slots, radix_tree_node_shift to xa_node's shift</i>
+&gt;<i>  - does not seem to be a max_height anymore</i>
+&gt;<i>  - RADIX_TREE_INTERNAL_NODE changed from 1 to 2 (linux code: that 2 is</i>
+&gt;<i> hardcoded in include/linux/xarray.h xa_mk_node and xa_to_node...)</i>
+&gt;<i> The XA_CHUNK_MASK that replaces RADIX_TREE_ENTRY_MASK is bigger but</i>
+&gt;<i> I didn't need to change that.</i>
+&gt;<i> To use the same code with both radix tree and xarray, I'm now clearing</i>
+&gt;<i> the entry mask instead of the interna node bit.</i>
+&gt;<i>  - the second thing I had missed was `MEMBER_SIZE(&quot;radix_tree_node&quot;,</i>
+&gt;<i> &quot;slots&quot;)` in do_radix_tree_iter as it wasn't with the other fields, need</i>
+&gt;<i> to fallback to xa_node's slots here as well.</i>
+&gt;<i> the check !(nlen = MEMBER_SIZE(...)) isn't correct as MEMBER_SIZE will</i>
+&gt;<i> return -1 on failure, so comparing to 0 might be better.</i>
+&gt;<i> </i>
+&gt;<i> </i>
+&gt;<i> So ultimately I can get crash to start with the attached patch, but this</i>
+&gt;<i> is definitely more of monkeying around than a real fix.</i>
+
+That's awesome -- much appreciated.
+
+I just started looking at the xarray kernel code, and w/respect to the crash
+utility, I'm thinking it's probably worth biting the bullet and creating
+a set of analogous xarray functions/structures/#define's that are similar 
+in nature (identical except in name in most cases) to the set of exported 
+radix tree functions/structures/#define's.
+
+Yes, the new pieces will in most places be essentially the same as the
+radix tree versions, but the alternative of &quot;hiding&quot; the xarray kernel facility
+behind a bunch of radix tree functions and structures is disconcerting.
+
+While it is true that there are many trivial examples in the crash code where,
+say, an offset_table entry whose kernel name has changed still conditionally
+utilizes the old entry name, but in this case, it's a complete kernel subsystem
+whose purpose is to pretty much replace the radix tree.  So looking down the line,
+it seems reasonable and cleaner to separate the two facilities in the crash utility
+support code.
+
+But anyway, let's get it working first!  
+
+&gt;<i> One thing I'm not sure about in particular is if the radix tree/xarray</i>
+&gt;<i> contains values instead of pointers some of the internal bits changed,</i>
+&gt;<i> but we do not seem to handle that for radix trees right now so it might</i>
+&gt;<i> not matter...?</i>
+
+That's what the RADIX_TREE_EXCEPTIONAL_ENTRY items are, right?  Granted,
+I never ran into one until recently when I bumped into a value instead 
+of a pointer when running &quot;files -p&quot;:
+
+  commit b9df4d156838b4e8aa2b2f51aff3460a1c61f6a8
+  Author: Dave Anderson &lt;anderson@xxxxxxxxxx&gt;
+  Date:   Thu Sep 6 14:01:28 2018 -0400
+
+    Fix for the &quot;files -p &lt;inode&gt;&quot; option.  Without the patch, the
+    command attempts to translate radix tree node slot entries that
+    are RADIX_TREE_EXCEPTIONAL_ENTRY types, and as a result may fail
+    prematurely with an error message of the sort &quot;files: do_radix_tree:
+    callback operation failed: entry: 5  item: 44788c5000a&quot;.
+    (anderson@xxxxxxxxxx)
+
+&gt;<i> </i>
+&gt;<i> Anyway, patch tested on 4.20-rc1, and fedora's 4.18.16-200.fc28.x86_64.</i>
+&gt;<i> As said previously it probably warrants more testing on 4.20-rc1 and</i>
+&gt;<i> possibly older centos/rhel kernels, I don't think any of the tree I</i>
+&gt;<i> tried was multiple levels deep for example...</i>
+&gt;<i> Please consider it a &quot;FYI&quot; patch more than anything else :)</i>
+
+Cool -- no problem.  Again, thanks again for digging into this.
+
+Dave
+
+
+&gt;<i> </i>
+&gt;<i>  task.c  |  9 +++++++++</i>
+&gt;<i>  tools.c | 23 +++++++++++------------</i>
+&gt;<i>  2 files changed, 20 insertions(+), 12 deletions(-)</i>
+&gt;<i> </i>
+&gt;<i> diff --git a/task.c b/task.c</i>
+&gt;<i> index 1eecfce..34327c2 100644</i>
+&gt;<i> --- a/task.c</i>
+&gt;<i> +++ b/task.c</i>
+&gt;<i> @@ -485,6 +485,15 @@ task_init(void)</i>
+&gt;<i>  			&quot;radix_tree_node&quot;,&quot;height&quot;);</i>
+&gt;<i>  		MEMBER_OFFSET_INIT(radix_tree_node_shift,</i>
+&gt;<i>  			&quot;radix_tree_node&quot;,&quot;shift&quot;);</i>
+&gt;<i> +	} else {</i>
+&gt;<i> +		STRUCT_SIZE_INIT(radix_tree_root, &quot;xarray&quot;);</i>
+&gt;<i> +		STRUCT_SIZE_INIT(radix_tree_node, &quot;xa_node&quot;);</i>
+&gt;<i> +		MEMBER_OFFSET_INIT(radix_tree_root_rnode,</i>
+&gt;<i> +			&quot;xarray&quot;,&quot;xa_head&quot;);</i>
+&gt;<i> +		MEMBER_OFFSET_INIT(radix_tree_node_slots,</i>
+&gt;<i> +			&quot;xa_node&quot;,&quot;slots&quot;);</i>
+&gt;<i> +		MEMBER_OFFSET_INIT(radix_tree_node_shift,</i>
+&gt;<i> +			&quot;xa_node&quot;,&quot;shift&quot;);</i>
+&gt;<i>  	}</i>
+&gt;<i>  </i>
+&gt;<i>  	if (symbol_exists(&quot;pidhash&quot;) &amp;&amp; symbol_exists(&quot;pid_hash&quot;) &amp;&amp;</i>
+&gt;<i> diff --git a/tools.c b/tools.c</i>
+&gt;<i> index 634aec6..33d3787 100644</i>
+&gt;<i> --- a/tools.c</i>
+&gt;<i> +++ b/tools.c</i>
+&gt;<i> @@ -4415,7 +4415,6 @@ static ulong RADIX_TREE_MAP_SIZE = UNINITIALIZED;</i>
+&gt;<i>  static ulong RADIX_TREE_MAP_MASK = UNINITIALIZED;</i>
+&gt;<i>  </i>
+&gt;<i>  #define RADIX_TREE_ENTRY_MASK		3UL</i>
+&gt;<i> -#define RADIX_TREE_INTERNAL_NODE	1UL</i>
+&gt;<i>  </i>
+&gt;<i>  static void do_radix_tree_iter(ulong node, uint height, char *path,</i>
+&gt;<i>  			       ulong index, struct radix_tree_ops *ops)</i>
+&gt;<i> @@ -4436,8 +4435,8 @@ static void do_radix_tree_iter(ulong node, uint height,</i>
+&gt;<i> char *path,</i>
+&gt;<i>  		if (!slot)</i>
+&gt;<i>  			continue;</i>
+&gt;<i>  </i>
+&gt;<i> -		if (slot &amp; RADIX_TREE_INTERNAL_NODE)</i>
+&gt;<i> -			slot &amp;= ~RADIX_TREE_INTERNAL_NODE;</i>
+&gt;<i> +		if (slot &amp; RADIX_TREE_ENTRY_MASK)</i>
+&gt;<i> +			slot &amp;= ~RADIX_TREE_ENTRY_MASK;</i>
+&gt;<i>  </i>
+&gt;<i>  		if (height == 1)</i>
+&gt;<i>  			ops-&gt;entry(node, slot, path, index | off, ops-&gt;private);</i>
+&gt;<i> @@ -4467,13 +4466,13 @@ int do_radix_tree_traverse(ulong ptr, int is_root,</i>
+&gt;<i> struct radix_tree_ops *ops)</i>
+&gt;<i>  	      !ARRAY_LENGTH(height_to_maxindex)) &amp;&amp;</i>
+&gt;<i>  	     (!VALID_MEMBER(radix_tree_root_rnode) ||</i>
+&gt;<i>  	      !VALID_MEMBER(radix_tree_node_shift) ||</i>
+&gt;<i> -	      !VALID_MEMBER(radix_tree_node_slots) ||</i>
+&gt;<i> -	      !ARRAY_LENGTH(height_to_maxnodes))))</i>
+&gt;<i> +	      !VALID_MEMBER(radix_tree_node_slots))))</i>
+&gt;<i>  		error(FATAL, &quot;radix trees do not exist or have changed &quot;</i>
+&gt;<i>  			&quot;their format\n&quot;);</i>
+&gt;<i>  </i>
+&gt;<i>  	if (RADIX_TREE_MAP_SHIFT == UNINITIALIZED) {</i>
+&gt;<i> -		if (!(nlen = MEMBER_SIZE(&quot;radix_tree_node&quot;, &quot;slots&quot;)))</i>
+&gt;<i> +		if ((nlen = MEMBER_SIZE(&quot;radix_tree_node&quot;, &quot;slots&quot;)) &lt;= 0 &amp;&amp;</i>
+&gt;<i> +		    (nlen = MEMBER_SIZE(&quot;xa_node&quot;, &quot;slots&quot;)) &lt;= 0)</i>
+&gt;<i>  			error(FATAL, &quot;cannot determine length of &quot;</i>
+&gt;<i>  				     &quot;radix_tree_node.slots[] array\n&quot;);</i>
+&gt;<i>  		nlen /= sizeof(void *);</i>
+&gt;<i> @@ -4483,7 +4482,7 @@ int do_radix_tree_traverse(ulong ptr, int is_root,</i>
+&gt;<i> struct radix_tree_ops *ops)</i>
+&gt;<i>  </i>
+&gt;<i>  		if (ARRAY_LENGTH(height_to_maxindex))</i>
+&gt;<i>  			max_height = ARRAY_LENGTH(height_to_maxindex);</i>
+&gt;<i> -		else</i>
+&gt;<i> +		else if (ARRAY_LENGTH(height_to_maxnodes))</i>
+&gt;<i>  			max_height = ARRAY_LENGTH(height_to_maxnodes);</i>
+&gt;<i>  	}</i>
+&gt;<i>  </i>
+&gt;<i> @@ -4491,8 +4490,8 @@ int do_radix_tree_traverse(ulong ptr, int is_root,</i>
+&gt;<i> struct radix_tree_ops *ops)</i>
+&gt;<i>  	if (!is_root) {</i>
+&gt;<i>  		node_p = ptr;</i>
+&gt;<i>  </i>
+&gt;<i> -		if (node_p &amp; RADIX_TREE_INTERNAL_NODE)</i>
+&gt;<i> -			node_p &amp;= ~RADIX_TREE_INTERNAL_NODE;</i>
+&gt;<i> +		if (node_p &amp; RADIX_TREE_ENTRY_MASK)</i>
+&gt;<i> +			node_p &amp;= ~RADIX_TREE_ENTRY_MASK;</i>
+&gt;<i>  </i>
+&gt;<i>  		if (VALID_MEMBER(radix_tree_node_height)) {</i>
+&gt;<i>  			readmem(node_p + OFFSET(radix_tree_node_height), KVADDR,</i>
+&gt;<i> @@ -4516,9 +4515,9 @@ int do_radix_tree_traverse(ulong ptr, int is_root,</i>
+&gt;<i> struct radix_tree_ops *ops)</i>
+&gt;<i>  </i>
+&gt;<i>  		readmem(ptr + OFFSET(radix_tree_root_rnode), KVADDR, &amp;node_p,</i>
+&gt;<i>  			sizeof(void *), &quot;radix_tree_root rnode&quot;, FAULT_ON_ERROR);</i>
+&gt;<i> -		is_internal = (node_p &amp; RADIX_TREE_INTERNAL_NODE);</i>
+&gt;<i> -		if (node_p &amp; RADIX_TREE_INTERNAL_NODE)</i>
+&gt;<i> -			node_p &amp;= ~RADIX_TREE_INTERNAL_NODE;</i>
+&gt;<i> +		is_internal = (node_p &amp; RADIX_TREE_ENTRY_MASK);</i>
+&gt;<i> +		if (node_p &amp; RADIX_TREE_ENTRY_MASK)</i>
+&gt;<i> +			node_p &amp;= ~RADIX_TREE_ENTRY_MASK;</i>
+&gt;<i>  </i>
+&gt;<i>  		if (is_internal &amp;&amp; VALID_MEMBER(radix_tree_node_shift)) {</i>
+&gt;<i>  			readmem(node_p + OFFSET(radix_tree_node_shift), KVADDR, &amp;shift,</i>
+&gt;<i> --</i>
+&gt;<i> 2.19.1</i>
+&gt;<i> </i>
+&gt;<i> </i>
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07626" href="msg07626.html">Re:  [PATCH for testing only] Make radix tree compatible with 4.20-rc1 xarray</a></strong>
+<ul><li><em>From:</em> Dominique Martinet</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="07623" href="msg07623.html">Re:  kernel 4.20-rc1 compatibility - radix tree replaced by xarray</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+<li><strong><a name="07624" href="msg07624.html">[PATCH for testing only] Make radix tree compatible	with 4.20-rc1 xarray</a></strong>
+<ul><li><em>From:</em> Dominique Martinet</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07624.html">[PATCH for testing only] Make radix tree compatible	with 4.20-rc1 xarray</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07626.html">Re:  [PATCH for testing only] Make radix tree compatible with 4.20-rc1 xarray</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07624.html">[PATCH for testing only] Make radix tree compatible	with 4.20-rc1 xarray</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07626.html">Re:  [PATCH for testing only] Make radix tree compatible with 4.20-rc1 xarray</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07625"><strong>Date</strong></a></li>
+<li><a href="index.html#07625"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

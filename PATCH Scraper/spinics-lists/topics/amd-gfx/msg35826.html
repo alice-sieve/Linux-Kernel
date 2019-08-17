@@ -1,0 +1,297 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2 6/6] drm/amdgpu: utilize subconnector property for DP -->
+<!--X-From-R13: Ayrt Hnfvyri &#60;byrt.infvyriNvagry.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 04:24:34 &#45;0700 -->
+<!--X-Message-Id: 20190715112408.20114&#45;7&#45;oleg.vasilev@intel.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190701080022.9415&#45;1&#45;oleg.vasilev@intel.com -->
+<!--X-Reference: 20190715112408.20114&#45;1&#45;oleg.vasilev@intel.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH v2 6/6] drm/amdgpu: utilize subconnector property for DP">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH v2 6/6] drm/amdgpu: utilize subconnector property for DP &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH v2 6/6] drm/amdgpu: utilize subconnector property for DP</h1>
+[<a href="msg35825.html">Date Prev</a>][<a href="msg35827.html">Date Next</a>][<a href="msg35822.html">Thread Prev</a>][<a href="msg35828.html">Thread Next</a>][<a href="maillist.html#35826">Date Index</a>][<a href="index.html#35826">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: dri-devel@xxxxxxxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH v2 6/6] drm/amdgpu: utilize subconnector property for DP</li>
+<li><em>From</em>: Oleg Vasilev &lt;oleg.vasilev@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 14:23:34 +0300</li>
+<li><em>Cc</em>: amd-gfx@xxxxxxxxxxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;20190715112408.20114-1-oleg.vasilev@intel.com&gt;</li>
+<li><em>References</em>: &lt;20190701080022.9415-1-oleg.vasilev@intel.com&gt; &lt;20190715112408.20114-1-oleg.vasilev@intel.com&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Since DP-specific information is stored in driver's structures, every
+driver needs to implement subconnector property by itself.
+
+Signed-off-by: Oleg Vasilev &lt;oleg.vasilev@xxxxxxxxx&gt;
+Cc: amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c | 12 ++++++++++++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h       |  1 +
+ drivers/gpu/drm/amd/amdgpu/atombios_dp.c       | 18 +++++++++++++++++-
+ 3 files changed, 30 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
+index 73b2ede773d3..099286467c82 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
+@@ -26,6 +26,7 @@
+ 
+ #include &lt;drm/drm_edid.h&gt;
+ #include &lt;drm/drm_fb_helper.h&gt;
++#include &lt;drm/drm_dp_helper.h&gt;
+ #include &lt;drm/drm_probe_helper.h&gt;
+ #include &lt;drm/amdgpu_drm.h&gt;
+ #include &quot;amdgpu.h&quot;
+@@ -1407,6 +1408,10 @@ amdgpu_connector_dp_detect(struct drm_connector *connector, bool force)
+ 		pm_runtime_put_autosuspend(connector-&gt;dev-&gt;dev);
+ 	}
+ 
++	drm_dp_set_subconnector_property(&amp;amdgpu_connector-&gt;base,
++					 ret,
++					 amdgpu_dig_connector-&gt;dpcd,
++					 amdgpu_dig_connector-&gt;downstream_ports);
+ 	return ret;
+ }
+ 
+@@ -1567,6 +1572,13 @@ amdgpu_connector_add(struct amdgpu_device *adev,
+ 			DRM_ERROR(&quot;Failed to assign router i2c bus! Check dmesg for i2c errors.\n&quot;);
+ 	}
+ 
++	if ((connector-&gt;connector_type == DRM_MODE_CONNECTOR_DisplayPort) ||
++		   (connector-&gt;connector_type == DRM_MODE_CONNECTOR_eDP))
++	{
++		drm_mode_add_dp_subconnector_property(&amp;amdgpu_connector-&gt;base);
++	}
++
++
+ 	if (is_dp_bridge) {
+ 		amdgpu_dig_connector = kzalloc(sizeof(struct amdgpu_connector_atom_dig), GFP_KERNEL);
+ 		if (!amdgpu_dig_connector)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
+index eb9975f4decb..cb360b44371c 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
+@@ -469,6 +469,7 @@ struct amdgpu_encoder {
+ struct amdgpu_connector_atom_dig {
+ 	/* displayport */
+ 	u8 dpcd[DP_RECEIVER_CAP_SIZE];
++	u8 downstream_ports[DP_MAX_DOWNSTREAM_PORTS];
+ 	u8 dp_sink_type;
+ 	int dp_clock;
+ 	int dp_lane_count;
+diff --git a/drivers/gpu/drm/amd/amdgpu/atombios_dp.c b/drivers/gpu/drm/amd/amdgpu/atombios_dp.c
+index 6858cde9fc5d..b0d414553e71 100644
+--- a/drivers/gpu/drm/amd/amdgpu/atombios_dp.c
++++ b/drivers/gpu/drm/amd/amdgpu/atombios_dp.c
+@@ -334,6 +334,22 @@ static void amdgpu_atombios_dp_probe_oui(struct amdgpu_connector *amdgpu_connect
+ 			      buf[0], buf[1], buf[2]);
+ }
+ 
++static void amdgpu_atombios_dp_ds_ports(struct amdgpu_connector *amdgpu_connector)
++{
++	struct amdgpu_connector_atom_dig *dig_connector = amdgpu_connector-&gt;con_priv;
++	int ret;
++
++	if (dig_connector-&gt;dpcd[DP_DPCD_REV] &gt; 0x10) {
++		ret = drm_dp_dpcd_read(&amp;amdgpu_connector-&gt;ddc_bus-&gt;aux,
++				       DP_DOWNSTREAM_PORT_0,
++				       dig_connector-&gt;downstream_ports,
++				       DP_MAX_DOWNSTREAM_PORTS);
++		if (ret)
++			memset(dig_connector-&gt;downstream_ports, 0,
++			       DP_MAX_DOWNSTREAM_PORTS);
++	}
++}
++
+ int amdgpu_atombios_dp_get_dpcd(struct amdgpu_connector *amdgpu_connector)
+ {
+ 	struct amdgpu_connector_atom_dig *dig_connector = amdgpu_connector-&gt;con_priv;
+@@ -349,7 +365,7 @@ int amdgpu_atombios_dp_get_dpcd(struct amdgpu_connector *amdgpu_connector)
+ 			      dig_connector-&gt;dpcd);
+ 
+ 		amdgpu_atombios_dp_probe_oui(amdgpu_connector);
+-
++		amdgpu_atombios_dp_ds_ports(amdgpu_connector);
+ 		return 0;
+ 	}
+ 
+-- 
+2.22.0
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35825.html">Re: [PATCH] drm/ttm: Fix the memory delay free issue</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35827.html">Re: [PATCH] drm/amdgpu: extend AMDGPU_CTX_PRIORITY_NORMAL comment</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35822.html">[PATCH] drm/amd/display: Remove check for 0 kHz clock values</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35828.html">[PATCH] drm/amdgpu: Fix Vega20 Perf counter for pcie_bw</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35826"><strong>Date</strong></a></li>
+<li><a href="index.html#35826"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,632 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 16/20] autofs&#45;5.1.4 &#45; add fedfs&#45;getsrvinfo.c -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Tue, 13 Feb 2018 22:56:01 &#45;0800 -->
+<!--X-Message-Id: 151859066218.8026.6372757741287844640.stgit@pluto.themaw.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 151859051902.8026.13693256398323544616.stgit@pluto.themaw.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 16/20] autofs-5.1.4 - add fedfs-getsrvinfo.c &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 16/20] autofs-5.1.4 - add fedfs-getsrvinfo.c &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 16/20] autofs-5.1.4 - add fedfs-getsrvinfo.c</h1>
+[<a href="msg01862.html">Date Prev</a>][<a href="msg01864.html">Date Next</a>][<a href="msg01862.html">Thread Prev</a>][<a href="msg01864.html">Thread Next</a>][<a href="maillist.html#01863">Date Index</a>][<a href="index.html#01863">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 16/20] autofs-5.1.4 - add fedfs-getsrvinfo.c</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 14 Feb 2018 14:44:22 +0800</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg01861.html">151859051902.8026.13693256398323544616.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg01861.html">151859051902.8026.13693256398323544616.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>User-agent</em>: StGit/0.17.1-dirty</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Add the fedfs domain information discovery library functions.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ CHANGELOG                |    1 
+ fedfs/fedfs-getsrvinfo.c |  311 ++++++++++++++++++++++++++++++++++++++++++++++
+ fedfs/fedfs-getsrvinfo.h |   52 ++++++++
+ 3 files changed, 364 insertions(+)
+ create mode 100644 fedfs/fedfs-getsrvinfo.c
+ create mode 100644 fedfs/fedfs-getsrvinfo.h
+
+diff --git a/CHANGELOG b/CHANGELOG
+index dbfb8389..8d6c737c 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -14,6 +14,7 @@ xx/xx/2018 autofs-5.1.5
+ - Makefiles.rules: remove 'samples' from SUBDIRS.
+ - dont allow trailing slash in master map mount points.
+ - fix libresolv configure check.
++- add fedfs-getsrvinfo.c.
+ 
+ 19/12/2017 autofs-5.1.4
+ - fix spec file url.
+diff --git a/fedfs/fedfs-getsrvinfo.c b/fedfs/fedfs-getsrvinfo.c
+new file mode 100644
+index 00000000..02ad16b5
+--- /dev/null
++++ b/fedfs/fedfs-getsrvinfo.c
+@@ -0,0 +1,311 @@
++/*
++ * Copyright 2011 Oracle.  All rights reserved.
++ *
++ * This file is part of fedfs-utils.
++ *
++ * fedfs-utils is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2.0 as
++ * published by the Free Software Foundation.
++ *
++ * fedfs-utils is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License version 2.0 for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * version 2.0 along with fedfs-utils.  If not, see:
++ *
++ *	<a  rel="nofollow" href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt">http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt</a>
++ */
++
++#ifdef HAVE_CONFIG_H
++#include &lt;config.h&gt;
++#endif
++
++#include &lt;sys/types.h&gt;
++#include &lt;sys/socket.h&gt;
++
++#include &lt;stdbool.h&gt;
++#include &lt;string.h&gt;
++#include &lt;unistd.h&gt;
++#include &lt;stdlib.h&gt;
++#include &lt;stdint.h&gt;
++
++#include &lt;stdio.h&gt;
++#include &lt;errno.h&gt;
++#include &lt;netdb.h&gt;
++#include &lt;netinet/in.h&gt;
++#include &lt;arpa/inet.h&gt;
++#include &lt;arpa/nameser.h&gt;
++#include &lt;arpa/nameser_compat.h&gt;
++#include &lt;resolv.h&gt;
++
++#include &quot;fedfs-getsrvinfo.h&quot;
++
++/**
++ * Parsing overlay for DNS query result record header.  Fields are
++ * in network byte order.
++ */
++struct rechdr {
++	uint16_t		 type;
++	uint16_t		 class;
++	uint32_t		 ttl;
++	uint16_t		 length;
++} __attribute__((__packed__));
++
++/**
++ * Parsing overlay for DNS query result SRV record data.  Fields
++ * are in network byte order.
++ */
++struct srv {
++	uint16_t		 priority;
++	uint16_t		 weight;
++	uint16_t		 port;
++	unsigned char		*target;
++} __attribute__((__packed__));
++
++/**
++ * Return C string matching error value of &quot;status&quot;
++ *
++ * @param status error status returned by getsrvinfo
++ * @return pointer to static NUL-terminated C string containing error message
++ */
++const char *
++gsi_strerror(int status)
++{
++	static char buf[256];
++
++	switch (status) {
++	case ESI_SUCCESS:
++		return &quot;Success&quot;;
++	case ESI_NONAME:
++		return &quot;Name not found&quot;;
++	case ESI_AGAIN:
++		return &quot;Temporary failure in name resolution&quot;;
++	case ESI_FAIL:
++		return &quot;Non-recoverable failure in name resolution&quot;;
++	case ESI_NODATA:
++		return &quot;No SRV record returned&quot;;
++	case ESI_SERVICE:
++		return &quot;Service is not available&quot;;
++	case ESI_MEMORY:
++		return &quot;Memory allocation failure&quot;;
++	case ESI_SYSTEM:
++		snprintf(buf, sizeof(buf), &quot;System error (%d): %s&quot;,
++				status, strerror(errno));
++		return buf;
++	case ESI_PARSE:
++		return &quot;Failed to parse server response&quot;;
++	}
++
++	snprintf(buf, sizeof(buf), &quot;Unknown error (%d)&quot;, status);
++	return buf;
++}
++
++/**
++ * Release a list of SRV records allocated by getsrvinfo()
++ *
++ * @param si pointer to first element of a list of struct srvinfo
++ *
++ */
++void freesrvinfo(struct srvinfo *si)
++{
++	struct srvinfo *tmp;
++
++	while (si != NULL) {
++		tmp = si;
++		si = si-&gt;si_next;
++		free(tmp-&gt;si_target);
++		free(tmp);
++	}
++}
++
++/**
++ * Ordering predicate for srvinfo lists
++ *
++ * @param a a srvinfo list element to compare
++ * @param b another srvinfo list element to compare
++ * @return true if &quot;b&quot; should fall later in the list than &quot;a&quot;
++ *
++ * See RFC 2782.   The list is ordered as follows:
++ *
++ *  o Lowest priority first.
++ *  o In each priority class, highest weight first.
++ */
++static _Bool
++srvinfo_is_after(const struct srvinfo *a, const struct srvinfo *b)
++{
++	if (a-&gt;si_priority &gt; b-&gt;si_priority)
++		return true;
++	if (a-&gt;si_priority &lt; b-&gt;si_priority)
++		return false;
++
++	if (a-&gt;si_weight &lt; b-&gt;si_weight)
++		return true;
++	return false;
++}
++
++/**
++ * Insert a srvinfo element into a list
++ *
++ * @param head pointer to head of list of elements
++ * @param entry new list element to insert
++ *
++ */
++static void
++insert_srvinfo(struct srvinfo **head, struct srvinfo *entry)
++{
++	entry-&gt;si_next = *head;
++	*head = entry;
++}
++
++/**
++ * Insert a srvinfo element into a list, in order
++ *
++ * @param head pointer to head of list of elements
++ * @param entry new list element to insert
++ *
++ */
++static void
++insert_srvinfo_sorted(struct srvinfo **head, struct srvinfo *entry)
++{
++	struct srvinfo *spot, *back;
++
++	spot = *head;
++	back = NULL;
++	while (spot &amp;&amp; srvinfo_is_after(spot, entry)) {
++		back = spot;
++		spot = spot-&gt;si_next;
++	}
++
++	if (spot == (*head))
++		insert_srvinfo(head, entry);
++	else {
++		insert_srvinfo(&amp;spot, entry);
++		/* off the end of the list? */
++		if (spot == entry)
++			back-&gt;si_next = entry;
++	}
++}
++
++/**
++ * Retrieve list of SRV records from DNS service
++ *
++ * @param srvname NUL-terminated C string containing record type to look up
++ * @param domainname NUL-terminated C string containing domain name to look up
++ * @param si OUT: list of SRV record information retrieved
++ * @return zero on success, or an ESI_ status code describing the error
++ *
++ * Caller must free list of records using freesrvinfo().
++ */
++int
++getsrvinfo(const char *srvname, const char *domainname, struct srvinfo **si)
++{
++	unsigned char *msg, *eom, *comp_dn;
++	struct srvinfo *results;
++	unsigned short count, i;
++	int status, len;
++	char *exp_dn;
++	HEADER *hdr;
++
++	msg = calloc(1, NS_MAXMSG);
++	exp_dn = calloc(1, NS_MAXDNAME);
++	if (msg == NULL || exp_dn == NULL) {
++		status = ESI_MEMORY;
++		goto out;
++	}
++
++	_res.options |= RES_AAONLY;
++	len = res_querydomain(srvname, domainname, C_IN, T_SRV, msg, NS_MAXMSG);
++	if (len == -1) {
++		switch (h_errno) {
++		case HOST_NOT_FOUND:
++			status = ESI_NONAME;
++			break;
++		case TRY_AGAIN:
++			status = ESI_AGAIN;
++			break;
++		case NO_RECOVERY:
++			status = ESI_FAIL;
++			break;
++		case NO_DATA:
++			status = ESI_NODATA;
++			break;
++		default:
++			fprintf(stderr, &quot;SRV query failed for %s.%s: %s\n&quot;,
++				srvname, domainname, hstrerror(h_errno));
++			status = ESI_FAIL;
++		}
++		goto out;
++	}
++
++	hdr = (HEADER *)msg;
++	count = ntohs(hdr-&gt;ancount);
++	if (count == 0) {
++		status = ESI_NODATA;
++		goto out;
++	}
++	eom = msg + len;
++
++	comp_dn = &amp;msg[HFIXEDSZ];
++	comp_dn += dn_skipname(comp_dn, eom) + QFIXEDSZ;
++
++	results = NULL;
++	for (i = 0; i &lt; count; i++) {
++		struct srvinfo *new;
++		struct srv *record;
++		int l;
++
++		l = dn_expand(msg, eom, comp_dn, exp_dn, NS_MAXDNAME);
++		if (l == -1) {
++			status = ESI_PARSE;
++			goto out_free;
++		}
++		comp_dn += l;
++
++		record = (struct srv *)&amp;comp_dn[10];
++		comp_dn += 16;
++
++		l = dn_expand(msg, eom, comp_dn, exp_dn, NS_MAXDNAME);
++		if (l == -1) {
++			status = ESI_PARSE;
++			goto out_free;
++		}
++		comp_dn += l;
++
++		if (count == 1 &amp;&amp; strcmp(exp_dn, &quot;.&quot;) == 0) {
++			status = ESI_SERVICE;
++			goto out_free;
++		}
++
++		new = calloc(1, sizeof(*new));
++		if (new == NULL) {
++			status = ESI_MEMORY;
++			goto out;
++		}
++
++		new-&gt;si_target = strdup(exp_dn);
++		if (new-&gt;si_target == NULL) {
++			free(new);
++			status = ESI_MEMORY;
++			goto out;
++		}
++		new-&gt;si_priority = ntohs(record-&gt;priority);
++		new-&gt;si_weight = ntohs(record-&gt;weight);
++		new-&gt;si_port = ntohs(record-&gt;port);
++
++		insert_srvinfo_sorted(&amp;results, new);
++	}
++
++	status = ESI_SUCCESS;
++	*si = results;
++
++out:
++	free(exp_dn);
++	free(msg);
++	return status;
++
++out_free:
++	freesrvinfo(results);
++	goto out;
++}
+diff --git a/fedfs/fedfs-getsrvinfo.h b/fedfs/fedfs-getsrvinfo.h
+new file mode 100644
+index 00000000..13170359
+--- /dev/null
++++ b/fedfs/fedfs-getsrvinfo.h
+@@ -0,0 +1,52 @@
++/*
++ * Copyright 2011 Oracle.  All rights reserved.
++ *
++ * This file is part of fedfs-utils.
++ *
++ * fedfs-utils is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2.0 as
++ * published by the Free Software Foundation.
++ *
++ * fedfs-utils is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License version 2.0 for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * version 2.0 along with fedfs-utils.  If not, see:
++ *
++ *	<a  rel="nofollow" href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt">http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt</a>
++ */
++
++#ifndef _FEDFS_GETSRVINFO_H_
++#define _FEDFS_GETSRVINFO_H_
++
++/**
++ * Single list element containing SRV record data
++ */
++struct srvinfo {
++	struct srvinfo		*si_next;
++	char			*si_target;
++	unsigned short		 si_priority;
++	unsigned short		 si_weight;
++	unsigned short		 si_port;
++};
++
++enum {
++	ESI_SUCCESS	= 0,
++	ESI_NONAME	= -2,
++	ESI_AGAIN	= -3,
++	ESI_FAIL	= -4,
++	ESI_NODATA	= -5,
++	ESI_SERVICE	= -8,
++	ESI_MEMORY	= -10,
++	ESI_SYSTEM	= -11,
++	ESI_PARSE	= -1000,
++};
++
++int		 getsrvinfo(const char *srvname, const char *domainname,
++				struct srvinfo **si);
++void		 freesrvinfo(struct srvinfo *si);
++const char	*gsi_strerror(int status);
++
++#endif	/* !_FEDFS_GETSRVINFO_H_ */
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01861" href="msg01861.html">[PATCH 00/20] Current patch queue</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01862.html">[PATCH 17/20] autofs-5.1.4 - add mount.fedfs.c</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01864.html">[PATCH 15/20] autofs-5.1.4 - fix libresolv configure check</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01862.html">[PATCH 17/20] autofs-5.1.4 - add mount.fedfs.c</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01864.html">[PATCH 15/20] autofs-5.1.4 - fix libresolv configure check</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01863"><strong>Date</strong></a></li>
+<li><a href="index.html#01863"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

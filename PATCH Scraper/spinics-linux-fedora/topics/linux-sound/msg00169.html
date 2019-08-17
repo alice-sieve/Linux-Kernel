@@ -1,0 +1,541 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 1/5] ARM: at91: atmel&#45;ssc: add platform device id table -->
+<!--X-From-R13: Pb Eura &#60;ibvpr.furaNngzry.pbz> -->
+<!--X-Date: Mon, 22 Oct 2012 03:20:58 &#45;0700 -->
+<!--X-Message-Id: 1350901079&#45;18307&#45;1&#45;git&#45;send&#45;email&#45;voice.shen@atmel.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Sound: [PATCH 1/5] ARM: at91: atmel-ssc: add platform device id table">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Sound &mdash; [PATCH 1/5] ARM: at91: atmel-ssc: add platform device id table</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Sound" href="//feeds.feedburner.com/LinuxSound">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:6612422167" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 1/5] ARM: at91: atmel-ssc: add platform device id table</h1>
+[<a href="msg00165.html">Date Prev</a>][<a href="msg00166.html">Date Next</a>][<a href="msg00164.html">Thread Prev</a>][<a href="msg00165.html">Thread Next</a>][<a href="maillist.html#00169">Date Index</a>][<a href="index.html#00169">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 1/5] ARM: at91: atmel-ssc: add platform device id table</li>
+<li><em>From</em>: Bo Shen &lt;<a href="mailto:voice.shen@DOMAIN.HIDDEN">voice.shen@xxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Mon, 22 Oct 2012 18:17:55 +0800</li>
+<li><em>Cc</em>: <a href="mailto:linux-arm-kernel@DOMAIN.HIDDEN">linux-arm-kernel@xxxxxxxxxxxxxxxxxxx</a>, <a href="mailto:devicetree-discuss@DOMAIN.HIDDEN">devicetree-discuss@xxxxxxxxxxxxxxxx</a>,        <a href="mailto:linux-sound@DOMAIN.HIDDEN">linux-sound@xxxxxxxxxxxxxxx</a>, <a href="mailto:alsa-devel@DOMAIN.HIDDEN">alsa-devel@xxxxxxxxxxxxxxxx</a>,        <a href="mailto:plagnioj@DOMAIN.HIDDEN">plagnioj@xxxxxxxxxxxx</a>, <a href="mailto:jm.lin@DOMAIN.HIDDEN">jm.lin@xxxxxxxxx</a>,        Bo Shen &lt;<a href="mailto:voice.shen@DOMAIN.HIDDEN">voice.shen@xxxxxxxxx</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Using platform device id to check whether the Atmel SOC support dma for
+data transfer
+
+If match &quot;at91rm9200_ssc&quot; which does not support DMA transfer
+If match &quot;at91sam9g45_ssc&quot; which support DMA transfer
+
+Signed-off-by: Bo Shen &lt;voice.shen@xxxxxxxxx&gt;
+---
+ arch/arm/mach-at91/at91rm9200.c          |    6 +++---
+ arch/arm/mach-at91/at91rm9200_devices.c  |    6 +++---
+ arch/arm/mach-at91/at91sam9260.c         |    2 +-
+ arch/arm/mach-at91/at91sam9260_devices.c |    2 +-
+ arch/arm/mach-at91/at91sam9261.c         |    6 +++---
+ arch/arm/mach-at91/at91sam9261_devices.c |    6 +++---
+ arch/arm/mach-at91/at91sam9263.c         |    4 ++--
+ arch/arm/mach-at91/at91sam9263_devices.c |    4 ++--
+ arch/arm/mach-at91/at91sam9g45.c         |    4 ++--
+ arch/arm/mach-at91/at91sam9g45_devices.c |    4 ++--
+ arch/arm/mach-at91/at91sam9rl.c          |    4 ++--
+ arch/arm/mach-at91/at91sam9rl_devices.c  |    4 ++--
+ drivers/misc/atmel-ssc.c                 |   23 +++++++++++++++++++++++
+ include/linux/atmel-ssc.h                |    5 +++++
+ 14 files changed, 54 insertions(+), 26 deletions(-)
+
+diff --git a/arch/arm/mach-at91/at91rm9200.c b/arch/arm/mach-at91/at91rm9200.c
+index b4f0565..85d53c5 100644
+--- a/arch/arm/mach-at91/at91rm9200.c
++++ b/arch/arm/mach-at91/at91rm9200.c
+@@ -184,9 +184,9 @@ static struct clk_lookup periph_clocks_lookups[] = {
+ 	CLKDEV_CON_DEV_ID(&quot;t0_clk&quot;, &quot;atmel_tcb.1&quot;, &amp;tc3_clk),
+ 	CLKDEV_CON_DEV_ID(&quot;t1_clk&quot;, &quot;atmel_tcb.1&quot;, &amp;tc4_clk),
+ 	CLKDEV_CON_DEV_ID(&quot;t2_clk&quot;, &quot;atmel_tcb.1&quot;, &amp;tc5_clk),
+-	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;ssc.0&quot;, &amp;ssc0_clk),
+-	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;ssc.1&quot;, &amp;ssc1_clk),
+-	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;ssc.2&quot;, &amp;ssc2_clk),
++	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;at91rm9200_ssc.0&quot;, &amp;ssc0_clk),
++	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;at91rm9200_ssc.1&quot;, &amp;ssc1_clk),
++	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;at91rm9200_ssc.2&quot;, &amp;ssc2_clk),
+ 	CLKDEV_CON_DEV_ID(NULL, &quot;i2c-at91rm9200&quot;, &amp;twi_clk),
+ 	/* fake hclk clock */
+ 	CLKDEV_CON_DEV_ID(&quot;hclk&quot;, &quot;at91_ohci&quot;, &amp;ohci_clk),
+diff --git a/arch/arm/mach-at91/at91rm9200_devices.c b/arch/arm/mach-at91/at91rm9200_devices.c
+index a563189..59ceea1 100644
+--- a/arch/arm/mach-at91/at91rm9200_devices.c
++++ b/arch/arm/mach-at91/at91rm9200_devices.c
+@@ -752,7 +752,7 @@ static struct resource ssc0_resources[] = {
+ };
+ 
+ static struct platform_device at91rm9200_ssc0_device = {
+-	.name	= &quot;ssc&quot;,
++	.name	= &quot;at91rm9200_ssc&quot;,
+ 	.id	= 0,
+ 	.dev	= {
+ 		.dma_mask		= &amp;ssc0_dmamask,
+@@ -794,7 +794,7 @@ static struct resource ssc1_resources[] = {
+ };
+ 
+ static struct platform_device at91rm9200_ssc1_device = {
+-	.name	= &quot;ssc&quot;,
++	.name	= &quot;at91rm9200_ssc&quot;,
+ 	.id	= 1,
+ 	.dev	= {
+ 		.dma_mask		= &amp;ssc1_dmamask,
+@@ -836,7 +836,7 @@ static struct resource ssc2_resources[] = {
+ };
+ 
+ static struct platform_device at91rm9200_ssc2_device = {
+-	.name	= &quot;ssc&quot;,
++	.name	= &quot;at91rm9200_ssc&quot;,
+ 	.id	= 2,
+ 	.dev	= {
+ 		.dma_mask		= &amp;ssc2_dmamask,
+diff --git a/arch/arm/mach-at91/at91sam9260.c b/arch/arm/mach-at91/at91sam9260.c
+index ad29f93..2c8aab0 100644
+--- a/arch/arm/mach-at91/at91sam9260.c
++++ b/arch/arm/mach-at91/at91sam9260.c
+@@ -210,7 +210,7 @@ static struct clk_lookup periph_clocks_lookups[] = {
+ 	CLKDEV_CON_DEV_ID(&quot;t0_clk&quot;, &quot;atmel_tcb.1&quot;, &amp;tc3_clk),
+ 	CLKDEV_CON_DEV_ID(&quot;t1_clk&quot;, &quot;atmel_tcb.1&quot;, &amp;tc4_clk),
+ 	CLKDEV_CON_DEV_ID(&quot;t2_clk&quot;, &quot;atmel_tcb.1&quot;, &amp;tc5_clk),
+-	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;ssc.0&quot;, &amp;ssc_clk),
++	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;at91rm9200_ssc.0&quot;, &amp;ssc_clk),
+ 	CLKDEV_CON_DEV_ID(NULL, &quot;i2c-at91sam9260&quot;, &amp;twi_clk),
+ 	CLKDEV_CON_DEV_ID(NULL, &quot;i2c-at91sam9g20&quot;, &amp;twi_clk),
+ 	/* more usart lookup table for DT entries */
+diff --git a/arch/arm/mach-at91/at91sam9260_devices.c b/arch/arm/mach-at91/at91sam9260_devices.c
+index 805ef95..9cfdc3f 100644
+--- a/arch/arm/mach-at91/at91sam9260_devices.c
++++ b/arch/arm/mach-at91/at91sam9260_devices.c
+@@ -742,7 +742,7 @@ static struct resource ssc_resources[] = {
+ };
+ 
+ static struct platform_device at91sam9260_ssc_device = {
+-	.name	= &quot;ssc&quot;,
++	.name	= &quot;at91rm9200_ssc&quot;,
+ 	.id	= 0,
+ 	.dev	= {
+ 		.dma_mask		= &amp;ssc_dmamask,
+diff --git a/arch/arm/mach-at91/at91sam9261.c b/arch/arm/mach-at91/at91sam9261.c
+index 8d999eb..4e8c56e 100644
+--- a/arch/arm/mach-at91/at91sam9261.c
++++ b/arch/arm/mach-at91/at91sam9261.c
+@@ -174,9 +174,9 @@ static struct clk_lookup periph_clocks_lookups[] = {
+ 	CLKDEV_CON_DEV_ID(&quot;t0_clk&quot;, &quot;atmel_tcb.0&quot;, &amp;tc0_clk),
+ 	CLKDEV_CON_DEV_ID(&quot;t1_clk&quot;, &quot;atmel_tcb.0&quot;, &amp;tc1_clk),
+ 	CLKDEV_CON_DEV_ID(&quot;t2_clk&quot;, &quot;atmel_tcb.0&quot;, &amp;tc2_clk),
+-	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;ssc.0&quot;, &amp;ssc0_clk),
+-	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;ssc.1&quot;, &amp;ssc1_clk),
+-	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;ssc.2&quot;, &amp;ssc2_clk),
++	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;at91rm9200_ssc.0&quot;, &amp;ssc0_clk),
++	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;at91rm9200_ssc.1&quot;, &amp;ssc1_clk),
++	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;at91rm9200_ssc.2&quot;, &amp;ssc2_clk),
+ 	CLKDEV_CON_DEV_ID(&quot;hclk&quot;, &quot;at91_ohci&quot;, &amp;hck0),
+ 	CLKDEV_CON_DEV_ID(NULL, &quot;i2c-at91sam9261&quot;, &amp;twi_clk),
+ 	CLKDEV_CON_DEV_ID(NULL, &quot;i2c-at91sam9g10&quot;, &amp;twi_clk),
+diff --git a/arch/arm/mach-at91/at91sam9261_devices.c b/arch/arm/mach-at91/at91sam9261_devices.c
+index 9752f17..299637f 100644
+--- a/arch/arm/mach-at91/at91sam9261_devices.c
++++ b/arch/arm/mach-at91/at91sam9261_devices.c
+@@ -706,7 +706,7 @@ static struct resource ssc0_resources[] = {
+ };
+ 
+ static struct platform_device at91sam9261_ssc0_device = {
+-	.name	= &quot;ssc&quot;,
++	.name	= &quot;at91rm9200_ssc&quot;,
+ 	.id	= 0,
+ 	.dev	= {
+ 		.dma_mask		= &amp;ssc0_dmamask,
+@@ -748,7 +748,7 @@ static struct resource ssc1_resources[] = {
+ };
+ 
+ static struct platform_device at91sam9261_ssc1_device = {
+-	.name	= &quot;ssc&quot;,
++	.name	= &quot;at91rm9200_ssc&quot;,
+ 	.id	= 1,
+ 	.dev	= {
+ 		.dma_mask		= &amp;ssc1_dmamask,
+@@ -790,7 +790,7 @@ static struct resource ssc2_resources[] = {
+ };
+ 
+ static struct platform_device at91sam9261_ssc2_device = {
+-	.name	= &quot;ssc&quot;,
++	.name	= &quot;at91rm9200_ssc&quot;,
+ 	.id	= 2,
+ 	.dev	= {
+ 		.dma_mask		= &amp;ssc2_dmamask,
+diff --git a/arch/arm/mach-at91/at91sam9263.c b/arch/arm/mach-at91/at91sam9263.c
+index 6a01d03..95a5471 100644
+--- a/arch/arm/mach-at91/at91sam9263.c
++++ b/arch/arm/mach-at91/at91sam9263.c
+@@ -186,8 +186,8 @@ static struct clk *periph_clocks[] __initdata = {
+ static struct clk_lookup periph_clocks_lookups[] = {
+ 	/* One additional fake clock for macb_hclk */
+ 	CLKDEV_CON_ID(&quot;hclk&quot;, &amp;macb_clk),
+-	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;ssc.0&quot;, &amp;ssc0_clk),
+-	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;ssc.1&quot;, &amp;ssc1_clk),
++	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;at91rm9200_ssc.0&quot;, &amp;ssc0_clk),
++	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;at91rm9200_ssc.1&quot;, &amp;ssc1_clk),
+ 	CLKDEV_CON_DEV_ID(&quot;mci_clk&quot;, &quot;atmel_mci.0&quot;, &amp;mmc0_clk),
+ 	CLKDEV_CON_DEV_ID(&quot;mci_clk&quot;, &quot;atmel_mci.1&quot;, &amp;mmc1_clk),
+ 	CLKDEV_CON_DEV_ID(&quot;spi_clk&quot;, &quot;atmel_spi.0&quot;, &amp;spi0_clk),
+diff --git a/arch/arm/mach-at91/at91sam9263_devices.c b/arch/arm/mach-at91/at91sam9263_devices.c
+index 8dde220..df89a00 100644
+--- a/arch/arm/mach-at91/at91sam9263_devices.c
++++ b/arch/arm/mach-at91/at91sam9263_devices.c
+@@ -1199,7 +1199,7 @@ static struct resource ssc0_resources[] = {
+ };
+ 
+ static struct platform_device at91sam9263_ssc0_device = {
+-	.name	= &quot;ssc&quot;,
++	.name	= &quot;at91rm9200_ssc&quot;,
+ 	.id	= 0,
+ 	.dev	= {
+ 		.dma_mask		= &amp;ssc0_dmamask,
+@@ -1241,7 +1241,7 @@ static struct resource ssc1_resources[] = {
+ };
+ 
+ static struct platform_device at91sam9263_ssc1_device = {
+-	.name	= &quot;ssc&quot;,
++	.name	= &quot;at91rm9200_ssc&quot;,
+ 	.id	= 1,
+ 	.dev	= {
+ 		.dma_mask		= &amp;ssc1_dmamask,
+diff --git a/arch/arm/mach-at91/at91sam9g45.c b/arch/arm/mach-at91/at91sam9g45.c
+index 84af1b5..f4f96a6 100644
+--- a/arch/arm/mach-at91/at91sam9g45.c
++++ b/arch/arm/mach-at91/at91sam9g45.c
+@@ -239,8 +239,8 @@ static struct clk_lookup periph_clocks_lookups[] = {
+ 	CLKDEV_CON_DEV_ID(&quot;t0_clk&quot;, &quot;atmel_tcb.1&quot;, &amp;tcb0_clk),
+ 	CLKDEV_CON_DEV_ID(NULL, &quot;i2c-at91sam9g10.0&quot;, &amp;twi0_clk),
+ 	CLKDEV_CON_DEV_ID(NULL, &quot;i2c-at91sam9g10.1&quot;, &amp;twi1_clk),
+-	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;ssc.0&quot;, &amp;ssc0_clk),
+-	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;ssc.1&quot;, &amp;ssc1_clk),
++	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;at91sam9g45_ssc.0&quot;, &amp;ssc0_clk),
++	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;at91sam9g45_ssc.1&quot;, &amp;ssc1_clk),
+ 	CLKDEV_CON_DEV_ID(NULL, &quot;atmel-trng&quot;, &amp;trng_clk),
+ 	CLKDEV_CON_DEV_ID(NULL, &quot;atmel_sha&quot;, &amp;aestdessha_clk),
+ 	CLKDEV_CON_DEV_ID(NULL, &quot;atmel_tdes&quot;, &amp;aestdessha_clk),
+diff --git a/arch/arm/mach-at91/at91sam9g45_devices.c b/arch/arm/mach-at91/at91sam9g45_devices.c
+index b159607..27e3bf6 100644
+--- a/arch/arm/mach-at91/at91sam9g45_devices.c
++++ b/arch/arm/mach-at91/at91sam9g45_devices.c
+@@ -1459,7 +1459,7 @@ static struct resource ssc0_resources[] = {
+ };
+ 
+ static struct platform_device at91sam9g45_ssc0_device = {
+-	.name	= &quot;ssc&quot;,
++	.name	= &quot;at91sam9g45_ssc&quot;,
+ 	.id	= 0,
+ 	.dev	= {
+ 		.dma_mask		= &amp;ssc0_dmamask,
+@@ -1501,7 +1501,7 @@ static struct resource ssc1_resources[] = {
+ };
+ 
+ static struct platform_device at91sam9g45_ssc1_device = {
+-	.name	= &quot;ssc&quot;,
++	.name	= &quot;at91sam9g45_ssc&quot;,
+ 	.id	= 1,
+ 	.dev	= {
+ 		.dma_mask		= &amp;ssc1_dmamask,
+diff --git a/arch/arm/mach-at91/at91sam9rl.c b/arch/arm/mach-at91/at91sam9rl.c
+index 72e9084..4110b54 100644
+--- a/arch/arm/mach-at91/at91sam9rl.c
++++ b/arch/arm/mach-at91/at91sam9rl.c
+@@ -184,8 +184,8 @@ static struct clk_lookup periph_clocks_lookups[] = {
+ 	CLKDEV_CON_DEV_ID(&quot;t0_clk&quot;, &quot;atmel_tcb.0&quot;, &amp;tc0_clk),
+ 	CLKDEV_CON_DEV_ID(&quot;t1_clk&quot;, &quot;atmel_tcb.0&quot;, &amp;tc1_clk),
+ 	CLKDEV_CON_DEV_ID(&quot;t2_clk&quot;, &quot;atmel_tcb.0&quot;, &amp;tc2_clk),
+-	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;ssc.0&quot;, &amp;ssc0_clk),
+-	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;ssc.1&quot;, &amp;ssc1_clk),
++	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;at91rm9200_ssc.0&quot;, &amp;ssc0_clk),
++	CLKDEV_CON_DEV_ID(&quot;pclk&quot;, &quot;at91rm9200_ssc.1&quot;, &amp;ssc1_clk),
+ 	CLKDEV_CON_DEV_ID(NULL, &quot;i2c-at91sam9g20.0&quot;, &amp;twi0_clk),
+ 	CLKDEV_CON_DEV_ID(NULL, &quot;i2c-at91sam9g20.1&quot;, &amp;twi1_clk),
+ 	CLKDEV_CON_ID(&quot;pioA&quot;, &amp;pioA_clk),
+diff --git a/arch/arm/mach-at91/at91sam9rl_devices.c b/arch/arm/mach-at91/at91sam9rl_devices.c
+index d6ca054..01220c7 100644
+--- a/arch/arm/mach-at91/at91sam9rl_devices.c
++++ b/arch/arm/mach-at91/at91sam9rl_devices.c
+@@ -832,7 +832,7 @@ static struct resource ssc0_resources[] = {
+ };
+ 
+ static struct platform_device at91sam9rl_ssc0_device = {
+-	.name	= &quot;ssc&quot;,
++	.name	= &quot;at91rm9200_ssc&quot;,
+ 	.id	= 0,
+ 	.dev	= {
+ 		.dma_mask		= &amp;ssc0_dmamask,
+@@ -874,7 +874,7 @@ static struct resource ssc1_resources[] = {
+ };
+ 
+ static struct platform_device at91sam9rl_ssc1_device = {
+-	.name	= &quot;ssc&quot;,
++	.name	= &quot;at91rm9200_ssc&quot;,
+ 	.id	= 1,
+ 	.dev	= {
+ 		.dma_mask		= &amp;ssc1_dmamask,
+diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
+index ac00f83..f40abd8 100644
+--- a/drivers/misc/atmel-ssc.c
++++ b/drivers/misc/atmel-ssc.c
+@@ -68,6 +68,26 @@ void ssc_free(struct ssc_device *ssc)
+ }
+ EXPORT_SYMBOL(ssc_free);
+ 
++static struct atmel_ssc_platform_data at91rm9200_config = {
++	.use_dma = 0,
++};
++
++static struct atmel_ssc_platform_data at91sam9g45_config = {
++	.use_dma = 1,
++};
++
++static const struct platform_device_id atmel_ssc_devtypes[] = {
++	{
++		.name = &quot;at91rm9200_ssc&quot;,
++		.driver_data = (unsigned long) &amp;at91rm9200_config,
++	}, {
++		.name = &quot;at91sam9g45_ssc&quot;,
++		.driver_data = (unsigned long) &amp;at91sam9g45_config,
++	}, {
++		/* sentinel */
++	}
++};
++
+ static int ssc_probe(struct platform_device *pdev)
+ {
+ 	struct resource *regs;
+@@ -80,6 +100,8 @@ static int ssc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ssc-&gt;pdev = pdev;
++	ssc-&gt;pdata = (struct atmel_ssc_platform_data *)
++			platform_get_device_id(pdev)-&gt;driver_data;
+ 
+ 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!regs) {
+@@ -139,6 +161,7 @@ static struct platform_driver ssc_driver = {
+ 		.name		= &quot;ssc&quot;,
+ 		.owner		= THIS_MODULE,
+ 	},
++	.id_table	= atmel_ssc_devtypes,
+ 	.probe		= ssc_probe,
+ 	.remove		= __devexit_p(ssc_remove),
+ };
+diff --git a/include/linux/atmel-ssc.h b/include/linux/atmel-ssc.h
+index 4eb3175..1ca0e32 100644
+--- a/include/linux/atmel-ssc.h
++++ b/include/linux/atmel-ssc.h
+@@ -5,10 +5,15 @@
+ #include &lt;linux/list.h&gt;
+ #include &lt;linux/io.h&gt;
+ 
++struct atmel_ssc_platform_data {
++	int			use_dma;
++};
++
+ struct ssc_device {
+ 	struct list_head	list;
+ 	void __iomem		*regs;
+ 	struct platform_device	*pdev;
++	struct atmel_ssc_platform_data *pdata;
+ 	struct clk		*clk;
+ 	int			user;
+ 	int			irq;
+-- 
+1.7.9.5
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe linux-sound&quot; in
+the body of a message to majordomo@xxxxxxxxxxxxxxx
+More majordomo info at  <a  rel="nofollow" href="http://vger.kernel.org/majordomo-info.html">http://vger.kernel.org/majordomo-info.html</a>
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="00176" href="msg00176.html">Re: [PATCH 1/5] ARM: at91: atmel-ssc: add platform device id table</a></strong>
+<ul><li><em>From:</em> Mark Brown</li></ul></li>
+<li><strong><a name="00168" href="msg00168.html">[PATCH 4/5] ASoC: sam9g20_wm8731: convert to device tree support</a></strong>
+<ul><li><em>From:</em> Bo Shen</li></ul></li>
+<li><strong><a name="00167" href="msg00167.html">[PATCH 3/5] ASoC: atmel-ssc-dai: register 'platform' from DAIs</a></strong>
+<ul><li><em>From:</em> Bo Shen</li></ul></li>
+<li><strong><a name="00166" href="msg00166.html">[PATCH 5/5] ASoC: sam9g20_wm8731: fix the issue for non-DT kernel</a></strong>
+<ul><li><em>From:</em> Bo Shen</li></ul></li>
+<li><strong><a name="00165" href="msg00165.html">[PATCH 2/5] ARM: at91: atmel-ssc: add device tree support</a></strong>
+<ul><li><em>From:</em> Bo Shen</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00165.html">[PATCH 2/5] ARM: at91: atmel-ssc: add device tree support</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00166.html">[PATCH 5/5] ASoC: sam9g20_wm8731: fix the issue for non-DT kernel</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00164.html">Re: Question about move atmel audio part to DT support</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00165.html">[PATCH 2/5] ARM: at91: atmel-ssc: add device tree support</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00169"><strong>Date</strong></a></li>
+<li><a href="index.html#00169"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/Pulseaudio/>[Pulseaudio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/alsa-devel/>[ALSA&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td valign=top align=left>&nbsp;</td>
+<td valign=top align=right>
+<a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

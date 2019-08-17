@@ -1,0 +1,333 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v3 07/11] clk: imx: scu: add suspend/resume support -->
+<!--X-From-R13: Rbat Ovfurat &#60;nvfurat.qbatNakc.pbz> -->
+<!--X-Date: Tue, 16 Jul 2019 08:26:07 &#45;0700 -->
+<!--X-Message-Id: 1563289265&#45;10977&#45;8&#45;git&#45;send&#45;email&#45;aisheng.dong@nxp.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1563289265&#45;10977&#45;1&#45;git&#45;send&#45;email&#45;aisheng.dong@nxp.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH v3 07/11] clk: imx: scu: add suspend/resume support">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH v3 07/11] clk: imx: scu: add suspend/resume support &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH v3 07/11] clk: imx: scu: add suspend/resume support</h1>
+[<a href="msg741373.html">Date Prev</a>][<a href="msg741375.html">Date Next</a>][<a href="msg741373.html">Thread Prev</a>][<a href="msg741375.html">Thread Next</a>][<a href="maillist.html#741374">Date Index</a>][<a href="threads.html#741374">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v3 07/11] clk: imx: scu: add suspend/resume support</li>
+<li><em>From</em>: Dong Aisheng &lt;aisheng.dong@xxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 16 Jul 2019 23:01:01 +0800</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg741365.html">1563289265-10977-1-git-send-email-aisheng.dong@nxp.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Clock state will be lost when its power domain is completely off
+during system suspend/resume. So we save and restore the state
+accordingly in suspend/resume callback.
+
+Cc: Stephen Boyd &lt;sboyd@xxxxxxxxxx&gt;
+Cc: Shawn Guo &lt;shawnguo@xxxxxxxxxx&gt;
+Cc: Sascha Hauer &lt;kernel@xxxxxxxxxxxxxx&gt;
+Cc: Michael Turquette &lt;mturquette@xxxxxxxxxxxx&gt;
+Signed-off-by: Dong Aisheng &lt;aisheng.dong@xxxxxxx&gt;
+---
+ChangeLog:
+v3: new patch
+---
+ drivers/clk/imx/clk-scu.c | 49 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+
+diff --git a/drivers/clk/imx/clk-scu.c b/drivers/clk/imx/clk-scu.c
+index edc39d7..8d9cfa2 100644
+--- a/drivers/clk/imx/clk-scu.c
++++ b/drivers/clk/imx/clk-scu.c
+@@ -46,6 +46,10 @@ struct clk_scu {
+ 	struct clk_hw hw;
+ 	u16 rsrc_id;
+ 	u8 clk_type;
++
++	/* for state save&amp;restore */
++	bool is_enabled;
++	u32 rate;
+ };
+ 
+ /*
+@@ -425,6 +429,9 @@ struct clk_hw *__imx_clk_scu(struct device *dev, const char *name,
+ 		hw = ERR_PTR(ret);
+ 	}
+ 
++	if (dev)
++		dev_set_drvdata(dev, clk);
++
+ 	return hw;
+ }
+ 
+@@ -481,10 +488,52 @@ static int imx_clk_scu_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++int __maybe_unused imx_clk_scu_suspend(struct device *dev)
++{
++	struct clk_scu *clk = dev_get_drvdata(dev);
++
++	clk-&gt;rate = clk_hw_get_rate(&amp;clk-&gt;hw);
++	clk-&gt;is_enabled = clk_hw_is_enabled(&amp;clk-&gt;hw);
++
++	if (clk-&gt;rate)
++		dev_dbg(dev, &quot;save rate %d\n&quot;, clk-&gt;rate);
++
++	if (clk-&gt;is_enabled)
++		dev_dbg(dev, &quot;save enabled state\n&quot;);
++
++	return 0;
++}
++
++int __maybe_unused imx_clk_scu_resume(struct device *dev)
++{
++	struct clk_scu *clk = dev_get_drvdata(dev);
++	int ret = 0;
++
++	if (clk-&gt;rate) {
++		ret = clk_scu_set_rate(&amp;clk-&gt;hw, clk-&gt;rate, 0);
++		dev_dbg(dev, &quot;restore rate %d %s\n&quot;, clk-&gt;rate,
++			!ret ? &quot;success&quot; : &quot;failed&quot;);
++	}
++
++	if (clk-&gt;is_enabled) {
++		ret = clk_scu_prepare(&amp;clk-&gt;hw);
++		dev_dbg(dev, &quot;restore enabled state %s\n&quot;,
++			!ret ? &quot;success&quot; : &quot;failed&quot;);
++	}
++
++	return ret;
++}
++
++const struct dev_pm_ops imx_clk_scu_pm_ops = {
++	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(imx_clk_scu_suspend,
++				      imx_clk_scu_resume)
++};
++
+ static struct platform_driver imx_clk_scu_driver = {
+ 	.driver = {
+ 		.name = &quot;imx-scu-clk&quot;,
+ 		.suppress_bind_attrs = true,
++		.pm = &amp;imx_clk_scu_pm_ops,
+ 	},
+ 	.probe = imx_clk_scu_probe,
+ };
+-- 
+2.7.4
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="741365" href="msg741365.html">[PATCH v3 00/11] clk: imx8: add new clock binding for better pm support</a></strong>
+<ul><li><em>From:</em> Dong Aisheng</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741373.html">[PATCH v3 09/11] clk: imx: lpcg: allow lpcg clk to take device pointer</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741375.html">[PATCH v3 11/11] clk: imx: lpcg: add suspend/resume support</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741373.html">[PATCH v3 09/11] clk: imx: lpcg: allow lpcg clk to take device pointer</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741375.html">[PATCH v3 11/11] clk: imx: lpcg: add suspend/resume support</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741374"><strong>Date</strong></a></li>
+<li><a href="threads.html#741374"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

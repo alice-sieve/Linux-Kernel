@@ -1,0 +1,467 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [libosinfo PATCH 4/7] tests: Add test&#45;firmwarelist -->
+<!--X-From-R13: =?GFT&#45;8?d?Tnovnab=20Tvq=Q3=OOapvb?= &#60;svqrapvbNerqung.pbz> -->
+<!--X-Date: Tue, 7 May 2019 06:17:04 &#45;0700 -->
+<!--X-Message-Id: 20190507131653.23867&#45;5&#45;fidencio@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190507131653.23867&#45;1&#45;fidencio@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<title>[libosinfo PATCH 4/7] tests: Add test-firmwarelist &mdash; libosinfo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="libosinfo: [libosinfo PATCH 4/7] tests: Add test-firmwarelist">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="libosinfo" href="//feeds.feedburner.com/libosinfo">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[libosinfo PATCH 4/7] tests: Add test-firmwarelist</h1>
+[<a href="msg05696.html">Date Prev</a>][<a href="msg05698.html">Date Next</a>][<a href="msg05696.html">Thread Prev</a>][<a href="msg05698.html">Thread Next</a>][<a href="maillist.html#05697">Date Index</a>][<a href="index.html#05697">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [libosinfo PATCH 4/7] tests: Add test-firmwarelist</li>
+<li><em>From</em>: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue,  7 May 2019 15:16:50 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg05693.html">20190507131653.23867-1-fidencio@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg05693.html">20190507131653.23867-1-fidencio@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Signed-off-by: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;
+---
+ .gitignore                |   1 +
+ tests/Makefile.am         |   5 +
+ tests/test-firmwarelist.c | 209 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 215 insertions(+)
+ create mode 100644 tests/test-firmwarelist.c
+
+diff --git a/.gitignore b/.gitignore
+index d6300b3..b591a04 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -48,6 +48,7 @@ tests/test-devicelist
+ tests/test-devicelinklist
+ tests/test-filter
+ tests/test-firmware
++tests/test-firmwarelist
+ tests/test-install-script
+ tests/test-image
+ tests/test-imagelist
+diff --git a/tests/Makefile.am b/tests/Makefile.am
+index 06be48d..5d00b37 100644
+--- a/tests/Makefile.am
++++ b/tests/Makefile.am
+@@ -9,6 +9,7 @@ check_PROGRAMS = \
+ 	test-devicelinklist \
+ 	test-filter \
+ 	test-firmware \
++	test-firmwarelist \
+ 	test-media \
+ 	test-product \
+ 	test-os \
+@@ -55,6 +56,10 @@ test_firmware_LDADD = $(COMMON_LDADD)
+ test_firmware_CFLAGS = $(COMMON_CFLAGS)
+ test_firmware_SOURCES = test-firmware.c
+ 
++test_firmwarelist_LDADD = $(COMMON_LDADD)
++test_firmwarelist_CFLAGS = $(COMMON_CFLAGS)
++test_firmwarelist_SOURCES = test-firmwarelist.c
++
+ test_product_LDADD = $(COMMON_LDADD)
+ test_product_CFLAGS = $(COMMON_CFLAGS)
+ test_product_SOURCES = test-product.c
+diff --git a/tests/test-firmwarelist.c b/tests/test-firmwarelist.c
+new file mode 100644
+index 0000000..a5532c6
+--- /dev/null
++++ b/tests/test-firmwarelist.c
+@@ -0,0 +1,209 @@
++/*
++ * Copyright (C) 2019 Red Hat, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program. If not, see &lt;<a  rel="nofollow" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;
++ */
++
++#include &lt;config.h&gt;
++
++#include &lt;osinfo/osinfo.h&gt;
++
++static void
++test_union(void)
++{
++    OsinfoFirmwareList *list1 = osinfo_firmwarelist_new();
++    OsinfoFirmwareList *list2 = osinfo_firmwarelist_new();
++    OsinfoFirmwareList *list3;
++    OsinfoFirmware *ent1 = osinfo_firmware_new(&quot;foo1&quot;, &quot;x86_64&quot;, &quot;efi&quot;);
++    OsinfoFirmware *ent2 = osinfo_firmware_new(&quot;foo2&quot;, &quot;x86_64&quot;, &quot;bios&quot;);
++    OsinfoFirmware *ent3 = osinfo_firmware_new(&quot;foo3&quot;, &quot;i686&quot;, &quot;bios&quot;);
++    OsinfoFirmware *ent4 = osinfo_firmware_new(&quot;foo4&quot;, &quot;i686&quot;, &quot;efi&quot;);
++
++    osinfo_list_add(OSINFO_LIST(list1), OSINFO_ENTITY(ent1));
++    osinfo_list_add(OSINFO_LIST(list1), OSINFO_ENTITY(ent2));
++    osinfo_list_add(OSINFO_LIST(list1), OSINFO_ENTITY(ent3));
++
++    osinfo_list_add(OSINFO_LIST(list2), OSINFO_ENTITY(ent1));
++    osinfo_list_add(OSINFO_LIST(list2), OSINFO_ENTITY(ent4));
++
++    list3 = OSINFO_FIRMWARELIST(osinfo_list_new_union(OSINFO_LIST(list1), OSINFO_LIST(list2)));
++
++    g_assert_cmpint(osinfo_list_get_length(OSINFO_LIST(list3)), ==, 4);
++
++    gboolean has1 = FALSE;
++    gboolean has2 = FALSE;
++    gboolean has3 = FALSE;
++    gboolean has4 = FALSE;
++    gboolean hasBad = FALSE;
++    int i;
++    for (i = 0; i &lt; osinfo_list_get_length(OSINFO_LIST(list3)); i++) {
++        OsinfoFirmware *ent = OSINFO_FIRMWARE(osinfo_list_get_nth(OSINFO_LIST(list3), i));
++        if (ent == ent1)
++            has1 = TRUE;
++        else if (ent == ent2)
++            has2 = TRUE;
++        else if (ent == ent3)
++            has3 = TRUE;
++        else if (ent == ent4)
++            has4 = TRUE;
++        else
++            hasBad = TRUE;
++    }
++    g_assert_true(has1);
++    g_assert_true(has2);
++    g_assert_true(has3);
++    g_assert_true(has4);
++    g_assert_false(hasBad);
++
++    g_object_unref(ent1);
++    g_object_unref(ent2);
++    g_object_unref(ent3);
++    g_object_unref(ent4);
++    g_object_unref(list1);
++    g_object_unref(list2);
++    g_object_unref(list3);
++}
++
++static void
++test_intersect(void)
++{
++    OsinfoFirmwareList *list1 = osinfo_firmwarelist_new();
++    OsinfoFirmwareList *list2 = osinfo_firmwarelist_new();
++    OsinfoFirmwareList *list3;
++    OsinfoFirmware *ent1 = osinfo_firmware_new(&quot;foo1&quot;, &quot;x86_64&quot;, &quot;efi&quot;);
++    OsinfoFirmware *ent2 = osinfo_firmware_new(&quot;foo2&quot;, &quot;x86_64&quot;, &quot;bios&quot;);
++    OsinfoFirmware *ent3 = osinfo_firmware_new(&quot;foo3&quot;, &quot;i686&quot;, &quot;bios&quot;);
++    OsinfoFirmware *ent4 = osinfo_firmware_new(&quot;foo4&quot;, &quot;i686&quot;, &quot;efi&quot;);
++
++
++    osinfo_list_add(OSINFO_LIST(list1), OSINFO_ENTITY(ent1));
++    osinfo_list_add(OSINFO_LIST(list1), OSINFO_ENTITY(ent2));
++    osinfo_list_add(OSINFO_LIST(list1), OSINFO_ENTITY(ent3));
++
++    osinfo_list_add(OSINFO_LIST(list2), OSINFO_ENTITY(ent1));
++    osinfo_list_add(OSINFO_LIST(list2), OSINFO_ENTITY(ent3));
++    osinfo_list_add(OSINFO_LIST(list2), OSINFO_ENTITY(ent4));
++
++    list3 = OSINFO_FIRMWARELIST(osinfo_list_new_intersection(OSINFO_LIST(list1), OSINFO_LIST(list2)));
++
++    g_assert_cmpint(osinfo_list_get_length(OSINFO_LIST(list3)), ==, 2);
++
++    gboolean has1 = FALSE;
++    gboolean has2 = FALSE;
++    gboolean has3 = FALSE;
++    gboolean has4 = FALSE;
++    gboolean hasBad = FALSE;
++    int i;
++    for (i = 0; i &lt; osinfo_list_get_length(OSINFO_LIST(list3)); i++) {
++        OsinfoFirmware *ent = OSINFO_FIRMWARE(osinfo_list_get_nth(OSINFO_LIST(list3), i));
++        if (ent == ent1)
++            has1 = TRUE;
++        else if (ent == ent2)
++            has2 = TRUE;
++        else if (ent == ent3)
++            has3 = TRUE;
++        else if (ent == ent4)
++            has4 = TRUE;
++        else
++            hasBad = TRUE;
++    }
++    g_assert_true(has1);
++    g_assert_false(has2);
++    g_assert_true(has3);
++    g_assert_false(has4);
++    g_assert_false(hasBad);
++
++    g_object_unref(ent1);
++    g_object_unref(ent2);
++    g_object_unref(ent3);
++    g_object_unref(ent4);
++    g_object_unref(list1);
++    g_object_unref(list2);
++    g_object_unref(list3);
++}
++
++static void
++test_filter(void)
++{
++    OsinfoFirmwareList *list1 = osinfo_firmwarelist_new();
++    OsinfoFirmwareList *list2;
++    OsinfoFilter *filter = osinfo_filter_new();
++    OsinfoFirmware *ent1 = osinfo_firmware_new(&quot;foo1&quot;, &quot;x86_64&quot;, &quot;efi&quot;);
++    OsinfoFirmware *ent2 = osinfo_firmware_new(&quot;foo2&quot;, &quot;x86_64&quot;, &quot;bios&quot;);
++    OsinfoFirmware *ent3 = osinfo_firmware_new(&quot;foo3&quot;, &quot;i686&quot;, &quot;bios&quot;);
++    OsinfoFirmware *ent4 = osinfo_firmware_new(&quot;foo4&quot;, &quot;i686&quot;, &quot;efi&quot;);
++
++    osinfo_filter_add_constraint(filter, OSINFO_FIRMWARE_PROP_TYPE, &quot;efi&quot;);
++
++    osinfo_list_add(OSINFO_LIST(list1), OSINFO_ENTITY(ent1));
++    osinfo_list_add(OSINFO_LIST(list1), OSINFO_ENTITY(ent2));
++    osinfo_list_add(OSINFO_LIST(list1), OSINFO_ENTITY(ent3));
++    osinfo_list_add(OSINFO_LIST(list1), OSINFO_ENTITY(ent4));
++
++    list2 = OSINFO_FIRMWARELIST(osinfo_list_new_filtered(OSINFO_LIST(list1), filter));
++
++    g_assert_cmpint(osinfo_list_get_length(OSINFO_LIST(list2)), ==, 2);
++
++    gboolean has1 = FALSE;
++    gboolean has2 = FALSE;
++    gboolean has3 = FALSE;
++    gboolean has4 = FALSE;
++    gboolean hasBad = FALSE;
++    int i;
++    for (i = 0; i &lt; osinfo_list_get_length(OSINFO_LIST(list2)); i++) {
++        OsinfoFirmware *ent = OSINFO_FIRMWARE(osinfo_list_get_nth(OSINFO_LIST(list2), i));
++        if (ent == ent1)
++            has1 = TRUE;
++        else if (ent == ent2)
++            has2 = TRUE;
++        else if (ent == ent3)
++            has3 = TRUE;
++        else if (ent == ent4)
++            has4 = TRUE;
++        else
++            hasBad = TRUE;
++    }
++    g_assert_true(has1);
++    g_assert_false(has2);
++    g_assert_false(has3);
++    g_assert_true(has4);
++    g_assert_false(hasBad);
++
++    g_object_unref(ent1);
++    g_object_unref(ent2);
++    g_object_unref(ent3);
++    g_object_unref(ent4);
++    g_object_unref(filter);
++    g_object_unref(list1);
++    g_object_unref(list2);
++}
++
++int
++main(int argc, char *argv[])
++{
++    g_test_init(&amp;argc, &amp;argv, NULL);
++
++    g_test_add_func(&quot;/firmwarelist/union&quot;, test_union);
++    g_test_add_func(&quot;/firmwarelist/intersect&quot;, test_intersect);
++    g_test_add_func(&quot;/firmwarelist/filter&quot;, test_filter);
++
++    /* Upfront so we don't confuse valgrind */
++    osinfo_entity_get_type();
++    osinfo_firmware_get_type();
++    osinfo_firmwarelist_get_type();
++    osinfo_filter_get_type();
++    osinfo_list_get_type();
++
++    return g_test_run();
++}
+-- 
+2.21.0
+
+_______________________________________________
+Libosinfo mailing list
+Libosinfo@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libosinfo">https://www.redhat.com/mailman/listinfo/libosinfo</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05696.html">[libosinfo PATCH 3/7] firmwarelist: Add	OsinfoFirmwareList</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05698.html">[libosinfo PATCH 5/7] os: Add support to Firmware</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05696.html">[libosinfo PATCH 3/7] firmwarelist: Add	OsinfoFirmwareList</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05698.html">[libosinfo PATCH 5/7] os: Add support to Firmware</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05697"><strong>Date</strong></a></li>
+<li><a href="index.html#05697"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

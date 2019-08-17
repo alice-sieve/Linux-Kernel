@@ -1,0 +1,489 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 10/14] tools: Separate secret related completers	into a file -->
+<!--X-From-R13: [vpuny Bevibmavx &#60;zcevibmaNerqung.pbz> -->
+<!--X-Date: Fri, 19 Jul 2019 01:48:56 &#45;0700 -->
+<!--X-Message-Id: 3cab0099a1740e5d37dac12c02afb193d196fdc2.1563525985.git.mprivozn@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1563525985.git.mprivozn@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 10/14] tools: Separate secret related completers	into a file</title>
+<meta name="description" content="libvirt: [PATCH 10/14] tools: Separate secret related completers	into a file">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 10/14] tools: Separate secret related completers	into a file</h1>
+[<a href="msg187714.html">Date Prev</a>][<a href="msg187716.html">Date Next</a>][<a href="msg187714.html">Thread Prev</a>][<a href="msg187716.html">Thread Next</a>][<a href="maillist.html#187715">Date Index</a>][<a href="index.html#187715">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 10/14] tools: Separate secret related completers	into a file</li>
+<li><em>From</em>: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 19 Jul 2019 10:48:34 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187713.html">cover.1563525985.git.mprivozn@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187713.html">cover.1563525985.git.mprivozn@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Mixing all completers in one file does not support
+maintainability. Separate those completers which relate to
+secret (e.g. they complete various secret aspects)
+into virsh-completer-secret.c
+
+Signed-off-by: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;
+---
+ tools/Makefile.am              |  1 +
+ tools/virsh-completer-secret.c | 91 ++++++++++++++++++++++++++++++++++
+ tools/virsh-completer-secret.h | 31 ++++++++++++
+ tools/virsh-completer.c        | 65 ------------------------
+ tools/virsh-completer.h        |  9 +---
+ 5 files changed, 124 insertions(+), 73 deletions(-)
+ create mode 100644 tools/virsh-completer-secret.c
+ create mode 100644 tools/virsh-completer-secret.h
+
+diff --git a/tools/Makefile.am b/tools/Makefile.am
+index 513154729a..c24cab80fd 100644
+--- a/tools/Makefile.am
++++ b/tools/Makefile.am
+@@ -223,6 +223,7 @@ virsh_SOURCES = \
+ 		virsh-completer-nodedev.c virsh-completer-nodedev.h \
+ 		virsh-completer-nwfilter.c virsh-completer-nwfilter.h \
+ 		virsh-completer-pool.c virsh-completer-pool.h \
++		virsh-completer-secret.c virsh-completer-secret.h \
+ 		virsh-completer-volume.c virsh-completer-volume.h \
+ 		virsh-console.c virsh-console.h \
+ 		virsh-domain.c virsh-domain.h \
+diff --git a/tools/virsh-completer-secret.c b/tools/virsh-completer-secret.c
+new file mode 100644
+index 0000000000..a6924b6b8c
+--- /dev/null
++++ b/tools/virsh-completer-secret.c
+@@ -0,0 +1,91 @@
++/*
++ * virsh-completer-secret.c: virsh completer callbacks related to secret
++ *
++ * Copyright (C) 2019 Red Hat, Inc.
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library.  If not, see
++ * &lt;<a  rel="nofollow" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.
++ */
++
++#include &lt;config.h&gt;
++
++#include &quot;virsh-completer-secret.h&quot;
++#include &quot;viralloc.h&quot;
++#include &quot;virsh-secret.h&quot;
++#include &quot;virsh.h&quot;
++#include &quot;virstring.h&quot;
++
++char **
++virshSecretUUIDCompleter(vshControl *ctl,
++                         const vshCmd *cmd ATTRIBUTE_UNUSED,
++                         unsigned int flags)
++{
++    virshControlPtr priv = ctl-&gt;privData;
++    virSecretPtr *secrets = NULL;
++    int nsecrets = 0;
++    size_t i = 0;
++    char **ret = NULL;
++    VIR_AUTOSTRINGLIST tmp = NULL;
++
++    virCheckFlags(0, NULL);
++
++    if (!priv-&gt;conn || virConnectIsAlive(priv-&gt;conn) &lt;= 0)
++        return NULL;
++
++    if ((nsecrets = virConnectListAllSecrets(priv-&gt;conn, &amp;secrets, flags)) &lt; 0)
++        return NULL;
++
++    if (VIR_ALLOC_N(tmp, nsecrets + 1) &lt; 0)
++        goto cleanup;
++
++    for (i = 0; i &lt; nsecrets; i++) {
++        char uuid[VIR_UUID_STRING_BUFLEN];
++
++        if (virSecretGetUUIDString(secrets[i], uuid) &lt; 0 ||
++            VIR_STRDUP(tmp[i], uuid) &lt; 0)
++            goto cleanup;
++    }
++
++    VIR_STEAL_PTR(ret, tmp);
++
++ cleanup:
++    for (i = 0; i &lt; nsecrets; i++)
++        virSecretFree(secrets[i]);
++    VIR_FREE(secrets);
++    return ret;
++}
++
++
++char **
++virshSecretEventNameCompleter(vshControl *ctl ATTRIBUTE_UNUSED,
++                              const vshCmd *cmd ATTRIBUTE_UNUSED,
++                              unsigned int flags)
++{
++    size_t i;
++    char **ret = NULL;
++    VIR_AUTOSTRINGLIST tmp = NULL;
++
++    virCheckFlags(0, NULL);
++
++    if (VIR_ALLOC_N(tmp, VIR_SECRET_EVENT_ID_LAST + 1) &lt; 0)
++        return NULL;
++
++    for (i = 0; i &lt; VIR_SECRET_EVENT_ID_LAST; i++) {
++        if (VIR_STRDUP(tmp[i], virshSecretEventCallbacks[i].name) &lt; 0)
++            return NULL;
++    }
++
++    VIR_STEAL_PTR(ret, tmp);
++    return ret;
++}
+diff --git a/tools/virsh-completer-secret.h b/tools/virsh-completer-secret.h
+new file mode 100644
+index 0000000000..3ed6ba5198
+--- /dev/null
++++ b/tools/virsh-completer-secret.h
+@@ -0,0 +1,31 @@
++/*
++ * virsh-completer-secret.h: virsh completer callbacks related to secret
++ *
++ * Copyright (C) 2019 Red Hat, Inc.
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library.  If not, see
++ * &lt;<a  rel="nofollow" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.
++ */
++
++#pragma once
++
++#include &quot;vsh.h&quot;
++
++char ** virshSecretUUIDCompleter(vshControl *ctl,
++                                 const vshCmd *cmd,
++                                 unsigned int flags);
++
++char ** virshSecretEventNameCompleter(vshControl *ctl,
++                                      const vshCmd *cmd,
++                                      unsigned int flags);
+diff --git a/tools/virsh-completer.c b/tools/virsh-completer.c
+index 174bd372ce..04ca2c919c 100644
+--- a/tools/virsh-completer.c
++++ b/tools/virsh-completer.c
+@@ -143,47 +143,6 @@ virshCommaStringListComplete(const char *input,
+ }
+ 
+ 
+-char **
+-virshSecretUUIDCompleter(vshControl *ctl,
+-                         const vshCmd *cmd ATTRIBUTE_UNUSED,
+-                         unsigned int flags)
+-{
+-    virshControlPtr priv = ctl-&gt;privData;
+-    virSecretPtr *secrets = NULL;
+-    int nsecrets = 0;
+-    size_t i = 0;
+-    char **ret = NULL;
+-    VIR_AUTOSTRINGLIST tmp = NULL;
+-
+-    virCheckFlags(0, NULL);
+-
+-    if (!priv-&gt;conn || virConnectIsAlive(priv-&gt;conn) &lt;= 0)
+-        return NULL;
+-
+-    if ((nsecrets = virConnectListAllSecrets(priv-&gt;conn, &amp;secrets, flags)) &lt; 0)
+-        return NULL;
+-
+-    if (VIR_ALLOC_N(tmp, nsecrets + 1) &lt; 0)
+-        goto cleanup;
+-
+-    for (i = 0; i &lt; nsecrets; i++) {
+-        char uuid[VIR_UUID_STRING_BUFLEN];
+-
+-        if (virSecretGetUUIDString(secrets[i], uuid) &lt; 0 ||
+-            VIR_STRDUP(tmp[i], uuid) &lt; 0)
+-            goto cleanup;
+-    }
+-
+-    VIR_STEAL_PTR(ret, tmp);
+-
+- cleanup:
+-    for (i = 0; i &lt; nsecrets; i++)
+-        virSecretFree(secrets[i]);
+-    VIR_FREE(secrets);
+-    return ret;
+-}
+-
+-
+ char **
+ virshSnapshotNameCompleter(vshControl *ctl,
+                            const vshCmd *cmd,
+@@ -308,30 +267,6 @@ virshAllocpagesPagesizeCompleter(vshControl *ctl,
+ }
+ 
+ 
+-char **
+-virshSecretEventNameCompleter(vshControl *ctl ATTRIBUTE_UNUSED,
+-                              const vshCmd *cmd ATTRIBUTE_UNUSED,
+-                              unsigned int flags)
+-{
+-    size_t i;
+-    char **ret = NULL;
+-    VIR_AUTOSTRINGLIST tmp = NULL;
+-
+-    virCheckFlags(0, NULL);
+-
+-    if (VIR_ALLOC_N(tmp, VIR_SECRET_EVENT_ID_LAST + 1) &lt; 0)
+-        return NULL;
+-
+-    for (i = 0; i &lt; VIR_SECRET_EVENT_ID_LAST; i++) {
+-        if (VIR_STRDUP(tmp[i], virshSecretEventCallbacks[i].name) &lt; 0)
+-            return NULL;
+-    }
+-
+-    VIR_STEAL_PTR(ret, tmp);
+-    return ret;
+-}
+-
+-
+ char **
+ virshCellnoCompleter(vshControl *ctl,
+                      const vshCmd *cmd ATTRIBUTE_UNUSED,
+diff --git a/tools/virsh-completer.h b/tools/virsh-completer.h
+index 20bf73b4e5..2dc9e95f1c 100644
+--- a/tools/virsh-completer.h
++++ b/tools/virsh-completer.h
+@@ -28,15 +28,12 @@
+ #include &quot;virsh-completer-nodedev.h&quot;
+ #include &quot;virsh-completer-nwfilter.h&quot;
+ #include &quot;virsh-completer-pool.h&quot;
++#include &quot;virsh-completer-secret.h&quot;
+ #include &quot;virsh-completer-volume.h&quot;
+ 
+ char ** virshCommaStringListComplete(const char *input,
+                                      const char **options);
+ 
+-char ** virshSecretUUIDCompleter(vshControl *ctl,
+-                                 const vshCmd *cmd,
+-                                 unsigned int flags);
+-
+ char ** virshSnapshotNameCompleter(vshControl *ctl,
+                                    const vshCmd *cmd,
+                                    unsigned int flags);
+@@ -45,10 +42,6 @@ char ** virshAllocpagesPagesizeCompleter(vshControl *ctl,
+                                          const vshCmd *cmd,
+                                          unsigned int flags);
+ 
+-char ** virshSecretEventNameCompleter(vshControl *ctl,
+-                                      const vshCmd *cmd,
+-                                      unsigned int flags);
+-
+ char ** virshCellnoCompleter(vshControl *ctl,
+                              const vshCmd *cmd,
+                              unsigned int flags);
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187714.html">[PATCH 03/14] tools: Separate domain related completers	into a file</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187716.html">[PATCH 01/14] tools: s/Nodedev/NodeDevice/</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187714.html">[PATCH 03/14] tools: Separate domain related completers	into a file</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187716.html">[PATCH 01/14] tools: s/Nodedev/NodeDevice/</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187715"><strong>Date</strong></a></li>
+<li><a href="index.html#187715"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

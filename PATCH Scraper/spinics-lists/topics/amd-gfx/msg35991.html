@@ -1,0 +1,652 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 058/102] drm/amdgpu: add VCN2.5 basic supports -->
+<!--X-From-R13: Oyrk Rrhpure &#60;nyrkqrhpureNtznvy.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 14:25:41 &#45;0700 -->
+<!--X-Message-Id: 20190715212437.31793&#45;56&#45;alexander.deucher@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715212437.31793&#45;1&#45;alexander.deucher@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 058/102] drm/amdgpu: add VCN2.5 basic supports">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 058/102] drm/amdgpu: add VCN2.5 basic supports &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 058/102] drm/amdgpu: add VCN2.5 basic supports</h1>
+[<a href="msg35990.html">Date Prev</a>][<a href="msg35992.html">Date Next</a>][<a href="msg35990.html">Thread Prev</a>][<a href="msg35992.html">Thread Next</a>][<a href="maillist.html#35991">Date Index</a>][<a href="index.html#35991">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: amd-gfx@xxxxxxxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH 058/102] drm/amdgpu: add VCN2.5 basic supports</li>
+<li><em>From</em>: Alex Deucher &lt;alexdeucher@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 16:23:53 -0500</li>
+<li><em>Cc</em>: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;, Leo Liu &lt;leo.liu@xxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg35938.html">20190715212437.31793-1-alexander.deucher@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg35938.html">20190715212437.31793-1-alexander.deucher@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Leo Liu &lt;leo.liu@xxxxxxx&gt;
+
+i.e. basic VCN IP SW structures
+
+Signed-off-by: Leo Liu &lt;leo.liu@xxxxxxx&gt;
+Reviewed-by: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;
+Signed-off-by: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;
+---
+ drivers/gpu/drm/amd/amdgpu/Makefile   |   3 +-
+ drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c | 414 ++++++++++++++++++++++++++
+ 2 files changed, 416 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/Makefile b/drivers/gpu/drm/amd/amdgpu/Makefile
+index dc22569e9732..7a1a78c7b329 100644
+--- a/drivers/gpu/drm/amd/amdgpu/Makefile
++++ b/drivers/gpu/drm/amd/amdgpu/Makefile
+@@ -145,7 +145,8 @@ amdgpu-y += \
+ amdgpu-y += \
+ 	amdgpu_vcn.o \
+ 	vcn_v1_0.o \
+-	vcn_v2_0.o
++	vcn_v2_0.o \
++	vcn_v2_5.o
+ 
+ # add ATHUB block
+ amdgpu-y += \
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
+new file mode 100644
+index 000000000000..0f553563ceb9
+--- /dev/null
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
+@@ -0,0 +1,414 @@
++/*
++ * Copyright 2019 Advanced Micro Devices, Inc.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the &quot;Software&quot;),
++ * to deal in the Software without restriction, including without limitation
++ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
++ * and/or sell copies of the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice shall be included in
++ * all copies or substantial portions of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++ * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
++ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
++ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
++ * OTHER DEALINGS IN THE SOFTWARE.
++ *
++ */
++
++#include &lt;linux/firmware.h&gt;
++#include &lt;drm/drmP.h&gt;
++#include &quot;amdgpu.h&quot;
++#include &quot;amdgpu_vcn.h&quot;
++#include &quot;soc15.h&quot;
++#include &quot;soc15d.h&quot;
++#include &quot;vcn_v2_0.h&quot;
++
++#include &quot;vcn/vcn_2_5_offset.h&quot;
++#include &quot;vcn/vcn_2_5_sh_mask.h&quot;
++#include &quot;ivsrcid/vcn/irqsrcs_vcn_2_0.h&quot;
++
++#define mmUVD_CONTEXT_ID_INTERNAL_OFFSET			0x27
++#define mmUVD_GPCOM_VCPU_CMD_INTERNAL_OFFSET			0x0f
++#define mmUVD_GPCOM_VCPU_DATA0_INTERNAL_OFFSET			0x10
++#define mmUVD_GPCOM_VCPU_DATA1_INTERNAL_OFFSET			0x11
++#define mmUVD_NO_OP_INTERNAL_OFFSET				0x29
++#define mmUVD_GP_SCRATCH8_INTERNAL_OFFSET			0x66
++#define mmUVD_SCRATCH9_INTERNAL_OFFSET				0xc01d
++
++#define mmUVD_LMI_RBC_IB_VMID_INTERNAL_OFFSET			0x431
++#define mmUVD_LMI_RBC_IB_64BIT_BAR_LOW_INTERNAL_OFFSET		0x3b4
++#define mmUVD_LMI_RBC_IB_64BIT_BAR_HIGH_INTERNAL_OFFSET 	0x3b5
++#define mmUVD_RBC_IB_SIZE_INTERNAL_OFFSET			0x25c
++
++#define mmUVD_JPEG_PITCH_INTERNAL_OFFSET			0x401f
++
++static void vcn_v2_5_set_dec_ring_funcs(struct amdgpu_device *adev);
++static void vcn_v2_5_set_enc_ring_funcs(struct amdgpu_device *adev);
++static void vcn_v2_5_set_jpeg_ring_funcs(struct amdgpu_device *adev);
++static void vcn_v2_5_set_irq_funcs(struct amdgpu_device *adev);
++static int vcn_v2_5_set_powergating_state(void *handle,
++				enum amd_powergating_state state);
++
++/**
++ * vcn_v2_5_early_init - set function pointers
++ *
++ * @handle: amdgpu_device pointer
++ *
++ * Set ring and irq function pointers
++ */
++static int vcn_v2_5_early_init(void *handle)
++{
++	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
++
++	adev-&gt;vcn.num_enc_rings = 2;
++
++	vcn_v2_5_set_dec_ring_funcs(adev);
++	vcn_v2_5_set_enc_ring_funcs(adev);
++	vcn_v2_5_set_jpeg_ring_funcs(adev);
++	vcn_v2_5_set_irq_funcs(adev);
++
++	return 0;
++}
++
++/**
++ * vcn_v2_5_sw_init - sw init for VCN block
++ *
++ * @handle: amdgpu_device pointer
++ *
++ * Load firmware and sw initialization
++ */
++static int vcn_v2_5_sw_init(void *handle)
++{
++	struct amdgpu_ring *ring;
++	int i, r;
++	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
++
++	/* VCN DEC TRAP */
++	r = amdgpu_irq_add_id(adev, SOC15_IH_CLIENTID_VCN,
++			VCN_2_0__SRCID__UVD_SYSTEM_MESSAGE_INTERRUPT, &amp;adev-&gt;vcn.irq);
++	if (r)
++		return r;
++
++	/* VCN ENC TRAP */
++	for (i = 0; i &lt; adev-&gt;vcn.num_enc_rings; ++i) {
++		r = amdgpu_irq_add_id(adev, SOC15_IH_CLIENTID_VCN,
++			i + VCN_2_0__SRCID__UVD_ENC_GENERAL_PURPOSE, &amp;adev-&gt;vcn.irq);
++		if (r)
++			return r;
++	}
++
++	/* VCN JPEG TRAP */
++	r = amdgpu_irq_add_id(adev, SOC15_IH_CLIENTID_VCN,
++			VCN_2_0__SRCID__JPEG_DECODE, &amp;adev-&gt;vcn.irq);
++	if (r)
++		return r;
++
++	r = amdgpu_vcn_sw_init(adev);
++	if (r)
++		return r;
++
++	if (adev-&gt;firmware.load_type == AMDGPU_FW_LOAD_PSP) {
++		const struct common_firmware_header *hdr;
++		hdr = (const struct common_firmware_header *)adev-&gt;vcn.fw-&gt;data;
++		adev-&gt;firmware.ucode[AMDGPU_UCODE_ID_VCN].ucode_id = AMDGPU_UCODE_ID_VCN;
++		adev-&gt;firmware.ucode[AMDGPU_UCODE_ID_VCN].fw = adev-&gt;vcn.fw;
++		adev-&gt;firmware.fw_size +=
++			ALIGN(le32_to_cpu(hdr-&gt;ucode_size_bytes), PAGE_SIZE);
++		DRM_INFO(&quot;PSP loading VCN firmware\n&quot;);
++	}
++
++	r = amdgpu_vcn_resume(adev);
++	if (r)
++		return r;
++
++	ring = &amp;adev-&gt;vcn.ring_dec;
++	sprintf(ring-&gt;name, &quot;vcn_dec&quot;);
++	r = amdgpu_ring_init(adev, ring, 512, &amp;adev-&gt;vcn.irq, 0);
++	if (r)
++		return r;
++
++	adev-&gt;vcn.internal.context_id = mmUVD_CONTEXT_ID_INTERNAL_OFFSET;
++	adev-&gt;vcn.internal.ib_vmid = mmUVD_LMI_RBC_IB_VMID_INTERNAL_OFFSET;
++	adev-&gt;vcn.internal.ib_bar_low = mmUVD_LMI_RBC_IB_64BIT_BAR_LOW_INTERNAL_OFFSET;
++	adev-&gt;vcn.internal.ib_bar_high = mmUVD_LMI_RBC_IB_64BIT_BAR_HIGH_INTERNAL_OFFSET;
++	adev-&gt;vcn.internal.ib_size = mmUVD_RBC_IB_SIZE_INTERNAL_OFFSET;
++	adev-&gt;vcn.internal.gp_scratch8 = mmUVD_GP_SCRATCH8_INTERNAL_OFFSET;
++
++	adev-&gt;vcn.internal.scratch9 = mmUVD_SCRATCH9_INTERNAL_OFFSET;
++	adev-&gt;vcn.external.scratch9 = SOC15_REG_OFFSET(UVD, 0, mmUVD_SCRATCH9);
++	adev-&gt;vcn.internal.data0 = mmUVD_GPCOM_VCPU_DATA0_INTERNAL_OFFSET;
++	adev-&gt;vcn.external.data0 = SOC15_REG_OFFSET(UVD, 0, mmUVD_GPCOM_VCPU_DATA0);
++	adev-&gt;vcn.internal.data1 = mmUVD_GPCOM_VCPU_DATA1_INTERNAL_OFFSET;
++	adev-&gt;vcn.external.data1 = SOC15_REG_OFFSET(UVD, 0, mmUVD_GPCOM_VCPU_DATA1);
++	adev-&gt;vcn.internal.cmd = mmUVD_GPCOM_VCPU_CMD_INTERNAL_OFFSET;
++	adev-&gt;vcn.external.cmd = SOC15_REG_OFFSET(UVD, 0, mmUVD_GPCOM_VCPU_CMD);
++	adev-&gt;vcn.internal.nop = mmUVD_NO_OP_INTERNAL_OFFSET;
++	adev-&gt;vcn.external.nop = SOC15_REG_OFFSET(UVD, 0, mmUVD_NO_OP);
++
++	for (i = 0; i &lt; adev-&gt;vcn.num_enc_rings; ++i) {
++		ring = &amp;adev-&gt;vcn.ring_enc[i];
++		sprintf(ring-&gt;name, &quot;vcn_enc%d&quot;, i);
++		r = amdgpu_ring_init(adev, ring, 512, &amp;adev-&gt;vcn.irq, 0);
++		if (r)
++			return r;
++	}
++
++	ring = &amp;adev-&gt;vcn.ring_jpeg;
++	sprintf(ring-&gt;name, &quot;vcn_jpeg&quot;);
++	r = amdgpu_ring_init(adev, ring, 512, &amp;adev-&gt;vcn.irq, 0);
++	if (r)
++		return r;
++
++	adev-&gt;vcn.internal.jpeg_pitch = mmUVD_JPEG_PITCH_INTERNAL_OFFSET;
++	adev-&gt;vcn.external.jpeg_pitch = SOC15_REG_OFFSET(UVD, 0, mmUVD_JPEG_PITCH);
++
++	return 0;
++}
++
++/**
++ * vcn_v2_5_sw_fini - sw fini for VCN block
++ *
++ * @handle: amdgpu_device pointer
++ *
++ * VCN suspend and free up sw allocation
++ */
++static int vcn_v2_5_sw_fini(void *handle)
++{
++	int r;
++	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
++
++	r = amdgpu_vcn_suspend(adev);
++	if (r)
++		return r;
++
++	r = amdgpu_vcn_sw_fini(adev);
++
++	return r;
++}
++
++/**
++ * vcn_v2_5_hw_init - start and test VCN block
++ *
++ * @handle: amdgpu_device pointer
++ *
++ * Initialize the hardware, boot up the VCPU and do some testing
++ */
++static int vcn_v2_5_hw_init(void *handle)
++{
++	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
++	struct amdgpu_ring *ring = &amp;adev-&gt;vcn.ring_dec;
++	int i, r;
++
++	r = amdgpu_ring_test_ring(ring);
++	if (r) {
++		ring-&gt;sched.ready = false;
++		goto done;
++	}
++
++	for (i = 0; i &lt; adev-&gt;vcn.num_enc_rings; ++i) {
++		ring = &amp;adev-&gt;vcn.ring_enc[i];
++		ring-&gt;sched.ready = false;
++		continue;
++		r = amdgpu_ring_test_ring(ring);
++		if (r) {
++			ring-&gt;sched.ready = false;
++			goto done;
++		}
++	}
++
++	ring = &amp;adev-&gt;vcn.ring_jpeg;
++	r = amdgpu_ring_test_ring(ring);
++	if (r) {
++		ring-&gt;sched.ready = false;
++		goto done;
++	}
++
++done:
++	if (!r)
++		DRM_INFO(&quot;VCN decode and encode initialized successfully.\n&quot;);
++
++	return r;
++}
++
++/**
++ * vcn_v2_5_hw_fini - stop the hardware block
++ *
++ * @handle: amdgpu_device pointer
++ *
++ * Stop the VCN block, mark ring as not ready any more
++ */
++static int vcn_v2_5_hw_fini(void *handle)
++{
++	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
++	struct amdgpu_ring *ring = &amp;adev-&gt;vcn.ring_dec;
++	int i;
++
++	if (RREG32_SOC15(VCN, 0, mmUVD_STATUS))
++		vcn_v2_5_set_powergating_state(adev, AMD_PG_STATE_GATE);
++
++	ring-&gt;sched.ready = false;
++
++	for (i = 0; i &lt; adev-&gt;vcn.num_enc_rings; ++i) {
++		ring = &amp;adev-&gt;vcn.ring_enc[i];
++		ring-&gt;sched.ready = false;
++	}
++
++	ring = &amp;adev-&gt;vcn.ring_jpeg;
++	ring-&gt;sched.ready = false;
++
++	return 0;
++}
++
++/**
++ * vcn_v2_5_suspend - suspend VCN block
++ *
++ * @handle: amdgpu_device pointer
++ *
++ * HW fini and suspend VCN block
++ */
++static int vcn_v2_5_suspend(void *handle)
++{
++	int r;
++	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
++
++	r = vcn_v2_5_hw_fini(adev);
++	if (r)
++		return r;
++
++	r = amdgpu_vcn_suspend(adev);
++
++	return r;
++}
++
++/**
++ * vcn_v2_5_resume - resume VCN block
++ *
++ * @handle: amdgpu_device pointer
++ *
++ * Resume firmware and hw init VCN block
++ */
++static int vcn_v2_5_resume(void *handle)
++{
++	int r;
++	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
++
++	r = amdgpu_vcn_resume(adev);
++	if (r)
++		return r;
++
++	r = vcn_v2_5_hw_init(adev);
++
++	return r;
++}
++
++static bool vcn_v2_5_is_idle(void *handle)
++{
++	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
++
++	return (RREG32_SOC15(VCN, 0, mmUVD_STATUS) == UVD_STATUS__IDLE);
++}
++
++static int vcn_v2_5_wait_for_idle(void *handle)
++{
++	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
++	int ret = 0;
++
++	SOC15_WAIT_ON_RREG(VCN, 0, mmUVD_STATUS, UVD_STATUS__IDLE,
++		UVD_STATUS__IDLE, ret);
++
++	return ret;
++}
++
++static int vcn_v2_5_set_clockgating_state(void *handle,
++					  enum amd_clockgating_state state)
++{
++	return 0;
++}
++
++static int vcn_v2_5_set_powergating_state(void *handle,
++					  enum amd_powergating_state state)
++{
++	return 0;
++}
++
++static int vcn_v2_5_set_interrupt_state(struct amdgpu_device *adev,
++					struct amdgpu_irq_src *source,
++					unsigned type,
++					enum amdgpu_interrupt_state state)
++{
++	return 0;
++}
++
++static int vcn_v2_5_process_interrupt(struct amdgpu_device *adev,
++				      struct amdgpu_irq_src *source,
++				      struct amdgpu_iv_entry *entry)
++{
++	DRM_DEBUG(&quot;IH: VCN TRAP\n&quot;);
++
++	switch (entry-&gt;src_id) {
++	case VCN_2_0__SRCID__UVD_SYSTEM_MESSAGE_INTERRUPT:
++		amdgpu_fence_process(&amp;adev-&gt;vcn.ring_dec);
++		break;
++	case VCN_2_0__SRCID__UVD_ENC_GENERAL_PURPOSE:
++		amdgpu_fence_process(&amp;adev-&gt;vcn.ring_enc[0]);
++		break;
++	case VCN_2_0__SRCID__UVD_ENC_LOW_LATENCY:
++		amdgpu_fence_process(&amp;adev-&gt;vcn.ring_enc[1]);
++		break;
++	case VCN_2_0__SRCID__JPEG_DECODE:
++		amdgpu_fence_process(&amp;adev-&gt;vcn.ring_jpeg);
++		break;
++	default:
++		DRM_ERROR(&quot;Unhandled interrupt: %d %d\n&quot;,
++			  entry-&gt;src_id, entry-&gt;src_data[0]);
++		break;
++	}
++
++	return 0;
++}
++
++static const struct amdgpu_irq_src_funcs vcn_v2_5_irq_funcs = {
++	.set = vcn_v2_5_set_interrupt_state,
++	.process = vcn_v2_5_process_interrupt,
++};
++
++static void vcn_v2_5_set_irq_funcs(struct amdgpu_device *adev)
++{
++	adev-&gt;vcn.irq.num_types = adev-&gt;vcn.num_enc_rings + 2;
++	adev-&gt;vcn.irq.funcs = &amp;vcn_v2_5_irq_funcs;
++}
++
++static const struct amd_ip_funcs vcn_v2_5_ip_funcs = {
++	.name = &quot;vcn_v2_5&quot;,
++	.early_init = vcn_v2_5_early_init,
++	.late_init = NULL,
++	.sw_init = vcn_v2_5_sw_init,
++	.sw_fini = vcn_v2_5_sw_fini,
++	.hw_init = vcn_v2_5_hw_init,
++	.hw_fini = vcn_v2_5_hw_fini,
++	.suspend = vcn_v2_5_suspend,
++	.resume = vcn_v2_5_resume,
++	.is_idle = vcn_v2_5_is_idle,
++	.wait_for_idle = vcn_v2_5_wait_for_idle,
++	.check_soft_reset = NULL,
++	.pre_soft_reset = NULL,
++	.soft_reset = NULL,
++	.post_soft_reset = NULL,
++	.set_clockgating_state = vcn_v2_5_set_clockgating_state,
++	.set_powergating_state = vcn_v2_5_set_powergating_state,
++};
++
++const struct amdgpu_ip_block_version vcn_v2_5_ip_block =
++{
++		.type = AMD_IP_BLOCK_TYPE_VCN,
++		.major = 2,
++		.minor = 5,
++		.rev = 0,
++		.funcs = &amp;vcn_v2_5_ip_funcs,
++};
+-- 
+2.20.1
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="35938" href="msg35938.html">[PATCH 000/102] Add Arcturus support</a></strong>
+<ul><li><em>From:</em> Alex Deucher</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35990.html">[PATCH 056/102] drm/amdgpu/VCN2: put IB internal registers offset to structure</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35992.html">[PATCH 061/102] drm/amdgpu/VCN2.5: set decode ring functions</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35990.html">[PATCH 056/102] drm/amdgpu/VCN2: put IB internal registers offset to structure</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35992.html">[PATCH 061/102] drm/amdgpu/VCN2.5: set decode ring functions</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35991"><strong>Date</strong></a></li>
+<li><a href="index.html#35991"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

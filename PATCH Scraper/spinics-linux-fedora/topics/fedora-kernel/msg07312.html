@@ -1,0 +1,476 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Enable CONFIG_PROC_VMCORE_DEVICE_DUMP -->
+<!--X-From-R13: Ynvehv Ebat &#60;xnfbatNerqung.pbz> -->
+<!--X-Date: Tue, 30 Oct 2018 19:38:45 &#45;0700 -->
+<!--X-Message-Id: 20181031023819.9503&#45;1&#45;kasong@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description content="[PATCH] Enable CONFIG_PROC_VMCORE_DEVICE_DUMP &mdash; Fedora Linux Kernel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH] Enable CONFIG_PROC_VMCORE_DEVICE_DUMP &mdash; Fedora Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Fedora Linux Kernel" href="//feeds.feedburner.com/FedoraKernel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH] Enable CONFIG_PROC_VMCORE_DEVICE_DUMP</h1>
+[<a href="msg07311.html">Date Prev</a>][<a href="msg07313.html">Date Next</a>][<a href="msg07311.html">Thread Prev</a>][<a href="msg07313.html">Thread Next</a>][<a href="maillist.html#07312">Date Index</a>][<a href="index.html#07312">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Enable CONFIG_PROC_VMCORE_DEVICE_DUMP</li>
+<li><em>From</em>: Kairui Song &lt;kasong@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 31 Oct 2018 10:38:19 +0800</li>
+<li><em>Cc</em>: dyoung@xxxxxxxxxx, Kairui Song &lt;kasong@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>In order to collect necessary logs for drivers in event of a kernel
+crash, we have to enable CONFIG_PROC_VMCORE_DEVICE_DUMP so that
+device hardware/firmware logs could be collected to vmcore dump.
+
+Currently only Chelsio drivers use this kernel API, but more driver
+could use this new feature in the future.
+
+Signed-off-by: Kairui Song &lt;kasong@xxxxxxxxxx&gt;
+---
+ configs/fedora/generic/CONFIG_PROC_VMCORE_DEVICE_DUMP | 2 +-
+ kernel-aarch64-debug.config                           | 2 +-
+ kernel-aarch64.config                                 | 2 +-
+ kernel-armv7hl-debug.config                           | 2 +-
+ kernel-armv7hl-lpae-debug.config                      | 2 +-
+ kernel-armv7hl-lpae.config                            | 2 +-
+ kernel-armv7hl.config                                 | 2 +-
+ kernel-i686-debug.config                              | 2 +-
+ kernel-i686.config                                    | 2 +-
+ kernel-ppc64le-debug.config                           | 2 +-
+ kernel-ppc64le.config                                 | 2 +-
+ kernel-s390x-debug.config                             | 2 +-
+ kernel-s390x.config                                   | 2 +-
+ kernel-x86_64-debug.config                            | 2 +-
+ kernel-x86_64.config                                  | 2 +-
+ 15 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/configs/fedora/generic/CONFIG_PROC_VMCORE_DEVICE_DUMP b/configs/fedora/generic/CONFIG_PROC_VMCORE_DEVICE_DUMP
+index fdcc41f6..1a63c6ae 100644
+--- a/configs/fedora/generic/CONFIG_PROC_VMCORE_DEVICE_DUMP
++++ b/configs/fedora/generic/CONFIG_PROC_VMCORE_DEVICE_DUMP
+@@ -1 +1 @@
+-# CONFIG_PROC_VMCORE_DEVICE_DUMP is not set
++CONFIG_PROC_VMCORE_DEVICE_DUMP=y
+diff --git a/kernel-aarch64-debug.config b/kernel-aarch64-debug.config
+index 23f34cdb..b84063a6 100644
+--- a/kernel-aarch64-debug.config
++++ b/kernel-aarch64-debug.config
+@@ -4619,7 +4619,7 @@ CONFIG_PROC_EVENTS=y
+ CONFIG_PROC_FS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_PID_CPUSET=y
+-# CONFIG_PROC_VMCORE_DEVICE_DUMP is not set
++CONFIG_PROC_VMCORE_DEVICE_DUMP=y
+ CONFIG_PROC_VMCORE=y
+ # CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
+ CONFIG_PROFILING=y
+diff --git a/kernel-aarch64.config b/kernel-aarch64.config
+index 902f3c89..269c07b8 100644
+--- a/kernel-aarch64.config
++++ b/kernel-aarch64.config
+@@ -4597,7 +4597,7 @@ CONFIG_PROC_EVENTS=y
+ CONFIG_PROC_FS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_PID_CPUSET=y
+-# CONFIG_PROC_VMCORE_DEVICE_DUMP is not set
++CONFIG_PROC_VMCORE_DEVICE_DUMP=y
+ CONFIG_PROC_VMCORE=y
+ # CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
+ CONFIG_PROFILING=y
+diff --git a/kernel-armv7hl-debug.config b/kernel-armv7hl-debug.config
+index d140e0a8..b036dda3 100644
+--- a/kernel-armv7hl-debug.config
++++ b/kernel-armv7hl-debug.config
+@@ -4882,7 +4882,7 @@ CONFIG_PROC_EVENTS=y
+ CONFIG_PROC_FS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_PID_CPUSET=y
+-# CONFIG_PROC_VMCORE_DEVICE_DUMP is not set
++CONFIG_PROC_VMCORE_DEVICE_DUMP=y
+ CONFIG_PROC_VMCORE=y
+ # CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
+ CONFIG_PROFILING=y
+diff --git a/kernel-armv7hl-lpae-debug.config b/kernel-armv7hl-lpae-debug.config
+index 5a6a1a2f..0c945780 100644
+--- a/kernel-armv7hl-lpae-debug.config
++++ b/kernel-armv7hl-lpae-debug.config
+@@ -4639,7 +4639,7 @@ CONFIG_PROC_EVENTS=y
+ CONFIG_PROC_FS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_PID_CPUSET=y
+-# CONFIG_PROC_VMCORE_DEVICE_DUMP is not set
++CONFIG_PROC_VMCORE_DEVICE_DUMP=y
+ CONFIG_PROC_VMCORE=y
+ # CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
+ CONFIG_PROFILING=y
+diff --git a/kernel-armv7hl-lpae.config b/kernel-armv7hl-lpae.config
+index fdeec238..ba4ac813 100644
+--- a/kernel-armv7hl-lpae.config
++++ b/kernel-armv7hl-lpae.config
+@@ -4617,7 +4617,7 @@ CONFIG_PROC_EVENTS=y
+ CONFIG_PROC_FS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_PID_CPUSET=y
+-# CONFIG_PROC_VMCORE_DEVICE_DUMP is not set
++CONFIG_PROC_VMCORE_DEVICE_DUMP=y
+ CONFIG_PROC_VMCORE=y
+ # CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
+ CONFIG_PROFILING=y
+diff --git a/kernel-armv7hl.config b/kernel-armv7hl.config
+index 61b0a9d2..f38ae3f1 100644
+--- a/kernel-armv7hl.config
++++ b/kernel-armv7hl.config
+@@ -4860,7 +4860,7 @@ CONFIG_PROC_EVENTS=y
+ CONFIG_PROC_FS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_PID_CPUSET=y
+-# CONFIG_PROC_VMCORE_DEVICE_DUMP is not set
++CONFIG_PROC_VMCORE_DEVICE_DUMP=y
+ CONFIG_PROC_VMCORE=y
+ # CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
+ CONFIG_PROFILING=y
+diff --git a/kernel-i686-debug.config b/kernel-i686-debug.config
+index edf23139..43f57626 100644
+--- a/kernel-i686-debug.config
++++ b/kernel-i686-debug.config
+@@ -4408,7 +4408,7 @@ CONFIG_PROC_EVENTS=y
+ CONFIG_PROC_FS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_PID_CPUSET=y
+-# CONFIG_PROC_VMCORE_DEVICE_DUMP is not set
++CONFIG_PROC_VMCORE_DEVICE_DUMP=y
+ CONFIG_PROC_VMCORE=y
+ # CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
+ CONFIG_PROFILING=y
+diff --git a/kernel-i686.config b/kernel-i686.config
+index 3764b1fe..8af915c8 100644
+--- a/kernel-i686.config
++++ b/kernel-i686.config
+@@ -4385,7 +4385,7 @@ CONFIG_PROC_EVENTS=y
+ CONFIG_PROC_FS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_PID_CPUSET=y
+-# CONFIG_PROC_VMCORE_DEVICE_DUMP is not set
++CONFIG_PROC_VMCORE_DEVICE_DUMP=y
+ CONFIG_PROC_VMCORE=y
+ # CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
+ CONFIG_PROFILING=y
+diff --git a/kernel-ppc64le-debug.config b/kernel-ppc64le-debug.config
+index 17a7aec5..5a2ea877 100644
+--- a/kernel-ppc64le-debug.config
++++ b/kernel-ppc64le-debug.config
+@@ -4152,7 +4152,7 @@ CONFIG_PROC_EVENTS=y
+ CONFIG_PROC_FS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_PID_CPUSET=y
+-# CONFIG_PROC_VMCORE_DEVICE_DUMP is not set
++CONFIG_PROC_VMCORE_DEVICE_DUMP=y
+ CONFIG_PROC_VMCORE=y
+ # CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
+ CONFIG_PROFILING=y
+diff --git a/kernel-ppc64le.config b/kernel-ppc64le.config
+index 10f195f7..35dded69 100644
+--- a/kernel-ppc64le.config
++++ b/kernel-ppc64le.config
+@@ -4127,7 +4127,7 @@ CONFIG_PROC_EVENTS=y
+ CONFIG_PROC_FS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_PID_CPUSET=y
+-# CONFIG_PROC_VMCORE_DEVICE_DUMP is not set
++CONFIG_PROC_VMCORE_DEVICE_DUMP=y
+ CONFIG_PROC_VMCORE=y
+ # CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
+ CONFIG_PROFILING=y
+diff --git a/kernel-s390x-debug.config b/kernel-s390x-debug.config
+index 6d715134..2148b26c 100644
+--- a/kernel-s390x-debug.config
++++ b/kernel-s390x-debug.config
+@@ -4040,7 +4040,7 @@ CONFIG_PROC_EVENTS=y
+ CONFIG_PROC_FS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_PID_CPUSET=y
+-# CONFIG_PROC_VMCORE_DEVICE_DUMP is not set
++CONFIG_PROC_VMCORE_DEVICE_DUMP=y
+ CONFIG_PROC_VMCORE=y
+ # CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
+ CONFIG_PROFILING=y
+diff --git a/kernel-s390x.config b/kernel-s390x.config
+index 621c2c99..523e4a22 100644
+--- a/kernel-s390x.config
++++ b/kernel-s390x.config
+@@ -4015,7 +4015,7 @@ CONFIG_PROC_EVENTS=y
+ CONFIG_PROC_FS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_PID_CPUSET=y
+-# CONFIG_PROC_VMCORE_DEVICE_DUMP is not set
++CONFIG_PROC_VMCORE_DEVICE_DUMP=y
+ CONFIG_PROC_VMCORE=y
+ # CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
+ CONFIG_PROFILING=y
+diff --git a/kernel-x86_64-debug.config b/kernel-x86_64-debug.config
+index 2dfd8914..6d96b637 100644
+--- a/kernel-x86_64-debug.config
++++ b/kernel-x86_64-debug.config
+@@ -4448,7 +4448,7 @@ CONFIG_PROC_EVENTS=y
+ CONFIG_PROC_FS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_PID_CPUSET=y
+-# CONFIG_PROC_VMCORE_DEVICE_DUMP is not set
++CONFIG_PROC_VMCORE_DEVICE_DUMP=y
+ CONFIG_PROC_VMCORE=y
+ # CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
+ CONFIG_PROFILING=y
+diff --git a/kernel-x86_64.config b/kernel-x86_64.config
+index 195d0314..f2f5d4b9 100644
+--- a/kernel-x86_64.config
++++ b/kernel-x86_64.config
+@@ -4425,7 +4425,7 @@ CONFIG_PROC_EVENTS=y
+ CONFIG_PROC_FS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_PID_CPUSET=y
+-# CONFIG_PROC_VMCORE_DEVICE_DUMP is not set
++CONFIG_PROC_VMCORE_DEVICE_DUMP=y
+ CONFIG_PROC_VMCORE=y
+ # CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
+ CONFIG_PROFILING=y
+-- 
+2.17.1
+_______________________________________________
+kernel mailing list -- kernel@xxxxxxxxxxxxxxxxxxxxxxx
+To unsubscribe send an email to kernel-leave@xxxxxxxxxxxxxxxxxxxxxxx
+Fedora Code of Conduct: <a  rel="nofollow" href="https://getfedora.org/code-of-conduct.html">https://getfedora.org/code-of-conduct.html</a>
+List Guidelines: <a  rel="nofollow" href="https://fedoraproject.org/wiki/Mailing_list_guidelines">https://fedoraproject.org/wiki/Mailing_list_guidelines</a>
+List Archives: <a  rel="nofollow" href="https://lists.fedoraproject.org/archives/list/kernel@xxxxxxxxxxxxxxxxxxxxxxx">https://lists.fedoraproject.org/archives/list/kernel@xxxxxxxxxxxxxxxxxxxxxxx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07313" href="msg07313.html">Re: [PATCH] Enable CONFIG_PROC_VMCORE_DEVICE_DUMP</a></strong>
+<ul><li><em>From:</em> Dave Young</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07311.html">4.19 rebase plans</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07313.html">Re: [PATCH] Enable CONFIG_PROC_VMCORE_DEVICE_DUMP</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07311.html">4.19 rebase plans</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07313.html">Re: [PATCH] Enable CONFIG_PROC_VMCORE_DEVICE_DUMP</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07312"><strong>Date</strong></a></li>
+<li><a href="index.html#07312"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;General&nbsp;Discussion]</a>
+&nbsp;
+&nbsp;
+<a href=http://lists.linuxcoding.com/rhl/>[Older&nbsp;Fedora&nbsp;Users&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-advisory-board/>[Fedora&nbsp;Advisory&nbsp;Board]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-security/>[Fedora&nbsp;Security]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-devel-java/>[Fedora&nbsp;Devel&nbsp;Java]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-legacy/>[Fedora&nbsp;Legacy]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ataraid/>[ATA&nbsp;RAID]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-marketing/>[Fedora&nbsp;Marketing]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-mentors/>[Fedora&nbsp;Mentors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-package-announce/>[Fedora&nbsp;Package&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-package-review/>[Fedora&nbsp;Package&nbsp;Review]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-music/>[Fedora&nbsp;Music]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-packaging/>[Fedora&nbsp;Packaging]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos/>[Centos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/coolkey/>[Coolkey]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/yum/>[Yum&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/tux/>[Tux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-art/>[Fedora&nbsp;Art]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-docs/>[Fedora&nbsp;Docs]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[USB]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

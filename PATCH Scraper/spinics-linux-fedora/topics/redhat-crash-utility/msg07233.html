@@ -1,0 +1,227 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [RFC PATCH] defs.h: Update the range of legacy	vsyscall to 4kB -->
+<!--X-From-R13: Rbh Zvlnat &#60;qbhyl.safgNpa.shwvgfh.pbz> -->
+<!--X-Date: Mon, 1 Jan 2018 18:55:15 &#45;0800 -->
+<!--X-Message-Id: 20180102025453.29070&#45;1&#45;douly.fnst@cn.fujitsu.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[RFC PATCH] defs.h: Update the range of legacy	vsyscall to 4kB &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  [RFC PATCH] defs.h: Update the range of legacy	vsyscall to 4kB</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[RFC PATCH] defs.h: Update the range of legacy	vsyscall to 4kB</h1>
+[<a href="msg07232.html">Date Prev</a>][<a href="msg07234.html">Date Next</a>][<a href="msg07232.html">Thread Prev</a>][<a href="msg07235.html">Thread Next</a>][<a href="maillist.html#07233">Date Index</a>][<a href="index.html#07233">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [RFC PATCH] defs.h: Update the range of legacy	vsyscall to 4kB</li>
+<li><em>From</em>: Dou Liyang &lt;douly.fnst@xxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 2 Jan 2018 10:54:53 +0800</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Currently, There used to be 8 MB reserved for future vsyscalls, but
+that's long gone in Kernel. and it updates to 4kB
+
+So Update it to [ffffffffff600000 - ffffffffff600fff].
+
+Signed-off-by: Dou Liyang &lt;douly.fnst@xxxxxxxxxxxxxx&gt;
+---
+ defs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/defs.h b/defs.h
+index 4cd07b8..97738a6 100644
+--- a/defs.h
++++ b/defs.h
+@@ -3324,7 +3324,7 @@ struct arm64_stackframe {
+ #define VMEMMAP_END_5LEVEL         0xffd5ffffffffffff
+ 
+ #define VSYSCALL_START             0xffffffffff600000
+-#define VSYSCALL_END               0xffffffffffe00000
++#define VSYSCALL_END               0xffffffffff601000
+ 
+ #define PTOV(X)               ((unsigned long)(X)+(machdep-&gt;kvbase))
+ #define VTOP(X)               x86_64_VTOP((ulong)(X))
+-- 
+2.14.3
+
+
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07235" href="msg07235.html">Re:  [RFC PATCH] defs.h: Update the range of legacy	vsyscall to 4kB</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07232.html">[PATCH] defs.h: Update the vmalloc start address of	5-Level</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07234.html">Re:  [PATCH] defs.h: Update the vmalloc start	address of 5-Level</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07232.html">[PATCH] defs.h: Update the vmalloc start address of	5-Level</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07235.html">Re:  [RFC PATCH] defs.h: Update the range of legacy	vsyscall to 4kB</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07233"><strong>Date</strong></a></li>
+<li><a href="index.html#07233"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

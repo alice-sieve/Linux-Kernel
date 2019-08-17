@@ -1,0 +1,315 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH AUTOSEL 5.2 024/249] selftests/bpf: adjust verifier scale test -->
+<!--X-From-R13: Enfun Zriva &#60;fnfunyNxreary.bet> -->
+<!--X-Date: Mon, 15 Jul 2019 06:38:27 &#45;0700 -->
+<!--X-Message-Id: 20190715133550.1772&#45;24&#45;sashal@kernel.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715133550.1772&#45;1&#45;sashal@kernel.org -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BPF: [PATCH AUTOSEL 5.2 024/249] selftests/bpf: adjust verifier scale test">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH AUTOSEL 5.2 024/249] selftests/bpf: adjust verifier scale test &mdash; BPF</title>
+<link rel="alternate" type="application/rss+xml" title="BPF" href="//feeds.feedburner.com/packetfilters">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH AUTOSEL 5.2 024/249] selftests/bpf: adjust verifier scale test</h1>
+[<a href="msg05332.html">Date Prev</a>][<a href="msg05334.html">Date Next</a>][<a href="msg05329.html">Thread Prev</a>][<a href="msg05334.html">Thread Next</a>][<a href="maillist.html#05333">Date Index</a>][<a href="index.html#05333">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH AUTOSEL 5.2 024/249] selftests/bpf: adjust verifier scale test</li>
+<li><em>From</em>: Sasha Levin &lt;sashal@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 09:32:05 -0400</li>
+<li><em>Cc</em>: Alexei Starovoitov &lt;ast@xxxxxxxxxx&gt;, Andrii Nakryiko &lt;andriin@xxxxxx&gt;,        Daniel Borkmann &lt;daniel@xxxxxxxxxxxxx&gt;,        Sasha Levin &lt;sashal@xxxxxxxxxx&gt;, linux-kselftest@xxxxxxxxxxxxxxx,        netdev@xxxxxxxxxxxxxxx, bpf@xxxxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;20190715133550.1772-1-sashal@kernel.org&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Alexei Starovoitov &lt;ast@xxxxxxxxxx&gt;
+
+[ Upstream commit 7c0c6095d48dcd0e67c917aa73cdbb2715aafc36 ]
+
+Adjust scale tests to check for new jmp sequence limit.
+
+BPF_JGT had to be changed to BPF_JEQ because the verifier was
+too smart. It tracked the known safe range of R0 values
+and pruned the search earlier before hitting exact 8192 limit.
+bpf_semi_rand_get() was too (un)?lucky.
+
+k = 0; was missing in bpf_fill_scale2.
+It was testing a bit shorter sequence of jumps than intended.
+
+Signed-off-by: Alexei Starovoitov &lt;ast@xxxxxxxxxx&gt;
+Acked-by: Andrii Nakryiko &lt;andriin@xxxxxx&gt;
+Signed-off-by: Daniel Borkmann &lt;daniel@xxxxxxxxxxxxx&gt;
+Signed-off-by: Sasha Levin &lt;sashal@xxxxxxxxxx&gt;
+---
+ tools/testing/selftests/bpf/test_verifier.c | 31 +++++++++++----------
+ 1 file changed, 17 insertions(+), 14 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+index 288cb740e005..6438d4dc8ae1 100644
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -207,33 +207,35 @@ static void bpf_fill_rand_ld_dw(struct bpf_test *self)
+ 	self-&gt;retval = (uint32_t)res;
+ }
+ 
+-/* test the sequence of 1k jumps */
++#define MAX_JMP_SEQ 8192
++
++/* test the sequence of 8k jumps */
+ static void bpf_fill_scale1(struct bpf_test *self)
+ {
+ 	struct bpf_insn *insn = self-&gt;fill_insns;
+ 	int i = 0, k = 0;
+ 
+ 	insn[i++] = BPF_MOV64_REG(BPF_REG_6, BPF_REG_1);
+-	/* test to check that the sequence of 1024 jumps is acceptable */
+-	while (k++ &lt; 1024) {
++	/* test to check that the long sequence of jumps is acceptable */
++	while (k++ &lt; MAX_JMP_SEQ) {
+ 		insn[i++] = BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
+ 					 BPF_FUNC_get_prandom_u32);
+-		insn[i++] = BPF_JMP_IMM(BPF_JGT, BPF_REG_0, bpf_semi_rand_get(), 2);
++		insn[i++] = BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, bpf_semi_rand_get(), 2);
+ 		insn[i++] = BPF_MOV64_REG(BPF_REG_1, BPF_REG_10);
+ 		insn[i++] = BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_6,
+ 					-8 * (k % 64 + 1));
+ 	}
+-	/* every jump adds 1024 steps to insn_processed, so to stay exactly
+-	 * within 1m limit add MAX_TEST_INSNS - 1025 MOVs and 1 EXIT
++	/* every jump adds 1 step to insn_processed, so to stay exactly
++	 * within 1m limit add MAX_TEST_INSNS - MAX_JMP_SEQ - 1 MOVs and 1 EXIT
+ 	 */
+-	while (i &lt; MAX_TEST_INSNS - 1025)
++	while (i &lt; MAX_TEST_INSNS - MAX_JMP_SEQ - 1)
+ 		insn[i++] = BPF_ALU32_IMM(BPF_MOV, BPF_REG_0, 42);
+ 	insn[i] = BPF_EXIT_INSN();
+ 	self-&gt;prog_len = i + 1;
+ 	self-&gt;retval = 42;
+ }
+ 
+-/* test the sequence of 1k jumps in inner most function (function depth 8)*/
++/* test the sequence of 8k jumps in inner most function (function depth 8)*/
+ static void bpf_fill_scale2(struct bpf_test *self)
+ {
+ 	struct bpf_insn *insn = self-&gt;fill_insns;
+@@ -245,19 +247,20 @@ static void bpf_fill_scale2(struct bpf_test *self)
+ 		insn[i++] = BPF_EXIT_INSN();
+ 	}
+ 	insn[i++] = BPF_MOV64_REG(BPF_REG_6, BPF_REG_1);
+-	/* test to check that the sequence of 1024 jumps is acceptable */
+-	while (k++ &lt; 1024) {
++	/* test to check that the long sequence of jumps is acceptable */
++	k = 0;
++	while (k++ &lt; MAX_JMP_SEQ) {
+ 		insn[i++] = BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
+ 					 BPF_FUNC_get_prandom_u32);
+-		insn[i++] = BPF_JMP_IMM(BPF_JGT, BPF_REG_0, bpf_semi_rand_get(), 2);
++		insn[i++] = BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, bpf_semi_rand_get(), 2);
+ 		insn[i++] = BPF_MOV64_REG(BPF_REG_1, BPF_REG_10);
+ 		insn[i++] = BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_6,
+ 					-8 * (k % (64 - 4 * FUNC_NEST) + 1));
+ 	}
+-	/* every jump adds 1024 steps to insn_processed, so to stay exactly
+-	 * within 1m limit add MAX_TEST_INSNS - 1025 MOVs and 1 EXIT
++	/* every jump adds 1 step to insn_processed, so to stay exactly
++	 * within 1m limit add MAX_TEST_INSNS - MAX_JMP_SEQ - 1 MOVs and 1 EXIT
+ 	 */
+-	while (i &lt; MAX_TEST_INSNS - 1025)
++	while (i &lt; MAX_TEST_INSNS - MAX_JMP_SEQ - 1)
+ 		insn[i++] = BPF_ALU32_IMM(BPF_MOV, BPF_REG_0, 42);
+ 	insn[i] = BPF_EXIT_INSN();
+ 	self-&gt;prog_len = i + 1;
+-- 
+2.20.1
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05332.html">Re: [oss-drivers] Re: [RFC bpf-next 2/8] bpf: extend list based insn patching infra to verification layer</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05334.html">[PATCH AUTOSEL 5.2 024/249] selftests/bpf: adjust verifier scale test</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05329.html">[PATCH bpf] samples/bpf: build with -D__TARGET_ARCH_$(SRCARCH)</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05334.html">[PATCH AUTOSEL 5.2 024/249] selftests/bpf: adjust verifier scale test</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05333"><strong>Date</strong></a></li>
+<li><a href="index.html#05333"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;Samsung&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-rockchip/>[Linux&nbsp;Rockchip&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-actions/>[Linux&nbsp;Actions&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-snps-arc/>[Linux&nbsp;for&nbsp;Synopsys&nbsp;ARC&nbsp;Processors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nfs/>[Linux&nbsp;NFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nilfs/>[Linux&nbsp;NILFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/vfl/>[Video&nbsp;for&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<p>
+<hr>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

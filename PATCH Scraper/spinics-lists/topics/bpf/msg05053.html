@@ -1,0 +1,268 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH bpf&#45;next] tools: bpftool: add completion for bpftool prog "loadall" -->
+<!--X-From-R13: Chragva [baarg &#60;dhragva.zbaargNargebabzr.pbz> -->
+<!--X-Date: Mon, 8 Jul 2019 06:06:28 &#45;0700 -->
+<!--X-Message-Id: 20190708130546.7518&#45;1&#45;quentin.monnet@netronome.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BPF: [PATCH bpf-next] tools: bpftool: add completion for bpftool prog &quot;loadall&quot;">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH bpf-next] tools: bpftool: add completion for bpftool prog &quot;loadall&quot; &mdash; BPF</title>
+<link rel="alternate" type="application/rss+xml" title="BPF" href="//feeds.feedburner.com/packetfilters">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH bpf-next] tools: bpftool: add completion for bpftool prog &quot;loadall&quot;</h1>
+[<a href="msg05052.html">Date Prev</a>][<a href="msg05054.html">Date Next</a>][<a href="msg05051.html">Thread Prev</a>][<a href="msg05064.html">Thread Next</a>][<a href="maillist.html#05053">Date Index</a>][<a href="index.html#05053">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH bpf-next] tools: bpftool: add completion for bpftool prog &quot;loadall&quot;</li>
+<li><em>From</em>: Quentin Monnet &lt;quentin.monnet@xxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon,  8 Jul 2019 14:05:46 +0100</li>
+<li><em>Cc</em>: bpf@xxxxxxxxxxxxxxx, netdev@xxxxxxxxxxxxxxx, oss-drivers@xxxxxxxxxxxxx,        Quentin Monnet &lt;quentin.monnet@xxxxxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Bash completion for proposing the &quot;loadall&quot; subcommand is missing. Let's
+add it to the completion script.
+
+Add a specific case to propose &quot;load&quot; and &quot;loadall&quot; for completing:
+
+    $ bpftool prog load
+                       ^ cursor is here
+
+Otherwise, completion considers that $command is in load|loadall and
+starts making related completions (file or directory names, as the
+number of words on the command line is below 6), when the only suggested
+keywords should be &quot;load&quot; and &quot;loadall&quot; until one has been picked and a
+space entered after that to move to the next word.
+
+Signed-off-by: Quentin Monnet &lt;quentin.monnet@xxxxxxxxxxxxx&gt;
+Reviewed-by: Jakub Kicinski &lt;jakub.kicinski@xxxxxxxxxxxxx&gt;
+---
+ tools/bpf/bpftool/bash-completion/bpftool | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index 965a8658cca3..c8f42e1fcbc9 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -342,6 +342,13 @@ _bpftool()
+                 load|loadall)
+                     local obj
+ 
++                    # Propose &quot;load/loadall&quot; to complete &quot;bpftool prog load&quot;,
++                    # or bash tries to complete &quot;load&quot; as a filename below.
++                    if [[ ${#words[@]} -eq 3 ]]; then
++                        COMPREPLY=( $( compgen -W &quot;load loadall&quot; -- &quot;$cur&quot; ) )
++                        return 0
++                    fi
++
+                     if [[ ${#words[@]} -lt 6 ]]; then
+                         _filedir
+                         return 0
+@@ -435,7 +442,7 @@ _bpftool()
+                 *)
+                     [[ $prev == $object ]] &amp;&amp; \
+                         COMPREPLY=( $( compgen -W 'dump help pin attach detach \
+-                            load show list tracelog run' -- &quot;$cur&quot; ) )
++                            load loadall show list tracelog run' -- &quot;$cur&quot; ) )
+                     ;;
+             esac
+             ;;
+-- 
+2.17.1
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="05064" href="msg05064.html">Re: [PATCH bpf-next] tools: bpftool: add completion for bpftool prog &quot;loadall&quot;</a></strong>
+<ul><li><em>From:</em> Daniel Borkmann</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05052.html">[PATCH net-next 2/2] bpf: avoid unused variable warning in tcp_bpf_rtt()</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05054.html">Re: [PATCH] [RFC] Revert &quot;bpf: Fix ORC unwinding in non-JIT BPF code&quot;</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05051.html">[PATCH net-next 1/2] bpf: skip sockopt hooks without CONFIG_NET</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05064.html">Re: [PATCH bpf-next] tools: bpftool: add completion for bpftool prog &quot;loadall&quot;</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05053"><strong>Date</strong></a></li>
+<li><a href="index.html#05053"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;Samsung&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-rockchip/>[Linux&nbsp;Rockchip&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-actions/>[Linux&nbsp;Actions&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-snps-arc/>[Linux&nbsp;for&nbsp;Synopsys&nbsp;ARC&nbsp;Processors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nfs/>[Linux&nbsp;NFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nilfs/>[Linux&nbsp;NILFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/vfl/>[Video&nbsp;for&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<p>
+<hr>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

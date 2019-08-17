@@ -1,0 +1,431 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v3 15/24] LSM: Specify which LSM to display -->
+<!--X-From-R13: Qnfrl Epunhsyre &#60;pnfrlNfpunhsyre&#45;pn.pbz> -->
+<!--X-Date: Fri, 21 Jun 2019 11:53:22 &#45;0700 -->
+<!--X-Message-Id: 20190621185233.6766&#45;16&#45;casey@schaufler&#45;ca.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190621185233.6766&#45;1&#45;casey@schaufler&#45;ca.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, [PATCH v3 15/24] LSM: Specify which LSM to display">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- [PATCH v3 15/24] LSM: Specify which LSM to display</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v3 15/24] LSM: Specify which LSM to display</h1>
+[<a href="msg29169.html">Date Prev</a>][<a href="msg29171.html">Date Next</a>][<a href="msg29305.html">Thread Prev</a>][<a href="msg29228.html">Thread Next</a>][<a href="maillist.html#29170">Date Index</a>][<a href="index.html#29170">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v3 15/24] LSM: Specify which LSM to display</li>
+<li><em>From</em>: Casey Schaufler &lt;casey@xxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 21 Jun 2019 11:52:24 -0700</li>
+<li><em>Cc</em>: casey@xxxxxxxxxxxxxxxx, keescook@xxxxxxxxxxxx,        john.johansen@xxxxxxxxxxxxx, penguin-kernel@xxxxxxxxxxxxxxxxxxx,        paul@xxxxxxxxxxxxxx, sds@xxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29154.html">20190621185233.6766-1-casey@schaufler-ca.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg29154.html">20190621185233.6766-1-casey@schaufler-ca.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Create a new entry &quot;display&quot; in /proc/.../attr for controlling
+which LSM security information is displayed for a process.
+The name of an active LSM that supplies hooks for human readable
+data may be written to &quot;display&quot; to set the value. The name of
+the LSM currently in use can be read from &quot;display&quot;.
+At this point there can only be one LSM capable of display
+active.
+
+Signed-off-by: Casey Schaufler &lt;casey@xxxxxxxxxxxxxxxx&gt;
+---
+ fs/proc/base.c      |   1 +
+ security/security.c | 110 +++++++++++++++++++++++++++++++++++---------
+ 2 files changed, 90 insertions(+), 21 deletions(-)
+
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index ddef482f1334..7bf70e041315 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -2618,6 +2618,7 @@ static const struct pid_entry attr_dir_stuff[] = {
+ 	ATTR(NULL, &quot;fscreate&quot;,		0666),
+ 	ATTR(NULL, &quot;keycreate&quot;,		0666),
+ 	ATTR(NULL, &quot;sockcreate&quot;,	0666),
++	ATTR(NULL, &quot;display&quot;,		0666),
+ #ifdef CONFIG_SECURITY_SMACK
+ 	DIR(&quot;smack&quot;,			0555,
+ 	    proc_smack_attr_dir_inode_ops, proc_smack_attr_dir_ops),
+diff --git a/security/security.c b/security/security.c
+index aa8e1c73a062..92c5aa427b53 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -46,7 +46,9 @@ static struct kmem_cache *lsm_file_cache;
+ static struct kmem_cache *lsm_inode_cache;
+ 
+ char *lsm_names;
+-static struct lsm_blob_sizes blob_sizes __lsm_ro_after_init;
++static struct lsm_blob_sizes blob_sizes __lsm_ro_after_init = {
++	.lbs_task = sizeof(int),	/* slot number for the &quot;display&quot; LSM */
++};
+ 
+ /* Boot-time LSM user choice */
+ static __initdata const char *chosen_lsm_order;
+@@ -583,6 +585,8 @@ int lsm_inode_alloc(struct inode *inode)
+  */
+ static int lsm_task_alloc(struct task_struct *task)
+ {
++	int *display;
++
+ 	if (blob_sizes.lbs_task == 0) {
+ 		task-&gt;security = NULL;
+ 		return 0;
+@@ -591,6 +595,15 @@ static int lsm_task_alloc(struct task_struct *task)
+ 	task-&gt;security = kzalloc(blob_sizes.lbs_task, GFP_KERNEL);
+ 	if (task-&gt;security == NULL)
+ 		return -ENOMEM;
++
++	/*
++	 * The start of the task blob contains the &quot;display&quot; LSM slot number.
++	 * Start with it set to the invalid slot number, indicating that the
++	 * default first registered LSM be displayed.
++	 */
++	display = task-&gt;security;
++	*display = LSMBLOB_INVALID;
++
+ 	return 0;
+ }
+ 
+@@ -1579,14 +1592,24 @@ int security_file_open(struct file *file)
+ 
+ int security_task_alloc(struct task_struct *task, unsigned long clone_flags)
+ {
++	int *odisplay = current-&gt;security;
++	int *ndisplay;
+ 	int rc = lsm_task_alloc(task);
+ 
+-	if (rc)
++	if (unlikely(rc))
+ 		return rc;
++
+ 	rc = call_int_hook(task_alloc, 0, task, clone_flags);
+-	if (unlikely(rc))
++	if (unlikely(rc)) {
+ 		security_task_free(task);
+-	return rc;
++		return rc;
++	}
++
++	ndisplay = task-&gt;security;
++	if (ndisplay &amp;&amp; odisplay)
++		*ndisplay = *odisplay;
++
++	return 0;
+ }
+ 
+ void security_task_free(struct task_struct *task)
+@@ -1972,10 +1995,28 @@ int security_getprocattr(struct task_struct *p, const char *lsm, char *name,
+ 				char **value)
+ {
+ 	struct security_hook_list *hp;
++	int *display = current-&gt;security;
++
++	if (!strcmp(name, &quot;display&quot;)) {
++		hlist_for_each_entry(hp, &amp;security_hook_heads.secid_to_secctx,
++				     list) {
++			if (*display == LSMBLOB_INVALID ||
++			    hp-&gt;slot == *display) {
++				*value = kstrdup(hp-&gt;lsm, GFP_KERNEL);
++				if (*value)
++					return strlen(hp-&gt;lsm);
++				return -ENOMEM;
++			}
++		}
++		return -EINVAL;
++	}
+ 
+ 	hlist_for_each_entry(hp, &amp;security_hook_heads.getprocattr, list) {
+ 		if (lsm != NULL &amp;&amp; strcmp(lsm, hp-&gt;lsm))
+ 			continue;
++		if (lsm == NULL &amp;&amp; *display != LSMBLOB_INVALID &amp;&amp;
++		    *display != hp-&gt;slot)
++			continue;
+ 		return hp-&gt;hook.getprocattr(p, name, value);
+ 	}
+ 	return -EINVAL;
+@@ -1985,10 +2026,27 @@ int security_setprocattr(const char *lsm, const char *name, void *value,
+ 			 size_t size)
+ {
+ 	struct security_hook_list *hp;
++	int *display = current-&gt;security;
++	int len;
++
++	if (!strcmp(name, &quot;display&quot;)) {
++		hlist_for_each_entry(hp, &amp;security_hook_heads.secid_to_secctx,
++				     list) {
++			len = strlen(hp-&gt;lsm);
++			if (size &gt;= len &amp;&amp; !strncmp(value, hp-&gt;lsm, len)) {
++				*display = hp-&gt;slot;
++				return size;
++			}
++		}
++		return -EINVAL;
++	}
+ 
+ 	hlist_for_each_entry(hp, &amp;security_hook_heads.setprocattr, list) {
+ 		if (lsm != NULL &amp;&amp; strcmp(lsm, hp-&gt;lsm))
+ 			continue;
++		if (lsm == NULL &amp;&amp; *display != LSMBLOB_INVALID &amp;&amp;
++		    *display != hp-&gt;slot)
++			continue;
+ 		return hp-&gt;hook.setprocattr(name, value, size);
+ 	}
+ 	return -EINVAL;
+@@ -2008,14 +2066,12 @@ EXPORT_SYMBOL(security_ismaclabel);
+ int security_secid_to_secctx(struct lsmblob *blob, char **secdata, u32 *seclen)
+ {
+ 	struct security_hook_list *hp;
+-	int rc;
++	int *display = current-&gt;security;
+ 
+-	hlist_for_each_entry(hp, &amp;security_hook_heads.secid_to_secctx, list) {
+-		rc = hp-&gt;hook.secid_to_secctx(blob-&gt;secid[hp-&gt;slot],
+-					      secdata, seclen);
+-		if (rc != 0)
+-			return rc;
+-	}
++	hlist_for_each_entry(hp, &amp;security_hook_heads.secid_to_secctx, list)
++		if (*display == LSMBLOB_INVALID || *display == hp-&gt;slot)
++			return hp-&gt;hook.secid_to_secctx(blob-&gt;secid[hp-&gt;slot],
++							secdata, seclen);
+ 	return 0;
+ }
+ EXPORT_SYMBOL(security_secid_to_secctx);
+@@ -2024,22 +2080,27 @@ int security_secctx_to_secid(const char *secdata, u32 seclen,
+ 			     struct lsmblob *blob)
+ {
+ 	struct security_hook_list *hp;
+-	int rc;
++	int *display = current-&gt;security;
+ 
+ 	lsmblob_init(blob, 0);
+-	hlist_for_each_entry(hp, &amp;security_hook_heads.secctx_to_secid, list) {
+-		rc = hp-&gt;hook.secctx_to_secid(secdata, seclen,
+-					      &amp;blob-&gt;secid[hp-&gt;slot]);
+-		if (rc != 0)
+-			return rc;
+-	}
++	hlist_for_each_entry(hp, &amp;security_hook_heads.secctx_to_secid, list)
++		if (*display == LSMBLOB_INVALID || *display == hp-&gt;slot)
++			return hp-&gt;hook.secctx_to_secid(secdata, seclen,
++							&amp;blob-&gt;secid[hp-&gt;slot]);
+ 	return 0;
+ }
+ EXPORT_SYMBOL(security_secctx_to_secid);
+ 
+ void security_release_secctx(char *secdata, u32 seclen)
+ {
+-	call_void_hook(release_secctx, secdata, seclen);
++	struct security_hook_list *hp;
++	int *display = current-&gt;security;
++
++	hlist_for_each_entry(hp, &amp;security_hook_heads.release_secctx, list)
++		if (*display == LSMBLOB_INVALID || *display == hp-&gt;slot) {
++			hp-&gt;hook.release_secctx(secdata, seclen);
++			return;
++		}
+ }
+ EXPORT_SYMBOL(security_release_secctx);
+ 
+@@ -2164,8 +2225,15 @@ EXPORT_SYMBOL(security_sock_rcv_skb);
+ int security_socket_getpeersec_stream(struct socket *sock, char __user *optval,
+ 				      int __user *optlen, unsigned len)
+ {
+-	return call_int_hook(socket_getpeersec_stream, -ENOPROTOOPT, sock,
+-				optval, optlen, len);
++	int *display = current-&gt;security;
++	struct security_hook_list *hp;
++
++	hlist_for_each_entry(hp, &amp;security_hook_heads.socket_getpeersec_stream,
++			     list)
++		if (*display == LSMBLOB_INVALID || *display == hp-&gt;slot)
++			return hp-&gt;hook.socket_getpeersec_stream(sock, optval,
++								 optlen, len);
++	return -ENOPROTOOPT;
+ }
+ 
+ int security_socket_getpeersec_dgram(struct socket *sock, struct sk_buff *skb,
+-- 
+2.20.1
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="29290" href="msg29290.html">[PATCH v3 15/24] LSM: Specify which LSM to display</a></strong>
+<ul><li><em>From:</em> John Johansen</li></ul></li>
+<li><strong><a name="29228" href="msg29228.html">Re: [PATCH v3 15/24] LSM: Specify which LSM to display</a></strong>
+<ul><li><em>From:</em> Kees Cook</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29154" href="msg29154.html">[PATCH v3 00/24] LSM: Module stacking for AppArmor</a></strong>
+<ul><li><em>From:</em> Casey Schaufler</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29169.html">[PATCH v3 16/24] LSM: Ensure the correct LSM context releaser</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29171.html">[PATCH v3 19/24] LSM: Use lsmcontext in security_inode_getsecctx</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29305.html">[PATCH v3 16/24] LSM: Ensure the correct LSM context releaser</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29228.html">Re: [PATCH v3 15/24] LSM: Specify which LSM to display</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29170"><strong>Date</strong></a></li>
+<li><a href="index.html#29170"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

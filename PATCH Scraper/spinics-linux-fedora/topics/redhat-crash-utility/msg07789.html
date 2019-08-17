@@ -1,0 +1,392 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Allows to change the error output direction -->
+<!--X-From-R13: Rnavry Yjba &#60;qxjbaNerqung.pbz> -->
+<!--X-Date: Fri, 21 Jun 2019 05:57:34 &#45;0700 -->
+<!--X-Message-Id: CAJbRjVqmVXZs17Pq_cOa_zdeZER2HVwZ1yzcvJTNLzzWF0robw@mail.gmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH] Allows to change the error output direction &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  [PATCH] Allows to change the error output direction</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] Allows to change the error output direction</h1>
+[<a href="msg07788.html">Date Prev</a>][<a href="msg07790.html">Date Next</a>][<a href="msg07787.html">Thread Prev</a>][<a href="msg07794.html">Thread Next</a>][<a href="maillist.html#07789">Date Index</a>][<a href="index.html#07789">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Allows to change the error output direction</li>
+<li><em>From</em>: Daniel Kwon &lt;dkwon@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 21 Jun 2019 15:14:36 +1000</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Currently, the error() is always printing the output to the console
+through 'stdout'. This does not follow redirection which is good when
+you want to know error while redirecting commands output to a file.
+However, there are situations that you want to hide error messages or
+redirect it into somewhere else.
+
+Using 'set stderr' command, it can be changed to three different
+destination - fixed 'stdout', following redirection (fp), or a custom
+file path.
+
+        crash&gt; set stderr
+        stderr: stdout
+        crash&gt; sym 0x523 &gt; /dev/null
+        sym: invalid address: 0x523
+        crash&gt; set stderr fp
+        stderr: fp
+        crash&gt; sym 0x523 &gt; /dev/null
+        crash&gt; set stderr /tmp/err.log
+        stderr: /tmp/err.log
+        crash&gt; sym 0x523 &gt; /dev/null
+        crash&gt; set stderr stdout
+        stderr: stdout
+        crash&gt; sym 0x523 &gt; /dev/null
+        sym: invalid address: 0x523
+---
+ defs.h  |  2 ++
+ help.c  |  5 +++++
+ main.c  |  2 ++
+ tools.c | 55 ++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ 4 files changed, 61 insertions(+), 3 deletions(-)
+
+diff --git a/defs.h b/defs.h
+index ccffe58..57850c6 100644
+--- a/defs.h
++++ b/defs.h
+@@ -553,6 +553,8 @@ struct program_context {
+  ulong scope; /* optional text context address */
+  ulong nr_hash_queues; /* hash queue head count */
+  char *(*read_vmcoreinfo)(const char *);
++        FILE *stderr;                   /* error() message direction */
++        char stderr_path[PATH_MAX];     /* stderr path information */
+ };
+
+ #define READMEM  pc-&gt;readmem
+diff --git a/help.c b/help.c
+index 581e616..ddc8e86 100644
+--- a/help.c
++++ b/help.c
+@@ -1093,6 +1093,10 @@ char *help_set[] = {
+ &quot;         redzone  on | off     if on, CONFIG_SLUB object addresses
+displayed by&quot;,
+ &quot;                               the kmem command will point to the
+SLAB_RED_ZONE&quot;,
+ &quot;                               padding inserted at the beginning of
+the object.&quot;,
++&quot; stderr  stdout | fp | &lt;path&gt;  set the direction of error put.
+'stdout' always&quot;,
++&quot;                               print on console. 'fp' follows the
+redirection&quot;,
++&quot;                               or pipe command. '&lt;path&gt;' can be any
+file path&quot;,
++&quot;                               in the filesystem which can save the output&quot;,
+ &quot; &quot;,
+ &quot;  Internal variables may be set in four manners:\n&quot;,
+ &quot;    1. entering the set command in $HOME/.%src.&quot;,
+@@ -1144,6 +1148,7 @@ char *help_set[] = {
+ &quot;             scope: (not set)&quot;,
+ &quot;           offline: show&quot;,
+ &quot;           redzone: on&quot;,
++&quot;            stderr: stdout&quot;,
+ &quot; &quot;,
+ &quot;  Show the current context:\n&quot;,
+ &quot;    %s&gt; set&quot;,
+diff --git a/main.c b/main.c
+index 83ccd31..68bdec4 100644
+--- a/main.c
++++ b/main.c
+@@ -1085,6 +1085,8 @@ setup_environment(int argc, char **argv)
+  *  to pipes or output files.
+  */
+  fp = stdout;
++        pc-&gt;stderr = stdout;
++        strcpy(pc-&gt;stderr_path, &quot;stdout&quot;);
+
+  /*
+  *  Start populating the program_context structure.  It's used so
+diff --git a/tools.c b/tools.c
+index 2d95c3a..840d07c 100644
+--- a/tools.c
++++ b/tools.c
+@@ -58,6 +58,9 @@ __error(int type, char *fmt, ...)
+         void *retaddr[NUMBER_STACKFRAMES] = { 0 };
+  va_list ap;
+
++        if (!strcmp(pc-&gt;stderr_path, &quot;fp&quot;))
++                pc-&gt;stderr = fp;
++
+  if (CRASHDEBUG(1) || (pc-&gt;flags &amp; DROP_CORE)) {
+  SAVE_RETURN_ADDRESS(retaddr);
+  console(&quot;error() trace: %lx =&gt; %lx =&gt; %lx =&gt; %lx\n&quot;,
+@@ -69,7 +72,7 @@ __error(int type, char *fmt, ...)
+         va_end(ap);
+
+  if (!fmt &amp;&amp; FATAL_ERROR(type)) {
+- fprintf(stdout, &quot;\n&quot;);
++ fprintf(pc-&gt;stderr, &quot;\n&quot;);
+  clean_exit(1);
+  }
+
+@@ -95,14 +98,14 @@ __error(int type, char *fmt, ...)
+  buf);
+  fflush(pc-&gt;stdpipe);
+  } else {
+- fprintf(stdout, &quot;%s%s%s %s%s&quot;,
++ fprintf(pc-&gt;stderr, &quot;%s%s%s %s%s&quot;,
+  new_line || end_of_line ? &quot;\n&quot; : &quot;&quot;,
+  type == WARNING ? &quot;WARNING&quot; :
+  type == NOTE ? &quot;NOTE&quot; :
+  type == CONT ? spacebuf : pc-&gt;curcmd,
+  type == CONT ? &quot; &quot; : &quot;:&quot;,
+  buf, end_of_line ? &quot;\n&quot; : &quot;&quot;);
+- fflush(stdout);
++ fflush(pc-&gt;stderr);
+  }
+
+         if ((fp != stdout) &amp;&amp; (fp != pc-&gt;stdpipe) &amp;&amp; (fp != pc-&gt;tmpfile)) {
+@@ -2483,6 +2486,51 @@ cmd_set(void)
+  }
+  return;
+
++                } else if (STREQ(args[optind], &quot;stderr&quot;)) {
++                        if (args[optind+1]) {
++                                FILE *tmp_fp = NULL;
++                                char tmp_path[PATH_MAX];
++
++                                optind++;
++                                if (STREQ(args[optind], &quot;stdout&quot;)) {
++                                        tmp_fp = stdout;
++                                        strcpy(tmp_path, &quot;stdout&quot;);
++                                } else if (STREQ(args[optind], &quot;fp&quot;)) {
++                                        tmp_fp = fp;
++                                        strcpy(tmp_path, &quot;fp&quot;);
++                                } else {
++                                        if (strlen(args[optind]) &gt;= PATH_MAX) {
++                                                error(INFO, &quot;path
+length %d is too long. (max=%d)\n&quot;,
++
+strlen(args[optind]), PATH_MAX);
++                                                return;
++                                        }
++                                        tmp_fp = fopen(args[optind], &quot;a&quot;);
++                                        if (tmp_fp != NULL) {
++                                                strcpy(tmp_path, args[optind]);
++                                        } else {
++                                                error(INFO, &quot;invalid
+path: %s\n&quot;,
++                                                      args[optind]);
++                                                return;
++                                        }
++
++                                }
++
++                                if (strcmp(pc-&gt;stderr_path, tmp_path)) {
++                                        if (strcmp(pc-&gt;stderr_path, &quot;stdout&quot;)
++                                            &amp;&amp; strcmp(pc-&gt;stderr_path, &quot;fp&quot;)) {
++                                                fclose(pc-&gt;stderr);
++                                        }
++                                        pc-&gt;stderr = tmp_fp;
++                                        strcpy(pc-&gt;stderr_path, tmp_path);
++                                }
++                        }
++
++                        if (runtime) {
++                                fprintf(fp, &quot;stderr: %s\n&quot;,
++                                        pc-&gt;stderr_path);
++                        }
++                        return;
++
+  } else if (XEN_HYPER_MODE()) {
+  error(FATAL, &quot;invalid argument for the Xen hypervisor\n&quot;);
+  } else if (pc-&gt;flags &amp; MINIMAL_MODE) {
+@@ -2590,6 +2638,7 @@ show_options(void)
+  fprintf(fp, &quot;(not set)\n&quot;);
+  fprintf(fp, &quot;       offline: %s\n&quot;, pc-&gt;flags2 &amp; OFFLINE_HIDE ?
+&quot;hide&quot; : &quot;show&quot;);
+  fprintf(fp, &quot;       redzone: %s\n&quot;, pc-&gt;flags2 &amp; REDZONE ? &quot;on&quot; : &quot;off&quot;);
++ fprintf(fp, &quot;        stderr: %s\n&quot;, pc-&gt;stderr_path);
+ }
+
+
+--
+1.8.3.1
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07794" href="msg07794.html">Re:  [PATCH] Allows to change the error output direction</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07788.html">Re:  [PATCH] timers: add option to show expired	timers only</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07790.html">Re:  [PATCH] timers: add option to show expired	timers only</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07787.html">[PATCH v2] crash: dis: introduce count in reverse	and forward mode</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07794.html">Re:  [PATCH] Allows to change the error output direction</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07789"><strong>Date</strong></a></li>
+<li><a href="index.html#07789"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

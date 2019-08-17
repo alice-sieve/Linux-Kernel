@@ -1,0 +1,926 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 17/20] autofs&#45;5.1.4 &#45; add mount.fedfs.c -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Tue, 13 Feb 2018 22:55:58 &#45;0800 -->
+<!--X-Message-Id: 151859066771.8026.14289769091577711119.stgit@pluto.themaw.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 151859051902.8026.13693256398323544616.stgit@pluto.themaw.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 17/20] autofs-5.1.4 - add mount.fedfs.c &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 17/20] autofs-5.1.4 - add mount.fedfs.c &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 17/20] autofs-5.1.4 - add mount.fedfs.c</h1>
+[<a href="msg01861.html">Date Prev</a>][<a href="msg01863.html">Date Next</a>][<a href="msg01860.html">Thread Prev</a>][<a href="msg01863.html">Thread Next</a>][<a href="maillist.html#01862">Date Index</a>][<a href="index.html#01862">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 17/20] autofs-5.1.4 - add mount.fedfs.c</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 14 Feb 2018 14:44:27 +0800</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg01861.html">151859051902.8026.13693256398323544616.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg01861.html">151859051902.8026.13693256398323544616.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>User-agent</em>: StGit/0.17.1-dirty</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Add build and install of the mount.fedfs binary.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ CHANGELOG                |    1 
+ Makefile                 |    3 
+ Makefile.rules           |    2 
+ autofs.spec              |    1 
+ fedfs/Makefile           |   36 +++
+ fedfs/fedfs-gpl-boiler.h |   40 ++++
+ fedfs/fedfs-nls.h        |   38 ++++
+ fedfs/mount.fedfs.c      |  485 ++++++++++++++++++++++++++++++++++++++++++++++
+ 8 files changed, 605 insertions(+), 1 deletion(-)
+ create mode 100644 fedfs/Makefile
+ create mode 100644 fedfs/fedfs-gpl-boiler.h
+ create mode 100644 fedfs/fedfs-nls.h
+ create mode 100644 fedfs/mount.fedfs.c
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 8d6c737c..88992147 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -15,6 +15,7 @@ xx/xx/2018 autofs-5.1.5
+ - dont allow trailing slash in master map mount points.
+ - fix libresolv configure check.
+ - add fedfs-getsrvinfo.c.
++- add mount.fedfs.c.
+ 
+ 19/12/2017 autofs-5.1.4
+ - fix spec file url.
+diff --git a/Makefile b/Makefile
+index e560a7cb..99db2c75 100644
+--- a/Makefile
++++ b/Makefile
+@@ -19,6 +19,9 @@ kernel:
+ samples:
+ 	set -e; if [ -d samples ]; then $(MAKE) -C samples all; fi
+ 
++fedfs:
++	set -e; if [ -d fedfs ]; then $(MAKE) -C fedfs all; fi
++
+ clean:
+ 	for i in $(SUBDIRS) samples; do \
+ 		if [ -d $$i ]; then $(MAKE) -C $$i clean; fi; done 	
+diff --git a/Makefile.rules b/Makefile.rules
+index 4deab3b9..fc9f6019 100644
+--- a/Makefile.rules
++++ b/Makefile.rules
+@@ -3,7 +3,7 @@
+ #
+ 
+ # Root directory contents
+-SUBDIRS = lib daemon modules man
++SUBDIRS = lib daemon fedfs modules man
+ INCDIRS = include
+ INCFILES = COPYING COPYRIGHT NEWS README* TODO Makefile Makefile.rules \
+ 	   Makefile.conf.in .version .autofs-* configure.in aclocal.m4 \
+diff --git a/autofs.spec b/autofs.spec
+index 2464e741..2cc0e38f 100644
+--- a/autofs.spec
++++ b/autofs.spec
+@@ -191,6 +191,7 @@ fi
+ %config(noreplace) /etc/sysconfig/autofs
+ %config(noreplace) /etc/autofs_ldap_auth.conf
+ %{_sbindir}/automount
++%{_sbindir}/mount.fedfs
+ %dir %{_libdir}/autofs
+ %{_libdir}/autofs/*
+ %{_mandir}/*/*
+diff --git a/fedfs/Makefile b/fedfs/Makefile
+new file mode 100644
+index 00000000..cb325bed
+--- /dev/null
++++ b/fedfs/Makefile
+@@ -0,0 +1,36 @@
++#
++# Makefile for mount.fedfs
++#
++
++-include ../Makefile.conf
++include ../Makefile.rules
++
++SRCS = mount.fedfs.c
++HDRS = fedfs-getsrvinfo.h fedfs-gpl-boiler.h fedfs-nls.h
++
++fedfs-getsrvinfo_OBJ = fedfs-getsrvinfo.o
++
++mount_fedfs_OBJ = mount.fedfs.o
++
++version := $(shell cat ../.version)
++
++CFLAGS += -rdynamic $(DAEMON_CFLAGS) -D_GNU_SOURCE -I../include
++CFLAGS += -DVERSION_STRING=\&quot;$(version)\&quot;
++LDFLAGS += -rdynamic
++
++all: mount.fedfs
++
++mount.fedfs: $(mount_fedfs_OBJ) $(fedfs-getsrvinfo_OBJ) $(HDRS)
++	$(CC) -o mount.fedfs \
++	       $(mount_fedfs_OBJ) $(fedfs-getsrvinfo_OBJ) \
++	       $(LDFLAGS) $(LIBRESOLV) $(LIBS)
++
++clean:
++	rm -f *.o *.s *~ mount.fedfs
++
++install: all
++	install -d -m 755 $(INSTALLROOT)$(sbindir)
++	if ! test -x $(INSTALLROOT)$(sbindir)/mount.fedfs; \
++	then \
++		install -c mount.fedfs -m 755 $(INSTALLROOT)$(sbindir); \
++	fi
+diff --git a/fedfs/fedfs-gpl-boiler.h b/fedfs/fedfs-gpl-boiler.h
+new file mode 100644
+index 00000000..1353e736
+--- /dev/null
++++ b/fedfs/fedfs-gpl-boiler.h
+@@ -0,0 +1,40 @@
++/*
++ * Copyright 2011 Oracle.  All rights reserved.
++ *
++ * This file is part of fedfs-utils.
++ *
++ * fedfs-utils is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2.0 as
++ * published by the Free Software Foundation.
++ *
++ * fedfs-utils is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License version 2.0 for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * version 2.0 along with fedfs-utils.  If not, see:
++ *
++ *	<a  rel="nofollow" href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt">http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt</a>
++ */
++
++#ifndef _GPL_BOILER_H_
++#define _GPL_BOILER_H_
++
++#ifdef HAVE_CONFIG_H
++#include &lt;config.h&gt;
++#endif
++
++/**
++ * GPLv2 boilerplate for usage messages
++ */
++static const char *fedfs_gpl_boilerplate =
++		&quot;\nCopyright 2010, 2011, 2012, 2013 Oracle.  &quot;
++		&quot;All rights reserved.\n\n&quot;
++		&quot;License GPLv2: &quot;
++		&quot;&lt;<a  rel="nofollow" href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt">http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt</a>&gt;\n&quot;
++		&quot;This is free software.  &quot;
++			&quot;You are free to change and redistribute it.\n&quot;
++		&quot;There is NO WARRANTY, to the extent permitted by law.\n&quot;;
++
++#endif	/* !_GPL_BOILER_H_ */
+diff --git a/fedfs/fedfs-nls.h b/fedfs/fedfs-nls.h
+new file mode 100644
+index 00000000..92f968d3
+--- /dev/null
++++ b/fedfs/fedfs-nls.h
+@@ -0,0 +1,38 @@
++/*
++ * From util-linux/include/nls.h (GPLv2)
++ */
++
++#ifndef UTIL_LINUX_NLS_H
++#define UTIL_LINUX_NLS_H
++
++int main(int argc, char *argv[]);
++
++#ifndef LOCALEDIR
++#define LOCALEDIR &quot;/usr/share/locale&quot;
++#endif
++
++#ifdef HAVE_LOCALE_H
++# include &lt;locale.h&gt;
++#else
++# undef setlocale
++# define setlocale(Category, Locale) ({}) /* empty */
++#endif
++
++#ifdef ENABLE_NLS
++# include &lt;libintl.h&gt;
++# define _(Text) gettext (Text)
++# ifdef gettext_noop
++#  define N_(String) gettext_noop (String)
++# else
++#  define N_(String) (String)
++# endif
++#else
++# undef bindtextdomain
++# define bindtextdomain(Domain, Directory) /* empty */
++# undef textdomain
++# define textdomain(Domain) /* empty */
++# define _(Text) (Text)
++# define N_(Text) (Text)
++#endif
++
++#endif /* UTIL_LINUX_NLS_H */
+diff --git a/fedfs/mount.fedfs.c b/fedfs/mount.fedfs.c
+new file mode 100644
+index 00000000..bd434395
+--- /dev/null
++++ b/fedfs/mount.fedfs.c
+@@ -0,0 +1,485 @@
++/*
++ * Copyright 2011 Oracle.  All rights reserved.
++ *
++ * This file is part of fedfs-utils.
++ *
++ * fedfs-utils is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2.0 as
++ * published by the Free Software Foundation.
++ *
++ * fedfs-utils is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License version 2.0 for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * version 2.0 along with fedfs-utils.  If not, see:
++ *
++ *	<a  rel="nofollow" href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt">http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt</a>
++ */
++
++#include &lt;sys/types.h&gt;
++#include &lt;sys/stat.h&gt;
++#include &lt;sys/socket.h&gt;
++#include &lt;sys/mount.h&gt;
++#include &lt;sys/wait.h&gt;
++
++#include &lt;stdbool.h&gt;
++#include &lt;string.h&gt;
++#include &lt;stdlib.h&gt;
++#include &lt;unistd.h&gt;
++#include &lt;stdio.h&gt;
++#include &lt;libgen.h&gt;
++#include &lt;errno.h&gt;
++#include &lt;getopt.h&gt;
++#include &lt;locale.h&gt;
++#include &lt;netdb.h&gt;
++#include &lt;langinfo.h&gt;
++
++#include &quot;fedfs-nls.h&quot;
++#include &quot;fedfs-getsrvinfo.h&quot;
++#include &quot;fedfs-gpl-boiler.h&quot;
++
++/**
++ * Top-level directory on client under which we mount NFSv4 domain roots
++ */
++#define FEDFS_NFS4_TLDIR		&quot;nfs4&quot;
++
++/**
++ * Name of SRV record containing NFSv4 FedFS root
++ */
++#define FEDFS_NFS_DOMAINROOT	&quot;_nfs-domainroot._tcp&quot;
++
++/**
++ * Export path of NFSv4 FedFS root
++ */
++#define FEDFS_NFS_EXPORTPATH	&quot;/.domainroot&quot;
++
++/**
++ * Pathname to mount.nfs
++ */
++#define MOUNT_NFS_EXECUTABLE		&quot;/sbin/mount.nfs&quot;
++
++/**
++ * Mount status values, lifted from util-linux
++ */
++enum {
++	EX_SUCCESS	= 0,
++	EX_USAGE	= 1,
++	EX_FAIL		= 32,
++};
++
++static char *progname;
++static int nomtab;
++static int verbose;
++static _Bool readonly;
++static _Bool sloppy;
++static _Bool fake;
++
++/**
++ * Short form command line options
++ */
++static const char fedfs_opts[] = &quot;fhno:rsvVw&quot;;
++
++/**
++ * Long form command line options
++ */
++static const struct option fedfs_longopts[] =
++{
++	{ &quot;fake&quot;, 0, NULL, 'f' },
++	{ &quot;help&quot;, 0, NULL, 'h' },
++	{ &quot;no-mtab&quot;, 0, NULL, 'n' },
++	{ &quot;options&quot;, 1, NULL, 'o' },
++	{ &quot;read-only&quot;, 0, NULL, 'r' },
++	{ &quot;read-write&quot;, 0, NULL, 'w' },
++	{ &quot;ro&quot;, 0, NULL, 'r' },
++	{ &quot;rw&quot;, 0, NULL, 'w' },
++	{ &quot;sloppy&quot;, 0, NULL, 's' },
++	{ &quot;verbose&quot;, 0, NULL, 'v' },
++	{ &quot;version&quot;, 0, NULL, 'V' },
++	{ NULL, 0, NULL, 0 }
++};
++
++/**
++ * Display mount.fedfs usage message
++ */
++static void
++mount_usage(void)
++{
++	printf(_(&quot;\nUsage: %s remotedir localdir [-fhnrsvVw]\n\n&quot;), progname);
++	printf(_(&quot;options:\n&quot;));
++	printf(_(&quot;\t-f\t\tFake mount, do not actually mount\n&quot;));
++	printf(_(&quot;\t-h\t\tPrint this help\n&quot;));
++	printf(_(&quot;\t-n\t\tDo not update /etc/mtab\n&quot;));
++	printf(_(&quot;\t-r\t\tMount file system readonly\n&quot;));
++	printf(_(&quot;\t-s\t\tTolerate sloppy mount options\n&quot;));
++	printf(_(&quot;\t-v\t\tVerbose\n&quot;));
++	printf(_(&quot;\t-V\t\tPrint version\n&quot;));
++	printf(_(&quot;\t-w\t\tMount file system read-write\n&quot;));
++
++	printf(&quot;%s&quot;, fedfs_gpl_boilerplate);
++}
++
++/**
++ * Concatenate three strings
++ *
++ * @param s NUL-terminated C string
++ * @param t NUL-terminated C string
++ * @param u NUL-terminated C string
++ * @return pointer to NUL-terminated C string or NULL
++ *
++ * Caller must free the returned string with free(3).  Always frees
++ * its first arg - typical use: s = xstrconcat3(s,t,u);
++ *
++ * Lifted from util-linux.
++ */
++static char *
++xstrconcat3(char *s, const char *t, const char *u)
++{
++	_Bool free_s = true;
++	char *result;
++
++	if (s == NULL) {
++		s = &quot;&quot;;
++		free_s = false;
++	}
++	if (t == NULL)
++		t = &quot;&quot;;
++	if (u == NULL)
++		u = &quot;&quot;;
++	result = malloc(strlen(s) + strlen(t) + strlen(u) + 1);
++	if (result == NULL)
++		goto out;
++
++	strcpy(result, s);
++	strcat(result, t);
++	strcat(result, u);
++
++out:
++	if (free_s)
++		free(s);
++	return result;
++}
++
++/**
++ * Exec mount.nfs
++ *
++ * @param server NUL-terminated C string containing name of NFS server
++ * @param port server port to use when mounting
++ * @param domainname NUL-terminated C string containing FedFS domain name
++ * @param export_path NUL-terminated C string containing server export path
++ * @param mounted_on_dir NUL-terminated C string containing local mounted-on directory
++ * @param text_options NUL-terminated C string containing user's mount options
++ *
++ */
++static void
++exec_mount_nfs4(const char *server, unsigned short port,
++		const char *domainname, const char *export_path,
++		const char *mounted_on_dir, const char *text_options)
++{
++	static char special[2048];
++	static char options[2048];
++	char *args[16];
++	int count = 0;
++
++	snprintf(special, sizeof(special), &quot;%s:%s/%s%s&quot;, server,
++			FEDFS_NFS_EXPORTPATH, domainname, export_path);
++
++	if (text_options != NULL &amp;&amp; strcmp(text_options, &quot;&quot;) != 0)
++		snprintf(options, sizeof(options), &quot;%s,vers=4,fg,port=%u&quot;,
++				text_options, port);
++	else
++		snprintf(options, sizeof(options), &quot;vers=4,fg,port=%u&quot;, port);
++
++	if (verbose) {
++		printf(_(&quot;%s: Special device:       %s\n&quot;),
++			progname, special);
++		printf(_(&quot;%s: Mounted-on directory: %s\n&quot;),
++			progname, mounted_on_dir);
++		printf(_(&quot;%s: Mount options:        %s\n&quot;),
++			progname, options);
++	}
++
++	args[count++] = MOUNT_NFS_EXECUTABLE;
++	args[count++] = special;
++	args[count++] = (char *)mounted_on_dir;
++	if (verbose)
++		args[count++] = &quot;-v&quot;;
++	if (fake)
++		args[count++] = &quot;-f&quot;;
++	if (nomtab)
++		args[count++] = &quot;-n&quot;;
++	if (readonly)
++		args[count++] = &quot;-r&quot;;
++	if (sloppy)
++		args[count++] = &quot;-s&quot;;
++	args[count++] = &quot;-o&quot;;
++	args[count++] = options;
++
++	args[count] = NULL;
++	execv(args[0], args);
++}
++
++/**
++ * Mount a FedFS domain root via NFSv4
++ *
++ * @param domainname NUL-terminated C string containing FedFS domain name
++ * @param export_path NUL-terminated C string containing server export path
++ * @param mounted_on_dir NUL-terminated C string containing local mounted-on directory
++ * @param text_options NUL-terminated C string containing user's mount options
++ * @return exit status code from the mount.nfs command
++ *
++ * Construct the server:/export string and the mounted-on directory string
++ * based on the DNS SRV query results, then fork and exec mount.nfs to do
++ * the actual mount request.
++ */
++static int
++nfs4_mount(const char *domainname, const char *export_path,
++		const char *mounted_on_dir, const char *text_options)
++{
++	struct srvinfo *tmp, *si = NULL;
++	int error, status;
++
++	status = EX_FAIL;
++
++	error = getsrvinfo(FEDFS_NFS_DOMAINROOT, domainname, &amp;si);
++	switch (error) {
++	case ESI_SUCCESS:
++		break;
++	case ESI_NONAME:
++		fprintf(stderr, _(&quot;%s: Domain name %s not found\n&quot;),
++			progname, domainname);
++		goto out;
++	case ESI_SERVICE:
++		fprintf(stderr, _(&quot;%s: No FedFS domain root available for %s\n&quot;),
++			progname, domainname);
++		goto out;
++	default:
++		fprintf(stderr, _(&quot;%s: Failed to resolve %s: %s\n&quot;),
++			progname, domainname, gsi_strerror(error));
++		goto out;
++	}
++
++	/*
++	 * The srvinfo list is already in RFC 2782 sorted order.  Try each
++	 * SRV record once, in the foreground.  Go with the first one that
++	 * works.
++	 */
++	for (tmp = si; tmp != NULL; tmp = tmp-&gt;si_next) {
++		pid_t pid;
++
++		pid = fork();
++		switch (pid) {
++		case 0:
++			exec_mount_nfs4(tmp-&gt;si_target, tmp-&gt;si_port,
++					domainname, export_path, mounted_on_dir,
++					text_options);
++			/*NOTREACHED*/
++			fprintf(stderr, _(&quot;%s: Failed to exec: %s\n&quot;),
++				progname, strerror(errno));
++			exit(EX_FAIL);
++		case -1:
++			fprintf(stderr, _(&quot;%s: Failed to fork: %s\n&quot;),
++				progname, strerror(errno));
++			goto out;
++		default:
++			waitpid(pid, &amp;status, 0);
++			if (status == EX_SUCCESS)
++				goto out;
++		}
++	}
++
++out:
++	freesrvinfo(si);
++	return status;
++}
++
++/**
++ * Try one mount request
++ *
++ * @param source NUL-terminated C string containing name of &quot;special device&quot;
++ * @param target NUL-terminated C string containing local mounted-on directory
++ * @param text_options NUL-terminated C string containing user's mount options
++ * @return an exit status code
++ *
++ * Parse the pathname in &quot;source.&quot;  It contains the file system protocol
++ * and FedFS domain name.  Then pass these arguments to the appropriate
++ * mount helper subcommand.
++ */
++static int
++try_mount(const char *source, const char *target, const char *text_options)
++{
++	char *global_name, *topdir, *domainname, *remaining;
++	int result;
++
++	remaining = NULL;
++	result = EX_FAIL;
++
++	global_name = strdup(source);
++	if (global_name == NULL) {
++		fprintf(stderr, _(&quot;%s: Unable to parse globally useful name\n&quot;),
++				progname);
++		goto out;
++	}
++
++	topdir = strtok(global_name, &quot;/&quot;);
++	if (topdir == NULL) {
++		fprintf(stderr, _(&quot;%s: Invalid globally useful name: %s\n&quot;),
++			progname, source);
++		goto out;
++	}
++	if (verbose)
++		printf(_(&quot;%s: Top-level directory:  %s\n&quot;),
++			progname, topdir);
++
++	domainname = strtok(NULL, &quot;/&quot;);
++	if (domainname == NULL) {
++		fprintf(stderr, _(&quot;%s: Missing domain name in globally &quot;
++				&quot;useful name: %s\n&quot;), progname, source);
++		goto out;
++	}
++	if (verbose)
++		printf(_(&quot;%s: Domain name:          %s\n&quot;),
++			progname, domainname);
++
++	remaining = strtok(NULL, &quot;/&quot;);
++	if (remaining == NULL) {
++		remaining = strdup(&quot;/&quot;);
++		if (remaining == NULL) {
++			fprintf(stderr, _(&quot;%s: No memory\n&quot;), progname);
++			goto out;
++		}
++	} else {
++		char *tmp;
++
++		tmp = malloc(strlen(remaining) + 1);
++		if (tmp == NULL) {
++			fprintf(stderr, _(&quot;%s: No memory\n&quot;), progname);
++			remaining = NULL;
++			goto out;
++		}
++		strcpy(tmp, &quot;/&quot;);
++		strcat(tmp, remaining);
++		remaining = tmp;
++	}
++	if (verbose)
++		printf(_(&quot;%s: Export path:          %s\n&quot;),
++			progname, remaining);
++
++	if (strcmp(topdir, FEDFS_NFS4_TLDIR) == 0)
++		result = nfs4_mount(domainname, remaining, target, text_options);
++#if 0
++	/* example: SMB support plugs in here */
++	else if (strcmp(topdir, FEDFS_SMB_TLDIR) == 0)
++		result = smb_mount(domainname, remaining, target, text_options);
++#endif
++	else
++		fprintf(stderr, _(&quot;%s: Unrecognized file system protocol\n&quot;), progname);
++
++out:
++	free(global_name);
++	free(remaining);
++
++	return result;
++}
++
++/**
++ * Program entry point
++ *
++ * @param argc count of command line arguments
++ * @param argv array of NUL-terminated C strings containing command line arguments
++ * @return program exit status
++ */
++int main(int argc, char *argv[])
++{
++	char *source, *target, *text_options;
++	int c, mnt_err;
++
++	(void)setlocale(LC_ALL, &quot;&quot;);
++
++	progname = basename(argv[0]);
++
++	if (argv[1] &amp;&amp; argv[1][0] == '-') {
++		if(argv[1][1] == 'V')
++			printf(&quot;%s (VERSION_STRING)\n&quot;, progname);
++		else
++			mount_usage();
++		exit(EX_SUCCESS);
++	}
++
++	if (argc &lt; 3) {
++		mount_usage();
++		exit(EX_USAGE);
++	}
++
++	source = argv[1];
++	target = argv[2];
++
++	mnt_err = EX_USAGE;
++	text_options = NULL;
++	readonly = false;
++	sloppy = false;
++	fake = false;
++	argv[2] = argv[0]; /* so that getopt error messages are correct */
++	while ((c = getopt_long(argc - 2, argv + 2, fedfs_opts,
++				fedfs_longopts, NULL)) != -1) {
++		switch (c) {
++		case 'f':
++			fake = true;
++			break;
++		case 'n':
++			++nomtab;
++			break;
++		case 'o':
++			/* Ugh. */
++			if (text_options != NULL)
++				text_options = xstrconcat3(text_options, &quot;,&quot;, optarg);
++			else
++				text_options = strdup(optarg);
++			if (text_options == NULL) {
++				fprintf(stderr, _(&quot;%s: No memory\n&quot;), progname);
++				goto out;
++			}
++			break;
++		case 'r':
++			readonly = true;
++			break;
++		case 's':
++			sloppy = true;
++			break;
++		case 'v':
++			++verbose;
++			break;
++		case 'V':
++			printf(&quot;%s: (VERSION_STRING)\n&quot;, progname);
++			mnt_err = EX_SUCCESS;
++			goto out;
++		case 'w':
++			readonly = false;
++			break;
++		case 'h':
++		default:
++			mount_usage();
++			goto out;
++		}
++	}
++
++	/* Extra non-option words at the end are bogus...  */
++	if (optind != argc - 2) {
++		mount_usage();
++		goto out;
++	}
++
++	if (getuid() != 0 &amp;&amp; geteuid() != 0) {
++		fprintf(stderr, _(&quot;%s: Not installed setuid - &quot;
++			    &quot;\&quot;user\&quot; FedFS mounts are not supported\n&quot;), progname);
++		mnt_err = EX_FAIL;
++		goto out;
++	}
++
++	mnt_err = try_mount(source, target, text_options);
++
++out:
++	free(text_options);
++	exit(mnt_err);
++}
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01861" href="msg01861.html">[PATCH 00/20] Current patch queue</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01861.html">[PATCH 00/20] Current patch queue</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01863.html">[PATCH 16/20] autofs-5.1.4 - add fedfs-getsrvinfo.c</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01860.html">[PATCH 01/20] autofs-5.1.4 - fix flag file permission</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01863.html">[PATCH 16/20] autofs-5.1.4 - add fedfs-getsrvinfo.c</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01862"><strong>Date</strong></a></li>
+<li><a href="index.html#01862"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

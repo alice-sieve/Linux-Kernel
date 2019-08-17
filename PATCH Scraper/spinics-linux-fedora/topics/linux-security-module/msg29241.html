@@ -1,0 +1,336 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH V34 04/29] Enforce module signatures if the kernel is locked down -->
+<!--X-From-R13: Yrrf Qbbx &#60;xrrfpbbxNpuebzvhz.bet> -->
+<!--X-Date: Sat, 22 Jun 2019 16:48:20 &#45;0700 -->
+<!--X-Message-Id: 201906221647.181A170A1B@keescook -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190622000358.19895&#45;1&#45;matthewgarrett@google.com -->
+<!--X-Reference: 20190622000358.19895&#45;5&#45;matthewgarrett@google.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, Re: [PATCH V34 04/29] Enforce module signatures if the kernel is locked down">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- Re: [PATCH V34 04/29] Enforce module signatures if the kernel is locked down</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re: [PATCH V34 04/29] Enforce module signatures if the kernel is locked down</h1>
+[<a href="msg29240.html">Date Prev</a>][<a href="msg29242.html">Date Next</a>][<a href="msg29184.html">Thread Prev</a>][<a href="msg29185.html">Thread Next</a>][<a href="maillist.html#29241">Date Index</a>][<a href="index.html#29241">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH V34 04/29] Enforce module signatures if the kernel is locked down</li>
+<li><em>From</em>: Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Sat, 22 Jun 2019 16:48:17 -0700</li>
+<li><em>Cc</em>: jmorris@xxxxxxxxx, linux-security-module@xxxxxxxxxxxxxxx,        linux-kernel@xxxxxxxxxxxxxxx, linux-api@xxxxxxxxxxxxxxx,        David Howells &lt;dhowells@xxxxxxxxxx&gt;, Jessica Yu &lt;jeyu@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29184.html">20190622000358.19895-5-matthewgarrett@google.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg29183.html">20190622000358.19895-1-matthewgarrett@google.com</a>&gt; &lt;<a href="msg29184.html">20190622000358.19895-5-matthewgarrett@google.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On Fri, Jun 21, 2019 at 05:03:33PM -0700, Matthew Garrett wrote:
+&gt; From: David Howells &lt;dhowells@xxxxxxxxxx&gt;
+&gt; 
+&gt; If the kernel is locked down, require that all modules have valid
+&gt; signatures that we can verify.
+&gt; 
+&gt; I have adjusted the errors generated:
+&gt; 
+&gt;  (1) If there's no signature (ENODATA) or we can't check it (ENOPKG,
+&gt;      ENOKEY), then:
+&gt; 
+&gt;      (a) If signatures are enforced then EKEYREJECTED is returned.
+&gt; 
+&gt;      (b) If there's no signature or we can't check it, but the kernel is
+&gt; 	 locked down then EPERM is returned (this is then consistent with
+&gt; 	 other lockdown cases).
+&gt; 
+&gt;  (2) If the signature is unparseable (EBADMSG, EINVAL), the signature fails
+&gt;      the check (EKEYREJECTED) or a system error occurs (eg. ENOMEM), we
+&gt;      return the error we got.
+&gt; 
+&gt; Note that the X.509 code doesn't check for key expiry as the RTC might not
+&gt; be valid or might not have been transferred to the kernel's clock yet.
+&gt; 
+&gt;  [Modified by Matthew Garrett to remove the IMA integration. This will
+&gt;   be replaced with integration with the IMA architecture policy
+&gt;   patchset.]
+&gt; 
+&gt; Signed-off-by: David Howells &lt;dhowells@xxxxxxxxxx&gt;
+&gt; Signed-off-by: Matthew Garrett &lt;matthewgarrett@xxxxxxxxxx&gt;
+&gt; Cc: Jessica Yu &lt;jeyu@xxxxxxxxxx&gt;
+&gt; ---
+&gt;  include/linux/security.h     |  1 +
+&gt;  kernel/module.c              | 38 +++++++++++++++++++++++++++++-------
+&gt;  security/lockdown/lockdown.c |  1 +
+&gt;  3 files changed, 33 insertions(+), 7 deletions(-)
+&gt; 
+&gt; diff --git a/include/linux/security.h b/include/linux/security.h
+&gt; index c808d344ec75..46d85cd63b06 100644
+&gt; --- a/include/linux/security.h
+&gt; +++ b/include/linux/security.h
+&gt; @@ -82,6 +82,7 @@ enum lsm_event {
+&gt;   */
+&gt;  enum lockdown_reason {
+&gt;  	LOCKDOWN_NONE,
+&gt; +	LOCKDOWN_MODULE_SIGNATURE,
+&gt;  	LOCKDOWN_INTEGRITY_MAX,
+&gt;  	LOCKDOWN_CONFIDENTIALITY_MAX,
+&gt;  };
+&gt; diff --git a/kernel/module.c b/kernel/module.c
+&gt; index 0b9aa8ab89f0..6aa681edd660 100644
+&gt; --- a/kernel/module.c
+&gt; +++ b/kernel/module.c
+&gt; @@ -2763,8 +2763,9 @@ static inline void kmemleak_load_module(const struct module *mod,
+&gt;  #ifdef CONFIG_MODULE_SIG
+&gt;  static int module_sig_check(struct load_info *info, int flags)
+&gt;  {
+&gt; -	int err = -ENOKEY;
+&gt; +	int ret, err = -ENODATA;
+&gt;  	const unsigned long markerlen = sizeof(MODULE_SIG_STRING) - 1;
+&gt; +	const char *reason;
+&gt;  	const void *mod = info-&gt;hdr;
+&gt;  
+&gt;  	/*
+&gt; @@ -2779,16 +2780,39 @@ static int module_sig_check(struct load_info *info, int flags)
+&gt;  		err = mod_verify_sig(mod, info);
+&gt;  	}
+&gt;  
+&gt; -	if (!err) {
+&gt; +	switch (err) {
+&gt; +	case 0:
+&gt;  		info-&gt;sig_ok = true;
+&gt;  		return 0;
+&gt; -	}
+&gt;  
+&gt; -	/* Not having a signature is only an error if we're strict. */
+&gt; -	if (err == -ENOKEY &amp;&amp; !is_module_sig_enforced())
+&gt; -		err = 0;
+&gt; +		/* We don't permit modules to be loaded into trusted kernels
+&gt; +		 * without a valid signature on them, but if we're not
+&gt; +		 * enforcing, certain errors are non-fatal.
+&gt; +		 */
+&gt; +	case -ENODATA:
+&gt; +		reason = &quot;Loading of unsigned module&quot;;
+&gt; +		goto decide;
+&gt; +	case -ENOPKG:
+&gt; +		reason = &quot;Loading of module with unsupported crypto&quot;;
+&gt; +		goto decide;
+&gt; +	case -ENOKEY:
+&gt; +		reason = &quot;Loading of module with unavailable key&quot;;
+&gt; +	decide:
+&gt; +		if (is_module_sig_enforced()) {
+&gt; +			pr_notice(&quot;%s is rejected\n&quot;, reason);
+&gt; +			return -EKEYREJECTED;
+&gt; +		}
+&gt;  
+&gt; -	return err;
+&gt; +		ret = security_locked_down(LOCKDOWN_MODULE_SIGNATURE);
+&gt; +		return ret;
+
+return security_locked_down(LOCKDOWN_MODULE_SIGNATURE); ? Means no need
+to add &quot;ret&quot;. Regardless:
+
+Reviewed-by: Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;
+
+-Kees
+
+
+&gt; +
+&gt; +		/* All other errors are fatal, including nomem, unparseable
+&gt; +		 * signatures and signature check failures - even if signatures
+&gt; +		 * aren't required.
+&gt; +		 */
+&gt; +	default:
+&gt; +		return err;
+&gt; +	}
+&gt;  }
+&gt;  #else /* !CONFIG_MODULE_SIG */
+&gt;  static int module_sig_check(struct load_info *info, int flags)
+&gt; diff --git a/security/lockdown/lockdown.c b/security/lockdown/lockdown.c
+&gt; index 8e39b36b8f33..25a3a5b0aa9c 100644
+&gt; --- a/security/lockdown/lockdown.c
+&gt; +++ b/security/lockdown/lockdown.c
+&gt; @@ -18,6 +18,7 @@ static enum lockdown_reason kernel_locked_down;
+&gt;  
+&gt;  static char *lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX+1] = {
+&gt;  	[LOCKDOWN_NONE] = &quot;none&quot;,
+&gt; +	[LOCKDOWN_MODULE_SIGNATURE] = &quot;unsigned module loading&quot;,
+&gt;  	[LOCKDOWN_INTEGRITY_MAX] = &quot;integrity&quot;,
+&gt;  	[LOCKDOWN_CONFIDENTIALITY_MAX] = &quot;confidentiality&quot;,
+&gt;  };
+&gt; -- 
+&gt; 2.22.0.410.gd8fdbe21b5-goog
+&gt; 
+
+-- 
+Kees Cook
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29183" href="msg29183.html">[PATCH V34 00/29] Lockdown as an LSM</a></strong>
+<ul><li><em>From:</em> Matthew Garrett</li></ul></li>
+<li><strong><a name="29184" href="msg29184.html">[PATCH V34 04/29] Enforce module signatures if the kernel is locked down</a></strong>
+<ul><li><em>From:</em> Matthew Garrett</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29240.html">Re: [PATCH V34 03/29] security: Add a static lockdown policy LSM</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29242.html">Re: [PATCH V34 05/29] Restrict /dev/{mem,kmem,port} when the kernel is locked down</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29184.html">[PATCH V34 04/29] Enforce module signatures if the kernel is locked down</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29185.html">[PATCH V34 06/29] kexec_load: Disable at runtime if the kernel is locked down</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29241"><strong>Date</strong></a></li>
+<li><a href="index.html#29241"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

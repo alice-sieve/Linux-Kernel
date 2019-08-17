@@ -1,0 +1,290 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [libosinfo PATCH 2/3] tools,	detect: Use osinfo_db_identify_tree() -->
+<!--X-From-R13: =?GFT&#45;8?d?Tnovnab=20Tvq=Q3=OOapvb?= &#60;svqrapvbNerqung.pbz> -->
+<!--X-Date: Wed, 26 Jun 2019 02:19:31 &#45;0700 -->
+<!--X-Message-Id: 20190626091610.6807&#45;3&#45;fidencio@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190626091610.6807&#45;1&#45;fidencio@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<title>[libosinfo PATCH 2/3] tools,	detect: Use osinfo_db_identify_tree() &mdash; libosinfo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="libosinfo: [libosinfo PATCH 2/3] tools,	detect: Use osinfo_db_identify_tree()">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="libosinfo" href="//feeds.feedburner.com/libosinfo">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[libosinfo PATCH 2/3] tools,	detect: Use osinfo_db_identify_tree()</h1>
+[<a href="msg05907.html">Date Prev</a>][<a href="msg05909.html">Date Next</a>][<a href="msg05907.html">Thread Prev</a>][<a href="msg05909.html">Thread Next</a>][<a href="maillist.html#05908">Date Index</a>][<a href="index.html#05908">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [libosinfo PATCH 2/3] tools,	detect: Use osinfo_db_identify_tree()</li>
+<li><em>From</em>: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 26 Jun 2019 11:16:09 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg05907.html">20190626091610.6807-1-fidencio@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg05907.html">20190626091610.6807-1-fidencio@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Let's switch osinfo-detect to use the new API as the old one will end up
+being deprecated soon.
+
+Also,, the code path for medias and trees is now way more similar with
+the changes.
+
+Signed-off-by: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;
+---
+ tools/osinfo-detect.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/tools/osinfo-detect.c b/tools/osinfo-detect.c
+index c21e694..b5908d6 100644
+--- a/tools/osinfo-detect.c
++++ b/tools/osinfo-detect.c
+@@ -173,8 +173,11 @@ static void print_media(OsinfoMedia *media)
+     g_object_unref(os);
+ }
+ 
+-static void print_os_tree(OsinfoOs *os, OsinfoTree *tree, OsinfoTree *matched_tree)
++static void print_tree(OsinfoTree *tree)
+ {
++    OsinfoOs *os;
++
++    g_object_get(G_OBJECT(tree), &quot;os&quot;, &amp;os, NULL);
+     if (os == NULL)
+         return;
+ 
+@@ -185,15 +188,15 @@ static void print_os_tree(OsinfoOs *os, OsinfoTree *tree, OsinfoTree *matched_tr
+         const gchar *bootiso = osinfo_tree_get_boot_iso_path(tree);
+ 
+         if (!kernel)
+-            kernel = osinfo_tree_get_kernel_path(matched_tree);
++            kernel = osinfo_tree_get_kernel_path(tree);
+         if (!initrd)
+-            initrd = osinfo_tree_get_initrd_path(matched_tree);
++            initrd = osinfo_tree_get_initrd_path(tree);
+         if (!bootiso)
+-            bootiso = osinfo_tree_get_boot_iso_path(matched_tree);
++            bootiso = osinfo_tree_get_boot_iso_path(tree);
+ 
+         g_print(&quot;OSINFO_INSTALLER=%s\n&quot;, id);
+         g_print(&quot;OSINFO_TREE=%s\n&quot;,
+-                osinfo_entity_get_id(OSINFO_ENTITY(matched_tree)));
++                osinfo_entity_get_id(OSINFO_ENTITY(tree)));
+         if (kernel)
+             g_print(&quot;OSINFO_TREE_KERNEL=%s\n&quot;, kernel);
+         if (initrd)
+@@ -205,7 +208,7 @@ static void print_os_tree(OsinfoOs *os, OsinfoTree *tree, OsinfoTree *matched_tr
+         const gchar *name;
+         guint num_variants;
+ 
+-        variants = osinfo_tree_get_os_variants(matched_tree);
++        variants = osinfo_tree_get_os_variants(tree);
+         num_variants = osinfo_list_get_length(OSINFO_LIST(variants));
+         if (num_variants == 1) {
+             OsinfoEntity *variant;
+@@ -299,9 +302,7 @@ gint main(gint argc, gchar **argv)
+         osinfo_db_identify_media(db, media);
+         print_media(media);
+     } else if (type == URL_TYPE_TREE) {
+-        OsinfoOs *os = NULL;
+         OsinfoTree *tree = NULL;
+-        OsinfoTree *matched_tree = NULL;
+         tree = osinfo_tree_create_from_location(argv[1], NULL, &amp;error);
+         if (error != NULL) {
+             g_printerr(_(&quot;Error parsing installer tree: %s\n&quot;), error-&gt;message);
+@@ -309,11 +310,10 @@ gint main(gint argc, gchar **argv)
+             ret = -3;
+             goto EXIT;
+         }
+-        os = osinfo_db_guess_os_from_tree(db, tree, &amp;matched_tree);
+-        print_os_tree(os, tree, matched_tree);
++        osinfo_db_identify_tree(db, tree);
++        print_tree(tree);
+     }
+ 
+-
+ EXIT:
+     g_clear_error(&amp;error);
+     g_clear_object(&amp;loader);
+-- 
+2.21.0
+
+_______________________________________________
+Libosinfo mailing list
+Libosinfo@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libosinfo">https://www.redhat.com/mailman/listinfo/libosinfo</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05907.html">[libosinfo PATCH 0/3] Add osinfo_db_identify_tree() API</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05909.html">[libosinfo PATCH 1/3] db: Add identify_tree() API</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05907.html">[libosinfo PATCH 0/3] Add osinfo_db_identify_tree() API</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05909.html">[libosinfo PATCH 1/3] db: Add identify_tree() API</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05908"><strong>Date</strong></a></li>
+<li><a href="index.html#05908"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

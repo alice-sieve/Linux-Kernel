@@ -1,0 +1,336 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] ALSA: usb&#45;audio: Fix parse of UAC2 Extension	Units -->
+<!--X-From-R13: Fnxnfuv Wjnv &#60;gvjnvNfhfr.qr> -->
+<!--X-Date: Thu, 4 Jul 2019 07:49:17 &#45;0700 -->
+<!--X-Message-Id: 20190704144806.30513&#45;1&#45;tiwai@suse.de -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH] ALSA: usb-audio: Fix parse of UAC2 Extension	Units &mdash; ALSA Devel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH] ALSA: usb-audio: Fix parse of UAC2 Extension	Units &mdash; ALSA Devel</title>
+<link rel="alternate" type="application/rss+xml" title="ALSA Devel" href="//feedproxy.google.com/AlsaDevel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] ALSA: usb-audio: Fix parse of UAC2 Extension	Units</h1>
+[<a href="msg93531.html">Date Prev</a>][<a href="msg93533.html">Date Next</a>][<a href="msg93527.html">Thread Prev</a>][<a href="msg93534.html">Thread Next</a>][<a href="maillist.html#93532">Date Index</a>][<a href="threads.html#93532">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: alsa-devel@xxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH] ALSA: usb-audio: Fix parse of UAC2 Extension	Units</li>
+<li><em>From</em>: Takashi Iwai &lt;tiwai@xxxxxxx&gt;</li>
+<li><em>Date</em>: Thu,  4 Jul 2019 16:48:06 +0200</li>
+<li><em>Cc</em>: Greg Kroah-Hartman &lt;gregkh@xxxxxxxxxxxxxxxxxxx&gt;, linux-usb@xxxxxxxxxxxxxxx,        Stefan Sauer &lt;ensonic@xxxxxxxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Extension Unit (XU) is used to have a compatible layout with
+Processing Unit (PU) on UAC1, and the usb-audio driver code assumed it
+for parsing the descriptors.  Meanwhile, on UAC2, XU became slightly
+incompatible with PU; namely, XU has a one-byte bmControls bitmap
+while PU has two bytes bmControls bitmap.  This incompatibility
+results in the read of a wrong address for the last iExtension field,
+which ended up with an incorrect string for the mixer element name, as
+recently reported for Focusrite Scarlett 18i20 device.
+
+This patch corrects the present misalignment by introducing a couple
+of new macros and calling them depending on the descriptor type.
+
+Reported-by: Stefan Sauer &lt;ensonic@xxxxxxxxxxxxxxx&gt;
+Cc: &lt;stable@xxxxxxxxxxxxxxx&gt;
+Signed-off-by: Takashi Iwai &lt;tiwai@xxxxxxx&gt;
+---
+ include/uapi/linux/usb/audio.h | 37 +++++++++++++++++++++++++++++++++++++
+ sound/usb/mixer.c              | 16 ++++++++++------
+ 2 files changed, 47 insertions(+), 6 deletions(-)
+
+diff --git a/include/uapi/linux/usb/audio.h b/include/uapi/linux/usb/audio.h
+index ddc5396800aa..76b7c3f6cd0d 100644
+--- a/include/uapi/linux/usb/audio.h
++++ b/include/uapi/linux/usb/audio.h
+@@ -450,6 +450,43 @@ static inline __u8 *uac_processing_unit_specific(struct uac_processing_unit_desc
+ 	}
+ }
+ 
++/*
++ * Extension Unit (XU) has almost compatible layout with Processing Unit, but
++ * on UAC2, it has a different bmControls size (bControlSize); it's 1 byte for
++ * XU while 2 bytes for PU.  The last iExtension field is a one-byte index as
++ * well as iProcessing field of PU.
++ */
++static inline __u8 uac_extension_unit_bControlSize(struct uac_processing_unit_descriptor *desc,
++						   int protocol)
++{
++	switch (protocol) {
++	case UAC_VERSION_1:
++		return desc-&gt;baSourceID[desc-&gt;bNrInPins + 4];
++	case UAC_VERSION_2:
++		return 1; /* in UAC2, this value is constant */
++	case UAC_VERSION_3:
++		return 4; /* in UAC3, this value is constant */
++	default:
++		return 1;
++	}
++}
++
++static inline __u8 uac_extension_unit_iExtension(struct uac_processing_unit_descriptor *desc,
++						 int protocol)
++{
++	__u8 control_size = uac_extension_unit_bControlSize(desc, protocol);
++
++	switch (protocol) {
++	case UAC_VERSION_1:
++	case UAC_VERSION_2:
++	default:
++		return *(uac_processing_unit_bmControls(desc, protocol)
++			 + control_size);
++	case UAC_VERSION_3:
++		return 0; /* UAC3 does not have this field */
++	}
++}
++
+ /* 4.5.2 Class-Specific AS Interface Descriptor */
+ struct uac1_as_header_descriptor {
+ 	__u8  bLength;			/* in bytes: 7 */
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index e003b5e7b01a..ac121b10c51c 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -2318,7 +2318,7 @@ static struct procunit_info extunits[] = {
+  */
+ static int build_audio_procunit(struct mixer_build *state, int unitid,
+ 				void *raw_desc, struct procunit_info *list,
+-				char *name)
++				bool extension_unit)
+ {
+ 	struct uac_processing_unit_descriptor *desc = raw_desc;
+ 	int num_ins;
+@@ -2335,6 +2335,8 @@ static int build_audio_procunit(struct mixer_build *state, int unitid,
+ 	static struct procunit_info default_info = {
+ 		0, NULL, default_value_info
+ 	};
++	const char *name = extension_unit ?
++		&quot;Extension Unit&quot; : &quot;Processing Unit&quot;;
+ 
+ 	if (desc-&gt;bLength &lt; 13) {
+ 		usb_audio_err(state-&gt;chip, &quot;invalid %s descriptor (id %d)\n&quot;, name, unitid);
+@@ -2448,7 +2450,10 @@ static int build_audio_procunit(struct mixer_build *state, int unitid,
+ 		} else if (info-&gt;name) {
+ 			strlcpy(kctl-&gt;id.name, info-&gt;name, sizeof(kctl-&gt;id.name));
+ 		} else {
+-			nameid = uac_processing_unit_iProcessing(desc, state-&gt;mixer-&gt;protocol);
++			if (extension_unit)
++				nameid = uac_extension_unit_iExtension(desc, state-&gt;mixer-&gt;protocol);
++			else
++				nameid = uac_processing_unit_iProcessing(desc, state-&gt;mixer-&gt;protocol);
+ 			len = 0;
+ 			if (nameid)
+ 				len = snd_usb_copy_string_desc(state-&gt;chip,
+@@ -2481,10 +2486,10 @@ static int parse_audio_processing_unit(struct mixer_build *state, int unitid,
+ 	case UAC_VERSION_2:
+ 	default:
+ 		return build_audio_procunit(state, unitid, raw_desc,
+-				procunits, &quot;Processing Unit&quot;);
++					    procunits, false);
+ 	case UAC_VERSION_3:
+ 		return build_audio_procunit(state, unitid, raw_desc,
+-				uac3_procunits, &quot;Processing Unit&quot;);
++					    uac3_procunits, false);
+ 	}
+ }
+ 
+@@ -2495,8 +2500,7 @@ static int parse_audio_extension_unit(struct mixer_build *state, int unitid,
+ 	 * Note that we parse extension units with processing unit descriptors.
+ 	 * That's ok as the layout is the same.
+ 	 */
+-	return build_audio_procunit(state, unitid, raw_desc,
+-				    extunits, &quot;Extension Unit&quot;);
++	return build_audio_procunit(state, unitid, raw_desc, extunits, true);
+ }
+ 
+ /*
+-- 
+2.16.4
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@xxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://mailman.alsa-project.org/mailman/listinfo/alsa-devel">https://mailman.alsa-project.org/mailman/listinfo/alsa-devel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg93531.html">Re:  [PATCH] MLK-22197 sound: asoc: add micfil dc remover amixer control</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg93533.html">Re:  [PATCH] ASoC: wcd9335: remove multiple defines.</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg93527.html">[PATCH] MLK-22197 sound: asoc: add micfil dc remover	amixer control</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg93534.html">[PATCH v2] ASoC: wcd9335: remove multiple defines.</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#93532"><strong>Date</strong></a></li>
+<li><a href="threads.html#93532"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/alsa-user/>[ALSA&nbsp;User]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/pulse-audio/>[Pulse&nbsp;Audio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=http://yosemitephotos.net/>[Photo&nbsp;Sharing]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/linux-sound/>[Linux&nbsp;Sound]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-media/>[Video&nbsp;4&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gimp/>[Gimp]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

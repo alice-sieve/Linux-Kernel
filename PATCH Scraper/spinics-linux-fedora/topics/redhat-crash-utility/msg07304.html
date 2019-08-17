@@ -1,0 +1,268 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2 1/2] dynamically allocate schedulers_buf -->
+<!--X-From-R13: @vxbyn Bnwxbifxl &#60;acnwxbifxlNfhfr.pm> -->
+<!--X-Date: Fri, 2 Feb 2018 08:28:28 &#45;0800 -->
+<!--X-Message-Id: fdfd3ba77c94b651cd5ef560ad3ba5adf6ccbb07.1517588811.git.npajkovsky@suse.cz -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH v2 1/2] dynamically allocate schedulers_buf &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  [PATCH v2 1/2] dynamically allocate schedulers_buf</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v2 1/2] dynamically allocate schedulers_buf</h1>
+[<a href="msg07303.html">Date Prev</a>][<a href="msg07305.html">Date Next</a>][<a href="msg07299.html">Thread Prev</a>][<a href="msg07303.html">Thread Next</a>][<a href="maillist.html#07304">Date Index</a>][<a href="index.html#07304">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v2 1/2] dynamically allocate schedulers_buf</li>
+<li><em>From</em>: Nikola Pajkovsky &lt;npajkovsky@xxxxxxx&gt;</li>
+<li><em>Date</em>: Fri,  2 Feb 2018 17:28:08 +0100</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>crash can simply determinate length of xen schedulers struct.
+
+  static const struct scheduler *schedulers[] = {
+  	 ...
+  };
+
+Signed-off-by: Nikola Pajkovsky &lt;npajkovsky@xxxxxxx&gt;
+---
+ xen_hyper.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/xen_hyper.c b/xen_hyper.c
+index 27e44c6e733d..479aa1acfd43 100644
+--- a/xen_hyper.c
++++ b/xen_hyper.c
+@@ -435,7 +435,6 @@ xen_hyper_misc_init(void)
+ /*
+  * Do initialization for scheduler of Xen Hyper system here.
+  */
+-#define XEN_HYPER_SCHEDULERS_ARRAY_CNT 10
+ #define XEN_HYPER_SCHEDULER_NAME 1024
+ 
+ static void
+@@ -443,7 +442,8 @@ xen_hyper_schedule_init(void)
+ {
+ 	ulong addr, opt_sched, schedulers, opt_name;
+ 	long scheduler_opt_name;
+-	long schedulers_buf[XEN_HYPER_SCHEDULERS_ARRAY_CNT];
++	long *schedulers_buf;
++	int nr_schedulers;
+ 	struct xen_hyper_sched_context *schc;
+ 	char *buf;
+ 	char opt_name_buf[XEN_HYPER_OPT_SCHED_SIZE];
+@@ -469,15 +469,17 @@ xen_hyper_schedule_init(void)
+ 	XEN_HYPER_OPT_SCHED_SIZE, &quot;opt_sched,&quot;, RETURN_ON_ERROR)) {
+ 		error(FATAL, &quot;cannot read opt_sched,.\n&quot;);
+ 	}
++	nr_schedulers = get_array_length(&quot;schedulers&quot;, 0, 0);
++	schedulers_buf = (long *)GETBUF(nr_schedulers * sizeof(long));
+ 	schedulers = symbol_value(&quot;schedulers&quot;);
+ 	addr = schedulers;
+ 	while (xhscht-&gt;name == NULL) {
+ 		if (!readmem(addr, KVADDR, schedulers_buf,
+-		sizeof(long) * XEN_HYPER_SCHEDULERS_ARRAY_CNT,
+-		&quot;schedulers&quot;, RETURN_ON_ERROR)) {
++			     sizeof(long) * nr_schedulers,
++			     &quot;schedulers&quot;, RETURN_ON_ERROR)) {
+ 			error(FATAL, &quot;cannot read schedulers.\n&quot;);
+ 		}
+-		for (i = 0; i &lt; XEN_HYPER_SCHEDULERS_ARRAY_CNT; i++) {
++		for (i = 0; i &lt; nr_schedulers; i++) {
+ 			if (schedulers_buf[i] == 0) {
+ 				error(FATAL, &quot;schedule data not found.\n&quot;);
+ 			}
+@@ -514,9 +516,10 @@ xen_hyper_schedule_init(void)
+ 			strncpy(xhscht-&gt;name, buf, strlen(buf));
+ 			break;
+ 		}
+-		addr += sizeof(long) * XEN_HYPER_SCHEDULERS_ARRAY_CNT;
++		addr += sizeof(long) * nr_schedulers;
+ 	}
+ 	FREEBUF(buf);
++	FREEBUF(schedulers_buf);
+ 
+ 	/* get schedule_data information */
+ 	if((xhscht-&gt;sched_context_array =
+-- 
+2.13.6
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07303" href="msg07303.html">[PATCH v2 2/2] fix error crash: cannot resolve	&quot;schedulers&quot;</a></strong>
+<ul><li><em>From:</em> Nikola Pajkovsky</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07303.html">[PATCH v2 2/2] fix error crash: cannot resolve	&quot;schedulers&quot;</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07305.html">Re:  [PATCH v2 2/2] fix error crash: cannot	resolve	&quot;schedulers&quot;</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07299.html">[PATCH] Extend Xen hypervisor direct mapping on	x86_64</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07303.html">[PATCH v2 2/2] fix error crash: cannot resolve	&quot;schedulers&quot;</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07304"><strong>Date</strong></a></li>
+<li><a href="index.html#07304"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

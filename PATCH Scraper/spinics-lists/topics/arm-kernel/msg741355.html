@@ -1,0 +1,305 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock -->
+<!--X-From-R13: Invzna Zbat &#60;ybatznaNerqung.pbz> -->
+<!--X-Date: Tue, 16 Jul 2019 07:50:23 &#45;0700 -->
+<!--X-Message-Id: 2a7a3ea8&#45;7a94&#45;52d4&#45;b8ef&#45;581de28e0063@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715192536.104548&#45;1&#45;alex.kogan@oracle.com -->
+<!--X-Reference: 20190715192536.104548&#45;4&#45;alex.kogan@oracle.com -->
+<!--X-Reference: 77bba626&#45;f3e6&#45;45a8&#45;aae8&#45;43b945d0fab9@redhat.com -->
+<!--X-Reference: aa73b86d&#45;902a&#45;bb6f&#45;d372&#45;8645c8299a6d@redhat.com -->
+<!--X-Reference: C1C55A40&#45;FDB1&#45;43B5&#45;B551&#45;F9B8BE776DF8@oracle.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</h1>
+[<a href="msg741354.html">Date Prev</a>][<a href="msg741356.html">Date Next</a>][<a href="msg741351.html">Thread Prev</a>][<a href="msg741629.html">Thread Next</a>][<a href="maillist.html#741355">Date Index</a>][<a href="threads.html#741355">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</li>
+<li><em>From</em>: Waiman Long &lt;longman@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 16 Jul 2019 10:50:09 -0400</li>
+<li><em>In-reply-to</em>: &lt;C1C55A40-FDB1-43B5-B551-F9B8BE776DF8@oracle.com&gt;</li>
+<li><em>Organization</em>: Red Hat</li>
+<li><em>User-agent</em>: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Thunderbird/60.7.0</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On 7/16/19 10:29 AM, Alex Kogan wrote:
+&gt;<i></i>
+&gt;<i>&gt; On Jul 15, 2019, at 7:22 PM, Waiman Long &lt;longman@xxxxxxxxxx</i>
+&gt;<i>&gt; &lt;<a  rel="nofollow" href="mailto:longman@xxxxxxxxxx">mailto:longman@xxxxxxxxxx</a>&gt;&gt; wrote:</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt; On 7/15/19 5:30 PM, Waiman Long wrote:</i>
+&gt;<i>&gt;&gt;&gt; -#ifndef _GEN_PV_LOCK_SLOWPATH</i>
+&gt;<i>&gt;&gt;&gt; +#if !defined(_GEN_PV_LOCK_SLOWPATH) &amp;&amp; !defined(_GEN_CNA_LOCK_SLOWPATH)</i>
+&gt;<i>&gt;&gt;&gt;  </i>
+&gt;<i>&gt;&gt;&gt;  #include &lt;linux/smp.h&gt;</i>
+&gt;<i>&gt;&gt;&gt;  #include &lt;linux/bug.h&gt;</i>
+&gt;<i>&gt;&gt;&gt; @@ -77,18 +77,14 @@</i>
+&gt;<i>&gt;&gt;&gt;  #define MAX_NODES	4</i>
+&gt;<i>&gt;&gt;&gt;  </i>
+&gt;<i>&gt;&gt;&gt;  /*</i>
+&gt;<i>&gt;&gt;&gt; - * On 64-bit architectures, the mcs_spinlock structure will be 16 bytes in</i>
+&gt;<i>&gt;&gt;&gt; - * size and four of them will fit nicely in one 64-byte cacheline. For</i>
+&gt;<i>&gt;&gt;&gt; - * pvqspinlock, however, we need more space for extra data. To accommodate</i>
+&gt;<i>&gt;&gt;&gt; - * that, we insert two more long words to pad it up to 32 bytes. IOW, only</i>
+&gt;<i>&gt;&gt;&gt; - * two of them can fit in a cacheline in this case. That is OK as it is rare</i>
+&gt;<i>&gt;&gt;&gt; - * to have more than 2 levels of slowpath nesting in actual use. We don't</i>
+&gt;<i>&gt;&gt;&gt; - * want to penalize pvqspinlocks to optimize for a rare case in native</i>
+&gt;<i>&gt;&gt;&gt; - * qspinlocks.</i>
+&gt;<i>&gt;&gt;&gt; + * On 64-bit architectures, the mcs_spinlock structure will be 20 bytes in</i>
+&gt;<i>&gt;&gt;&gt; + * size. For pvqspinlock or the NUMA-aware variant, however, we need more</i>
+&gt;<i>&gt;&gt;&gt; + * space for extra data. To accommodate that, we insert two more long words</i>
+&gt;<i>&gt;&gt;&gt; + * to pad it up to 36 bytes.</i>
+&gt;<i>&gt;&gt;&gt;   */</i>
+&gt;<i>&gt;&gt; The 20 bytes figure is wrong. It is actually 24 bytes for 64-bit as the</i>
+&gt;<i>&gt;&gt; mcs_spinlock structure is 8-byte aligned. For better cacheline</i>
+&gt;<i>&gt;&gt; alignment, I will like to keep mcs_spinlock to 16 bytes as before.</i>
+&gt;<i>&gt;&gt; Instead, you can use encode_tail() to store the CNA node pointer in</i>
+&gt;<i>&gt;&gt; &quot;locked&quot;. For instance, use (encode_tail() &lt;&lt; 1) in locked to</i>
+&gt;<i>&gt;&gt; distinguish it from the regular locked=1 value.</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt; Actually, the encoded tail value is already shift left either 16 bits</i>
+&gt;<i>&gt; or 9 bits. So there is no need to shift it. You can assigned it directly:</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt; mcs-&gt;locked = cna-&gt;encoded_tail;</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt; You do need to change the type of locked to &quot;unsigned int&quot;, though,</i>
+&gt;<i>&gt; for proper comparison with &quot;1&quot;.</i>
+&gt;<i>&gt;</i>
+&gt;<i> Got it, thanks.</i>
+&gt;<i></i>
+I forgot to mention that I would like to see a boot command line option
+to force off and maybe on as well the numa qspinlock code. This can help
+in testing as you don't need to build 2 separate kernels, one with
+NUMA_AWARE_SPINLOCKS on and one with it off. For small 2-socket systems,
+numa qspinlock may not help much. So an option to turn it off can be
+useful. Xen also have an option to turns off PV qspinlock.
+
+-Longman
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="741629" href="msg741629.html">Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</a></strong>
+<ul><li><em>From:</em> Alex Kogan</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="741213" href="msg741213.html">[PATCH v3 0/5] Add NUMA-awareness to qspinlock</a></strong>
+<ul><li><em>From:</em> Alex Kogan</li></ul></li>
+<li><strong><a name="741214" href="msg741214.html">[PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</a></strong>
+<ul><li><em>From:</em> Alex Kogan</li></ul></li>
+<li><strong><a name="741222" href="msg741222.html">Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</a></strong>
+<ul><li><em>From:</em> Waiman Long</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741354.html">Re: [PATCH 18/18] arm64: dts: hikey: Convert to the hierarchical CPU topology layout</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741356.html">Re: [PATCH 02/12] Documentation/arm: repointer docs to Documentation/arch/arm</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741351.html">Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741629.html">Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741355"><strong>Date</strong></a></li>
+<li><a href="threads.html#741355"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

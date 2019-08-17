@@ -1,0 +1,350 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 2/2] Add virt&#45;install &#45;&#45;import option -->
+<!--X-From-R13: Qbyr Dbovafba &#60;pebovafbNerqung.pbz> -->
+<!--X-Date: Wed, 18 Feb 2009 18:47:05 &#45;0800 -->
+<!--X-Message-Id: 499CC79C.2050301@redhat.com -->
+<!--X-Content-Type: multipart/mixed -->
+<!--X-Reference: 499CC728.8060101@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Management Tools, [PATCH 2/2] Add virt-install --import option">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="Fedora Management Tools" href="//feedproxy.google.com/Fedora/linuxManagementTools">
+<title>Fedora Management Tools -- [PATCH 2/2] Add virt-install --import option</title>
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 2/2] Add virt-install --import option</h1>
+[<a href="msg04688.html">Date Prev</a>][<a href="msg04690.html">Date Next</a>][<a href="msg04688.html">Thread Prev</a>][<a href="msg04709.html">Thread Next</a>][<a href="maillist.html#04689">Date Index</a>][<a href="index.html#04689">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 2/2] Add virt-install --import option</li>
+<li><em>From</em>: Cole Robinson &lt;<a href="mailto:crobinso@DOMAIN.HIDDEN">crobinso@xxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Wed, 18 Feb 2009 21:44:44 -0500</li>
+<li><em>In-reply-to</em>: &lt;<a href="mailto:499CC728.8060101@DOMAIN.HIDDEN">499CC728.8060101@xxxxxxxxxx</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="mailto:499CC728.8060101@DOMAIN.HIDDEN">499CC728.8060101@xxxxxxxxxx</a>&gt;</li>
+<li><em>Reply-to</em>: Fedora/Linux Management Tools &lt;<a href="mailto:et-mgmt-tools@DOMAIN.HIDDEN">et-mgmt-tools@xxxxxxxxxx</a>&gt;</li>
+<li><em>User-agent</em>: Thunderbird 2.0.0.19 (X11/20090105)</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This patch adds the --import option to virt-install. --import is a new
+install method, which arranges for the guest to boot off the first
+specified storage device.
+
+So, given an existing disk image '/home/user/myvm.img', an example
+command line could be:
+
+virt-install --name myvm --ram 512 \
+             --disk path=/home/user/myvm.img --import
+
+Thanks,
+Cole
+</pre><pre># HG changeset patch
+# User Cole Robinson &lt;crobinso@xxxxxxxxxx&gt;
+# Date 1235006852 18000
+# Node ID 216b907240c03328103419302c04303431822bd8
+# Parent  38db2ccaff913afb4c4ef823e58f2ce7d609b73f
+Add virt-install --import option, to use the ImportInstaller
+
+diff -r 38db2ccaff91 -r 216b907240c0 man/en/virt-install.pod
+--- a/man/en/virt-install.pod	Wed Feb 18 20:16:03 2009 -0500
++++ b/man/en/virt-install.pod	Wed Feb 18 20:27:32 2009 -0500
+@@ -309,6 +309,12 @@
+ needs to be configured to boot off the CDROM device permanently. It
+ may be desirable to also use the C&lt;--nodisks&gt; flag in combination.
+ 
++=item  --import
++
++Skip the OS installation process, and build a guest around an existing
++disk image. The device used for booting is the first device specified via
++C&lt;--disk&gt; or C&lt;--file&gt;.
++
+ =item  -v, --hvm             This guest should be a fully virtualized guest
+ 
+ Request the use of full virtualization, if both para &amp; full virtualization are
+@@ -667,8 +673,16 @@
+        --nographics \
+        --location <a  rel="nofollow" href="http://download.fedora.redhat.com/pub/fedora/linux/core/6/x86_64/os/">http://download.fedora.redhat.com/pub/fedora/linux/core/6/x86_64/os/</a>
+ 
++Create a guest from an existing disk image 'mydisk.img' using defaults for
++the rest of the options.
+ 
+-=head1 AUTHOR
++  # virt-install \
++       --name demo
++       --ram 512
++       --disk path=/home/user/VMs/mydisk.img
++       --import
++
++=head1 AUTHORS
+ 
+ Written by Daniel P. Berrange, Hugh Brock, Jeremy Katz, Cole Robinson and a
+ team of many other contributors. See the AUTHORS file in the source
+@@ -687,7 +701,7 @@
+ 
+ =head1 COPYRIGHT
+ 
+-Copyright (C) 2006-2007 Red Hat, Inc, and various contributors. 
++Copyright (C) 2006-2009 Red Hat, Inc, and various contributors. 
+ This is free software. You may redistribute copies of it under the terms of the GNU General 
+ Public License C&lt;<a  rel="nofollow" href="http://www.gnu.org/licenses/gpl.html">http://www.gnu.org/licenses/gpl.html</a>&gt;. There is NO WARRANTY, to the extent 
+ permitted by law.
+diff -r 38db2ccaff91 -r 216b907240c0 virt-install
+--- a/virt-install	Wed Feb 18 20:16:03 2009 -0500
++++ b/virt-install	Wed Feb 18 20:27:32 2009 -0500
+@@ -260,10 +260,16 @@
+     guest.extraargs = extra
+ 
+ 
+-def get_install_media(location, cdpath, pxe, livecd, guest, ishvm):
++def get_install_media(location, cdpath, pxe, livecd, import_install,
++                      guest, ishvm):
+ 
+-    if (pxe and location) or (location and cdpath) or (cdpath and pxe):
+-        fail(_(&quot;Only one of --pxe, --location and --cdrom can be used&quot;))
++    found = False
++    for m in [pxe, location, cdpath, import_install]:
++        if m:
++            if found:
++                fail(_(&quot;Only one install method (%s) can be used&quot;) %
++                       &quot;--pxe, --location, --cdrom, --import&quot;)
++            found = True
+ 
+     if not ishvm:
+         if pxe:
+@@ -271,22 +277,21 @@
+                    &quot;guests&quot;))
+         if cdpath or livecd:
+             fail(_(&quot;Paravirtualized guests cannot install off cdrom media.&quot;))
+-        if location is None:
+-            fail(_(&quot;location must be specified for paravirtualized guests.&quot;))
+ 
+     if location and virtinst.util.is_uri_remote(guest.conn.getURI()):
+         fail(_(&quot;--location can not be specified for remote connections.&quot;))
+ 
+     cdinstall = (cdpath or False)
+-    if not (pxe or cdpath or location):
++    if not (pxe or cdpath or location or import_install):
+         # Look at Guest disks: if there is a cdrom, use for install
+         for disk in guest.disks:
+             if disk.device == virtinst.VirtualDisk.DEVICE_CDROM:
+                 cdinstall = True
+         if not cdinstall:
+-            fail(_(&quot;One of --pxe, --location, or cdrom media must be &quot;
+-                    &quot;specified.&quot;))
+-    if pxe:
++            fail(_(&quot;One of %s, or cdrom media must be specified.&quot;) %
++                  &quot;--pxe, --location, --import&quot;)
++
++    if pxe or import_install:
+         return
+     try:
+         if location or cdpath:
+@@ -391,6 +396,8 @@
+                     help=_(&quot;Boot from the network using the PXE protocol&quot;))
+     insg.add_option(&quot;&quot;, &quot;--livecd&quot;, action=&quot;store_true&quot;, dest=&quot;livecd&quot;,
+                     help=_(&quot;Treat the CD-ROM media as a Live CD&quot;))
++    insg.add_option(&quot;&quot;, &quot;--import&quot;, action=&quot;store_true&quot;, dest=&quot;import_install&quot;,
++                    help=_(&quot;Build guest around an existing disk image&quot;))
+     insg.add_option(&quot;-x&quot;, &quot;--extra-args&quot;, type=&quot;string&quot;, dest=&quot;extra&quot;,
+                     default=&quot;&quot;,
+                     help=_(&quot;Additional arguments to pass to the kernel &quot;
+@@ -555,6 +562,8 @@
+             fail(_(&quot;Can't use --pxe with --nonetworks&quot;))
+ 
+         instclass = virtinst.PXEInstaller
++    elif options.import_install:
++        instclass = virtinst.ImportInstaller
+     else:
+         instclass = virtinst.DistroInstaller
+     installer = instclass(type=hv_name, os_type=virt_type, conn=conn)
+@@ -595,7 +604,7 @@
+ 
+     # and now for the full-virt vs paravirt specific questions
+     get_install_media(options.location, options.cdrom, options.pxe,
+-                      options.livecd, guest, ishvm)
++                      options.livecd, options.import_install, guest, ishvm)
+     if not ishvm: # paravirt
+         continue_inst = False
+     else:
+</pre><pre>_______________________________________________
+et-mgmt-tools mailing list
+et-mgmt-tools@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/et-mgmt-tools">https://www.redhat.com/mailman/listinfo/et-mgmt-tools</a></pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="04687" href="msg04687.html">[PATCH 0/2] Add virt-install --import option</a></strong>
+<ul><li><em>From:</em> Cole Robinson</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg04688.html">[PATCH 1/2] Add new ImportInstaller class</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg04690.html">Dell 6850</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg04688.html">[PATCH 1/2] Add new ImportInstaller class</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg04709.html">Re:  [PATCH 0/2] Add virt-install --import option</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#04689"><strong>Date</strong></a></li>
+<li><a href="index.html#04689"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fll/>[Fedora&nbsp;Legacy&nbsp;List]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

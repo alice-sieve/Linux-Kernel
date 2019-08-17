@@ -1,0 +1,416 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re:  [PATCH] Speed up "kmem &#45;[sS]" by optimizing is_page_ptr() -->
+<!--X-From-R13: Ynmhuvgb Vntvb &#60;x&#45;untvbNno.wc.arp.pbz> -->
+<!--X-Date: Fri, 23 Feb 2018 08:18:31 &#45;0800 -->
+<!--X-Message-Id: 6e8031f1&#45;d62c&#45;c56a&#45;0976&#45;66e0c7c5e954@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1518544323&#45;30278&#45;1&#45;git&#45;send&#45;email&#45;k&#45;hagio@ab.jp.nec.com -->
+<!--X-Reference: 260833146.2200404.1518550403011.JavaMail.zimbra@redhat.com -->
+<!--X-Reference: 417505940.4055664.1519231309909.JavaMail.zimbra@redhat.com -->
+<!--X-Reference: 026be9ed&#45;fef3&#45;e971&#45;de1c&#45;119cf0b4aeab@redhat.com -->
+<!--X-Reference: 849916623.4122576.1519247687639.JavaMail.zimbra@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr() &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</h1>
+[<a href="msg07340.html">Date Prev</a>][<a href="msg07342.html">Date Next</a>][<a href="msg07336.html">Thread Prev</a>][<a href="msg07342.html">Thread Next</a>][<a href="maillist.html#07341">Date Index</a>][<a href="index.html#07341">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</li>
+<li><em>From</em>: Kazuhito Hagio &lt;k-hagio@xxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 23 Feb 2018 11:18:25 -0500</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg07336.html">849916623.4122576.1519247687639.JavaMail.zimbra@redhat.com</a>&gt;</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Hi Dave,
+
+On 2/21/2018 4:14 PM, Dave Anderson wrote:
+&gt;<i> </i>
+&gt;<i> </i>
+&gt;<i> ----- Original Message -----</i>
+&gt;<i>&gt; Hi Dave,</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt; Thank you so much for your review!</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt; On 2/21/2018 11:41 AM, Dave Anderson wrote:</i>
+&gt;<i>&gt;&gt;</i>
+&gt;<i>&gt;&gt; Hi Kasuhito,</i>
+&gt;<i>&gt;&gt;</i>
+&gt;<i>&gt;&gt; Just as a follow-up review of this part of your original patch:</i>
+&gt;<i>&gt;&gt;</i>
+&gt;<i>&gt;&gt;   +#ifdef VMEMMAP_VADDR</i>
+&gt;<i>&gt;&gt;   +               nr = nr_mem_sections;</i>
+&gt;<i>&gt;&gt;   +               if (machdep-&gt;flags &amp; VMEMMAP)</i>
+&gt;<i>&gt;&gt;   +                       nr = pfn_to_section_nr((addr - VMEMMAP_VADDR) / SIZE(page));</i>
+&gt;<i>&gt;&gt;   +               else if (readmem(addr + OFFSET(page_flags), KVADDR, &amp;flags,</i>
+&gt;<i>&gt;&gt;   +                       sizeof(ulong), &quot;page.flags&quot;, RETURN_ON_ERROR|QUIET))</i>
+&gt;<i>&gt;&gt;   +                       nr = (flags &gt;&gt; (SIZE(page_flags)*8 - SECTIONS_SHIFT())</i>
+&gt;<i>&gt;&gt;   +                               &amp; ((1UL &lt;&lt; SECTIONS_SHIFT()) - 1));</i>
+&gt;<i>&gt;&gt;   +</i>
+&gt;<i>&gt;&gt;   +               if (nr &lt; nr_mem_sections) {</i>
+&gt;<i>&gt;&gt;   +#else</i>
+&gt;<i>&gt;&gt;                   for (nr = 0; nr &lt; nr_mem_sections ; nr++) {</i>
+&gt;<i>&gt;&gt;   +#endif</i>
+&gt;<i>&gt;&gt;   </i>
+&gt;<i>&gt;&gt; One of my original concerns was associated with the backwards-compatiblity</i>
+&gt;<i>&gt;&gt; of the non-VMEMMAP page-&gt;flags usage, primarily because it has changed</i>
+&gt;<i>&gt;&gt; over the years.  Perhaps the SECTIONS_SHIFT part has remained the same,</i>
+&gt;<i>&gt;&gt; but depending upon its future stability in this function still worries me.</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt; Yes, I understand the concern.</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt; The SECTIONS_SHIFT part is the same as the function page_to_section() in</i>
+&gt;<i>&gt; include/linux/mm.h.  I thought that if the values related to SECTIONS_SHIFT</i>
+&gt;<i>&gt; in kernel change, the crash utility will have to follow it regardless of</i>
+&gt;<i>&gt; this patch, because they are used commonly in crash.  But possible changes</i>
+&gt;<i>&gt; could not be limited to such values.</i>
+&gt;<i> </i>
+&gt;<i> It's true that crash should follow the upstream values, but in the past</i>
+&gt;<i> there have been periods of times when the MAX_PHYSMEM_BITS and SECTION_SIZE_BITS</i>
+&gt;<i> for different architectures changed upstream, but were not immediately updated in </i>
+&gt;<i> the crash utility.  And that was because crash still worked OK because most</i>
+&gt;<i> systems did not have large enough memory for the changes to cause things to fail.</i>
+
+Thank you, I understood it more precisely.
+
+[...]
+&gt;<i> So this goes to the question as to whether is_page_ptr() should return TRUE</i>
+&gt;<i> if the incoming page address is accessible(), but it references a physical address</i>
+&gt;<i> that does not exist.  With the current code, it verifies that it's a page address,</i>
+&gt;<i> and that the page address points to an actual physical memory page.  I suggested</i>
+&gt;<i> using accessible() on the page structure address, but that would not necessarily</i>
+&gt;<i> be accurate because theoretically a vmemmap'd/instantiated page of page structures</i>
+&gt;<i> could contain page structure addresses that do not reference physical memory.  </i>
+&gt;<i> (e.g., if a hole started at a page address that's in the  middle of a vmemmap'd</i>
+&gt;<i> page of page structures)</i>
+
+As to the last example (IIUC), I had confirmed that accessible() returned
+FALSE if a page address was in a hole like below on x86_64/RHEL7, so I was
+writing the prototype patch.
+
+  crash&gt; kmem -n
+  ...
+  NR      SECTION        CODED_MEM_MAP        MEM_MAP       PFN
+  ...
+  23  ffff88043ffd82e0  ffffea0000000000  ffffea0002e00000  753664  ## There is a
+  32  ffff88043ffd8400  ffffea0000000000  ffffea0004000000  1048576 ## hole here.
+  ...
+  crash&gt; kmem ffffea0002ffffc0  ## The last page struct of NR=23
+  DEBUG: addr=0xffffea0002ffffc0 nr=23 accessible=1
+  DEBUG: addr=0xffffea0002ffffc0 nr=23 accessible=1  ## in is_page_ptr()
+  DEBUG: addr=0xffffea0002ffffc0 nr=23 accessible=1
+  DEBUG: addr=0xffffea0002ffffc0 nr=23 accessible=1
+        PAGE        PHYSICAL      MAPPING       INDEX CNT FLAGS
+  ffffea0002ffffc0  bffff000                0        0  1 1fffff00000000
+  crash&gt; kmem ffffea0003000000  ## A page address in a hole.
+  kmem: WARNING: cannot make virtual-to-physical translation: ffffea0003000000
+  DEBUG: addr=0xffffea0003000000 nr=24 accessible=0
+  DEBUG: addr=0xffffea0003000000 nr=24 accessible=0  ## returned 0
+  DEBUG: addr=0xffffea0003000000 nr=24 accessible=0
+  ffffea0003000000: kernel virtual address not found in mem map
+
+I'm not sure whether there is the case that a page address does not
+reference physical memory except for the above.  But originally,
+since accessible() is readmem(), which actually reads a dump file, 
+it could return FALSE also due to some errors quietly, and this could
+leads to a wrong judgement.
+
+And I had thought that if accessible() was valid for the page validity
+test, there was no need to calculate its section.  So could it remove
+the accessible() and continue to utilize the valid_section_nr() section
+for the test like this?:
+---
+diff --git a/defs.h b/defs.h
+index aa17792..ab98cb7 100644
+--- a/defs.h
++++ b/defs.h
+@@ -3335,6 +3335,9 @@ struct arm64_stackframe {
+ #define VTOP(X)               x86_64_VTOP((ulong)(X))
+ #define IS_VMALLOC_ADDR(X)    x86_64_IS_VMALLOC_ADDR((ulong)(X))
+ 
++#define IS_VMEMMAP_PAGE_ADDR(X)  x86_64_IS_VMEMMAP_PAGE_ADDR((ulong)(X))
++#define VMEMMAP_PAGE_TO_PFN(X)   (((ulong)(X) - VMEMMAP_VADDR) / SIZE(page))
++
+ /*
+  * the default page table level for x86_64:
+  *    4 level page tables
+@@ -5646,6 +5649,7 @@ void x86_64_dump_machdep_table(ulong);
+ ulong x86_64_PTOV(ulong);
+ ulong x86_64_VTOP(ulong);
+ int x86_64_IS_VMALLOC_ADDR(ulong);
++int x86_64_IS_VMEMMAP_PAGE_ADDR(ulong);
+ void x86_64_display_idt_table(void);
+ #define display_idt_table() x86_64_display_idt_table()
+ long x86_64_exception_frame(ulong, ulong, char *, struct bt_info *, FILE *);
+diff --git a/memory.c b/memory.c
+index 0df8ecc..928c3c2 100644
+--- a/memory.c
++++ b/memory.c
+@@ -13350,6 +13350,30 @@ is_page_ptr(ulong addr, physaddr_t *phys)
+ 	physaddr_t section_paddr;
+ 
+ 	if (IS_SPARSEMEM()) {
++#ifdef IS_VMEMMAP_PAGE_ADDR
++		if (machdep-&gt;flags &amp; VMEMMAP) {
++			if (IS_VMEMMAP_PAGE_ADDR(addr)) {
++				nr = pfn_to_section_nr(VMEMMAP_PAGE_TO_PFN(addr));
++				if ((sec_addr = valid_section_nr(nr))) {
++					coded_mem_map = section_mem_map_addr(sec_addr);
++					mem_map = sparse_decode_mem_map(coded_mem_map, nr);
++					end_mem_map = mem_map + (PAGES_PER_SECTION() * SIZE(page));
++
++					if ((addr &gt;= mem_map) &amp;&amp; (addr &lt; end_mem_map)) {
++						if ((addr - mem_map) % SIZE(page))
++							return FALSE;
++						if (phys) {
++							section_paddr = PTOB(section_nr_to_pfn(nr));
++							pgnum = (addr - mem_map) / SIZE(page);
++							*phys = section_paddr + ((physaddr_t)pgnum * PAGESIZE());
++						}
++						return TRUE;
++					}
++				}
++			}
++			return FALSE;
++		}
++#endif
+ 		nr_mem_sections = NR_MEM_SECTIONS();
+ 	        for (nr = 0; nr &lt; nr_mem_sections ; nr++) {
+ 	                if ((sec_addr = valid_section_nr(nr))) {
+diff --git a/x86_64.c b/x86_64.c
+index 7449571..7240c5d 100644
+--- a/x86_64.c
++++ b/x86_64.c
+@@ -1570,6 +1570,14 @@ x86_64_IS_VMALLOC_ADDR(ulong vaddr)
+ 		(vaddr &gt;= VSYSCALL_START &amp;&amp; vaddr &lt; VSYSCALL_END));
+ }
+ 
++int
++x86_64_IS_VMEMMAP_PAGE_ADDR(ulong vaddr)
++{
++	return ((machdep-&gt;flags &amp; VMEMMAP) &amp;&amp;
++		(vaddr &gt;= VMEMMAP_VADDR &amp;&amp; vaddr &lt;= VMEMMAP_END) &amp;&amp;
++		!((vaddr - VMEMMAP_VADDR) % SIZE(page)));
++}
++
+ static int 
+ x86_64_is_module_addr(ulong vaddr)
+ {
+---
+
+&gt;<i> So if we don't want to change the functionality of is_page_ptr(), then maybe</i>
+&gt;<i> the binary search would be a suitable compromise for both accuracy and speed</i>
+&gt;<i> on extremely large systems? </i>
+
+I have not considered it enough yet, but if all ranges of mem_sections are
+ascending for section numbers and vmemmap holes like above are to be managed
+well, it might be good.  (I'm guessing that the binary search might need an
+auxiliary array or something due to the vmemmap holes..)
+
+Thanks,
+Kazuhito Hagio
+
+&gt;<i> </i>
+&gt;<i> Dave</i>
+&gt;<i>  </i>
+&gt;<i> </i>
+&gt;<i> --</i>
+&gt;<i> Crash-utility mailing list</i>
+&gt;<i> Crash-utility@xxxxxxxxxx</i>
+&gt;<i> <a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a></i>
+&gt;<i> </i>
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07342" href="msg07342.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="07320" href="msg07320.html">[PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing	is_page_ptr()</a></strong>
+<ul><li><em>From:</em> k-hagio</li></ul></li>
+<li><strong><a name="07321" href="msg07321.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by	optimizing	is_page_ptr()</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+<li><strong><a name="07334" href="msg07334.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by	optimizing	is_page_ptr()</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+<li><strong><a name="07335" href="msg07335.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+<ul><li><em>From:</em> Kazuhito Hagio</li></ul></li>
+<li><strong><a name="07336" href="msg07336.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07340.html">Re:  linux_banner has garbage</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07342.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07336.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07342.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07341"><strong>Date</strong></a></li>
+<li><a href="index.html#07341"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

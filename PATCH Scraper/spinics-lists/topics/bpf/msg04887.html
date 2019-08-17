@@ -1,0 +1,297 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH bpf&#45;next] selftests/bpf: fix test_reuseport_array on s390 -->
+<!--X-From-R13: Wyln Zrbfuxrivpu &#60;vvvNyvahk.voz.pbz> -->
+<!--X-Date: Wed, 3 Jul 2019 04:50:43 &#45;0700 -->
+<!--X-Message-Id: 20190703115034.53984&#45;1&#45;iii@linux.ibm.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BPF: [PATCH bpf-next] selftests/bpf: fix test_reuseport_array on s390">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH bpf-next] selftests/bpf: fix test_reuseport_array on s390 &mdash; BPF</title>
+<link rel="alternate" type="application/rss+xml" title="BPF" href="//feeds.feedburner.com/packetfilters">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH bpf-next] selftests/bpf: fix test_reuseport_array on s390</h1>
+[<a href="msg04886.html">Date Prev</a>][<a href="msg04888.html">Date Next</a>][<a href="msg04874.html">Thread Prev</a>][<a href="msg05113.html">Thread Next</a>][<a href="maillist.html#04887">Date Index</a>][<a href="index.html#04887">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH bpf-next] selftests/bpf: fix test_reuseport_array on s390</li>
+<li><em>From</em>: Ilya Leoshkevich &lt;iii@xxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed,  3 Jul 2019 13:50:34 +0200</li>
+<li><em>Cc</em>: Ilya Leoshkevich &lt;iii@xxxxxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Fix endianness issue: passing a pointer to 64-bit fd as a 32-bit key
+does not work on big-endian architectures. So cast fd to 32-bits when
+necessary.
+
+Signed-off-by: Ilya Leoshkevich &lt;iii@xxxxxxxxxxxxx&gt;
+---
+ tools/testing/selftests/bpf/test_maps.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index a3fbc571280a..5443b9bd75ed 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -1418,7 +1418,7 @@ static void test_map_wronly(void)
+ 	assert(bpf_map_get_next_key(fd, &amp;key, &amp;value) == -1 &amp;&amp; errno == EPERM);
+ }
+ 
+-static void prepare_reuseport_grp(int type, int map_fd,
++static void prepare_reuseport_grp(int type, int map_fd, size_t map_elem_size,
+ 				  __s64 *fds64, __u64 *sk_cookies,
+ 				  unsigned int n)
+ {
+@@ -1428,6 +1428,8 @@ static void prepare_reuseport_grp(int type, int map_fd,
+ 	const int optval = 1;
+ 	unsigned int i;
+ 	u64 sk_cookie;
++	void *value;
++	__s32 fd32;
+ 	__s64 fd64;
+ 	int err;
+ 
+@@ -1449,8 +1451,14 @@ static void prepare_reuseport_grp(int type, int map_fd,
+ 		      &quot;err:%d errno:%d\n&quot;, err, errno);
+ 
+ 		/* reuseport_array does not allow unbound sk */
+-		err = bpf_map_update_elem(map_fd, &amp;index0, &amp;fd64,
+-					  BPF_ANY);
++		if (map_elem_size == sizeof(__u64))
++			value = &amp;fd64;
++		else {
++			assert(map_elem_size == sizeof(__u32));
++			fd32 = (__s32)fd64;
++			value = &amp;fd32;
++		}
++		err = bpf_map_update_elem(map_fd, &amp;index0, value, BPF_ANY);
+ 		CHECK(err != -1 || errno != EINVAL,
+ 		      &quot;reuseport array update unbound sk&quot;,
+ 		      &quot;sock_type:%d err:%d errno:%d\n&quot;,
+@@ -1478,7 +1486,7 @@ static void prepare_reuseport_grp(int type, int map_fd,
+ 			 * reuseport_array does not allow
+ 			 * non-listening tcp sk.
+ 			 */
+-			err = bpf_map_update_elem(map_fd, &amp;index0, &amp;fd64,
++			err = bpf_map_update_elem(map_fd, &amp;index0, value,
+ 						  BPF_ANY);
+ 			CHECK(err != -1 || errno != EINVAL,
+ 			      &quot;reuseport array update non-listening sk&quot;,
+@@ -1541,7 +1549,7 @@ static void test_reuseport_array(void)
+ 	for (t = 0; t &lt; ARRAY_SIZE(types); t++) {
+ 		type = types[t];
+ 
+-		prepare_reuseport_grp(type, map_fd, grpa_fds64,
++		prepare_reuseport_grp(type, map_fd, sizeof(__u64), grpa_fds64,
+ 				      grpa_cookies, ARRAY_SIZE(grpa_fds64));
+ 
+ 		/* Test BPF_* update flags */
+@@ -1649,7 +1657,8 @@ static void test_reuseport_array(void)
+ 				sizeof(__u32), sizeof(__u32), array_size, 0);
+ 	CHECK(map_fd == -1, &quot;reuseport array create&quot;,
+ 	      &quot;map_fd:%d, errno:%d\n&quot;, map_fd, errno);
+-	prepare_reuseport_grp(SOCK_STREAM, map_fd, &amp;fd64, &amp;sk_cookie, 1);
++	prepare_reuseport_grp(SOCK_STREAM, map_fd, sizeof(__u32), &amp;fd64,
++			      &amp;sk_cookie, 1);
+ 	fd = fd64;
+ 	err = bpf_map_update_elem(map_fd, &amp;index3, &amp;fd, BPF_NOEXIST);
+ 	CHECK(err == -1, &quot;reuseport array update 32 bit fd&quot;,
+-- 
+2.21.0
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="05113" href="msg05113.html">Re: [PATCH bpf-next] selftests/bpf: fix test_reuseport_array on s390</a></strong>
+<ul><li><em>From:</em> Daniel Borkmann</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg04886.html">Re: [PATCH] bpf, libbpf: Smatch: Fix potential NULL pointer dereference</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg04888.html">Re: [PATCH bpf] xdp: fix race on generic receive path</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg04874.html">Reminder: 36 open syzbot bugs in &quot;net/bpf&quot; subsystem</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05113.html">Re: [PATCH bpf-next] selftests/bpf: fix test_reuseport_array on s390</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#04887"><strong>Date</strong></a></li>
+<li><a href="index.html#04887"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;Samsung&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-rockchip/>[Linux&nbsp;Rockchip&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-actions/>[Linux&nbsp;Actions&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-snps-arc/>[Linux&nbsp;for&nbsp;Synopsys&nbsp;ARC&nbsp;Processors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nfs/>[Linux&nbsp;NFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nilfs/>[Linux&nbsp;NILFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/vfl/>[Video&nbsp;for&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<p>
+<hr>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,366 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 14/34] autofs&#45;5.1.2 &#45; add function conf_amd_get_mount_paths() -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Sun, 23 Apr 2017 18:11:05 &#45;0700 -->
+<!--X-Message-Id: 149299568527.23475.16910248249518608436.stgit@pluto.themaw.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 149299547753.23475.9924538846721477415.stgit@pluto.themaw.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 14/34] autofs-5.1.2 - add function conf_amd_get_mount_paths() &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 14/34] autofs-5.1.2 - add function conf_amd_get_mount_paths() &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 14/34] autofs-5.1.2 - add function conf_amd_get_mount_paths()</h1>
+[<a href="msg01562.html">Date Prev</a>][<a href="msg01564.html">Date Next</a>][<a href="msg01562.html">Thread Prev</a>][<a href="msg01564.html">Thread Next</a>][<a href="maillist.html#01563">Date Index</a>][<a href="index.html#01563">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 14/34] autofs-5.1.2 - add function conf_amd_get_mount_paths()</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 24 Apr 2017 09:01:25 +0800</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg01553.html">149299547753.23475.9924538846721477415.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg01553.html">149299547753.23475.9924538846721477415.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>User-agent</em>: StGit/0.17.1-dirty</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Add configuration function to get an array of amd mount section
+paths.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ CHANGELOG          |    1 +
+ include/defaults.h |    1 +
+ lib/defaults.c     |   80 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 82 insertions(+)
+
+diff --git a/CHANGELOG b/CHANGELOG
+index ac195ed..750b803 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -40,6 +40,7 @@ xx/xx/2016 autofs-5.1.3
+ - add ref counting to struct map_source.
+ - add support for amd browsable option.
+ - add function conf_amd_get_map_name().
++- add function conf_amd_get_mount_paths().
+ 
+ 15/06/2016 autofs-5.1.2
+ =======================
+diff --git a/include/defaults.h b/include/defaults.h
+index 650f3e6..7766196 100644
+--- a/include/defaults.h
++++ b/include/defaults.h
+@@ -174,6 +174,7 @@ unsigned int defaults_disable_not_found_message(void);
+ unsigned int defaults_get_sss_master_map_wait(void);
+ 
+ unsigned int conf_amd_mount_section_exists(const char *);
++char **conf_amd_get_mount_paths(void);
+ char *conf_amd_get_arch(void);
+ char *conf_amd_get_karch(void);
+ char *conf_amd_get_os(void);
+diff --git a/lib/defaults.c b/lib/defaults.c
+index fba5d78..102eda5 100644
+--- a/lib/defaults.c
++++ b/lib/defaults.c
+@@ -771,6 +771,81 @@ static struct conf_option *conf_lookup(const char *section, const char *key)
+ 	return co;
+ }
+ 
++static char **conf_enumerate_amd_mount_sections(void)
++{
++	struct conf_option *this;
++	unsigned int count;
++	char **paths;
++	char *last;
++	int i, j;
++
++	last = NULL;
++	count = 0;
++	for (i = 0; i &lt; CFG_TABLE_SIZE; i++) {
++		if (!config-&gt;hash[i])
++			continue;
++
++		this = config-&gt;hash[i];
++		while (this) {
++			/* Only amd mount section names begin with '/' */
++			if (*this-&gt;section != '/') {
++				this = this-&gt;next;
++				continue;
++			}
++
++			if (!last ||
++			   strcmp(this-&gt;section, last))
++				count ++;
++			last = this-&gt;section;
++			this = this-&gt;next;
++		}
++	}
++
++	if (!count)
++		return NULL;
++
++	paths = (char **) malloc(((count + 1) * sizeof(char *)));
++	if (!paths)
++		return NULL;
++	memset(paths, 0, ((count + 1) * sizeof(char *)));
++
++	last = NULL;
++	j = 0;
++
++	for (i = 0; i &lt; CFG_TABLE_SIZE; i++) {
++		if (!config-&gt;hash[i])
++			continue;
++
++		this = config-&gt;hash[i];
++		while (this) {
++			/* Only amd mount section names begin with '/' */
++			if (*this-&gt;section != '/') {
++				this = this-&gt;next;
++				continue;
++			}
++
++			if (!last ||
++			    strcmp(this-&gt;section, last)) {
++				char *path = strdup(this-&gt;section);
++				if (!path)
++					goto fail;
++				paths[j++] = path;
++			}
++			last = this-&gt;section;
++			this = this-&gt;next;
++		}
++	}
++
++	return paths;
++
++fail:
++	i = 0;
++	while (paths[i])
++		free(paths[i++]);
++	free(paths);
++	return NULL;
++}
++
+ static unsigned int conf_section_exists(const char *section)
+ {
+ 	struct conf_option *co;
+@@ -1777,6 +1852,11 @@ unsigned int conf_amd_mount_section_exists(const char *section)
+ 	return conf_section_exists(section);
+ }
+ 
++char **conf_amd_get_mount_paths(void)
++{
++	return conf_enumerate_amd_mount_sections();
++}
++
+ char *conf_amd_get_arch(void)
+ {
+ 	return conf_get_string(amd_gbl_sec, NAME_AMD_ARCH);
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01553" href="msg01553.html">[PATCH 00/34] fyi ... current patch list</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01562.html">[PATCH 22/34] autofs-5.1.2 - delay submount exit for amd submounts</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01564.html">[PATCH 33/34] autofs-5.1.2 - fix offset mount location multiple expansion</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01562.html">[PATCH 22/34] autofs-5.1.2 - delay submount exit for amd submounts</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01564.html">[PATCH 33/34] autofs-5.1.2 - fix offset mount location multiple expansion</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01563"><strong>Date</strong></a></li>
+<li><a href="index.html#01563"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

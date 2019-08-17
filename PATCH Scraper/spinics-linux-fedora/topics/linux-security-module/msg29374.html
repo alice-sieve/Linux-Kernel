@@ -1,0 +1,374 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v4 07/23] net: Prepare UDS for secuirty module stacking -->
+<!--X-From-R13: Qnfrl Epunhsyre &#60;pnfrlNfpunhsyre&#45;pn.pbz> -->
+<!--X-Date: Wed, 26 Jun 2019 12:22:57 &#45;0700 -->
+<!--X-Message-Id: 20190626192234.11725&#45;8&#45;casey@schaufler&#45;ca.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190626192234.11725&#45;1&#45;casey@schaufler&#45;ca.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, [PATCH v4 07/23] net: Prepare UDS for secuirty module stacking">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- [PATCH v4 07/23] net: Prepare UDS for secuirty module stacking</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v4 07/23] net: Prepare UDS for secuirty module stacking</h1>
+[<a href="msg29373.html">Date Prev</a>][<a href="msg29377.html">Date Next</a>][<a href="msg29423.html">Thread Prev</a>][<a href="msg29404.html">Thread Next</a>][<a href="maillist.html#29374">Date Index</a>][<a href="index.html#29374">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v4 07/23] net: Prepare UDS for secuirty module stacking</li>
+<li><em>From</em>: Casey Schaufler &lt;casey@xxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 26 Jun 2019 12:22:18 -0700</li>
+<li><em>Cc</em>: casey@xxxxxxxxxxxxxxxx, keescook@xxxxxxxxxxxx,        john.johansen@xxxxxxxxxxxxx, penguin-kernel@xxxxxxxxxxxxxxxxxxx,        paul@xxxxxxxxxxxxxx, sds@xxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29370.html">20190626192234.11725-1-casey@schaufler-ca.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg29370.html">20190626192234.11725-1-casey@schaufler-ca.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Change the data used in UDS SO_PEERSEC processing from a
+secid to a more general struct lsmblob. Update the
+security_socket_getpeersec_dgram() interface to use the
+lsmblob. There is a small amount of scaffolding code
+that will come out when the security_secid_to_secctx()
+code is brought in line with the lsmblob.
+
+Signed-off-by: Casey Schaufler &lt;casey@xxxxxxxxxxxxxxxx&gt;
+---
+ include/linux/security.h |  7 +++++--
+ include/net/af_unix.h    |  2 +-
+ include/net/scm.h        |  8 +++++---
+ net/ipv4/ip_sockglue.c   |  8 +++++---
+ net/unix/af_unix.c       |  6 +++---
+ security/security.c      | 18 +++++++++++++++---
+ 6 files changed, 34 insertions(+), 15 deletions(-)
+
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 313e45a3cac3..dcf20da87d1b 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -1280,7 +1280,8 @@ int security_socket_shutdown(struct socket *sock, int how);
+ int security_sock_rcv_skb(struct sock *sk, struct sk_buff *skb);
+ int security_socket_getpeersec_stream(struct socket *sock, char __user *optval,
+ 				      int __user *optlen, unsigned len);
+-int security_socket_getpeersec_dgram(struct socket *sock, struct sk_buff *skb, u32 *secid);
++int security_socket_getpeersec_dgram(struct socket *sock, struct sk_buff *skb,
++				     struct lsmblob *blob);
+ int security_sk_alloc(struct sock *sk, int family, gfp_t priority);
+ void security_sk_free(struct sock *sk);
+ void security_sk_clone(const struct sock *sk, struct sock *newsk);
+@@ -1418,7 +1419,9 @@ static inline int security_socket_getpeersec_stream(struct socket *sock, char __
+ 	return -ENOPROTOOPT;
+ }
+ 
+-static inline int security_socket_getpeersec_dgram(struct socket *sock, struct sk_buff *skb, u32 *secid)
++static inline int security_socket_getpeersec_dgram(struct socket *sock,
++						   struct sk_buff *skb,
++						   struct lsmblob *blob)
+ {
+ 	return -ENOPROTOOPT;
+ }
+diff --git a/include/net/af_unix.h b/include/net/af_unix.h
+index 3426d6dacc45..933492c08b8c 100644
+--- a/include/net/af_unix.h
++++ b/include/net/af_unix.h
+@@ -36,7 +36,7 @@ struct unix_skb_parms {
+ 	kgid_t			gid;
+ 	struct scm_fp_list	*fp;		/* Passed files		*/
+ #ifdef CONFIG_SECURITY_NETWORK
+-	u32			secid;		/* Security ID		*/
++	struct lsmblob		lsmblob;	/* Security LSM data	*/
+ #endif
+ 	u32			consumed;
+ } __randomize_layout;
+diff --git a/include/net/scm.h b/include/net/scm.h
+index 1ce365f4c256..e2e71c4bf9d0 100644
+--- a/include/net/scm.h
++++ b/include/net/scm.h
+@@ -33,7 +33,7 @@ struct scm_cookie {
+ 	struct scm_fp_list	*fp;		/* Passed files		*/
+ 	struct scm_creds	creds;		/* Skb credentials	*/
+ #ifdef CONFIG_SECURITY_NETWORK
+-	u32			secid;		/* Passed security ID 	*/
++	struct lsmblob		lsmblob;	/* Passed LSM data	*/
+ #endif
+ };
+ 
+@@ -46,7 +46,7 @@ struct scm_fp_list *scm_fp_dup(struct scm_fp_list *fpl);
+ #ifdef CONFIG_SECURITY_NETWORK
+ static __inline__ void unix_get_peersec_dgram(struct socket *sock, struct scm_cookie *scm)
+ {
+-	security_socket_getpeersec_dgram(sock, NULL, &amp;scm-&gt;secid);
++	security_socket_getpeersec_dgram(sock, NULL, &amp;scm-&gt;lsmblob);
+ }
+ #else
+ static __inline__ void unix_get_peersec_dgram(struct socket *sock, struct scm_cookie *scm)
+@@ -97,7 +97,9 @@ static inline void scm_passec(struct socket *sock, struct msghdr *msg, struct sc
+ 	int err;
+ 
+ 	if (test_bit(SOCK_PASSSEC, &amp;sock-&gt;flags)) {
+-		err = security_secid_to_secctx(scm-&gt;secid, &amp;secdata, &amp;seclen);
++		/* Scaffolding - it has to be element 0 for now */
++		err = security_secid_to_secctx(scm-&gt;lsmblob.secid[0],
++					       &amp;secdata, &amp;seclen);
+ 
+ 		if (!err) {
+ 			put_cmsg(msg, SOL_SOCKET, SCM_SECURITY, seclen, secdata);
+diff --git a/net/ipv4/ip_sockglue.c b/net/ipv4/ip_sockglue.c
+index 82f341e84fae..2a5c868ce135 100644
+--- a/net/ipv4/ip_sockglue.c
++++ b/net/ipv4/ip_sockglue.c
+@@ -130,15 +130,17 @@ static void ip_cmsg_recv_checksum(struct msghdr *msg, struct sk_buff *skb,
+ 
+ static void ip_cmsg_recv_security(struct msghdr *msg, struct sk_buff *skb)
+ {
++	struct lsmblob lb;
+ 	char *secdata;
+-	u32 seclen, secid;
++	u32 seclen;
+ 	int err;
+ 
+-	err = security_socket_getpeersec_dgram(NULL, skb, &amp;secid);
++	err = security_socket_getpeersec_dgram(NULL, skb, &amp;lb);
+ 	if (err)
+ 		return;
+ 
+-	err = security_secid_to_secctx(secid, &amp;secdata, &amp;seclen);
++	/* Scaffolding - it has to be element 0 */
++	err = security_secid_to_secctx(lb.secid[0], &amp;secdata, &amp;seclen);
+ 	if (err)
+ 		return;
+ 
+diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+index ddb838a1b74c..c50a004a1389 100644
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -143,17 +143,17 @@ static struct hlist_head *unix_sockets_unbound(void *addr)
+ #ifdef CONFIG_SECURITY_NETWORK
+ static void unix_get_secdata(struct scm_cookie *scm, struct sk_buff *skb)
+ {
+-	UNIXCB(skb).secid = scm-&gt;secid;
++	UNIXCB(skb).lsmblob = scm-&gt;lsmblob;
+ }
+ 
+ static inline void unix_set_secdata(struct scm_cookie *scm, struct sk_buff *skb)
+ {
+-	scm-&gt;secid = UNIXCB(skb).secid;
++	scm-&gt;lsmblob = UNIXCB(skb).lsmblob;
+ }
+ 
+ static inline bool unix_secdata_eq(struct scm_cookie *scm, struct sk_buff *skb)
+ {
+-	return (scm-&gt;secid == UNIXCB(skb).secid);
++	return lsmblob_equal(&amp;scm-&gt;lsmblob, &amp;(UNIXCB(skb).lsmblob));
+ }
+ #else
+ static inline void unix_get_secdata(struct scm_cookie *scm, struct sk_buff *skb)
+diff --git a/security/security.c b/security/security.c
+index f9c8e1926a0b..4e1eb2a54064 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -2120,10 +2120,22 @@ int security_socket_getpeersec_stream(struct socket *sock, char __user *optval,
+ 				optval, optlen, len);
+ }
+ 
+-int security_socket_getpeersec_dgram(struct socket *sock, struct sk_buff *skb, u32 *secid)
++int security_socket_getpeersec_dgram(struct socket *sock, struct sk_buff *skb,
++				     struct lsmblob *blob)
+ {
+-	return call_int_hook(socket_getpeersec_dgram, -ENOPROTOOPT, sock,
+-			     skb, secid);
++	struct security_hook_list *hp;
++	int rc = -ENOPROTOOPT;
++
++	hlist_for_each_entry(hp, &amp;security_hook_heads.socket_getpeersec_dgram,
++			     list) {
++		if (WARN_ON(hp-&gt;lsmid-&gt;slot &lt; 0 || hp-&gt;lsmid-&gt;slot &gt;= lsm_slot))
++			continue;
++		rc = hp-&gt;hook.socket_getpeersec_dgram(sock, skb,
++						&amp;blob-&gt;secid[hp-&gt;lsmid-&gt;slot]);
++		if (rc != 0)
++			break;
++	}
++	return rc;
+ }
+ EXPORT_SYMBOL(security_socket_getpeersec_dgram);
+ 
+-- 
+2.20.1
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="29425" href="msg29425.html">Re: [PATCH v4 07/23] net: Prepare UDS for secuirty module stacking</a></strong>
+<ul><li><em>From:</em> John Johansen</li></ul></li>
+<li><strong><a name="29404" href="msg29404.html">Re: [PATCH v4 07/23] net: Prepare UDS for secuirty module stacking</a></strong>
+<ul><li><em>From:</em> Kees Cook</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29370" href="msg29370.html">[PATCH v4 00/23] LSM: Module stacking for AppArmor</a></strong>
+<ul><li><em>From:</em> Casey Schaufler</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29373.html">[PATCH v4 05/23] LSM: Use lsmblob in security_audit_rule_match</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29377.html">[PATCH v4 08/23] LSM: Use lsmblob in security_secctx_to_secid</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29423.html">Re: [PATCH v4 05/23] LSM: Use lsmblob in security_audit_rule_match</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29404.html">Re: [PATCH v4 07/23] net: Prepare UDS for secuirty module stacking</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29374"><strong>Date</strong></a></li>
+<li><a href="index.html#29374"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

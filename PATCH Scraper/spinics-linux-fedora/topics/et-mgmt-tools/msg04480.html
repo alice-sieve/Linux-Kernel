@@ -1,0 +1,334 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Port utility functions to Solaris -->
+<!--X-From-R13: wbua.yribaNfha.pbz -->
+<!--X-Date: Fri, 5 Dec 2008 05:38:34 &#45;0800 -->
+<!--X-Message-Id: 271ceb01335da50c05fe.1228484289@xenbld.SFBay.Sun.COM -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Management Tools, [PATCH] Port utility functions to Solaris">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="Fedora Management Tools" href="//feedproxy.google.com/Fedora/linuxManagementTools">
+<title>Fedora Management Tools -- [PATCH] Port utility functions to Solaris</title>
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] Port utility functions to Solaris</h1>
+[<a href="msg04479.html">Date Prev</a>][<a href="msg04481.html">Date Next</a>][<a href="msg04465.html">Thread Prev</a>][<a href="msg04497.html">Thread Next</a>][<a href="maillist.html#04480">Date Index</a>][<a href="index.html#04480">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Port utility functions to Solaris</li>
+<li><em>From</em>: <a href="mailto:john.levon@DOMAIN.HIDDEN">john.levon@xxxxxxx</a></li>
+<li><em>Date</em>: Fri, 05 Dec 2008 05:38:09 -0800</li>
+<li><em>Reply-to</em>: Fedora/Linux Management Tools &lt;<a href="mailto:et-mgmt-tools@DOMAIN.HIDDEN">et-mgmt-tools@xxxxxxxxxx</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre># HG changeset patch
+# User john.levon@xxxxxxx
+# Date 1228484283 28800
+# Node ID 271ceb01335da50c05fe6c2f54f3eb1721f51bb4
+# Parent  8ad095a908ad89a0c83c94bd486647b79817acbe
+Port utility functions to Solaris
+
+Port various utils to Solaris, and remove some unused ones that don't
+work.
+
+Signed-off-by: John Levon &lt;john.levon@xxxxxxx&gt;
+
+diff --git a/virtinst/FullVirtGuest.py b/virtinst/FullVirtGuest.py
+--- a/virtinst/FullVirtGuest.py
++++ b/virtinst/FullVirtGuest.py
+@@ -38,7 +38,8 @@ class FullVirtGuest(Guest):
+             installer = DistroManager.DistroInstaller(type = type, os_type = &quot;hvm&quot;)
+         Guest.__init__(self, type, connection, hypervisorURI, installer)
+         self.disknode = &quot;hd&quot;
+-        self.features = { &quot;acpi&quot;: None, &quot;pae&quot;: util.is_pae_capable(), &quot;apic&quot;: None }
++        self.features = { &quot;acpi&quot;: None, &quot;pae&quot;:
++            util.is_pae_capable(connection), &quot;apic&quot;: None }
+         if arch is None:
+             arch = platform.machine()
+         self.arch = arch
+diff --git a/virtinst/util.py b/virtinst/util.py
+--- a/virtinst/util.py
++++ b/virtinst/util.py
+@@ -25,6 +25,7 @@ import re
+ import re
+ import libxml2
+ import logging
++import popen2
+ from sys import stderr
+ 
+ import libvirt
+@@ -54,8 +55,29 @@ def default_route():
+             continue
+     return None
+ 
+-# Legacy for compat only.
++def default_nic():
++    &quot;&quot;&quot;Return the default NIC to use, if one is specified.&quot;&quot;&quot;
++
++    dev = ''
++
++    if platform.system() != 'SunOS':
++        return dev
++
++    # XXX: fails without PRIV_XVM_CONTROL
++    proc = popen2.Popen3([&quot;/usr/lib/xen/bin/xenstore-read&quot;,
++        &quot;device-misc/vif/default-nic&quot;], capturestderr=True)
++    proc.tochild.close()
++    proc.wait()
++    out = proc.fromchild.readlines()
++    if len(out) &gt; 0:
++        dev = out[0].rstrip()
++
++    return dev
++
+ def default_bridge():
++    if platform.system() == 'SunOS':
++        return default_nic()
++
+     rt = default_route()
+     if rt is None:
+         defn = None
+@@ -68,6 +90,9 @@ def default_bridge():
+         return &quot;xenbr%d&quot;%(defn)
+ 
+ def default_network(conn):
++    if platform.system() == 'SunOS':
++        return [&quot;bridge&quot;, default_nic()]
++
+     dev = default_route()
+ 
+     if dev is not None and not is_uri_remote(conn.getURI()):
+@@ -98,6 +123,9 @@ def default_connection():
+     return None
+ 
+ def get_cpu_flags():
++    if platform.system() == 'SunOS':
++        raise OSError(&quot;CPU flags not available&quot;)
++
+     f = open(&quot;/proc/cpuinfo&quot;)
+     lines = f.readlines()
+     f.close()
+@@ -111,31 +139,16 @@ def get_cpu_flags():
+         return flst
+     return []
+ 
+-def is_pae_capable():
++def is_pae_capable(conn):
+     &quot;&quot;&quot;Determine if a machine is PAE capable or not.&quot;&quot;&quot;
+-    flags = get_cpu_flags()
+-    if &quot;pae&quot; in flags:
+-        return True
+-    return False
+-
+-def is_hvm_capable():
+-    &quot;&quot;&quot;Determine if a machine is HVM capable or not.&quot;&quot;&quot;
+-
+-    caps = &quot;&quot;
+-    if os.path.exists(&quot;/sys/hypervisor/properties/capabilities&quot;):
+-        caps = open(&quot;/sys/hypervisor/properties/capabilities&quot;).read()
+-    if caps.find(&quot;hvm&quot;) != -1:
+-        return True
+-    return False
+-
+-def is_kqemu_capable():
+-    return os.path.exists(&quot;/dev/kqemu&quot;)
+-
+-def is_kvm_capable():
+-    return os.path.exists(&quot;/dev/kvm&quot;)
++    if not conn:
++        conn = libvirt.open('')
++    return &quot;pae&quot; in conn.getCapabilities()
+ 
+ def is_blktap_capable():
+-    #return os.path.exists(&quot;/dev/xen/blktapctrl&quot;)
++    if platform.system() == 'SunOS':
++        return False
++
+     f = open(&quot;/proc/modules&quot;)
+     lines = f.readlines()
+     f.close()
+
+_______________________________________________
+et-mgmt-tools mailing list
+et-mgmt-tools@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/et-mgmt-tools">https://www.redhat.com/mailman/listinfo/et-mgmt-tools</a>
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="04497" href="msg04497.html">Re:  [PATCH] Port utility functions to Solaris</a></strong>
+<ul><li><em>From:</em> Cole Robinson</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg04479.html">[PATCH] Provide a common block device size utility	for Solaris &amp; Linux</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg04481.html">Xen, Windows 2003 and APIC</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg04465.html">Re:  [PATCH] Port utility functions to Solaris</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg04497.html">Re:  [PATCH] Port utility functions to Solaris</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#04480"><strong>Date</strong></a></li>
+<li><a href="index.html#04480"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fll/>[Fedora&nbsp;Legacy&nbsp;List]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

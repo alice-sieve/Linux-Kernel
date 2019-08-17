@@ -1,0 +1,247 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH bpf&#45;next v9 01/10] fs,security: Add a new file access type: MAY_CHROOT -->
+<!--X-From-R13: =?GFT&#45;8?d?[vpxn=Q3=OPy=20Enyn=Q3=PQa?= &#60;zvpNqvtvxbq.arg> -->
+<!--X-Date: Tue, 25 Jun 2019 14:54:50 &#45;0700 -->
+<!--X-Message-Id: 20190625215239.11136&#45;2&#45;mic@digikod.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190625215239.11136&#45;1&#45;mic@digikod.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, [PATCH bpf-next v9 01/10] fs,security: Add a new file access type: MAY_CHROOT">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- [PATCH bpf-next v9 01/10] fs,security: Add a new file access type: MAY_CHROOT</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH bpf-next v9 01/10] fs,security: Add a new file access type: MAY_CHROOT</h1>
+[<a href="msg29343.html">Date Prev</a>][<a href="msg29345.html">Date Next</a>][<a href="msg29343.html">Thread Prev</a>][<a href="msg29345.html">Thread Next</a>][<a href="maillist.html#29344">Date Index</a>][<a href="index.html#29344">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH bpf-next v9 01/10] fs,security: Add a new file access type: MAY_CHROOT</li>
+<li><em>From</em>: Micka&#xEB;l Sala&#xFC;n &lt;mic@xxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 25 Jun 2019 23:52:30 +0200</li>
+<li><em>Cc</em>: Micka&#xEB;l Sala&#xFC;n &lt;mic@xxxxxxxxxxx&gt;,        Aleksa Sarai &lt;cyphar@xxxxxxxxxx&gt;,        Alexander Viro &lt;viro@xxxxxxxxxxxxxxxxxx&gt;,        Alexei Starovoitov &lt;ast@xxxxxxxxxx&gt;,        Andrew Morton &lt;akpm@xxxxxxxxxxxxxxxxxxxx&gt;,        Andy Lutomirski &lt;luto@xxxxxxxxxxxxxx&gt;,        Arnaldo Carvalho de Melo &lt;acme@xxxxxxxxxx&gt;,        Casey Schaufler &lt;casey@xxxxxxxxxxxxxxxx&gt;,        Daniel Borkmann &lt;daniel@xxxxxxxxxxxxx&gt;,        David Drysdale &lt;drysdale@xxxxxxxxxx&gt;,        &quot;David S . Miller&quot; &lt;davem@xxxxxxxxxxxxx&gt;,        &quot;Eric W . Biederman&quot; &lt;ebiederm@xxxxxxxxxxxx&gt;,        James Morris &lt;jmorris@xxxxxxxxx&gt;, Jann Horn &lt;jann@xxxxxxxxx&gt;,        John Johansen &lt;john.johansen@xxxxxxxxxxxxx&gt;,        Jonathan Corbet &lt;corbet@xxxxxxx&gt;, Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;,        Michael Kerrisk &lt;mtk.manpages@xxxxxxxxx&gt;,        Micka&#xEB;l Sala&#xFC;n &lt;mickael.salaun@xxxxxxxxxxx&gt;,        Paul Moore &lt;paul@xxxxxxxxxxxxxx&gt;, Sargun Dhillon &lt;sargun@xxxxxxxxx&gt;,        &quot;Serge E . Hallyn&quot; &lt;serge@xxxxxxxxxx&gt;, Shuah Khan &lt;shuah@xxxxxxxxxx&gt;,        Stephen Smalley &lt;sds@xxxxxxxxxxxxx&gt;, Tejun Heo &lt;tj@xxxxxxxxxx&gt;,        Tetsuo Handa &lt;penguin-kernel@xxxxxxxxxxxxxxxxxxx&gt;,        Thomas Graf &lt;tgraf@xxxxxxx&gt;, Tycho Andersen &lt;tycho@xxxxxxxx&gt;,        Will Drewry &lt;wad@xxxxxxxxxxxx&gt;, kernel-hardening@xxxxxxxxxxxxxxxxxx,        linux-api@xxxxxxxxxxxxxxx, linux-fsdevel@xxxxxxxxxxxxxxx,        linux-security-module@xxxxxxxxxxxxxxx, netdev@xxxxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29352.html">20190625215239.11136-1-mic@digikod.net</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg29352.html">20190625215239.11136-1-mic@digikod.net</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>For compatibility reason, MAY_CHROOT is always set with MAY_CHDIR.
+However, this new flag enable to differentiate a chdir form a chroot.
+
+This is needed for the Landlock LSM to be able to evaluate a new root
+directory.
+
+Signed-off-by: Micka&#xEB;l Sala&#xFC;n &lt;mic@xxxxxxxxxxx&gt;
+Cc: Alexander Viro &lt;viro@xxxxxxxxxxxxxxxxxx&gt;
+Cc: Casey Schaufler &lt;casey@xxxxxxxxxxxxxxxx&gt;
+Cc: James Morris &lt;jmorris@xxxxxxxxx&gt;
+Cc: John Johansen &lt;john.johansen@xxxxxxxxxxxxx&gt;
+Cc: Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;
+Cc: Paul Moore &lt;paul@xxxxxxxxxxxxxx&gt;
+Cc: &quot;Serge E. Hallyn&quot; &lt;serge@xxxxxxxxxx&gt;
+Cc: Stephen Smalley &lt;sds@xxxxxxxxxxxxx&gt;
+Cc: Tetsuo Handa &lt;penguin-kernel@xxxxxxxxxxxxxxxxxxx&gt;
+Cc: linux-fsdevel@xxxxxxxxxxxxxxx
+---
+ fs/open.c          | 3 ++-
+ include/linux/fs.h | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/open.c b/fs/open.c
+index b5b80469b93d..e8767318fd03 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -494,7 +494,8 @@ int ksys_chroot(const char __user *filename)
+ 	if (error)
+ 		goto out;
+ 
+-	error = inode_permission(path.dentry-&gt;d_inode, MAY_EXEC | MAY_CHDIR);
++	error = inode_permission(path.dentry-&gt;d_inode, MAY_EXEC | MAY_CHDIR |
++			MAY_CHROOT);
+ 	if (error)
+ 		goto dput_and_out;
+ 
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index f7fdfe93e25d..fa6c9d0c152b 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -99,6 +99,7 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, loff_t offset,
+ #define MAY_CHDIR		0x00000040
+ /* called from RCU mode, don't block */
+ #define MAY_NOT_BLOCK		0x00000080
++#define MAY_CHROOT		0x00000100
+ 
+ /*
+  * flags in file.f_mode.  Note that FMODE_READ and FMODE_WRITE must correspond
+-- 
+2.20.1
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29352" href="msg29352.html">[PATCH bpf-next v9 00/10] Landlock LSM: Toward unprivileged sandboxing</a></strong>
+<ul><li><em>From:</em> Micka&#xEB;l Sala&#xFC;n</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29343.html">[PATCH bpf-next v9 07/10] landlock: Add ptrace restrictions</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29345.html">[PATCH bpf-next v9 02/10] bpf: Add eBPF program subtype and is_valid_subtype() verifier</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29343.html">[PATCH bpf-next v9 07/10] landlock: Add ptrace restrictions</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29345.html">[PATCH bpf-next v9 02/10] bpf: Add eBPF program subtype and is_valid_subtype() verifier</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29344"><strong>Date</strong></a></li>
+<li><a href="index.html#29344"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

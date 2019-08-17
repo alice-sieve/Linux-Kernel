@@ -1,0 +1,594 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 2/4] hid&#45;lenovo: Add support for X1 Tablet cover LED control -->
+<!--X-From-R13: Rraavf Inffraoret &#60;qraavf.jnffraoretNfrpharg.pbz> -->
+<!--X-Date: Fri, 9 Dec 2016 07:07:51 &#45;0800 -->
+<!--X-Message-Id: ef83e1ec&#45;48d5&#45;a011&#45;c95e&#45;8dba060bc8c3@secunet.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Sound: [PATCH 2/4] hid-lenovo: Add support for X1 Tablet cover LED control">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Sound &mdash; [PATCH 2/4] hid-lenovo: Add support for X1 Tablet cover LED control</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Sound" href="//feeds.feedburner.com/LinuxSound">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:6612422167" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 2/4] hid-lenovo: Add support for X1 Tablet cover LED control</h1>
+[<a href="msg00634.html">Date Prev</a>][<a href="msg00636.html">Date Next</a>][<a href="msg00634.html">Thread Prev</a>][<a href="msg00638.html">Thread Next</a>][<a href="maillist.html#00635">Date Index</a>][<a href="index.html#00635">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 2/4] hid-lenovo: Add support for X1 Tablet cover LED control</li>
+<li><em>From</em>: Dennis Wassenberg &lt;dennis.wassenberg@xxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 9 Dec 2016 16:05:12 +0100</li>
+<li><em>Organization</em>: secunet Security Networks</li>
+<li><em>User-agent</em>: Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Thunderbird/45.5.1</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Add support for controlling MUTE, MICMUTE and FNLOCK LEDs.
+In ordner to enable MUTE and MICMUTE LED control over thinkpad_helper
+the external interface hid_lenovo_led_set is introduced.
+This enables setting Lenovo LEDs from external.
+This is needed because the X1 Tablet Cover is the first
+thinkpad_helper controlable device which is connected via USB.
+Additionally the led state is stored inside the hid-lenovo driver to
+make the driver able to set the led appropriate after device attach.
+---
+ drivers/hid/hid-lenovo.c   | 262 +++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/hid-lenovo.h |  15 +++
+ 2 files changed, 277 insertions(+)
+ create mode 100644 include/linux/hid-lenovo.h
+
+diff --git a/drivers/hid/hid-lenovo.c b/drivers/hid/hid-lenovo.c
+index 4fc332c..2efd5b0 100644
+--- a/drivers/hid/hid-lenovo.c
++++ b/drivers/hid/hid-lenovo.c
+@@ -21,11 +21,27 @@
+ #include &lt;linux/sysfs.h&gt;
+ #include &lt;linux/device.h&gt;
+ #include &lt;linux/hid.h&gt;
++#include &lt;linux/hid-lenovo.h&gt;
+ #include &lt;linux/input.h&gt;
+ #include &lt;linux/leds.h&gt;
+ 
+ #include &quot;hid-ids.h&quot;
+ 
++struct lenovo_led_list_entry {
++	struct led_classdev *dev;
++	enum hid_lenovo_led_type type;
++	struct list_head list;
++};
++
++struct lenovo_led_type_entry {
++	struct led_classdev *dev;
++	enum hid_lenovo_led_type type;
++	struct list_head list;
++};
++
++static struct list_head hid_lenovo_leds = LIST_HEAD_INIT(hid_lenovo_leds);
++static enum led_brightness hid_lenovo_initial_leds[HID_LENOVO_LED_MAX];
++
+ struct lenovo_drvdata_tpkbd {
+ 	int led_state;
+ 	struct led_classdev led_mute;
+@@ -44,6 +60,44 @@ struct lenovo_drvdata_cptkbd {
+ 	int sensitivity;
+ };
+ 
++struct lenovo_drvdata_tpx1cover {
++	uint16_t led_state;
++	uint8_t fnlock_state;
++	uint8_t led_present;
++	struct led_classdev led_mute;
++	struct led_classdev led_micmute;
++	struct led_classdev led_fnlock;
++};
++
++int hid_lenovo_led_set(enum hid_lenovo_led_type led, bool on)
++{
++	struct led_classdev *dev = NULL;
++	struct lenovo_led_list_entry *entry;
++
++	if (led &gt;= HID_LENOVO_LED_MAX)
++		return -EINVAL;
++
++	hid_lenovo_initial_leds[led] = on ? LED_FULL : LED_OFF;
++
++	list_for_each_entry(entry, &amp;hid_lenovo_leds, list) {
++		if (entry-&gt;type == led) {
++			dev = entry-&gt;dev;
++			break;
++		}
++	}
++
++	if (!dev)
++		return -ENODEV;
++
++	if (!dev-&gt;brightness_set)
++		return -ENODEV;
++
++	dev-&gt;brightness_set(dev, on ? LED_FULL : LED_OFF);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(hid_lenovo_led_set);
++
+ #define map_key_clear(c) hid_map_usage_clear(hi, usage, bit, max, EV_KEY, (c))
+ 
+ static const __u8 lenovo_pro_dock_need_fixup_collection[] = {
+@@ -416,6 +470,62 @@ static int lenovo_event_cptkbd(struct hid_device *hdev,
+ 	return 0;
+ }
+ 
++static enum led_brightness lenovo_led_brightness_get_tpx1cover(
++			struct led_classdev *led_cdev)
++{
++	struct device *dev = led_cdev-&gt;dev-&gt;parent;
++	struct hid_device *hdev = to_hid_device(dev);
++	struct lenovo_drvdata_tpx1cover *drv_data = hid_get_drvdata(hdev);
++	enum hid_lenovo_led_type led;
++
++	if (led_cdev == &amp;drv_data-&gt;led_mute)
++		led = HID_LENOVO_LED_MUTE;
++	else if (led_cdev == &amp;drv_data-&gt;led_micmute)
++		led = HID_LENOVO_LED_MICMUTE;
++	else if (led_cdev == &amp;drv_data-&gt;led_fnlock)
++		led = HID_LENOVO_LED_FNLOCK;
++	else
++		return LED_OFF;
++
++	return drv_data-&gt;led_state &amp; (1 &lt;&lt; led)
++				? LED_FULL
++				: LED_OFF;
++}
++
++static void lenovo_led_brightness_set_tpx1cover(struct led_classdev *led_cdev,
++			enum led_brightness value)
++{
++	struct device *dev = led_cdev-&gt;dev-&gt;parent;
++	struct hid_device *hdev = to_hid_device(dev);
++	struct lenovo_drvdata_tpx1cover *drv_data = hid_get_drvdata(hdev);
++	struct hid_report *report;
++	enum hid_lenovo_led_type led;
++
++	if (led_cdev == &amp;drv_data-&gt;led_mute) {
++		led = HID_LENOVO_LED_MUTE;
++	} else if (led_cdev == &amp;drv_data-&gt;led_micmute) {
++		led = HID_LENOVO_LED_MICMUTE;
++	} else if (led_cdev == &amp;drv_data-&gt;led_fnlock) {
++		led = HID_LENOVO_LED_FNLOCK;
++	} else {
++		hid_warn(hdev, &quot;Invalid LED to set.\n&quot;);
++		return;
++	}
++
++	if (value == LED_OFF)
++		drv_data-&gt;led_state &amp;= ~(1 &lt;&lt; led);
++	else
++		drv_data-&gt;led_state |= 1 &lt;&lt; led;
++
++	report = hdev-&gt;report_enum[HID_OUTPUT_REPORT].report_id_hash[9];
++	if (report) {
++		report-&gt;field[0]-&gt;value[0] = ((led + 1) &lt;&lt; 4) | 0x44;
++		report-&gt;field[0]-&gt;value[1] = (drv_data-&gt;led_state &amp; (1 &lt;&lt; led))
++			? 0x02 : 0x01;
++		hid_hw_request(hdev, report, HID_REQ_SET_REPORT);
++	}
++}
++
+ static int lenovo_event(struct hid_device *hdev, struct hid_field *field,
+ 		struct hid_usage *usage, __s32 value)
+ {
+@@ -788,6 +898,7 @@ static int lenovo_probe_tpkbd(struct hid_device *hdev)
+ static int lenovo_probe_tpx1cover_configure(struct hid_device *hdev)
+ {
+ 	struct hid_report *report = hdev-&gt;report_enum[HID_OUTPUT_REPORT].report_id_hash[9];
++	struct lenovo_drvdata_tpx1cover *drv_data = hid_get_drvdata(hdev);
+ 
+ 	if (!report)
+ 		return -ENOENT;
+@@ -807,14 +918,33 @@ static int lenovo_probe_tpx1cover_configure(struct hid_device *hdev)
+ 	hid_hw_request(hdev, report, HID_REQ_SET_REPORT);
+ 	hid_hw_wait(hdev);
+ 
++	lenovo_led_brightness_set_tpx1cover(&amp;drv_data-&gt;led_mute,
++		hid_lenovo_initial_leds[HID_LENOVO_LED_MUTE]);
++
++	hid_hw_wait(hdev);
++
++	lenovo_led_brightness_set_tpx1cover(&amp;drv_data-&gt;led_micmute,
++		hid_lenovo_initial_leds[HID_LENOVO_LED_MICMUTE]);
++	hid_hw_wait(hdev);
++
++	lenovo_led_brightness_set_tpx1cover(&amp;drv_data-&gt;led_fnlock, LED_FULL);
++
+ 	return 0;
+ }
+ 
+ static int lenovo_probe_tpx1cover_special_functions(struct hid_device *hdev)
+ {
++	struct device *dev = &amp;hdev-&gt;dev;
++	struct lenovo_drvdata_tpx1cover *drv_data = NULL;
++	struct lenovo_led_list_entry *mute_entry = NULL;
++	struct lenovo_led_list_entry *micmute_entry = NULL;
++	struct lenovo_led_list_entry *fnlock_entry = NULL;
++
+ 	struct hid_report *report;
+ 	bool report_match = 1;
+ 
++	int ret = 0;
++
+ 	/* Used for LED control */
+ 	report = hid_validate_values(hdev, HID_INPUT_REPORT, 3, 0, 16);
+ 	report_match &amp;= report ? 1 : 0;
+@@ -825,7 +955,97 @@ static int lenovo_probe_tpx1cover_special_functions(struct hid_device *hdev)
+ 	if (!report_match)
+ 		return -ENODEV;
+ 
++	drv_data = devm_kzalloc(&amp;hdev-&gt;dev,
++			sizeof(struct lenovo_drvdata_tpx1cover),
++			GFP_KERNEL);
++
++	if (!drv_data) {
++		hid_err(hdev,
++			&quot;Could not allocate memory for tpx1cover driver data\n&quot;);
++		return -ENOMEM;
++	}
++
++	mute_entry = kzalloc(sizeof(*mute_entry), GFP_KERNEL);
++	if (!mute_entry) {
++		hid_err(hdev, &quot;Could not allocate memory for led mute entry\n&quot;);
++		ret = -ENOMEM;
++		goto err_cleanup;
++	}
++	drv_data-&gt;led_mute.name = &quot;MUTE_LED&quot;;
++	drv_data-&gt;led_mute.brightness_get = lenovo_led_brightness_get_tpx1cover;
++	drv_data-&gt;led_mute.brightness_set = lenovo_led_brightness_set_tpx1cover;
++	devm_led_classdev_register(dev, &amp;drv_data-&gt;led_mute);
++
++	INIT_LIST_HEAD(&amp;mute_entry-&gt;list);
++	mute_entry-&gt;dev = &amp;drv_data-&gt;led_mute;
++	mute_entry-&gt;type = HID_LENOVO_LED_MUTE;
++	list_add_tail(&amp;mute_entry-&gt;list, &amp;hid_lenovo_leds);
++
++
++	micmute_entry = kzalloc(sizeof(*micmute_entry), GFP_KERNEL);
++	if (!micmute_entry) {
++		hid_err(hdev, &quot;Could not allocate memory for led micmute entry\n&quot;);
++		ret = -ENOMEM;
++		goto err_cleanup;
++	}
++
++	drv_data-&gt;led_micmute.name = &quot;MICMUTE_LED&quot;;
++	drv_data-&gt;led_micmute.brightness_get = lenovo_led_brightness_get_tpx1cover;
++	drv_data-&gt;led_micmute.brightness_set = lenovo_led_brightness_set_tpx1cover;
++	devm_led_classdev_register(dev, &amp;drv_data-&gt;led_micmute);
++
++	INIT_LIST_HEAD(&amp;micmute_entry-&gt;list);
++	micmute_entry-&gt;dev = &amp;drv_data-&gt;led_micmute;
++	micmute_entry-&gt;type = HID_LENOVO_LED_MICMUTE;
++	list_add_tail(&amp;micmute_entry-&gt;list, &amp;hid_lenovo_leds);
++
++
++	fnlock_entry = kzalloc(sizeof(*fnlock_entry), GFP_KERNEL);
++	if (!fnlock_entry) {
++		hid_err(hdev, &quot;Could not allocate memory for led fnlock entry\n&quot;);
++		ret = -ENOMEM;
++		goto err_cleanup;
++	}
++
++	drv_data-&gt;led_fnlock.brightness_get = lenovo_led_brightness_get_tpx1cover;
++	drv_data-&gt;led_fnlock.brightness_set = lenovo_led_brightness_set_tpx1cover;
++	drv_data-&gt;led_fnlock.name = &quot;FNLOCK_LED&quot;;
++	devm_led_classdev_register(dev, &amp;drv_data-&gt;led_fnlock);
++
++	INIT_LIST_HEAD(&amp;fnlock_entry-&gt;list);
++	fnlock_entry-&gt;dev = &amp;drv_data-&gt;led_fnlock;
++	fnlock_entry-&gt;type = HID_LENOVO_LED_FNLOCK;
++	list_add_tail(&amp;fnlock_entry-&gt;list, &amp;hid_lenovo_leds);
++
++
++	drv_data-&gt;led_state = 0;
++	drv_data-&gt;fnlock_state = 1;
++	drv_data-&gt;led_present = 1;
++
++	hid_set_drvdata(hdev, drv_data);
++
+ 	return lenovo_probe_tpx1cover_configure(hdev);
++
++err_cleanup:
++	if (mute_entry) {
++		list_del(&amp;mute_entry-&gt;list);
++		kfree (mute_entry);
++	}
++
++	if (micmute_entry) {
++		list_del(&amp;micmute_entry-&gt;list);
++		kfree (micmute_entry);
++	}
++
++	if (fnlock_entry) {
++		list_del(&amp;fnlock_entry-&gt;list);
++		kfree (fnlock_entry);
++	}
++
++	if (drv_data)
++		kfree(drv_data);
++
++	return ret;
+ }
+ 
+ static int lenovo_probe_tpx1cover_touch(struct hid_device *hdev)
+@@ -846,6 +1066,7 @@ static int lenovo_probe_tpx1cover_touch(struct hid_device *hdev)
+ 
+ static int lenovo_probe_tpx1cover_keyboard(struct hid_device *hdev)
+ {
++	struct lenovo_drvdata_tpx1cover *drv_data;
+ 	struct hid_report *report;
+ 	bool report_match = 1;
+ 	int ret = 0;
+@@ -860,6 +1081,21 @@ static int lenovo_probe_tpx1cover_keyboard(struct hid_device *hdev)
+ 	if (!report_match)
+ 		ret = -ENODEV;
+ 
++	drv_data = devm_kzalloc(&amp;hdev-&gt;dev,
++				sizeof(struct lenovo_drvdata_tpx1cover),
++				GFP_KERNEL);
++
++	if (!drv_data) {
++		hid_err(hdev,
++			&quot;Could not allocate memory for tpx1cover driver data\n&quot;);
++		return -ENOMEM;
++	}
++
++	drv_data-&gt;led_state = 0;
++	drv_data-&gt;led_present = 0;
++	drv_data-&gt;fnlock_state = 0;
++	hid_set_drvdata(hdev, drv_data);
++
+ 	return ret;
+ }
+ 
+@@ -1001,6 +1237,29 @@ static void lenovo_remove_cptkbd(struct hid_device *hdev)
+ 			&amp;lenovo_attr_group_cptkbd);
+ }
+ 
++static void lenovo_remove_tpx1cover(struct hid_device *hdev)
++{
++	struct lenovo_drvdata_tpx1cover *drv_data = hid_get_drvdata(hdev);
++	struct lenovo_led_list_entry *entry, *head;
++
++	if (!drv_data)
++		return;
++
++	if (drv_data-&gt;led_present) {
++		list_for_each_entry_safe(entry, head, &amp;hid_lenovo_leds, list) {
++			if (entry-&gt;dev == &amp;drv_data-&gt;led_fnlock
++				|| entry-&gt;dev == &amp;drv_data-&gt;led_micmute
++				|| entry-&gt;dev == &amp;drv_data-&gt;led_mute) {
++
++				list_del(&amp;entry-&gt;list);
++				kfree(entry);
++			}
++		}
++	}
++
++	hid_set_drvdata(hdev, NULL);
++}
++
+ static void lenovo_remove(struct hid_device *hdev)
+ {
+ 	switch (hdev-&gt;product) {
+@@ -1011,6 +1270,9 @@ static void lenovo_remove(struct hid_device *hdev)
+ 	case USB_DEVICE_ID_LENOVO_CBTKBD:
+ 		lenovo_remove_cptkbd(hdev);
+ 		break;
++	case USB_DEVICE_ID_LENOVO_X1_COVER:
++		lenovo_remove_tpx1cover(hdev);
++		break;
+ 	}
+ 
+ 	hid_hw_stop(hdev);
+diff --git a/include/linux/hid-lenovo.h b/include/linux/hid-lenovo.h
+new file mode 100644
+index 0000000..00eb140
+--- /dev/null
++++ b/include/linux/hid-lenovo.h
+@@ -0,0 +1,15 @@
++
++#ifndef __HID_LENOVO_H__
++#define __HID_LENOVO_H__
++
++
++enum hid_lenovo_led_type {
++	HID_LENOVO_LED_FNLOCK = 0,
++	HID_LENOVO_LED_MUTE,
++	HID_LENOVO_LED_MICMUTE,
++	HID_LENOVO_LED_MAX
++};
++
++int hid_lenovo_led_set(enum hid_lenovo_led_type led, bool on);
++
++#endif /* __HID_LENOVO_H_ */
+-- 
+1.9.1
+--
+To unsubscribe from this list: send the line &quot;unsubscribe linux-sound&quot; in
+the body of a message to majordomo@xxxxxxxxxxxxxxx
+More majordomo info at  <a  rel="nofollow" href="http://vger.kernel.org/majordomo-info.html">http://vger.kernel.org/majordomo-info.html</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="00638" href="msg00638.html">Re: [PATCH 2/4] hid-lenovo: Add support for X1 Tablet cover LED control</a></strong>
+<ul><li><em>From:</em> Jiri Kosina</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00634.html">[PATCH 1/4] hid-lenovo: Add support for X1 Tablet cover special keys</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00636.html">[PATCH 3/4] hid-lenovo: Handle X1 Tablet cover FNLock function appropriately</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00634.html">[PATCH 1/4] hid-lenovo: Add support for X1 Tablet cover special keys</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00638.html">Re: [PATCH 2/4] hid-lenovo: Add support for X1 Tablet cover LED control</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00635"><strong>Date</strong></a></li>
+<li><a href="index.html#00635"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/Pulseaudio/>[Pulseaudio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/alsa-devel/>[ALSA&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td valign=top align=left>&nbsp;</td>
+<td valign=top align=right>
+<a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

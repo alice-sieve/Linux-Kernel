@@ -1,0 +1,455 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH] drm/amd/powerplay: correct smu_update_table usage -->
+<!--X-From-R13: Oyrk Rrhpure &#60;nyrkqrhpureNtznvy.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 20:29:25 &#45;0700 -->
+<!--X-Message-Id: CADnq5_O4j8WWuihLxaCfsSgab3WTishXiXEVQWPJzu9_oAmOPw@mail.gmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190712073543.17641&#45;1&#45;evan.quan@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: Re: [PATCH] drm/amd/powerplay: correct smu_update_table usage">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Re: [PATCH] drm/amd/powerplay: correct smu_update_table usage &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">Re: [PATCH] drm/amd/powerplay: correct smu_update_table usage</h1>
+[<a href="msg36047.html">Date Prev</a>][<a href="msg36049.html">Date Next</a>][<a href="msg36043.html">Thread Prev</a>][<a href="msg35773.html">Thread Next</a>][<a href="maillist.html#36048">Date Index</a>][<a href="index.html#36048">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: Evan Quan &lt;evan.quan@xxxxxxx&gt;</li>
+<li><em>Subject</em>: Re: [PATCH] drm/amd/powerplay: correct smu_update_table usage</li>
+<li><em>From</em>: Alex Deucher &lt;alexdeucher@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 23:29:08 -0400</li>
+<li><em>Cc</em>: amd-gfx list &lt;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg35771.html">20190712073543.17641-1-evan.quan@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg35771.html">20190712073543.17641-1-evan.quan@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On Fri, Jul 12, 2019 at 3:35 AM Evan Quan &lt;evan.quan@xxxxxxx&gt; wrote:
+&gt;<i></i>
+&gt;<i> The interface was used in a confusing way. In profile mode scenario,</i>
+&gt;<i> the 2nd parameter of the interface was used in a different way from</i>
+&gt;<i> other scenarios.</i>
+&gt;<i></i>
+&gt;<i> Change-Id: Iabcebb47db8fdf242580c1059393132ee10b93e4</i>
+&gt;<i> Signed-off-by: Evan Quan &lt;evan.quan@xxxxxxx&gt;</i>
+
+Reviewed-by: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;
+
+&gt;<i> ---</i>
+&gt;<i>  drivers/gpu/drm/amd/powerplay/amdgpu_smu.c    |  4 ++--</i>
+&gt;<i>  .../gpu/drm/amd/powerplay/inc/amdgpu_smu.h    |  2 +-</i>
+&gt;<i>  drivers/gpu/drm/amd/powerplay/navi10_ppt.c    | 16 +++++++--------</i>
+&gt;<i>  drivers/gpu/drm/amd/powerplay/smu_v11_0.c     |  4 ++--</i>
+&gt;<i>  drivers/gpu/drm/amd/powerplay/vega20_ppt.c    | 20 +++++++++----------</i>
+&gt;<i>  5 files changed, 23 insertions(+), 23 deletions(-)</i>
+&gt;<i></i>
+&gt;<i> diff --git a/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c b/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c</i>
+&gt;<i> index 7015fe1011e8..32f98cd4e4f2 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c</i>
+&gt;<i> @@ -299,7 +299,7 @@ int smu_common_read_sensor(struct smu_context *smu, enum amd_pp_sensors sensor,</i>
+&gt;<i>         return ret;</i>
+&gt;<i>  }</i>
+&gt;<i></i>
+&gt;<i> -int smu_update_table(struct smu_context *smu, enum smu_table_id table_index,</i>
+&gt;<i> +int smu_update_table(struct smu_context *smu, enum smu_table_id table_index, int argument,</i>
+&gt;<i>                      void *table_data, bool drv2smu)</i>
+&gt;<i>  {</i>
+&gt;<i>         struct smu_table_context *smu_table = &amp;smu-&gt;smu_table;</i>
+&gt;<i> @@ -326,7 +326,7 @@ int smu_update_table(struct smu_context *smu, enum smu_table_id table_index,</i>
+&gt;<i>         ret = smu_send_smc_msg_with_param(smu, drv2smu ?</i>
+&gt;<i>                                           SMU_MSG_TransferTableDram2Smu :</i>
+&gt;<i>                                           SMU_MSG_TransferTableSmu2Dram,</i>
+&gt;<i> -                                         table_id);</i>
+&gt;<i> +                                         table_id | ((argument &amp; 0xFFFF) &lt;&lt; 16));</i>
+&gt;<i>         if (ret)</i>
+&gt;<i>                 return ret;</i>
+&gt;<i></i>
+&gt;<i> diff --git a/drivers/gpu/drm/amd/powerplay/inc/amdgpu_smu.h b/drivers/gpu/drm/amd/powerplay/inc/amdgpu_smu.h</i>
+&gt;<i> index c97324ef7db2..baf1ce4d1a14 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/amd/powerplay/inc/amdgpu_smu.h</i>
+&gt;<i> +++ b/drivers/gpu/drm/amd/powerplay/inc/amdgpu_smu.h</i>
+&gt;<i> @@ -937,7 +937,7 @@ extern int smu_feature_is_supported(struct smu_context *smu,</i>
+&gt;<i>  extern int smu_feature_set_supported(struct smu_context *smu,</i>
+&gt;<i>                                      enum smu_feature_mask mask, bool enable);</i>
+&gt;<i></i>
+&gt;<i> -int smu_update_table(struct smu_context *smu, uint32_t table_index,</i>
+&gt;<i> +int smu_update_table(struct smu_context *smu, enum smu_table_id table_index, int argument,</i>
+&gt;<i>                      void *table_data, bool drv2smu);</i>
+&gt;<i></i>
+&gt;<i>  bool is_support_sw_smu(struct amdgpu_device *adev);</i>
+&gt;<i> diff --git a/drivers/gpu/drm/amd/powerplay/navi10_ppt.c b/drivers/gpu/drm/amd/powerplay/navi10_ppt.c</i>
+&gt;<i> index 4cb0c18b12ce..655ad6c66b21 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/amd/powerplay/navi10_ppt.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/amd/powerplay/navi10_ppt.c</i>
+&gt;<i> @@ -634,7 +634,7 @@ static int navi10_get_current_clk_freq_by_table(struct smu_context *smu,</i>
+&gt;<i></i>
+&gt;<i>         memset(&amp;metrics, 0, sizeof(metrics));</i>
+&gt;<i></i>
+&gt;<i> -       ret = smu_update_table(smu, SMU_TABLE_SMU_METRICS, (void *)&amp;metrics, false);</i>
+&gt;<i> +       ret = smu_update_table(smu, SMU_TABLE_SMU_METRICS, 0, (void *)&amp;metrics, false);</i>
+&gt;<i>         if (ret)</i>
+&gt;<i>                 return ret;</i>
+&gt;<i></i>
+&gt;<i> @@ -888,7 +888,7 @@ static int navi10_get_gpu_power(struct smu_context *smu, uint32_t *value)</i>
+&gt;<i>         if (!value)</i>
+&gt;<i>                 return -EINVAL;</i>
+&gt;<i></i>
+&gt;<i> -       ret = smu_update_table(smu, SMU_TABLE_SMU_METRICS, (void *)&amp;metrics,</i>
+&gt;<i> +       ret = smu_update_table(smu, SMU_TABLE_SMU_METRICS, 0, (void *)&amp;metrics,</i>
+&gt;<i>                                false);</i>
+&gt;<i>         if (ret)</i>
+&gt;<i>                 return ret;</i>
+&gt;<i> @@ -910,7 +910,7 @@ static int navi10_get_current_activity_percent(struct smu_context *smu,</i>
+&gt;<i></i>
+&gt;<i>         msleep(1);</i>
+&gt;<i></i>
+&gt;<i> -       ret = smu_update_table(smu, SMU_TABLE_SMU_METRICS,</i>
+&gt;<i> +       ret = smu_update_table(smu, SMU_TABLE_SMU_METRICS, 0,</i>
+&gt;<i>                                (void *)&amp;metrics, false);</i>
+&gt;<i>         if (ret)</i>
+&gt;<i>                 return ret;</i>
+&gt;<i> @@ -951,7 +951,7 @@ static int navi10_get_fan_speed(struct smu_context *smu, uint16_t *value)</i>
+&gt;<i></i>
+&gt;<i>         memset(&amp;metrics, 0, sizeof(metrics));</i>
+&gt;<i></i>
+&gt;<i> -       ret = smu_update_table(smu, SMU_TABLE_SMU_METRICS,</i>
+&gt;<i> +       ret = smu_update_table(smu, SMU_TABLE_SMU_METRICS, 0,</i>
+&gt;<i>                                (void *)&amp;metrics, false);</i>
+&gt;<i>         if (ret)</i>
+&gt;<i>                 return ret;</i>
+&gt;<i> @@ -1020,7 +1020,7 @@ static int navi10_get_power_profile_mode(struct smu_context *smu, char *buf)</i>
+&gt;<i>                         return -EINVAL;</i>
+&gt;<i></i>
+&gt;<i>                 result = smu_update_table(smu,</i>
+&gt;<i> -                                         SMU_TABLE_ACTIVITY_MONITOR_COEFF | workload_type &lt;&lt; 16,</i>
+&gt;<i> +                                         SMU_TABLE_ACTIVITY_MONITOR_COEFF, workload_type,</i>
+&gt;<i>                                           (void *)(&amp;activity_monitor), false);</i>
+&gt;<i>                 if (result) {</i>
+&gt;<i>                         pr_err(&quot;[%s] Failed to get activity monitor!&quot;, __func__);</i>
+&gt;<i> @@ -1093,7 +1093,7 @@ static int navi10_set_power_profile_mode(struct smu_context *smu, long *input, u</i>
+&gt;<i>                         return -EINVAL;</i>
+&gt;<i></i>
+&gt;<i>                 ret = smu_update_table(smu,</i>
+&gt;<i> -                                      SMU_TABLE_ACTIVITY_MONITOR_COEFF | WORKLOAD_PPLIB_CUSTOM_BIT &lt;&lt; 16,</i>
+&gt;<i> +                                      SMU_TABLE_ACTIVITY_MONITOR_COEFF, WORKLOAD_PPLIB_CUSTOM_BIT,</i>
+&gt;<i>                                        (void *)(&amp;activity_monitor), false);</i>
+&gt;<i>                 if (ret) {</i>
+&gt;<i>                         pr_err(&quot;[%s] Failed to get activity monitor!&quot;, __func__);</i>
+&gt;<i> @@ -1137,7 +1137,7 @@ static int navi10_set_power_profile_mode(struct smu_context *smu, long *input, u</i>
+&gt;<i>                 }</i>
+&gt;<i></i>
+&gt;<i>                 ret = smu_update_table(smu,</i>
+&gt;<i> -                                      SMU_TABLE_ACTIVITY_MONITOR_COEFF | WORKLOAD_PPLIB_CUSTOM_BIT &lt;&lt; 16,</i>
+&gt;<i> +                                      SMU_TABLE_ACTIVITY_MONITOR_COEFF, WORKLOAD_PPLIB_CUSTOM_BIT,</i>
+&gt;<i>                                        (void *)(&amp;activity_monitor), true);</i>
+&gt;<i>                 if (ret) {</i>
+&gt;<i>                         pr_err(&quot;[%s] Failed to set activity monitor!&quot;, __func__);</i>
+&gt;<i> @@ -1305,7 +1305,7 @@ static int navi10_thermal_get_temperature(struct smu_context *smu,</i>
+&gt;<i>         if (!value)</i>
+&gt;<i>                 return -EINVAL;</i>
+&gt;<i></i>
+&gt;<i> -       ret = smu_update_table(smu, SMU_TABLE_SMU_METRICS, (void *)&amp;metrics, false);</i>
+&gt;<i> +       ret = smu_update_table(smu, SMU_TABLE_SMU_METRICS, 0, (void *)&amp;metrics, false);</i>
+&gt;<i>         if (ret)</i>
+&gt;<i>                 return ret;</i>
+&gt;<i></i>
+&gt;<i> diff --git a/drivers/gpu/drm/amd/powerplay/smu_v11_0.c b/drivers/gpu/drm/amd/powerplay/smu_v11_0.c</i>
+&gt;<i> index 12b7f763dddd..bd9a6f80699d 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/amd/powerplay/smu_v11_0.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/amd/powerplay/smu_v11_0.c</i>
+&gt;<i> @@ -704,7 +704,7 @@ static int smu_v11_0_write_pptable(struct smu_context *smu)</i>
+&gt;<i>         struct smu_table_context *table_context = &amp;smu-&gt;smu_table;</i>
+&gt;<i>         int ret = 0;</i>
+&gt;<i></i>
+&gt;<i> -       ret = smu_update_table(smu, SMU_TABLE_PPTABLE,</i>
+&gt;<i> +       ret = smu_update_table(smu, SMU_TABLE_PPTABLE, 0,</i>
+&gt;<i>                                table_context-&gt;driver_pptable, true);</i>
+&gt;<i></i>
+&gt;<i>         return ret;</i>
+&gt;<i> @@ -723,7 +723,7 @@ static int smu_v11_0_write_watermarks_table(struct smu_context *smu)</i>
+&gt;<i>         if (!table-&gt;cpu_addr)</i>
+&gt;<i>                 return -EINVAL;</i>
+&gt;<i></i>
+&gt;<i> -       ret = smu_update_table(smu, SMU_TABLE_WATERMARKS, table-&gt;cpu_addr,</i>
+&gt;<i> +       ret = smu_update_table(smu, SMU_TABLE_WATERMARKS, 0, table-&gt;cpu_addr,</i>
+&gt;<i>                                 true);</i>
+&gt;<i></i>
+&gt;<i>         return ret;</i>
+&gt;<i> diff --git a/drivers/gpu/drm/amd/powerplay/vega20_ppt.c b/drivers/gpu/drm/amd/powerplay/vega20_ppt.c</i>
+&gt;<i> index dbc17920b879..c0c0565b56cd 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/amd/powerplay/vega20_ppt.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/amd/powerplay/vega20_ppt.c</i>
+&gt;<i> @@ -1699,7 +1699,7 @@ static int vega20_get_metrics_table(struct smu_context *smu,</i>
+&gt;<i>         int ret = 0;</i>
+&gt;<i></i>
+&gt;<i>         if (!smu_table-&gt;metrics_time || time_after(jiffies, smu_table-&gt;metrics_time + HZ / 1000)) {</i>
+&gt;<i> -               ret = smu_update_table(smu, SMU_TABLE_SMU_METRICS,</i>
+&gt;<i> +               ret = smu_update_table(smu, SMU_TABLE_SMU_METRICS, 0,</i>
+&gt;<i>                                 (void *)smu_table-&gt;metrics_table, false);</i>
+&gt;<i>                 if (ret) {</i>
+&gt;<i>                         pr_info(&quot;Failed to export SMU metrics table!\n&quot;);</i>
+&gt;<i> @@ -1728,7 +1728,7 @@ static int vega20_set_default_od_settings(struct smu_context *smu,</i>
+&gt;<i>                 if (!table_context-&gt;overdrive_table)</i>
+&gt;<i>                         return -ENOMEM;</i>
+&gt;<i></i>
+&gt;<i> -               ret = smu_update_table(smu, SMU_TABLE_OVERDRIVE,</i>
+&gt;<i> +               ret = smu_update_table(smu, SMU_TABLE_OVERDRIVE, 0,</i>
+&gt;<i>                                        table_context-&gt;overdrive_table, false);</i>
+&gt;<i>                 if (ret) {</i>
+&gt;<i>                         pr_err(&quot;Failed to export over drive table!\n&quot;);</i>
+&gt;<i> @@ -1740,7 +1740,7 @@ static int vega20_set_default_od_settings(struct smu_context *smu,</i>
+&gt;<i>                         return ret;</i>
+&gt;<i>         }</i>
+&gt;<i></i>
+&gt;<i> -       ret = smu_update_table(smu, SMU_TABLE_OVERDRIVE,</i>
+&gt;<i> +       ret = smu_update_table(smu, SMU_TABLE_OVERDRIVE, 0,</i>
+&gt;<i>                                table_context-&gt;overdrive_table, true);</i>
+&gt;<i>         if (ret) {</i>
+&gt;<i>                 pr_err(&quot;Failed to import over drive table!\n&quot;);</i>
+&gt;<i> @@ -1827,7 +1827,7 @@ static int vega20_get_power_profile_mode(struct smu_context *smu, char *buf)</i>
+&gt;<i>                         return -EINVAL;</i>
+&gt;<i></i>
+&gt;<i>                 result = smu_update_table(smu,</i>
+&gt;<i> -                                         SMU_TABLE_ACTIVITY_MONITOR_COEFF | workload_type &lt;&lt; 16,</i>
+&gt;<i> +                                         SMU_TABLE_ACTIVITY_MONITOR_COEFF, workload_type,</i>
+&gt;<i>                                           (void *)(&amp;activity_monitor), false);</i>
+&gt;<i>                 if (result) {</i>
+&gt;<i>                         pr_err(&quot;[%s] Failed to get activity monitor!&quot;, __func__);</i>
+&gt;<i> @@ -1913,7 +1913,7 @@ static int vega20_set_power_profile_mode(struct smu_context *smu, long *input, u</i>
+&gt;<i></i>
+&gt;<i>         if (smu-&gt;power_profile_mode == PP_SMC_POWER_PROFILE_CUSTOM) {</i>
+&gt;<i>                 ret = smu_update_table(smu,</i>
+&gt;<i> -                                      SMU_TABLE_ACTIVITY_MONITOR_COEFF | WORKLOAD_PPLIB_CUSTOM_BIT &lt;&lt; 16,</i>
+&gt;<i> +                                      SMU_TABLE_ACTIVITY_MONITOR_COEFF, WORKLOAD_PPLIB_CUSTOM_BIT,</i>
+&gt;<i>                                        (void *)(&amp;activity_monitor), false);</i>
+&gt;<i>                 if (ret) {</i>
+&gt;<i>                         pr_err(&quot;[%s] Failed to get activity monitor!&quot;, __func__);</i>
+&gt;<i> @@ -1968,7 +1968,7 @@ static int vega20_set_power_profile_mode(struct smu_context *smu, long *input, u</i>
+&gt;<i>                 }</i>
+&gt;<i></i>
+&gt;<i>                 ret = smu_update_table(smu,</i>
+&gt;<i> -                                      SMU_TABLE_ACTIVITY_MONITOR_COEFF | WORKLOAD_PPLIB_CUSTOM_BIT &lt;&lt; 16,</i>
+&gt;<i> +                                      SMU_TABLE_ACTIVITY_MONITOR_COEFF, WORKLOAD_PPLIB_CUSTOM_BIT,</i>
+&gt;<i>                                        (void *)(&amp;activity_monitor), true);</i>
+&gt;<i>                 if (ret) {</i>
+&gt;<i>                         pr_err(&quot;[%s] Failed to set activity monitor!&quot;, __func__);</i>
+&gt;<i> @@ -2519,7 +2519,7 @@ static int vega20_update_od8_settings(struct smu_context *smu,</i>
+&gt;<i>         struct smu_table_context *table_context = &amp;smu-&gt;smu_table;</i>
+&gt;<i>         int ret;</i>
+&gt;<i></i>
+&gt;<i> -       ret = smu_update_table(smu, SMU_TABLE_OVERDRIVE,</i>
+&gt;<i> +       ret = smu_update_table(smu, SMU_TABLE_OVERDRIVE, 0,</i>
+&gt;<i>                                table_context-&gt;overdrive_table, false);</i>
+&gt;<i>         if (ret) {</i>
+&gt;<i>                 pr_err(&quot;Failed to export over drive table!\n&quot;);</i>
+&gt;<i> @@ -2530,7 +2530,7 @@ static int vega20_update_od8_settings(struct smu_context *smu,</i>
+&gt;<i>         if (ret)</i>
+&gt;<i>                 return ret;</i>
+&gt;<i></i>
+&gt;<i> -       ret = smu_update_table(smu, SMU_TABLE_OVERDRIVE,</i>
+&gt;<i> +       ret = smu_update_table(smu, SMU_TABLE_OVERDRIVE, 0,</i>
+&gt;<i>                                table_context-&gt;overdrive_table, true);</i>
+&gt;<i>         if (ret) {</i>
+&gt;<i>                 pr_err(&quot;Failed to import over drive table!\n&quot;);</i>
+&gt;<i> @@ -2794,7 +2794,7 @@ static int vega20_odn_edit_dpm_table(struct smu_context *smu,</i>
+&gt;<i>                 break;</i>
+&gt;<i></i>
+&gt;<i>         case PP_OD_RESTORE_DEFAULT_TABLE:</i>
+&gt;<i> -               ret = smu_update_table(smu, SMU_TABLE_OVERDRIVE, table_context-&gt;overdrive_table, false);</i>
+&gt;<i> +               ret = smu_update_table(smu, SMU_TABLE_OVERDRIVE, 0, table_context-&gt;overdrive_table, false);</i>
+&gt;<i>                 if (ret) {</i>
+&gt;<i>                         pr_err(&quot;Failed to export over drive table!\n&quot;);</i>
+&gt;<i>                         return ret;</i>
+&gt;<i> @@ -2803,7 +2803,7 @@ static int vega20_odn_edit_dpm_table(struct smu_context *smu,</i>
+&gt;<i>                 break;</i>
+&gt;<i></i>
+&gt;<i>         case PP_OD_COMMIT_DPM_TABLE:</i>
+&gt;<i> -               ret = smu_update_table(smu, SMU_TABLE_OVERDRIVE, table_context-&gt;overdrive_table, true);</i>
+&gt;<i> +               ret = smu_update_table(smu, SMU_TABLE_OVERDRIVE, 0, table_context-&gt;overdrive_table, true);</i>
+&gt;<i>                 if (ret) {</i>
+&gt;<i>                         pr_err(&quot;Failed to import over drive table!\n&quot;);</i>
+&gt;<i>                         return ret;</i>
+&gt;<i> --</i>
+&gt;<i> 2.21.0</i>
+&gt;<i></i>
+&gt;<i> _______________________________________________</i>
+&gt;<i> amd-gfx mailing list</i>
+&gt;<i> amd-gfx@xxxxxxxxxxxxxxxxxxxxx</i>
+&gt;<i> <a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a></i>
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="35771" href="msg35771.html">[PATCH] drm/amd/powerplay: correct smu_update_table usage</a></strong>
+<ul><li><em>From:</em> Evan Quan</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg36047.html">Re: [PATCH] drm/amd/powerplay: fix deadlock around smu_handle_task V2</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg36049.html">Re: [PATCH] drm/amd/powerplay: fix memory allocation failure check V2</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg36043.html">RE: [PATCH] drm/amd/powerplay: correct smu_update_table usage</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35773.html">[PATCH 1/3] drm/amd/powerplay: add helper of smu_feature_dpmclk_check for smu</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#36048"><strong>Date</strong></a></li>
+<li><a href="index.html#36048"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

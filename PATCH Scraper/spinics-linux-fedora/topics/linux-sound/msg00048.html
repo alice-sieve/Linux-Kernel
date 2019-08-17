@@ -1,0 +1,538 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH]:  sound: ioremap/iounmap function balancing audit -->
+<!--X-From-R13: "Epbgg Fubzcfba" &#60;cbfgsnvyNuhfuznvy.pbz> -->
+<!--X-Date: Tue, 31 Jul 2007 21:06:10 &#45;0700 -->
+<!--X-Message-Id: 20070801040601.009F3DA820@mailserver8.hushmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Sound: [PATCH]:  sound: ioremap/iounmap function balancing audit">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Sound &mdash; [PATCH]:  sound: ioremap/iounmap function balancing audit</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Sound" href="//feeds.feedburner.com/LinuxSound">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:6612422167" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH]:  sound: ioremap/iounmap function balancing audit</h1>
+[<a href="msg00047.html">Date Prev</a>][<a href="msg00049.html">Date Next</a>][<a href="msg00047.html">Thread Prev</a>][<a href="msg00049.html">Thread Next</a>][<a href="maillist.html#00048">Date Index</a>][<a href="index.html#00048">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH]:  sound: ioremap/iounmap function balancing audit</li>
+<li><em>From</em>: &quot;Scott Thompson&quot; &lt;<a href="mailto:postfail@DOMAIN.HIDDEN">postfail@xxxxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Wed, 01 Aug 2007 00:05:59 -0400</li>
+<li><em>Reply-to</em>: <a href="mailto:postfail@DOMAIN.HIDDEN">postfail@xxxxxxxxxxxx</a></li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+This patch, along with previously submitted dmasound_awacs.c patch,
+completes an audit of the 'sound' tree for ioremap/iounmap
+balancing and return code checking on ioremap calls.  ioremap()
+must be balanced by an iounmap() (else this causes a memory leak).
+
+i810_audio.c had a 'fixme' issue regarding ioremap fail that was
+addressed as well.
+
+Signed-off-by: Scott Thompson &lt;postfail &lt;at&gt; hushmail.com&gt;
+- ---
+
+diff --git a/sound/oss/i810_audio.c b/sound/oss/i810_audio.c
+index f5e31f1..407958c 100644
+- --- a/sound/oss/i810_audio.c
++++ b/sound/oss/i810_audio.c
+@@ -3362,7 +3362,7 @@ static int __devinit i810_probe(struct
+pci_dev *pci_dev, const struct pci_device
+
+ 	if (card-&gt;use_mmio) {
+ 		if (request_mem_region(card-&gt;ac97base_mmio_phys, 512, &quot;ich_audio
+MMBAR&quot;)) {
+- -			if ((card-&gt;ac97base_mmio = ioremap(card-&gt;ac97base_mmio_phys,
+512))) { /*@FIXME can ioremap fail? don't know (jsaw) */
++			if ((card-&gt;ac97base_mmio = ioremap(card-&gt;ac97base_mmio_phys,
+512))) {
+ 				if (request_mem_region(card-&gt;iobase_mmio_phys, 256, &quot;ich_audio
+MBBAR&quot;)) {
+ 					if ((card-&gt;iobase_mmio = ioremap(card-&gt;iobase_mmio_phys,
+256))) {
+ 						printk(KERN_INFO &quot;i810: %s mmio at 0x%04lx and 0x%04lx\n&quot;,
+@@ -3383,6 +3383,10 @@ static int __devinit i810_probe(struct
+pci_dev *pci_dev, const struct pci_device
+ 					card-&gt;use_mmio = 0;
+ 				}
+ 			}
++			else {
++				card-&gt;use_mmio;
++				release_mem_region(card-&gt;ac97base_mmio_phys, 512);
++			}
+ 		}
+ 		else {
+ 			card-&gt;use_mmio = 0;
+diff --git a/sound/oss/msnd_pinnacle.c b/sound/oss/msnd_pinnacle.c
+index f1f49eb..117f79d 100644
+- --- a/sound/oss/msnd_pinnacle.c
++++ b/sound/oss/msnd_pinnacle.c
+@@ -1912,6 +1912,9 @@ static int __init msnd_init(void)
+
+ static void __exit msdn_cleanup(void)
+ {
++	if (dev.base)
++		iounmap(dev.base);
++
+ 	unload_multisound();
+ 	msnd_fifo_free(&amp;dev.DAPF);
+ 	msnd_fifo_free(&amp;dev.DARF);
+diff --git a/sound/pci/mixart/mixart.c b/sound/pci/mixart/mixart.c
+index ac007ce..871b09f 100644
+- --- a/sound/pci/mixart/mixart.c
++++ b/sound/pci/mixart/mixart.c
+@@ -1319,6 +1319,13 @@ static int __devinit snd_mixart_probe(struct
+pci_dev *pci,
+ 						   pci_resource_len(pci, i));
+ 	}
+
++	if (!mgr-&gt;mem[0].virt || !mgr-&gt;mem[1].virt){
++		printk(KERN_ERR &quot;unable to remap resource 0x%lx and/or 0x%lx\n&quot;,
++			mgr-&gt;mem[0].phys, mgr-&gt;mem[1].phys);
++		snd_mixart_free(mgr);
++		return -EBUSY;
++	}
++
+ 	if (request_irq(pci-&gt;irq, snd_mixart_interrupt, IRQF_SHARED,
+ 			CARD_NAME, mgr)) {
+ 		snd_printk(KERN_ERR &quot;unable to grab IRQ %d\n&quot;, pci-&gt;irq);
+diff --git a/sound/pci/rme32.c b/sound/pci/rme32.c
+index 618653e..d62d32a 100644
+- --- a/sound/pci/rme32.c
++++ b/sound/pci/rme32.c
+@@ -1373,6 +1373,7 @@ static int __devinit snd_rme32_create(struct
+rme32 * rme32)
+ 	if (request_irq(pci-&gt;irq, snd_rme32_interrupt, IRQF_SHARED,
+ 			&quot;RME32&quot;, rme32)) {
+ 		snd_printk(KERN_ERR &quot;unable to grab IRQ %d\n&quot;, pci-&gt;irq);
++		iounmap(rme32-&gt;iobase);
+ 		return -EBUSY;
+ 	}
+ 	rme32-&gt;irq = pci-&gt;irq;
+@@ -1382,6 +1383,7 @@ static int __devinit snd_rme32_create(struct
+rme32 * rme32)
+
+ 	/* set up ALSA pcm device for S/PDIF */
+ 	if ((err = snd_pcm_new(rme32-&gt;card, &quot;Digi32 IEC958&quot;, 0, 1, 1,
+&amp;rme32-&gt;spdif_pcm)) &lt; 0) {
++		iounmap(rme32-&gt;iobase);
+ 		return err;
+ 	}
+ 	rme32-&gt;spdif_pcm-&gt;private_data = rme32;
+@@ -1414,6 +1416,7 @@ static int __devinit snd_rme32_create(struct
+rme32 * rme32)
+ 		if ((err = snd_pcm_new(rme32-&gt;card, &quot;Digi32 ADAT&quot;, 1,
+ 				       1, 1, &amp;rme32-&gt;adat_pcm)) &lt; 0)
+ 		{
++			iounmap(rme32-&gt;iobase);
+ 			return err;
+ 		}
+ 		rme32-&gt;adat_pcm-&gt;private_data = rme32;
+@@ -1459,6 +1462,7 @@ static int __devinit snd_rme32_create(struct
+rme32 * rme32)
+
+ 	/* init switch interface */
+ 	if ((err = snd_rme32_create_switches(rme32-&gt;card, rme32)) &lt; 0) {
++		iounmap(rme32-&gt;iobase);
+ 		return err;
+ 	}
+
+diff --git a/sound/pci/rme96.c b/sound/pci/rme96.c
+index e3304b7..25af36c 100644
+- --- a/sound/pci/rme96.c
++++ b/sound/pci/rme96.c
+@@ -1590,6 +1590,7 @@ snd_rme96_create(struct rme96 *rme96)
+ 	if (request_irq(pci-&gt;irq, snd_rme96_interrupt, IRQF_SHARED,
+ 			&quot;RME96&quot;, rme96)) {
+ 		snd_printk(KERN_ERR &quot;unable to grab IRQ %d\n&quot;, pci-&gt;irq);
++		iounmap(rme96-&gt;iobase);
+ 		return -EBUSY;
+ 	}
+ 	rme96-&gt;irq = pci-&gt;irq;
+@@ -1601,6 +1602,7 @@ snd_rme96_create(struct rme96 *rme96)
+ 	if ((err = snd_pcm_new(rme96-&gt;card, &quot;Digi96 IEC958&quot;, 0,
+ 			       1, 1, &amp;rme96-&gt;spdif_pcm)) &lt; 0)
+ 	{
++		iounmap(rme96-&gt;iobase);
+ 		return err;
+ 	}
+ 	rme96-&gt;spdif_pcm-&gt;private_data = rme96;
+@@ -1619,6 +1621,7 @@ snd_rme96_create(struct rme96 *rme96)
+ 		if ((err = snd_pcm_new(rme96-&gt;card, &quot;Digi96 ADAT&quot;, 1,
+ 				       1, 1, &amp;rme96-&gt;adat_pcm)) &lt; 0)
+ 		{
++			iounmap(rme96-&gt;iobase);
+ 			return err;
+ 		}
+ 		rme96-&gt;adat_pcm-&gt;private_data = rme96;
+@@ -1671,6 +1674,7 @@ snd_rme96_create(struct rme96 *rme96)
+
+ 	/* init switch interface */
+ 	if ((err = snd_rme96_create_switches(rme96-&gt;card, rme96)) &lt; 0) {
++		iounmap(rme96-&gt;iobase);
+ 		return err;
+ 	}
+
+diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
+index 3b3ef65..031285f 100644
+- --- a/sound/pci/rme9652/hdsp.c
++++ b/sound/pci/rme9652/hdsp.c
+@@ -5049,6 +5049,7 @@ static int __devinit snd_hdsp_create(struct
+snd_card *card,
+ 	if (request_irq(pci-&gt;irq, snd_hdsp_interrupt, IRQF_SHARED,
+ 			&quot;hdsp&quot;, hdsp)) {
+ 		snd_printk(KERN_ERR &quot;Hammerfall-DSP: unable to use IRQ %d\n&quot;,
+pci-&gt;irq);
++		iounmap(hdsp-&gt;iobase);
+ 		return -EBUSY;
+ 	}
+
+@@ -5057,8 +5058,10 @@ static int __devinit snd_hdsp_create(struct
+snd_card *card,
+ 	hdsp-&gt;use_midi_tasklet = 1;
+ 	hdsp-&gt;dds_value = 0;
+
+- -	if ((err = snd_hdsp_initialize_memory(hdsp)) &lt; 0)
++	if ((err = snd_hdsp_initialize_memory(hdsp)) &lt; 0) {
++		iounmap(hdsp-&gt;iobase);
+ 		return err;
++	}
+
+ 	if (!is_9652 &amp;&amp; !is_9632) {
+ 		/* we wait 2 seconds to let freshly inserted cardbus cards do
+their hardware init */
+@@ -5078,8 +5081,10 @@ static int __devinit snd_hdsp_create(struct
+snd_card *card,
+ #endif
+ 			/* no iobox connected, we defer initialization */
+ 			snd_printk(KERN_INFO &quot;Hammerfall-DSP: card initialization
+pending : waiting for firmware\n&quot;);
+- -			if ((err = snd_hdsp_create_hwdep(card, hdsp)) &lt; 0)
++			if ((err = snd_hdsp_create_hwdep(card, hdsp)) &lt; 0) {
++				iounmap(hdsp-&gt;iobase);
+ 				return err;
++			}
+ 			return 0;
+ 		} else {
+ 			snd_printk(KERN_INFO &quot;Hammerfall-DSP: Firmware already present,
+initializing card.\n&quot;);
+@@ -5090,8 +5095,10 @@ static int __devinit snd_hdsp_create(struct
+snd_card *card,
+ 		}
+ 	}
+
+- -	if ((err = snd_hdsp_enable_io(hdsp)) != 0)
++	if ((err = snd_hdsp_enable_io(hdsp)) != 0) {
++		iounmap(hdsp-&gt;iobase);
+ 		return err;
++	}
+
+ 	if (is_9652)
+ 	        hdsp-&gt;io_type = H9652;
+@@ -5099,16 +5106,20 @@ static int __devinit snd_hdsp_create(struct
+snd_card *card,
+ 	if (is_9632)
+ 		hdsp-&gt;io_type = H9632;
+
+- -	if ((err = snd_hdsp_create_hwdep(card, hdsp)) &lt; 0)
++	if ((err = snd_hdsp_create_hwdep(card, hdsp)) &lt; 0) {
++		iounmap(hdsp-&gt;iobase);
+ 		return err;
++	}
+
+ 	snd_hdsp_initialize_channels(hdsp);
+ 	snd_hdsp_initialize_midi_flush(hdsp);
+
+ 	hdsp-&gt;state |= HDSP_FirmwareLoaded;
+
+- -	if ((err = snd_hdsp_create_alsa_devices(card, hdsp)) &lt; 0)
++	if ((err = snd_hdsp_create_alsa_devices(card, hdsp)) &lt; 0) {
++		iounmap(hdsp-&gt;iobase);
+ 		return err;
++	}
+
+ 	return 0;
+ }
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index 143185e..41fa677 100644
+- --- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -4423,6 +4423,7 @@ static int __devinit snd_hdspm_create(struct
+snd_card *card, struct hdspm * hdsp
+ 	if (request_irq(pci-&gt;irq, snd_hdspm_interrupt,
+ 			IRQF_SHARED, &quot;hdspm&quot;, hdspm)) {
+ 		snd_printk(KERN_ERR &quot;HDSPM: unable to use IRQ %d\n&quot;, pci-&gt;irq);
++		iounmap(hdspm-&gt;iobase);
+ 		return -EBUSY;
+ 	}
+
+@@ -4439,6 +4440,7 @@ static int __devinit snd_hdspm_create(struct
+snd_card *card, struct hdspm * hdsp
+ 	    == NULL) {
+ 		snd_printk(KERN_ERR &quot;HDSPM: unable to kmalloc Mixer memory of %d
+Bytes\n&quot;,
+ 			   (int)sizeof(struct hdspm_mixer));
++		iounmap(hdspm-&gt;iobase);
+ 		return err;
+ 	}
+
+@@ -4447,8 +4449,10 @@ static int __devinit snd_hdspm_create(struct
+snd_card *card, struct hdspm * hdsp
+ 	hdspm-&gt;qs_channels = MADI_QS_CHANNELS;
+
+ 	snd_printdd(&quot;create alsa devices.\n&quot;);
+- -	if ((err = snd_hdspm_create_alsa_devices(card, hdspm)) &lt; 0)
++	if ((err = snd_hdspm_create_alsa_devices(card, hdspm)) &lt; 0) {
++		iounmap(hdspm-&gt;iobase);
+ 		return err;
++        }
+
+ 	snd_hdspm_initialize_midi_flush(hdspm);
+
+diff --git a/sound/pci/rme9652/rme9652.c
+b/sound/pci/rme9652/rme9652.c
+index 2de2740..39a54b0 100644
+- --- a/sound/pci/rme9652/rme9652.c
++++ b/sound/pci/rme9652/rme9652.c
+@@ -2499,6 +2499,7 @@ static int __devinit
+snd_rme9652_create(struct snd_card *card,
+ 	if (request_irq(pci-&gt;irq, snd_rme9652_interrupt, IRQF_SHARED,
+ 			&quot;rme9652&quot;, rme9652)) {
+ 		snd_printk(KERN_ERR &quot;unable to request IRQ %d\n&quot;, pci-&gt;irq);
++		iounmap(rme9652-&gt;iobase);
+ 		return -EBUSY;
+ 	}
+ 	rme9652-&gt;irq = pci-&gt;irq;
+@@ -2559,14 +2560,17 @@ static int __devinit
+snd_rme9652_create(struct snd_card *card,
+ 	pci_set_master(rme9652-&gt;pci);
+
+ 	if ((err = snd_rme9652_initialize_memory(rme9652)) &lt; 0) {
++		iounmap(rme9652-&gt;iobase);
+ 		return err;
+ 	}
+
+ 	if ((err = snd_rme9652_create_pcm(card, rme9652)) &lt; 0) {
++		iounmap(rme9652-&gt;iobase);
+ 		return err;
+ 	}
+
+ 	if ((err = snd_rme9652_create_controls(card, rme9652)) &lt; 0) {
++		iounmap(rme9652-&gt;iobase);
+ 		return err;
+ 	}
+
+diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c
+b/sound/soc/s3c24xx/s3c24xx-i2s.c
+index 39f0246..cd89c41 100644
+- --- a/sound/soc/s3c24xx/s3c24xx-i2s.c
++++ b/sound/soc/s3c24xx/s3c24xx-i2s.c
+@@ -385,6 +385,7 @@ static int s3c24xx_i2s_probe(struct
+platform_device *pdev)
+ 	s3c24xx_i2s.iis_clk=clk_get(&amp;pdev-&gt;dev, &quot;iis&quot;);
+ 	if (s3c24xx_i2s.iis_clk == NULL) {
+ 		DBG(&quot;failed to get iis_clock\n&quot;);
++		iounmap(s3c24xx_i2s.regs);
+ 		return -ENODEV;
+ 	}
+ 	clk_enable(s3c24xx_i2s.iis_clk);
+-----BEGIN PGP SIGNATURE-----
+Note: This signature can be verified at <a  rel="nofollow" href="https://www.hushtools.com/verify">https://www.hushtools.com/verify</a>
+Version: Hush 2.5
+
+wpwEAQECAAYFAkawBfQACgkQ5iui/yAtoVmiJgP9FrIgHL77fgjPCWAsCryHX/zNwOH8
+AXmI4l+JQ0ggXLUbNOxKEbjKskL205iTdMdLhK8mbMQ2XIPnawGpT7mmzi5DJSWocpzj
+BsPtxMLUceHIyrjR0aPHKXV0eq+04NgzqOXtQhqghNoSwU5oVCXJctcLw0dOzkNPgBbo
+WTlssf8=
+=pFpA
+-----END PGP SIGNATURE-----
+
+--
+Click to make millions by owning your own franchise
+<a  rel="nofollow" href="http://tagline.hushmail.com/fc/Ioyw6h4eB8rpOzT2bu09K6SBLm7TqhzesSanTl58Rgv3gjJ5CysbTH/">http://tagline.hushmail.com/fc/Ioyw6h4eB8rpOzT2bu09K6SBLm7TqhzesSanTl58Rgv3gjJ5CysbTH/</a>
+
+
+-
+To unsubscribe from this list: send the line &quot;unsubscribe linux-sound&quot; in
+the body of a message to majordomo@xxxxxxxxxxxxxxx
+More majordomo info at  <a  rel="nofollow" href="http://vger.kernel.org/majordomo-info.html">http://vger.kernel.org/majordomo-info.html</a>
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="00049" href="msg00049.html">Re: [PATCH]:  sound: ioremap/iounmap function balancing audit</a></strong>
+<ul><li><em>From:</em> Andrew Morton</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00047.html">[PATCH]:  ioremap function balancing in init/cleanup sound/oss/dmasound/dmacound_awacs.c</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00049.html">Re: [PATCH]:  sound: ioremap/iounmap function balancing audit</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00047.html">[PATCH]:  ioremap function balancing in init/cleanup sound/oss/dmasound/dmacound_awacs.c</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00049.html">Re: [PATCH]:  sound: ioremap/iounmap function balancing audit</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00048"><strong>Date</strong></a></li>
+<li><a href="index.html#00048"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/Pulseaudio/>[Pulseaudio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/alsa-devel/>[ALSA&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td valign=top align=left>&nbsp;</td>
+<td valign=top align=right>
+<a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

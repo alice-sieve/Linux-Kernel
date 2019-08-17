@@ -1,0 +1,493 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 5/6] autofs &#45; make expire flags usage consistent with v5 params -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Mon, 18 Jun 2018 20:03:35 &#45;0700 -->
+<!--X-Message-Id: 152937734046.21213.9454131988766280028.stgit@pluto.themaw.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 152937731702.21213.7371321165189170865.stgit@pluto.themaw.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 5/6] autofs - make expire flags usage consistent with v5 params &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 5/6] autofs - make expire flags usage consistent with v5 params &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 5/6] autofs - make expire flags usage consistent with v5 params</h1>
+[<a href="msg01912.html">Date Prev</a>][<a href="msg01914.html">Date Next</a>][<a href="msg01912.html">Thread Prev</a>][<a href="msg01914.html">Thread Next</a>][<a href="maillist.html#01913">Date Index</a>][<a href="index.html#01913">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: Andrew Morton &lt;akpm@xxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 5/6] autofs - make expire flags usage consistent with v5 params</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 19 Jun 2018 11:02:20 +0800</li>
+<li><em>Cc</em>: linux-fsdevel &lt;linux-fsdevel@xxxxxxxxxxxxxxx&gt;,        autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;,        Kernel Mailing List &lt;linux-kernel@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg01910.html">152937731702.21213.7371321165189170865.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg01910.html">152937731702.21213.7371321165189170865.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>User-agent</em>: StGit/0.17.1-dirty</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Make the usage of the expire flags consistent by naming
+the expire flags the same as it is named in the version
+5 miscelaneous ioctl parameters and only check the bit
+flags when needed.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ fs/autofs/autofs_i.h |    2 +-
+ fs/autofs/expire.c   |   61 +++++++++++++++++++++++---------------------------
+ 2 files changed, 29 insertions(+), 34 deletions(-)
+
+diff --git a/fs/autofs/autofs_i.h b/fs/autofs/autofs_i.h
+index b1f70bc45ca3..b5e0870acdcb 100644
+--- a/fs/autofs/autofs_i.h
++++ b/fs/autofs/autofs_i.h
+@@ -151,7 +151,7 @@ int autofs_expire_run(struct super_block *, struct vfsmount *,
+ 		      struct autofs_sb_info *,
+ 		      struct autofs_packet_expire __user *);
+ int autofs_do_expire_multi(struct super_block *sb, struct vfsmount *mnt,
+-			   struct autofs_sb_info *sbi, int when);
++			   struct autofs_sb_info *sbi, unsigned int how);
+ int autofs_expire_multi(struct super_block *, struct vfsmount *,
+ 			struct autofs_sb_info *, int __user *);
+ 
+diff --git a/fs/autofs/expire.c b/fs/autofs/expire.c
+index 5fb47a4ca48c..dfb666c5b8a2 100644
+--- a/fs/autofs/expire.c
++++ b/fs/autofs/expire.c
+@@ -12,7 +12,7 @@
+ 
+ /* Check if a dentry can be expired */
+ static inline int autofs_can_expire(struct dentry *dentry,
+-				    unsigned long timeout, int do_now)
++				    unsigned long timeout, unsigned int how)
+ {
+ 	struct autofs_info *ino = autofs_dentry_ino(dentry);
+ 
+@@ -20,7 +20,7 @@ static inline int autofs_can_expire(struct dentry *dentry,
+ 	if (ino == NULL)
+ 		return 0;
+ 
+-	if (!do_now) {
++	if (!(how &amp; AUTOFS_EXP_IMMEDIATE)) {
+ 		/* Too young to die */
+ 		if (!timeout || time_after(ino-&gt;last_used + timeout, jiffies))
+ 			return 0;
+@@ -185,7 +185,7 @@ static struct dentry *get_next_positive_dentry(struct dentry *prev,
+ static int autofs_direct_busy(struct vfsmount *mnt,
+ 			      struct dentry *top,
+ 			      unsigned long timeout,
+-			      int do_now)
++			      unsigned int how)
+ {
+ 	pr_debug(&quot;top %p %pd\n&quot;, top, top);
+ 
+@@ -200,7 +200,7 @@ static int autofs_direct_busy(struct vfsmount *mnt,
+ 	}
+ 
+ 	/* Timeout of a direct mount is determined by its top dentry */
+-	if (!autofs_can_expire(top, timeout, do_now))
++	if (!autofs_can_expire(top, timeout, how))
+ 		return 1;
+ 
+ 	return 0;
+@@ -213,7 +213,7 @@ static int autofs_direct_busy(struct vfsmount *mnt,
+ static int autofs_tree_busy(struct vfsmount *mnt,
+ 			    struct dentry *top,
+ 			    unsigned long timeout,
+-			    int do_now)
++			    unsigned int how)
+ {
+ 	struct autofs_info *top_ino = autofs_dentry_ino(top);
+ 	struct dentry *p;
+@@ -259,7 +259,7 @@ static int autofs_tree_busy(struct vfsmount *mnt,
+ 	}
+ 
+ 	/* Timeout of a tree mount is ultimately determined by its top dentry */
+-	if (!autofs_can_expire(top, timeout, do_now))
++	if (!autofs_can_expire(top, timeout, how))
+ 		return 1;
+ 
+ 	return 0;
+@@ -268,7 +268,7 @@ static int autofs_tree_busy(struct vfsmount *mnt,
+ static struct dentry *autofs_check_leaves(struct vfsmount *mnt,
+ 					  struct dentry *parent,
+ 					  unsigned long timeout,
+-					  int do_now)
++					  unsigned int how)
+ {
+ 	struct dentry *p;
+ 
+@@ -284,7 +284,7 @@ static struct dentry *autofs_check_leaves(struct vfsmount *mnt,
+ 				continue;
+ 
+ 			/* Can we expire this guy */
+-			if (autofs_can_expire(p, timeout, do_now))
++			if (autofs_can_expire(p, timeout, how))
+ 				return p;
+ 		}
+ 	}
+@@ -295,19 +295,18 @@ static struct dentry *autofs_check_leaves(struct vfsmount *mnt,
+ static struct dentry *autofs_expire_direct(struct super_block *sb,
+ 					   struct vfsmount *mnt,
+ 					   struct autofs_sb_info *sbi,
+-					   int how)
++					   unsigned int how)
+ {
+-	unsigned long timeout;
+ 	struct dentry *root = dget(sb-&gt;s_root);
+-	int do_now = how &amp; AUTOFS_EXP_IMMEDIATE;
+ 	struct autofs_info *ino;
++	unsigned long timeout;
+ 
+ 	if (!root)
+ 		return NULL;
+ 
+ 	timeout = sbi-&gt;exp_timeout;
+ 
+-	if (!autofs_direct_busy(mnt, root, timeout, do_now)) {
++	if (!autofs_direct_busy(mnt, root, timeout, how)) {
+ 		spin_lock(&amp;sbi-&gt;fs_lock);
+ 		ino = autofs_dentry_ino(root);
+ 		/* No point expiring a pending mount */
+@@ -318,7 +317,7 @@ static struct dentry *autofs_expire_direct(struct super_block *sb,
+ 		ino-&gt;flags |= AUTOFS_INF_WANT_EXPIRE;
+ 		spin_unlock(&amp;sbi-&gt;fs_lock);
+ 		synchronize_rcu();
+-		if (!autofs_direct_busy(mnt, root, timeout, do_now)) {
++		if (!autofs_direct_busy(mnt, root, timeout, how)) {
+ 			spin_lock(&amp;sbi-&gt;fs_lock);
+ 			ino-&gt;flags |= AUTOFS_INF_EXPIRING;
+ 			init_completion(&amp;ino-&gt;expire_complete);
+@@ -343,10 +342,8 @@ static struct dentry *autofs_expire_direct(struct super_block *sb,
+ static struct dentry *should_expire(struct dentry *dentry,
+ 				    struct vfsmount *mnt,
+ 				    unsigned long timeout,
+-				    int how)
++				    unsigned int how)
+ {
+-	int do_now = how &amp; AUTOFS_EXP_IMMEDIATE;
+-	int exp_leaves = how &amp; AUTOFS_EXP_LEAVES;
+ 	struct autofs_info *ino = autofs_dentry_ino(dentry);
+ 	unsigned int ino_count;
+ 
+@@ -368,7 +365,7 @@ static struct dentry *should_expire(struct dentry *dentry,
+ 			return NULL;
+ 
+ 		/* Can we expire this guy */
+-		if (autofs_can_expire(dentry, timeout, do_now))
++		if (autofs_can_expire(dentry, timeout, how))
+ 			return dentry;
+ 		return NULL;
+ 	}
+@@ -379,7 +376,7 @@ static struct dentry *should_expire(struct dentry *dentry,
+ 		 * A symlink can't be &quot;busy&quot; in the usual sense so
+ 		 * just check last used for expire timeout.
+ 		 */
+-		if (autofs_can_expire(dentry, timeout, do_now))
++		if (autofs_can_expire(dentry, timeout, how))
+ 			return dentry;
+ 		return NULL;
+ 	}
+@@ -388,13 +385,13 @@ static struct dentry *should_expire(struct dentry *dentry,
+ 		return NULL;
+ 
+ 	/* Case 2: tree mount, expire iff entire tree is not busy */
+-	if (!exp_leaves) {
++	if (!(how &amp; AUTOFS_EXP_LEAVES)) {
+ 		/* Path walk currently on this dentry? */
+ 		ino_count = atomic_read(&amp;ino-&gt;count) + 1;
+ 		if (d_count(dentry) &gt; ino_count)
+ 			return NULL;
+ 
+-		if (!autofs_tree_busy(mnt, dentry, timeout, do_now))
++		if (!autofs_tree_busy(mnt, dentry, timeout, how))
+ 			return dentry;
+ 	/*
+ 	 * Case 3: pseudo direct mount, expire individual leaves
+@@ -408,7 +405,7 @@ static struct dentry *should_expire(struct dentry *dentry,
+ 		if (d_count(dentry) &gt; ino_count)
+ 			return NULL;
+ 
+-		expired = autofs_check_leaves(mnt, dentry, timeout, do_now);
++		expired = autofs_check_leaves(mnt, dentry, timeout, how);
+ 		if (expired) {
+ 			if (expired == dentry)
+ 				dput(dentry);
+@@ -427,7 +424,7 @@ static struct dentry *should_expire(struct dentry *dentry,
+ static struct dentry *autofs_expire_indirect(struct super_block *sb,
+ 					     struct vfsmount *mnt,
+ 					     struct autofs_sb_info *sbi,
+-					     int how)
++					     unsigned int how)
+ {
+ 	unsigned long timeout;
+ 	struct dentry *root = sb-&gt;s_root;
+@@ -443,8 +440,6 @@ static struct dentry *autofs_expire_indirect(struct super_block *sb,
+ 
+ 	dentry = NULL;
+ 	while ((dentry = get_next_positive_subdir(dentry, root))) {
+-		int flags = how;
+-
+ 		spin_lock(&amp;sbi-&gt;fs_lock);
+ 		ino = autofs_dentry_ino(dentry);
+ 		if (ino-&gt;flags &amp; AUTOFS_INF_WANT_EXPIRE) {
+@@ -453,7 +448,7 @@ static struct dentry *autofs_expire_indirect(struct super_block *sb,
+ 		}
+ 		spin_unlock(&amp;sbi-&gt;fs_lock);
+ 
+-		expired = should_expire(dentry, mnt, timeout, flags);
++		expired = should_expire(dentry, mnt, timeout, how);
+ 		if (!expired)
+ 			continue;
+ 
+@@ -466,8 +461,8 @@ static struct dentry *autofs_expire_indirect(struct super_block *sb,
+ 		/* Make sure a reference is not taken on found if
+ 		 * things have changed.
+ 		 */
+-		flags &amp;= ~AUTOFS_EXP_LEAVES;
+-		found = should_expire(expired, mnt, timeout, flags);
++		how &amp;= ~AUTOFS_EXP_LEAVES;
++		found = should_expire(expired, mnt, timeout, how);
+ 		if (!found || found != expired)
+ 			/* Something has changed, continue */
+ 			goto next;
+@@ -580,15 +575,15 @@ int autofs_expire_run(struct super_block *sb,
+ }
+ 
+ int autofs_do_expire_multi(struct super_block *sb, struct vfsmount *mnt,
+-			   struct autofs_sb_info *sbi, int when)
++			   struct autofs_sb_info *sbi, unsigned int how)
+ {
+ 	struct dentry *dentry;
+ 	int ret = -EAGAIN;
+ 
+ 	if (autofs_type_trigger(sbi-&gt;type))
+-		dentry = autofs_expire_direct(sb, mnt, sbi, when);
++		dentry = autofs_expire_direct(sb, mnt, sbi, how);
+ 	else
+-		dentry = autofs_expire_indirect(sb, mnt, sbi, when);
++		dentry = autofs_expire_indirect(sb, mnt, sbi, how);
+ 
+ 	if (dentry) {
+ 		struct autofs_info *ino = autofs_dentry_ino(dentry);
+@@ -618,10 +613,10 @@ int autofs_do_expire_multi(struct super_block *sb, struct vfsmount *mnt,
+ int autofs_expire_multi(struct super_block *sb, struct vfsmount *mnt,
+ 			struct autofs_sb_info *sbi, int __user *arg)
+ {
+-	int do_now = 0;
++	unsigned int how = 0;
+ 
+-	if (arg &amp;&amp; get_user(do_now, arg))
++	if (arg &amp;&amp; get_user(how, arg))
+ 		return -EFAULT;
+ 
+-	return autofs_do_expire_multi(sb, mnt, sbi, do_now);
++	return autofs_do_expire_multi(sb, mnt, sbi, how);
+ }
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01910" href="msg01910.html">[PATCH 1/6] autofs - fix inconsistent use of now variable</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01912.html">[PATCH 6/6] autofs - add AUTOFS_EXP_FORCED flag</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01914.html">[PATCH 3/6] autofs - make autofs_expire_direct() static</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01912.html">[PATCH 6/6] autofs - add AUTOFS_EXP_FORCED flag</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01914.html">[PATCH 3/6] autofs - make autofs_expire_direct() static</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01913"><strong>Date</strong></a></li>
+<li><a href="index.html#01913"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

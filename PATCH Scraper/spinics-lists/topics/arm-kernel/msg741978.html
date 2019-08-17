@@ -1,0 +1,465 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v10 0/9] namei: openat2(2) path resolution restrictions -->
+<!--X-From-R13: Oyrxfn Enenv &#60;plcuneNplcune.pbz> -->
+<!--X-Date: Fri, 19 Jul 2019 09:43:25 &#45;0700 -->
+<!--X-Message-Id: 20190719164225.27083&#45;1&#45;cyphar@cyphar.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH v10 0/9] namei: openat2(2) path resolution restrictions">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH v10 0/9] namei: openat2(2) path resolution restrictions &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH v10 0/9] namei: openat2(2) path resolution restrictions</h1>
+[<a href="msg741977.html">Date Prev</a>][<a href="msg741979.html">Date Next</a>][<a href="msg741976.html">Thread Prev</a>][<a href="msg741979.html">Thread Next</a>][<a href="maillist.html#741978">Date Index</a>][<a href="threads.html#741978">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v10 0/9] namei: openat2(2) path resolution restrictions</li>
+<li><em>From</em>: Aleksa Sarai &lt;cyphar@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Sat, 20 Jul 2019 02:42:16 +1000</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This patch is being developed here (with snapshots of each series
+version being stashed in separate branches with names of the form
+&quot;resolveat/vX-summary&quot;):
+    &lt;<a  rel="nofollow" href="https://github.com/cyphar/linux/tree/resolveat/master">https://github.com/cyphar/linux/tree/resolveat/master</a>&gt;
+
+Patch changelog:
+ v10:
+    * Ensure that unlazy_walk() will fail if we are in a scoped walk and
+      the caller has zeroed nd-&gt;root (this happens in a few places, I'm
+      not sure why because unlazy_walk() does legitimize_path()
+      already). In this case we need to go through path_init() again to
+      reset it (otherwise we will have a breakout because set_root()
+      will breakout).
+      * Also add a WARN_ON (and return -ENOTRECOVERABLE) if
+        LOOKUP_IN_ROOT is set and we are in set_root() -- which should
+        never happen and will cause a breakout.
+    * Make changes suggested by Al Viro:
+      * Remove nd-&gt;{opath_mask,acc_mode} by moving all of the magic-link
+        permission logic be done after trailing_symlink() (with
+        trailing_magiclink()) only within path_openat().
+      * Introduce LOOKUP_MAGICLINK_JUMPED to be able to detect
+        magic-link jumps done with nd_jump_link() (so we don't end up
+        blocking other LOOKUP_JUMPED cases).
+      * Simplify all of the path_init() changes to make the code far
+        less confusing. dirfd_path_init() turns out to be un-necessary.
+    * Make openat2(2) also -EINVAL on unknown how-&gt;flags.
+      [Dmitry V. Levin]
+    * Clean up bad definitions of O_EMPTYPATH on architectures where O_*
+      flags are subtly different to &lt;asm-generic/fcntl.h&gt;.
+    * Switch away from passing a struct to build_open_flags() and
+      instead just copy the one field we need to temporarily modify
+      (how-&gt;flags). Also fix a bug in OPENHOW_MODE. [Rasmus Villemoes]
+    * Fix syscall linkages and switch to 437. [Arnd Bergmann]
+    * Clean up text in commit messages and the cover-letter.
+      [Rolf Eike Beer]
+    * Fix openat2 selftest makefile. [Michael Ellerman]
+
+The need for some sort of control over VFS's path resolution (to avoid
+malicious paths resulting in inadvertent breakouts) has been a very
+long-standing desire of many userspace applications. This patchset is a
+revival of Al Viro's old AT_NO_JUMPS[1,2] patchset (which was a variant
+of David Drysdale's O_BENEATH patchset[3] which was a spin-off of the
+Capsicum project[4]) with a few additions and changes made based on the
+previous discussion within [5] as well as others I felt were useful.
+
+In line with the conclusions of the original discussion of AT_NO_JUMPS,
+the flag has been split up into separate flags. However, instead of
+being an openat(2) flag it is provided through a new syscall openat2(2)
+which provides an alternative way to get an O_PATH file descriptor (the
+reasoning for doing this is included in the patch description). The
+following new LOOKUP_* flags are added:
+
+  * LOOKUP_NO_XDEV blocks all mountpoint crossings (upwards, downwards,
+    or through absolute links). Absolute pathnames alone in openat(2) do
+    not trigger this.
+
+  * LOOKUP_NO_MAGICLINKS blocks resolution through /proc/$pid/fd-style
+    links. This is done by blocking the usage of nd_jump_link() during
+    resolution in a filesystem. The term &quot;magic-links&quot; is used to match
+    with the only reference to these links in Documentation/, but I'm
+    happy to change the name.
+
+    It should be noted that this is different to the scope of
+    ~LOOKUP_FOLLOW in that it applies to all path components. However,
+    you can do openat2(NO_FOLLOW|NO_MAGICLINKS) on a magic-link and it
+    will *not* fail (assuming that no parent component was a
+    magic-link), and you will have an fd for the magic-link.
+
+  * LOOKUP_BENEATH disallows escapes to outside the starting dirfd's
+    tree, using techniques such as &quot;..&quot; or absolute links. Absolute
+    paths in openat(2) are also disallowed. Conceptually this flag is to
+    ensure you &quot;stay below&quot; a certain point in the filesystem tree --
+    but this requires some additional to protect against various races
+    that would allow escape using &quot;..&quot;.
+
+    Currently LOOKUP_BENEATH implies LOOKUP_NO_MAGICLINKS, because it
+    can trivially beam you around the filesystem (breaking the
+    protection). In future, there might be similar safety checks done as
+    in LOOKUP_IN_ROOT, but that requires more discussion.
+
+In addition, two new flags are added that expand on the above ideas:
+
+  * LOOKUP_NO_SYMLINKS does what it says on the tin. No symlink
+    resolution is allowed at all, including magic-links. Just as with
+    LOOKUP_NO_MAGICLINKS this can still be used with NOFOLLOW to open an
+    fd for the symlink as long as no parent path had a symlink
+    component.
+
+  * LOOKUP_IN_ROOT is an extension of LOOKUP_BENEATH that, rather than
+    blocking attempts to move past the root, forces all such movements
+    to be scoped to the starting point. This provides chroot(2)-like
+    protection but without the cost of a chroot(2) for each filesystem
+    operation, as well as being safe against race attacks that chroot(2)
+    is not.
+
+    If a race is detected (as with LOOKUP_BENEATH) then an error is
+    generated, and similar to LOOKUP_BENEATH it is not permitted to cross
+    magic-links with LOOKUP_IN_ROOT.
+
+    The primary need for this is from container runtimes, which
+    currently need to do symlink scoping in userspace[6] when opening
+    paths in a potentially malicious container. There is a long list of
+    CVEs that could have bene mitigated by having RESOLVE_THIS_ROOT
+    (such as CVE-2017-1002101, CVE-2017-1002102, CVE-2018-15664, and
+    CVE-2019-5736, just to name a few).
+
+And further, several semantics of file descriptor &quot;re-opening&quot; are now
+changed to prevent attacks like CVE-2019-5736 by restricting how
+magic-links can be resolved (based on their mode). This required some
+other changes to the semantics of the modes of O_PATH file descriptor's
+associated /proc/self/fd magic-links. openat2(2) has the ability to
+further restrict re-opening of its own O_PATH fds, so that users can
+make even better use of this feature.
+
+Finally, O_EMPTYPATH was added so that users can do /proc/self/fd-style
+re-opening without depending on procfs. The new restricted semantics for
+magic-links are applied here too.
+
+In order to make all of the above more usable, I'm working on
+libpathrs[7] which is a C-friendly library for safe path resolution. It
+features a userspace-emulated backend if the kernel doesn't support
+openat2(2). Hopefully we can get userspace to switch to using it, and
+thus get openat2(2) support for free once it's ready.
+
+Cc: Al Viro &lt;viro@xxxxxxxxxxxxxxxxxx&gt;
+Cc: Eric Biederman &lt;ebiederm@xxxxxxxxxxxx&gt;
+Cc: Andy Lutomirski &lt;luto@xxxxxxxxxx&gt;
+Cc: David Howells &lt;dhowells@xxxxxxxxxx&gt;
+Cc: Jann Horn &lt;jannh@xxxxxxxxxx&gt;
+Cc: Christian Brauner &lt;christian@xxxxxxxxxx&gt;
+Cc: David Drysdale &lt;drysdale@xxxxxxxxxx&gt;
+Cc: Tycho Andersen &lt;tycho@xxxxxxxx&gt;
+Cc: Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;
+Cc: Linus Torvalds &lt;torvalds@xxxxxxxxxxxxxxxxxxxx&gt;
+Cc: &lt;containers@xxxxxxxxxxxxxxxxxxxxxxxxxx&gt;
+Cc: &lt;linux-fsdevel@xxxxxxxxxxxxxxx&gt;
+Cc: &lt;linux-api@xxxxxxxxxxxxxxx&gt;
+
+[1]: <a  rel="nofollow" href="https://lwn.net/Articles/721443/">https://lwn.net/Articles/721443/</a>
+[2]: <a  rel="nofollow" href="https://lore.kernel.org/patchwork/patch/784221/">https://lore.kernel.org/patchwork/patch/784221/</a>
+[3]: <a  rel="nofollow" href="https://lwn.net/Articles/619151/">https://lwn.net/Articles/619151/</a>
+[4]: <a  rel="nofollow" href="https://lwn.net/Articles/603929/">https://lwn.net/Articles/603929/</a>
+[5]: <a  rel="nofollow" href="https://lwn.net/Articles/723057/">https://lwn.net/Articles/723057/</a>
+[6]: <a  rel="nofollow" href="https://github.com/cyphar/filepath-securejoin">https://github.com/cyphar/filepath-securejoin</a>
+[7]: <a  rel="nofollow" href="https://github.com/openSUSE/libpathrs">https://github.com/openSUSE/libpathrs</a>
+
+Aleksa Sarai (9):
+  namei: obey trailing magic-link DAC permissions
+  procfs: switch magic-link modes to be more sane
+  open: O_EMPTYPATH: procfs-less file descriptor re-opening
+  namei: O_BENEATH-style path resolution flags
+  namei: LOOKUP_IN_ROOT: chroot-like path resolution
+  namei: aggressively check for nd-&gt;root escape on &quot;..&quot; resolution
+  open: openat2(2) syscall
+  kselftest: save-and-restore errno to allow for %m formatting
+  selftests: add openat2(2) selftests
+
+ Documentation/filesystems/path-lookup.rst     |  12 +-
+ arch/alpha/include/uapi/asm/fcntl.h           |   1 +
+ arch/alpha/kernel/syscalls/syscall.tbl        |   1 +
+ arch/arm/tools/syscall.tbl                    |   1 +
+ arch/arm64/include/asm/unistd.h               |   2 +-
+ arch/arm64/include/asm/unistd32.h             |   2 +
+ arch/ia64/kernel/syscalls/syscall.tbl         |   1 +
+ arch/m68k/kernel/syscalls/syscall.tbl         |   1 +
+ arch/microblaze/kernel/syscalls/syscall.tbl   |   1 +
+ arch/mips/kernel/syscalls/syscall_n32.tbl     |   1 +
+ arch/mips/kernel/syscalls/syscall_n64.tbl     |   1 +
+ arch/mips/kernel/syscalls/syscall_o32.tbl     |   1 +
+ arch/parisc/include/uapi/asm/fcntl.h          |  39 +-
+ arch/parisc/kernel/syscalls/syscall.tbl       |   1 +
+ arch/powerpc/kernel/syscalls/syscall.tbl      |   1 +
+ arch/s390/kernel/syscalls/syscall.tbl         |   1 +
+ arch/sh/kernel/syscalls/syscall.tbl           |   1 +
+ arch/sparc/include/uapi/asm/fcntl.h           |   1 +
+ arch/sparc/kernel/syscalls/syscall.tbl        |   1 +
+ arch/x86/entry/syscalls/syscall_32.tbl        |   1 +
+ arch/x86/entry/syscalls/syscall_64.tbl        |   1 +
+ arch/xtensa/kernel/syscalls/syscall.tbl       |   1 +
+ fs/fcntl.c                                    |   2 +-
+ fs/internal.h                                 |   1 +
+ fs/namei.c                                    | 270 ++++++++++--
+ fs/open.c                                     | 112 ++++-
+ fs/proc/base.c                                |  20 +-
+ fs/proc/fd.c                                  |  23 +-
+ fs/proc/namespaces.c                          |   2 +-
+ include/linux/fcntl.h                         |  17 +-
+ include/linux/fs.h                            |   8 +-
+ include/linux/namei.h                         |   9 +
+ include/linux/syscalls.h                      |  17 +-
+ include/uapi/asm-generic/fcntl.h              |   4 +
+ include/uapi/asm-generic/unistd.h             |   4 +-
+ include/uapi/linux/fcntl.h                    |  42 ++
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/kselftest.h           |  15 +
+ tools/testing/selftests/memfd/memfd_test.c    |   7 +-
+ tools/testing/selftests/openat2/.gitignore    |   1 +
+ tools/testing/selftests/openat2/Makefile      |   8 +
+ tools/testing/selftests/openat2/helpers.c     | 162 +++++++
+ tools/testing/selftests/openat2/helpers.h     | 114 +++++
+ .../testing/selftests/openat2/linkmode_test.c | 326 ++++++++++++++
+ .../selftests/openat2/rename_attack_test.c    | 124 ++++++
+ .../testing/selftests/openat2/resolve_test.c  | 397 ++++++++++++++++++
+ 46 files changed, 1652 insertions(+), 107 deletions(-)
+ create mode 100644 tools/testing/selftests/openat2/.gitignore
+ create mode 100644 tools/testing/selftests/openat2/Makefile
+ create mode 100644 tools/testing/selftests/openat2/helpers.c
+ create mode 100644 tools/testing/selftests/openat2/helpers.h
+ create mode 100644 tools/testing/selftests/openat2/linkmode_test.c
+ create mode 100644 tools/testing/selftests/openat2/rename_attack_test.c
+ create mode 100644 tools/testing/selftests/openat2/resolve_test.c
+
+-- 
+2.22.0
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="741987" href="msg741987.html">[PATCH v10 9/9] selftests: add openat2(2) selftests</a></strong>
+<ul><li><em>From:</em> Aleksa Sarai</li></ul></li>
+<li><strong><a name="741986" href="msg741986.html">[PATCH v10 8/9] kselftest: save-and-restore errno to allow for %m formatting</a></strong>
+<ul><li><em>From:</em> Aleksa Sarai</li></ul></li>
+<li><strong><a name="741985" href="msg741985.html">[PATCH v10 7/9] open: openat2(2) syscall</a></strong>
+<ul><li><em>From:</em> Aleksa Sarai</li></ul></li>
+<li><strong><a name="741984" href="msg741984.html">[PATCH v10 6/9] namei: aggressively check for nd-&gt;root escape on &quot;..&quot; resolution</a></strong>
+<ul><li><em>From:</em> Aleksa Sarai</li></ul></li>
+<li><strong><a name="741983" href="msg741983.html">[PATCH v10 5/9] namei: LOOKUP_IN_ROOT: chroot-like path resolution</a></strong>
+<ul><li><em>From:</em> Aleksa Sarai</li></ul></li>
+<li><strong><a name="741982" href="msg741982.html">[PATCH v10 4/9] namei: O_BENEATH-style path resolution flags</a></strong>
+<ul><li><em>From:</em> Aleksa Sarai</li></ul></li>
+<li><strong><a name="741981" href="msg741981.html">[PATCH v10 3/9] open: O_EMPTYPATH: procfs-less file descriptor re-opening</a></strong>
+<ul><li><em>From:</em> Aleksa Sarai</li></ul></li>
+<li><strong><a name="741980" href="msg741980.html">[PATCH v10 2/9] procfs: switch magic-link modes to be more sane</a></strong>
+<ul><li><em>From:</em> Aleksa Sarai</li></ul></li>
+<li><strong><a name="741979" href="msg741979.html">[PATCH v10 1/9] namei: obey trailing magic-link DAC permissions</a></strong>
+<ul><li><em>From:</em> Aleksa Sarai</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741977.html">Re: [PATCH RFC 07/18] clk: bcm2835: Add BCM2838_CLOCK_EMMC2 support</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741979.html">[PATCH v10 1/9] namei: obey trailing magic-link DAC permissions</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741976.html">Re: KASAN: use-after-free Read in finish_task_switch (2)</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741979.html">[PATCH v10 1/9] namei: obey trailing magic-link DAC permissions</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741978"><strong>Date</strong></a></li>
+<li><a href="threads.html#741978"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

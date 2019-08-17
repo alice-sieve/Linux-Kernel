@@ -1,0 +1,345 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] fix open fds display when process using	large amount of file descriptors -->
+<!--X-From-R13: Fna Vh &#60;gna.uhNmgr.pbz.pa> -->
+<!--X-Date: Mon, 30 Jul 2018 13:08:36 &#45;0700 -->
+<!--X-Message-Id: 1532432183&#45;20298&#45;1&#45;git&#45;send&#45;email&#45;tan.hu@zte.com.cn -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH] fix open fds display when process using	large amount of file descriptors &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  [PATCH] fix open fds display when process using	large amount of file descriptors</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] fix open fds display when process using	large amount of file descriptors</h1>
+[<a href="msg07555.html">Date Prev</a>][<a href="msg07557.html">Date Next</a>][<a href="msg07553.html">Thread Prev</a>][<a href="msg07557.html">Thread Next</a>][<a href="maillist.html#07556">Date Index</a>][<a href="index.html#07556">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] fix open fds display when process using	large amount of file descriptors</li>
+<li><em>From</em>: Tan Hu &lt;tan.hu@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 24 Jul 2018 19:36:23 +0800</li>
+<li><em>Cc</em>: jiang.biao2@xxxxxxxxxx, zhong.weidong@xxxxxxxxxx, crash-utility@xxxxxxxxxx</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Usually, structure fd_set only has 1024 bits size, when a process
+using large amount of file descriptors that exceed the size of fd_set,
+then the display of files and net sockets would mistake caused by the
+out of bounds reading in loop.
+
+Signed-off-by: Tan Hu &lt;tan.hu@xxxxxxxxxx&gt;
+---
+ filesys.c | 24 ++++++++++++++++++------
+ net.c     | 17 +++++++++++++----
+ 2 files changed, 31 insertions(+), 10 deletions(-)
+
+diff --git a/filesys.c b/filesys.c
+index 0ace8f4..47f5a24 100755
+--- a/filesys.c
++++ b/filesys.c
+@@ -2380,7 +2380,8 @@ open_files_dump(ulong task, int flags, struct reference *ref)
+ 	int max_fdset = 0;
+ 	int max_fds = 0;
+ 	ulong open_fds_addr;
+-	fd_set open_fds;
++	int open_fds_size;
++	ulong *open_fds;
+ 	ulong fd;
+ 	ulong file;
+ 	ulong value;
+@@ -2583,16 +2584,25 @@ open_files_dump(ulong task, int flags, struct reference *ref)
+ 		open_fds_addr = ULONG(files_struct_buf +
+ 			OFFSET(files_struct_open_fds));
+ 
++	open_fds_size = MAX(max_fdset, max_fds) / BITS_PER_BYTE;	
++	open_fds = (ulong *)GETBUF(open_fds_size);
++	if (!open_fds) {
++		if (fdtable_buf)
++			FREEBUF(fdtable_buf);
++		FREEBUF(files_struct_buf);
++		return;
++	}
++
+ 	if (open_fds_addr) {
+ 		if (VALID_MEMBER(files_struct_open_fds_init) &amp;&amp; 
+ 		    (open_fds_addr == (files_struct_addr + 
+ 		    OFFSET(files_struct_open_fds_init)))) 
+ 			BCOPY(files_struct_buf + 
+ 			        OFFSET(files_struct_open_fds_init),
+-				&amp;open_fds, sizeof(fd_set));
++				open_fds, open_fds_size);
+ 		else
+-			readmem(open_fds_addr, KVADDR, &amp;open_fds,
+-				sizeof(fd_set), &quot;fdtable open_fds&quot;,
++			readmem(open_fds_addr, KVADDR, open_fds,
++				open_fds_size, &quot;fdtable open_fds&quot;,
+ 				FAULT_ON_ERROR);
+ 	} 
+ 
+@@ -2607,6 +2617,7 @@ open_files_dump(ulong task, int flags, struct reference *ref)
+ 		if (fdtable_buf)
+ 			FREEBUF(fdtable_buf);
+ 		FREEBUF(files_struct_buf);
++		FREEBUF(open_fds);
+ 		return;
+ 	}
+ 
+@@ -2617,11 +2628,11 @@ open_files_dump(ulong task, int flags, struct reference *ref)
+ 	j = 0;
+ 	for (;;) {
+ 		unsigned long set;
+-		i = j * __NFDBITS;
++		i = j * BITS_PER_LONG;
+ 		if (((max_fdset &gt;= 0) &amp;&amp; (i &gt;= max_fdset)) || 
+ 		    (i &gt;= max_fds))
+ 			 break;
+-		set = open_fds.__fds_bits[j++];
++		set = open_fds[j++];
+ 		while (set) {
+ 			if (set &amp; 1) {
+         			readmem(fd + i*sizeof(struct file *), KVADDR, 
+@@ -2665,6 +2676,7 @@ open_files_dump(ulong task, int flags, struct reference *ref)
+ 	if (fdtable_buf)
+ 		FREEBUF(fdtable_buf);
+ 	FREEBUF(files_struct_buf);
++	FREEBUF(open_fds);
+ }
+ 
+ /*
+diff --git a/net.c b/net.c
+index 4199091..f08f22a 100755
+--- a/net.c
++++ b/net.c
+@@ -1373,7 +1373,8 @@ dump_sockets_workhorse(ulong task, ulong flag, struct reference *ref)
+ 	int max_fdset = 0;
+ 	int max_fds = 0;
+ 	ulong open_fds_addr = 0;
+-	fd_set open_fds;
++	ulong *open_fds;
++	int open_fds_size;
+ 	ulong fd;
+ 	ulong file;
+ 	int i, j;
+@@ -1446,12 +1447,18 @@ dump_sockets_workhorse(ulong task, ulong flag, struct reference *ref)
+             		sizeof(void *), &quot;files_struct fd addr&quot;, FAULT_ON_ERROR);
+ 	}
+ 
++	open_fds_size = MAX(max_fdset, max_fds) / BITS_PER_BYTE;
++	open_fds = (ulong *)GETBUF(open_fds_size);
++	if (!open_fds)
++		return;
++
+ 	if (open_fds_addr) 
+-		readmem(open_fds_addr, KVADDR, &amp;open_fds, sizeof(fd_set),
++		readmem(open_fds_addr, KVADDR, open_fds, open_fds_size,
+ 	               	&quot;files_struct open_fds&quot;, FAULT_ON_ERROR);
+     	if (!open_fds_addr || !fd) { 
+ 		if (!NET_REFERENCE_CHECK(ref))
+ 			fprintf(fp, &quot;No open sockets.\n&quot;);
++		FREEBUF(open_fds);
+         	return;
+ 	}
+ 
+@@ -1479,10 +1486,10 @@ dump_sockets_workhorse(ulong task, ulong flag, struct reference *ref)
+     	j = 0;
+     	for (;;) {
+ 	        unsigned long set;
+-	        i = j * __NFDBITS;
++	        i = j * BITS_PER_LONG;
+ 	        if (((max_fdset &gt;= 0) &amp;&amp; (i &gt;= max_fdset)) || (i &gt;= max_fds))
+ 	            	break;
+-	        set = open_fds.__fds_bits[j++];
++	        set = open_fds[j++];
+ 	        while (set) {
+ 	            	if (set &amp; 1) {
+ 		                readmem(fd + i*sizeof(struct file *), KVADDR, 
+@@ -1505,6 +1512,8 @@ dump_sockets_workhorse(ulong task, ulong flag, struct reference *ref)
+ 
+ 	if (NET_REFERENCE_FOUND(ref))
+ 		fprintf(fp, &quot;\n&quot;);
++
++	FREEBUF(open_fds);
+ }
+ 
+ 
+-- 
+1.8.3.1
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07560" href="msg07560.html">Re:  [PATCH] fix open fds display when process using large amount of file descriptors</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+<li><strong><a name="07557" href="msg07557.html">Re:  [PATCH] fix open fds display when process using large amount of file descriptors</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07555.html">Re:  [PATCH 0/2] Move NAME column in &quot;kmem -s&quot; output to the last of line</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07557.html">Re:  [PATCH] fix open fds display when process using large amount of file descriptors</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07553.html">[PATCH 0/2] Move NAME column in &quot;kmem -s&quot; output to	the last of line</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07557.html">Re:  [PATCH] fix open fds display when process using large amount of file descriptors</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07556"><strong>Date</strong></a></li>
+<li><a href="index.html#07556"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,570 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] ASoC: atmel: add wm8904 based audio machine driver -->
+<!--X-From-R13: Pb Eura &#60;ibvpr.furaNngzry.pbz> -->
+<!--X-Date: Thu, 18 Jul 2013 00:32:25 &#45;0700 -->
+<!--X-Message-Id: 1374132483&#45;25375&#45;1&#45;git&#45;send&#45;email&#45;voice.shen@atmel.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Sound: [PATCH] ASoC: atmel: add wm8904 based audio machine driver">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Sound &mdash; [PATCH] ASoC: atmel: add wm8904 based audio machine driver</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Sound" href="//feeds.feedburner.com/LinuxSound">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:6612422167" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] ASoC: atmel: add wm8904 based audio machine driver</h1>
+[<a href="msg00344.html">Date Prev</a>][<a href="msg00346.html">Date Next</a>][<a href="msg00344.html">Thread Prev</a>][<a href="msg00347.html">Thread Next</a>][<a href="maillist.html#00345">Date Index</a>][<a href="index.html#00345">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] ASoC: atmel: add wm8904 based audio machine driver</li>
+<li><em>From</em>: Bo Shen &lt;<a href="mailto:voice.shen@DOMAIN.HIDDEN">voice.shen@xxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Thu, 18 Jul 2013 15:28:03 +0800</li>
+<li><em>Cc</em>: <a href="mailto:nicolas.ferre@DOMAIN.HIDDEN">nicolas.ferre@xxxxxxxxx</a>, <a href="mailto:plagnioj@DOMAIN.HIDDEN">plagnioj@xxxxxxxxxxxx</a>,        <a href="mailto:linux-sound@DOMAIN.HIDDEN">linux-sound@xxxxxxxxxxxxxxx</a>, <a href="mailto:alsa-devel@DOMAIN.HIDDEN">alsa-devel@xxxxxxxxxxxxxxxx</a>,        <a href="mailto:linux-arm-kernel@DOMAIN.HIDDEN">linux-arm-kernel@xxxxxxxxxxxxxxxxxxx</a>, Bo Shen &lt;<a href="mailto:voice.shen@DOMAIN.HIDDEN">voice.shen@xxxxxxxxx</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>add wm8904 based audio machine driver
+
+the following ek board based on it
+  - at91sam9n12ek
+  - sama5d3xek (d31, d33, d34, d35)
+
+Signed-off-by: Bo Shen &lt;voice.shen@xxxxxxxxx&gt;
+---
+This patch is only for Atmel SoC with wm8904 codec machine driver only,
+temp no change for dts file, as there are many changes to dts file in
+mailing list for atmel SoC now, so hold on for dts change, after that
+will send the dts file patches
+---
+ .../devicetree/bindings/sound/atmel-wm8904.txt     |   30 +++
+ sound/soc/atmel/Kconfig                            |   10 +
+ sound/soc/atmel/Makefile                           |    2 +
+ sound/soc/atmel/atmel_wm8904.c                     |  263 ++++++++++++++++++++
+ 4 files changed, 305 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/atmel-wm8904.txt
+ create mode 100644 sound/soc/atmel/atmel_wm8904.c
+
+diff --git a/Documentation/devicetree/bindings/sound/atmel-wm8904.txt b/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
+new file mode 100644
+index 0000000..5990271
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
+@@ -0,0 +1,30 @@
++Atmel ASoC driver with wm8904 audio codec complex
++
++Required properties:
++  - compatible: &quot;atmel,asoc-wm8904&quot;
++  - atmel,model: The user-visible name of this sound complex.
++  - atmel,audio-routing: A list of the connections between audio components.
++  - atmel,ssc-controller: The phandle of the SSC controller
++  - atmel,audio-codec: The phandle of the WM8904 audio codec
++Optional properties:
++  - pinctrl-names, pinctrl-0: Please refer to pinctrl-bindings.txt
++
++Example:
++sound {
++	compatible = &quot;atmel,asoc-wm8904&quot;;
++	pinctrl-names = &quot;default&quot;;
++	pinctrl-0 = &lt;&amp;pinctrl_pck0_as_mck&gt;;
++
++	atmel,model = &quot;wm8904 @ AT91SAM9N12EK&quot;;
++
++	atmel,audio-routing =
++		&quot;Headphone Jack&quot;, &quot;HPOUTL&quot;,
++		&quot;Headphone Jack&quot;, &quot;HPOUTR&quot;,
++		&quot;IN2L&quot;, &quot;Line In Jack&quot;,
++		&quot;IN2R&quot;, &quot;Line In Jack&quot;,
++		&quot;Mic&quot;, &quot;MICBIAS&quot;,
++		&quot;IN1L&quot;, &quot;Mic&quot;;
++
++	atmel,ssc-controller = &lt;&amp;ssc0&gt;;
++	atmel,audio-codec = &lt;&amp;wm8904&gt;;
++};
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index 1c0b185..986323b 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -33,6 +33,16 @@ config SND_AT91_SOC_SAM9G20_WM8731
+ 	  Say Y if you want to add support for SoC audio on WM8731-based
+ 	  AT91sam9g20 evaluation board.
+ 
++config SND_ATMEL_SOC_WM8904
++	tristate &quot;Atmel ASoC driver for boards using WM8904 codec&quot;
++	depends on ARCH_AT91 &amp;&amp; ATMEL_SSC &amp;&amp; SND_ATMEL_SOC
++	select SND_ATMEL_SOC_SSC
++	select SND_ATMEL_SOC_DMA
++	select SND_SOC_WM8904
++	help
++	  Say Y if you want to add support for Atmel ASoC driver for boards using
++	  WM8904 codec.
++
+ config SND_AT91_SOC_AFEB9260
+ 	tristate &quot;SoC Audio support for AFEB9260 board&quot;
+ 	depends on ARCH_AT91 &amp;&amp; ATMEL_SSC &amp;&amp; ARCH_AT91 &amp;&amp; MACH_AFEB9260 &amp;&amp; SND_ATMEL_SOC
+diff --git a/sound/soc/atmel/Makefile b/sound/soc/atmel/Makefile
+index 41967cc..922d4da 100644
+--- a/sound/soc/atmel/Makefile
++++ b/sound/soc/atmel/Makefile
+@@ -11,6 +11,8 @@ obj-$(CONFIG_SND_ATMEL_SOC_SSC) += snd-soc-atmel_ssc_dai.o
+ 
+ # AT91 Machine Support
+ snd-soc-sam9g20-wm8731-objs := sam9g20_wm8731.o
++snd-atmel-soc-wm8904-objs := atmel_wm8904.o
+ 
+ obj-$(CONFIG_SND_AT91_SOC_SAM9G20_WM8731) += snd-soc-sam9g20-wm8731.o
++obj-$(CONFIG_SND_ATMEL_SOC_WM8904) += snd-atmel-soc-wm8904.o
+ obj-$(CONFIG_SND_AT91_SOC_AFEB9260) += snd-soc-afeb9260.o
+diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
+new file mode 100644
+index 0000000..e309607
+--- /dev/null
++++ b/sound/soc/atmel/atmel_wm8904.c
+@@ -0,0 +1,263 @@
++/*
++ * atmel_wm8904 - Atmel ASoC driver for boards with WM8904 codec.
++ *
++ * Copyright (C) 2012 Atmel
++ *
++ * Author: Bo Shen &lt;voice.shen@xxxxxxxxx&gt;
++ *
++ * GPLv2 or later
++ */
++
++#include &lt;linux/clk.h&gt;
++#include &lt;linux/module.h&gt;
++#include &lt;linux/of.h&gt;
++#include &lt;linux/of_device.h&gt;
++#include &lt;linux/pinctrl/consumer.h&gt;
++
++#include &lt;sound/soc.h&gt;
++
++#include &quot;../codecs/wm8904.h&quot;
++#include &quot;atmel_ssc_dai.h&quot;
++
++#define MCLK_RATE 32768
++
++static struct clk *mclk;
++
++static const struct snd_soc_dapm_widget atmel_asoc_wm8904_dapm_widgets[] = {
++	SND_SOC_DAPM_HP(&quot;Headphone Jack&quot;, NULL),
++	SND_SOC_DAPM_MIC(&quot;Mic&quot;, NULL),
++	SND_SOC_DAPM_LINE(&quot;Line In Jack&quot;, NULL),
++};
++
++static int atmel_asoc_wm8904_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_dai *codec_dai = rtd-&gt;codec_dai;
++	int ret;
++
++	ret = snd_soc_dai_set_sysclk(codec_dai, WM8904_CLK_FLL,
++			12000000, SND_SOC_CLOCK_IN);
++	if (ret &lt; 0) {
++		pr_err(&quot;%s -failed to set wm8904 SYSCLK\n&quot;, __func__);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int atmel_asoc_wm8904_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream-&gt;private_data;
++	struct snd_soc_dai *codec_dai = rtd-&gt;codec_dai;
++	int ret;
++
++	ret = snd_soc_dai_set_pll(codec_dai, WM8904_FLL_MCLK, WM8904_FLL_MCLK,
++		32768, params_rate(params) * 256);
++	if (ret &lt; 0) {
++		pr_err(&quot;%s - failed to set wm8904 codec PLL.&quot;, __func__);
++		return ret;
++	}
++
++	return 0;
++}
++
++static struct snd_soc_ops atmel_asoc_wm8904_ops = {
++	.hw_params = atmel_asoc_wm8904_params,
++};
++
++static int atmel_set_bias_level(struct snd_soc_card *card,
++		struct snd_soc_dapm_context *dapm,
++		enum snd_soc_bias_level level)
++{
++	static int mclk_on;
++	int ret = 0;
++
++	switch (level) {
++	case SND_SOC_BIAS_ON:
++	case SND_SOC_BIAS_PREPARE:
++		if (!mclk_on) {
++			ret = clk_prepare_enable(mclk);
++			if (ret == 0)
++				mclk_on = 1;
++		}
++		break;
++	case SND_SOC_BIAS_STANDBY:
++	case SND_SOC_BIAS_OFF:
++		if (mclk_on)
++			clk_disable_unprepare(mclk);
++		mclk_on = 0;
++		break;
++	}
++
++	return ret;
++};
++
++static struct snd_soc_dai_link atmel_asoc_wm8904_dailink = {
++	.name = &quot;WM8904&quot;,
++	.stream_name = &quot;WM8904 PCM&quot;,
++	.codec_dai_name = &quot;wm8904-hifi&quot;,
++	.dai_fmt = SND_SOC_DAIFMT_I2S
++		| SND_SOC_DAIFMT_NB_NF
++		| SND_SOC_DAIFMT_CBM_CFM,
++	.init = atmel_asoc_wm8904_init,
++	.ops = &amp;atmel_asoc_wm8904_ops,
++};
++
++static struct snd_soc_card atmel_asoc_wm8904_card = {
++	.name = &quot;atmel_asoc_wm8904&quot;,
++	.owner = THIS_MODULE,
++	.set_bias_level = atmel_set_bias_level,
++	.dai_link = &amp;atmel_asoc_wm8904_dailink,
++	.num_links = 1,
++	.dapm_widgets = atmel_asoc_wm8904_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(atmel_asoc_wm8904_dapm_widgets),
++	.fully_routed = true,
++};
++
++static int atmel_asoc_wm8904_dt_init(struct platform_device *pdev)
++{
++	struct device_node *np = pdev-&gt;dev.of_node;
++	struct device_node *codec_np, *cpu_np;
++	struct snd_soc_card *card = &amp;atmel_asoc_wm8904_card;
++	struct snd_soc_dai_link *dailink = &amp;atmel_asoc_wm8904_dailink;
++	int ret;
++
++	if (!np)
++		return -1;
++
++	ret = snd_soc_of_parse_card_name(card, &quot;atmel,model&quot;);
++	if (ret) {
++		dev_err(&amp;pdev-&gt;dev, &quot;failed to parse card name\n&quot;);
++		return ret;
++	}
++
++	ret = snd_soc_of_parse_audio_routing(card, &quot;atmel,audio-routing&quot;);
++	if (ret) {
++		dev_err(&amp;pdev-&gt;dev, &quot;failed to parse audio routing\n&quot;);
++		return ret;
++	}
++
++	cpu_np = of_parse_phandle(np, &quot;atmel,ssc-controller&quot;, 0);
++	if (!cpu_np) {
++		dev_err(&amp;pdev-&gt;dev, &quot;failed to get dai and pcm info\n&quot;);
++		ret = -EINVAL;
++		return ret;
++	}
++	dailink-&gt;cpu_of_node = cpu_np;
++	dailink-&gt;platform_of_node = cpu_np;
++	of_node_put(cpu_np);
++
++	codec_np = of_parse_phandle(np, &quot;atmel,audio-codec&quot;, 0);
++	if (!codec_np) {
++		dev_err(&amp;pdev-&gt;dev, &quot;failed to get codec info\n&quot;);
++		ret = -EINVAL;
++		return ret;
++	}
++	dailink-&gt;codec_of_node = codec_np;
++	of_node_put(codec_np);
++
++	return 0;
++}
++
++static int atmel_asoc_wm8904_probe(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = &amp;atmel_asoc_wm8904_card;
++	struct snd_soc_dai_link *dailink = &amp;atmel_asoc_wm8904_dailink;
++	struct clk *clk_src;
++	struct pinctrl *pinctrl;
++	int id, ret;
++
++	pinctrl = devm_pinctrl_get_select_default(&amp;pdev-&gt;dev);
++	if (IS_ERR(pinctrl)) {
++		dev_err(&amp;pdev-&gt;dev, &quot;failed to request pinctrl\n&quot;);
++		return PTR_ERR(pinctrl);
++	}
++
++	card-&gt;dev = &amp;pdev-&gt;dev;
++	ret = atmel_asoc_wm8904_dt_init(pdev);
++	if (ret) {
++		dev_err(&amp;pdev-&gt;dev, &quot;failed to init dt info\n&quot;);
++		goto err_set_audio;
++	}
++
++	id = of_alias_get_id((struct device_node *)dailink-&gt;cpu_of_node, &quot;ssc&quot;);
++	ret = atmel_ssc_set_audio(id);
++	if (ret != 0) {
++		dev_err(&amp;pdev-&gt;dev, &quot;failed to set SSC 0 for audio\n&quot;);
++		return ret;
++	}
++
++	mclk = clk_get(NULL, &quot;pck0&quot;);
++	if (IS_ERR(mclk)) {
++		dev_err(&amp;pdev-&gt;dev, &quot;failed to get pck0\n&quot;);
++		ret = PTR_ERR(mclk);
++		goto err_set_audio;
++	}
++
++	clk_src = clk_get(NULL, &quot;clk32k&quot;);
++	if (IS_ERR(clk_src)) {
++		dev_err(&amp;pdev-&gt;dev, &quot;failed to get clk32k\n&quot;);
++		ret = PTR_ERR(clk_src);
++		goto err_set_audio;
++	}
++
++	ret = clk_set_parent(mclk, clk_src);
++	clk_put(clk_src);
++	if (ret != 0) {
++		dev_err(&amp;pdev-&gt;dev, &quot;failed to set MCLK parent\n&quot;);
++		goto err_set_audio;
++	}
++
++	dev_info(&amp;pdev-&gt;dev, &quot;setting pck0 to %dHz\n&quot;, MCLK_RATE);
++	clk_set_rate(mclk, MCLK_RATE);
++
++	ret = snd_soc_register_card(card);
++	if (ret) {
++		dev_err(&amp;pdev-&gt;dev, &quot;snd_soc_register_card failed\n&quot;);
++		goto err_set_audio;
++	}
++
++	return 0;
++
++err_set_audio:
++	atmel_ssc_put_audio(0);
++	return ret;
++}
++
++static int atmel_asoc_wm8904_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++	struct snd_soc_dai_link *dailink = &amp;atmel_asoc_wm8904_dailink;
++	int id;
++
++	id = of_alias_get_id((struct device_node *)dailink-&gt;cpu_of_node, &quot;ssc&quot;);
++
++	snd_soc_unregister_card(card);
++	atmel_ssc_put_audio(id);
++
++	return 0;
++}
++
++#ifdef CONFIG_OF
++static const struct of_device_id atmel_asoc_wm8904_dt_ids[] = {
++	{ .compatible = &quot;atmel,asoc-wm8904&quot;, },
++	{ }
++};
++#endif
++
++static struct platform_driver atmel_asoc_wm8904_driver = {
++	.driver = {
++		.name = &quot;atmel-wm8904-audio&quot;,
++		.owner = THIS_MODULE,
++		.of_match_table = of_match_ptr(atmel_asoc_wm8904_dt_ids),
++	},
++	.probe = atmel_asoc_wm8904_probe,
++	.remove = atmel_asoc_wm8904_remove,
++};
++
++module_platform_driver(atmel_asoc_wm8904_driver);
++
++/* Module information */
++MODULE_AUTHOR(&quot;Bo Shen &lt;voice.shen@xxxxxxxxx&gt;&quot;);
++MODULE_DESCRIPTION(&quot;ALSA SoC machine driver for Atmel EK with WM8904 codec&quot;);
++MODULE_LICENSE(&quot;GPL&quot;);
+-- 
+1.7.9.5
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe linux-sound&quot; in
+the body of a message to majordomo@xxxxxxxxxxxxxxx
+More majordomo info at  <a  rel="nofollow" href="http://vger.kernel.org/majordomo-info.html">http://vger.kernel.org/majordomo-info.html</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="00347" href="msg00347.html">Re: [PATCH] ASoC: atmel: add wm8904 based audio machine driver</a></strong>
+<ul><li><em>From:</em> Mark Brown</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00344.html">[PATCH] ASoC: wm8904: fix the typo error for LINER Mux</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00346.html">Re: [PATCH] ASoC: wm8904: fix the typo error for LINER Mux</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00344.html">[PATCH] ASoC: wm8904: fix the typo error for LINER Mux</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00347.html">Re: [PATCH] ASoC: atmel: add wm8904 based audio machine driver</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00345"><strong>Date</strong></a></li>
+<li><a href="index.html#00345"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/Pulseaudio/>[Pulseaudio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/alsa-devel/>[ALSA&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td valign=top align=left>&nbsp;</td>
+<td valign=top align=right>
+<a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

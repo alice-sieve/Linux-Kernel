@@ -1,0 +1,323 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v3 16/21] utils: Extend virCommandProcessIO to	include the send buffers -->
+<!--X-From-R13: Egrsna Pretre &#60;fgrsnaoNyvahk.iarg.voz.pbz> -->
+<!--X-Date: Wed, 10 Jul 2019 14:10:02 &#45;0700 -->
+<!--X-Message-Id: 20190710210859.1713840&#45;17&#45;stefanb@linux.vnet.ibm.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190710210859.1713840&#45;1&#45;stefanb@linux.vnet.ibm.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v3 16/21] utils: Extend virCommandProcessIO to	include the send buffers</title>
+<meta name="description" content="libvirt: [PATCH v3 16/21] utils: Extend virCommandProcessIO to	include the send buffers">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v3 16/21] utils: Extend virCommandProcessIO to	include the send buffers</h1>
+[<a href="msg187072.html">Date Prev</a>][<a href="msg187074.html">Date Next</a>][<a href="msg187072.html">Thread Prev</a>][<a href="msg187075.html">Thread Next</a>][<a href="maillist.html#187073">Date Index</a>][<a href="index.html#187073">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v3 16/21] utils: Extend virCommandProcessIO to	include the send buffers</li>
+<li><em>From</em>: Stefan Berger &lt;stefanb@xxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 10 Jul 2019 17:08:54 -0400</li>
+<li><em>Cc</em>: marcandre.lureau@xxxxxxxxxx, Stefan Berger &lt;stefanb@xxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187074.html">20190710210859.1713840-1-stefanb@linux.vnet.ibm.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187074.html">20190710210859.1713840-1-stefanb@linux.vnet.ibm.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Extend virCommandProcessIO to include the send buffers in the poll
+loop.
+
+Signed-off-by: Stefan Berger &lt;stefanb@xxxxxxxxxxxxx&gt;
+---
+ src/util/vircommand.c | 70 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 69 insertions(+), 1 deletion(-)
+
+diff --git a/src/util/vircommand.c b/src/util/vircommand.c
+index 0e367eeeab..bb11a76118 100644
+--- a/src/util/vircommand.c
++++ b/src/util/vircommand.c
+@@ -1803,6 +1803,69 @@ virCommandSetSendBuffer(virCommandPtr cmd,
+ }
+ 
+ 
++static int
++virCommandGetNumSendBuffers(virCommandPtr cmd)
++{
++    return cmd-&gt;numSendBuffers;
++}
++
++
++static int
++virCommandSendBuffersFillPollfd(virCommandPtr cmd,
++                                struct pollfd *fds,
++                                int startidx)
++{
++    size_t i, j;
++
++    for (i = 0, j = 0; i &lt; cmd-&gt;numSendBuffers; i++) {
++        if (cmd-&gt;sendBuffers[i].fd &gt;= 0) {
++            fds[startidx + j].fd = cmd-&gt;sendBuffers[i].fd;
++            fds[startidx + j].events = POLLOUT;
++            fds[startidx + j].revents = 0;
++            j++;
++        }
++    }
++
++    return j;
++}
++
++
++static int
++virCommandSendBuffersHandlePoll(virCommandPtr cmd,
++                                struct pollfd *fds)
++{
++    size_t i;
++    int done;
++
++    for (i = 0; i &lt; cmd-&gt;numSendBuffers; i++) {
++        if (fds-&gt;fd == cmd-&gt;sendBuffers[i].fd)
++            break;
++    }
++    if (i == cmd-&gt;numSendBuffers)
++        return 0;
++
++    done = write(fds-&gt;fd,
++                 cmd-&gt;sendBuffers[i].buffer + cmd-&gt;sendBuffers[i].offset,
++                 MIN(cmd-&gt;sendBuffers[i].buflen - cmd-&gt;sendBuffers[i].offset,
++                     MAX_PIPE_FEED_BYTES));
++    if (done &lt; 0) {
++        if (errno == EPIPE) {
++            VIR_DEBUG(&quot;child closed PIPE early, ignoring EPIPE &quot;
++                      &quot;on fd %d&quot;, cmd-&gt;sendBuffers[i].fd);
++            VIR_FORCE_CLOSE(cmd-&gt;sendBuffers[i].fd);
++        } else if (errno != EINTR &amp;&amp; errno != EAGAIN) {
++            virReportSystemError(errno, &quot;%s&quot;,
++                                 _(&quot;unable to write to child input&quot;));
++            return -1;
++        }
++    } else {
++        cmd-&gt;sendBuffers[i].offset += done;
++        if (cmd-&gt;sendBuffers[i].offset == cmd-&gt;sendBuffers[i].buflen)
++            VIR_FORCE_CLOSE(cmd-&gt;sendBuffers[i].fd);
++    }
++    return 0;
++}
++
+ /**
+  * virCommandSetInputBuffer:
+  * @cmd: the command to modify
+@@ -2157,7 +2220,7 @@ virCommandProcessIO(virCommandPtr cmd)
+         goto cleanup;
+     ret = -1;
+ 
+-    if (VIR_ALLOC_N(fds, 3) &lt; 0)
++    if (VIR_ALLOC_N(fds, 3 + virCommandGetNumSendBuffers(cmd)) &lt; 0)
+         goto cleanup;
+ 
+     for (;;) {
+@@ -2183,6 +2246,8 @@ virCommandProcessIO(virCommandPtr cmd)
+             nfds++;
+         }
+ 
++        nfds += virCommandSendBuffersFillPollfd(cmd, fds, nfds);
++
+         if (nfds == 0)
+             break;
+ 
+@@ -2255,6 +2320,9 @@ virCommandProcessIO(virCommandPtr cmd)
+                     if (inoff == inlen)
+                         VIR_FORCE_CLOSE(cmd-&gt;inpipe);
+                 }
++            } else if (fds[i].revents &amp; (POLLOUT | POLLHUP | POLLERR)) {
++                if (virCommandSendBuffersHandlePoll(cmd, &amp;fds[i]) &lt; 0)
++                    goto cleanup;
+             }
+         }
+     }
+-- 
+2.20.1
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187072.html">[PATCH v3 12/21] tpm: Parse the capabilities supported by	swtpm and swtpm_setup</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187074.html">[PATCH v3 00/21] Add support for vTPM state encryption</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187072.html">[PATCH v3 12/21] tpm: Parse the capabilities supported by	swtpm and swtpm_setup</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187075.html">[PATCH v3 05/21] schema: Extend the TPM XML schema with	support for encryption</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187073"><strong>Date</strong></a></li>
+<li><a href="index.html#187073"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

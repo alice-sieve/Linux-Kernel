@@ -1,0 +1,653 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [RFC PATCH v7 1/1] Add dm verity root hash pkcs7 sig validation. -->
+<!--X-From-R13: Xnfxnena Yuhenan &#60;wnfxnenaxuhenanNyvahk.zvpebfbsg.pbz> -->
+<!--X-Date: Wed, 17 Jul 2019 17:46:36 &#45;0700 -->
+<!--X-Message-Id: 20190718004615.16818&#45;2&#45;jaskarankhurana@linux.microsoft.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190718004615.16818&#45;1&#45;jaskarankhurana@linux.microsoft.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, [RFC PATCH v7 1/1] Add dm verity root hash pkcs7 sig validation.">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- [RFC PATCH v7 1/1] Add dm verity root hash pkcs7 sig validation.</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[RFC PATCH v7 1/1] Add dm verity root hash pkcs7 sig validation.</h1>
+[<a href="msg29990.html">Date Prev</a>][<a href="msg29992.html">Date Next</a>][<a href="msg29990.html">Thread Prev</a>][<a href="msg29992.html">Thread Next</a>][<a href="maillist.html#29991">Date Index</a>][<a href="index.html#29991">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [RFC PATCH v7 1/1] Add dm verity root hash pkcs7 sig validation.</li>
+<li><em>From</em>: Jaskaran Khurana &lt;jaskarankhurana@xxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 17 Jul 2019 17:46:15 -0700</li>
+<li><em>Cc</em>: linux-security-module@xxxxxxxxxxxxxxx, linux-kernel@xxxxxxxxxxxxxxx,        linux-integrity@xxxxxxxxxxxxxxx, linux-fsdevel@xxxxxxxxxxxxxxx,        agk@xxxxxxxxxx, snitzer@xxxxxxxxxx, dm-devel@xxxxxxxxxx,        jmorris@xxxxxxxxx, scottsh@xxxxxxxxxxxxx, mdsakib@xxxxxxxxxxxxx,        mpatocka@xxxxxxxxxx, ebiggers@xxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29990.html">20190718004615.16818-1-jaskarankhurana@linux.microsoft.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg29990.html">20190718004615.16818-1-jaskarankhurana@linux.microsoft.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The verification is to support cases where the roothash is not secured by
+Trusted Boot, UEFI Secureboot or similar technologies.
+One of the use cases for this is for dm-verity volumes mounted after boot,
+the root hash provided during the creation of the dm-verity volume has to
+be secure and thus in-kernel validation implemented here will be used
+before we trust the root hash and allow the block device to be created.
+
+The signature being provided for verification must verify the root hash and
+must be trusted by the builtin keyring for verification to succeed.
+
+The hash is added as a key of type &quot;user&quot; and the description is passed to the
+kernel so it can look it up and use it for verification.
+
+Adds CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG which can be turned on if root hash
+verification is needed.
+
+Kernel commandline parameter require_signatures will indicate whether to force
+(for all dm verity volumes) roothash signature verification.
+
+Signed-off-by: Jaskaran Khurana &lt;jaskarankhurana@xxxxxxxxxxxxxxxxxxx&gt;
+Tested-and-Reviewed-by: Milan Broz &lt;gmazyland@xxxxxxxxx&gt;
+---
+ Documentation/admin-guide/device-mapper/verity.rst |   7 ++
+ drivers/md/Kconfig                                 |  12 ++
+ drivers/md/Makefile                                |   4 +
+ drivers/md/dm-verity-target.c                      |  43 ++++++-
+ drivers/md/dm-verity-verify-sig.c                  | 133 +++++++++++++++++++++
+ drivers/md/dm-verity-verify-sig.h                  |  60 ++++++++++
+ drivers/md/dm-verity.h                             |   2 +
+ 7 files changed, 256 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/md/dm-verity-verify-sig.c
+ create mode 100644 drivers/md/dm-verity-verify-sig.h
+
+diff --git a/Documentation/admin-guide/device-mapper/verity.rst b/Documentation/admin-guide/device-mapper/verity.rst
+index a4d1c1476d72..bb02caa45289 100644
+--- a/Documentation/admin-guide/device-mapper/verity.rst
++++ b/Documentation/admin-guide/device-mapper/verity.rst
+@@ -125,6 +125,13 @@ check_at_most_once
+     blocks, and a hash block will not be verified any more after all the data
+     blocks it covers have been verified anyway.
+ 
++root_hash_sig_key_desc &lt;key_description&gt;
++    This is the description of the USER_KEY that the kernel will lookup to get
++    the pkcs7 signature of the roothash. The pkcs7 signature is used to validate
++    the root hash during the creation of the device mapper block device.
++    Verification of roothash depends on the config DM_VERITY_VERIFY_ROOTHASH_SIG
++    being set in the kernel.
++
+ Theory of operation
+ ===================
+ 
+diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+index 3834332f4963..c2b04d226c90 100644
+--- a/drivers/md/Kconfig
++++ b/drivers/md/Kconfig
+@@ -490,6 +490,18 @@ config DM_VERITY
+ 
+ 	  If unsure, say N.
+ 
++config DM_VERITY_VERIFY_ROOTHASH_SIG
++	def_bool n
++	bool &quot;Verity data device root hash signature verification support&quot;
++	depends on DM_VERITY
++	select SYSTEM_DATA_VERIFICATION
++	  help
++	  The device mapper target created by DM-VERITY can be validated if the
++	  pre-generated tree of cryptographic checksums passed has a pkcs#7
++	  signature file that can validate the roothash of the tree.
++
++	  If unsure, say N.
++
+ config DM_VERITY_FEC
+ 	bool &quot;Verity forward error correction support&quot;
+ 	depends on DM_VERITY
+diff --git a/drivers/md/Makefile b/drivers/md/Makefile
+index be7a6eb92abc..0d922335335c 100644
+--- a/drivers/md/Makefile
++++ b/drivers/md/Makefile
+@@ -81,3 +81,7 @@ endif
+ ifeq ($(CONFIG_DM_VERITY_FEC),y)
+ dm-verity-objs			+= dm-verity-fec.o
+ endif
++
++ifeq ($(CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG),y)
++dm-verity-objs			+= dm-verity-verify-sig.o
++endif
+diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
+index ea24ff0612e3..4fb33e7562c5 100644
+--- a/drivers/md/dm-verity-target.c
++++ b/drivers/md/dm-verity-target.c
+@@ -15,7 +15,7 @@
+ 
+ #include &quot;dm-verity.h&quot;
+ #include &quot;dm-verity-fec.h&quot;
+-
++#include &quot;dm-verity-verify-sig.h&quot;
+ #include &lt;linux/module.h&gt;
+ #include &lt;linux/reboot.h&gt;
+ 
+@@ -33,7 +33,8 @@
+ #define DM_VERITY_OPT_IGN_ZEROES	&quot;ignore_zero_blocks&quot;
+ #define DM_VERITY_OPT_AT_MOST_ONCE	&quot;check_at_most_once&quot;
+ 
+-#define DM_VERITY_OPTS_MAX		(2 + DM_VERITY_OPTS_FEC)
++#define DM_VERITY_OPTS_MAX		(2 + DM_VERITY_OPTS_FEC + \
++					 DM_VERITY_ROOT_HASH_VERIFICATION_OPTS)
+ 
+ static unsigned dm_verity_prefetch_cluster = DM_VERITY_DEFAULT_PREFETCH_SIZE;
+ 
+@@ -713,6 +714,8 @@ static void verity_status(struct dm_target *ti, status_type_t type,
+ 			args++;
+ 		if (v-&gt;validated_blocks)
+ 			args++;
++		if (v-&gt;signature_key_desc)
++			args += DM_VERITY_ROOT_HASH_VERIFICATION_OPTS;
+ 		if (!args)
+ 			return;
+ 		DMEMIT(&quot; %u&quot;, args);
+@@ -734,6 +737,9 @@ static void verity_status(struct dm_target *ti, status_type_t type,
+ 		if (v-&gt;validated_blocks)
+ 			DMEMIT(&quot; &quot; DM_VERITY_OPT_AT_MOST_ONCE);
+ 		sz = verity_fec_status_table(v, sz, result, maxlen);
++		if (v-&gt;signature_key_desc)
++			DMEMIT(&quot; &quot; DM_VERITY_ROOT_HASH_VERIFICATION_OPT_SIG_KEY
++				&quot; %s&quot;, v-&gt;signature_key_desc);
+ 		break;
+ 	}
+ }
+@@ -799,6 +805,8 @@ static void verity_dtr(struct dm_target *ti)
+ 
+ 	verity_fec_dtr(v);
+ 
++	kfree(v-&gt;signature_key_desc);
++
+ 	kfree(v);
+ }
+ 
+@@ -854,7 +862,8 @@ out:
+ 	return r;
+ }
+ 
+-static int verity_parse_opt_args(struct dm_arg_set *as, struct dm_verity *v)
++static int verity_parse_opt_args(struct dm_arg_set *as, struct dm_verity *v,
++				 struct dm_verity_sig_opts *verify_args)
+ {
+ 	int r;
+ 	unsigned argc;
+@@ -903,6 +912,14 @@ static int verity_parse_opt_args(struct dm_arg_set *as, struct dm_verity *v)
+ 			if (r)
+ 				return r;
+ 			continue;
++		} else if (verity_verify_is_sig_opt_arg(arg_name)) {
++			r = verity_verify_sig_parse_opt_args(as, v,
++							     verify_args,
++							     &amp;argc, arg_name);
++			if (r)
++				return r;
++			continue;
++
+ 		}
+ 
+ 		ti-&gt;error = &quot;Unrecognized verity feature request&quot;;
+@@ -929,6 +946,7 @@ static int verity_parse_opt_args(struct dm_arg_set *as, struct dm_verity *v)
+ static int verity_ctr(struct dm_target *ti, unsigned argc, char **argv)
+ {
+ 	struct dm_verity *v;
++	struct dm_verity_sig_opts verify_args = {0};
+ 	struct dm_arg_set as;
+ 	unsigned int num;
+ 	unsigned long long num_ll;
+@@ -936,6 +954,7 @@ static int verity_ctr(struct dm_target *ti, unsigned argc, char **argv)
+ 	int i;
+ 	sector_t hash_position;
+ 	char dummy;
++	char *root_hash_digest_to_validate;
+ 
+ 	v = kzalloc(sizeof(struct dm_verity), GFP_KERNEL);
+ 	if (!v) {
+@@ -1069,6 +1088,7 @@ static int verity_ctr(struct dm_target *ti, unsigned argc, char **argv)
+ 		r = -EINVAL;
+ 		goto bad;
+ 	}
++	root_hash_digest_to_validate = argv[8];
+ 
+ 	if (strcmp(argv[9], &quot;-&quot;)) {
+ 		v-&gt;salt_size = strlen(argv[9]) / 2;
+@@ -1094,11 +1114,20 @@ static int verity_ctr(struct dm_target *ti, unsigned argc, char **argv)
+ 		as.argc = argc;
+ 		as.argv = argv;
+ 
+-		r = verity_parse_opt_args(&amp;as, v);
++		r = verity_parse_opt_args(&amp;as, v, &amp;verify_args);
+ 		if (r &lt; 0)
+ 			goto bad;
+ 	}
+ 
++	/* Root hash signature is  a optional parameter*/
++	r = verity_verify_root_hash(root_hash_digest_to_validate,
++				    strlen(root_hash_digest_to_validate),
++				    verify_args.sig,
++				    verify_args.sig_size);
++	if (r &lt; 0) {
++		ti-&gt;error = &quot;Root hash verification failed&quot;;
++		goto bad;
++	}
+ 	v-&gt;hash_per_block_bits =
+ 		__fls((1 &lt;&lt; v-&gt;hash_dev_block_bits) / v-&gt;digest_size);
+ 
+@@ -1164,9 +1193,13 @@ static int verity_ctr(struct dm_target *ti, unsigned argc, char **argv)
+ 	ti-&gt;per_io_data_size = roundup(ti-&gt;per_io_data_size,
+ 				       __alignof__(struct dm_verity_io));
+ 
++	verity_verify_sig_opts_cleanup(&amp;verify_args);
++
+ 	return 0;
+ 
+ bad:
++
++	verity_verify_sig_opts_cleanup(&amp;verify_args);
+ 	verity_dtr(ti);
+ 
+ 	return r;
+@@ -1174,7 +1207,7 @@ bad:
+ 
+ static struct target_type verity_target = {
+ 	.name		= &quot;verity&quot;,
+-	.version	= {1, 4, 0},
++	.version	= {1, 5, 0},
+ 	.module		= THIS_MODULE,
+ 	.ctr		= verity_ctr,
+ 	.dtr		= verity_dtr,
+diff --git a/drivers/md/dm-verity-verify-sig.c b/drivers/md/dm-verity-verify-sig.c
+new file mode 100644
+index 000000000000..614e43db93aa
+--- /dev/null
++++ b/drivers/md/dm-verity-verify-sig.c
+@@ -0,0 +1,133 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2019 Microsoft Corporation.
++ *
++ * Author:  Jaskaran Singh Khurana &lt;jaskarankhurana@xxxxxxxxxxxxxxxxxxx&gt;
++ *
++ */
++#include &lt;linux/device-mapper.h&gt;
++#include &lt;linux/verification.h&gt;
++#include &lt;keys/user-type.h&gt;
++#include &lt;linux/module.h&gt;
++#include &quot;dm-verity.h&quot;
++#include &quot;dm-verity-verify-sig.h&quot;
++
++#define DM_VERITY_VERIFY_ERR(s) DM_VERITY_ROOT_HASH_VERIFICATION &quot; &quot; s
++
++static bool require_signatures;
++module_param(require_signatures, bool, false);
++MODULE_PARM_DESC(require_signatures,
++		&quot;Verify the roothash of dm-verity hash tree&quot;);
++
++#define DM_VERITY_IS_SIG_FORCE_ENABLED() \
++	(require_signatures != false)
++
++bool verity_verify_is_sig_opt_arg(const char *arg_name)
++{
++	return (!strcasecmp(arg_name,
++			    DM_VERITY_ROOT_HASH_VERIFICATION_OPT_SIG_KEY));
++}
++
++static int verity_verify_get_sig_from_key(const char *key_desc,
++					struct dm_verity_sig_opts *sig_opts)
++{
++	struct key *key;
++	const struct user_key_payload *ukp;
++	int ret = 0;
++
++	key = request_key(&amp;key_type_user,
++			key_desc, NULL);
++	if (IS_ERR(key))
++		return PTR_ERR(key);
++
++	down_read(&amp;key-&gt;sem);
++
++	ukp = user_key_payload_locked(key);
++	if (!ukp) {
++		ret = -EKEYREVOKED;
++		goto end;
++	}
++
++	sig_opts-&gt;sig = kmalloc(ukp-&gt;datalen, GFP_KERNEL);
++	if (!sig_opts-&gt;sig) {
++		ret = -ENOMEM;
++		goto end;
++	}
++	sig_opts-&gt;sig_size = ukp-&gt;datalen;
++
++	memcpy(sig_opts-&gt;sig, ukp-&gt;data, sig_opts-&gt;sig_size);
++
++end:
++	up_read(&amp;key-&gt;sem);
++	key_put(key);
++
++	return ret;
++}
++
++int verity_verify_sig_parse_opt_args(struct dm_arg_set *as,
++				     struct dm_verity *v,
++				     struct dm_verity_sig_opts *sig_opts,
++				     unsigned int *argc,
++				     const char *arg_name)
++{
++	struct dm_target *ti = v-&gt;ti;
++	int ret = 0;
++	const char *sig_key = NULL;
++
++	if (!*argc) {
++		ti-&gt;error = DM_VERITY_VERIFY_ERR(&quot;Signature key not specified&quot;);
++		return -EINVAL;
++	}
++
++	sig_key = dm_shift_arg(as);
++	(*argc)--;
++
++	ret = verity_verify_get_sig_from_key(sig_key, sig_opts);
++	if (ret &lt; 0)
++		ti-&gt;error = DM_VERITY_VERIFY_ERR(&quot;Invalid key specified&quot;);
++
++	v-&gt;signature_key_desc = kstrdup(sig_key, GFP_KERNEL);
++	if (!v-&gt;signature_key_desc)
++		return -ENOMEM;
++
++	return ret;
++}
++
++/*
++ * verify_verify_roothash - Verify the root hash of the verity hash device
++ *			     using builtin trusted keys.
++ *
++ * @root_hash: For verity, the roothash/data to be verified.
++ * @root_hash_len: Size of the roothash/data to be verified.
++ * @sig_data: The trusted signature that verifies the roothash/data.
++ * @sig_len: Size of the signature.
++ *
++ */
++int verity_verify_root_hash(const void *root_hash, size_t root_hash_len,
++			    const void *sig_data, size_t sig_len)
++{
++	int ret;
++
++	if (!root_hash || root_hash_len == 0)
++		return -EINVAL;
++
++	if (!sig_data  || sig_len == 0) {
++		if (DM_VERITY_IS_SIG_FORCE_ENABLED())
++			return -ENOKEY;
++		else
++			return 0;
++	}
++
++	ret = verify_pkcs7_signature(root_hash, root_hash_len, sig_data,
++				sig_len, NULL, VERIFYING_UNSPECIFIED_SIGNATURE,
++				NULL, NULL);
++
++	return ret;
++}
++
++void verity_verify_sig_opts_cleanup(struct dm_verity_sig_opts *sig_opts)
++{
++	kfree(sig_opts-&gt;sig);
++	sig_opts-&gt;sig = NULL;
++	sig_opts-&gt;sig_size = 0;
++}
+diff --git a/drivers/md/dm-verity-verify-sig.h b/drivers/md/dm-verity-verify-sig.h
+new file mode 100644
+index 000000000000..19b1547aa741
+--- /dev/null
++++ b/drivers/md/dm-verity-verify-sig.h
+@@ -0,0 +1,60 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2019 Microsoft Corporation.
++ *
++ * Author:  Jaskaran Singh Khurana &lt;jaskarankhurana@xxxxxxxxxxxxxxxxxxx&gt;
++ *
++ */
++#ifndef DM_VERITY_SIG_VERIFICATION_H
++#define DM_VERITY_SIG_VERIFICATION_H
++
++#define DM_VERITY_ROOT_HASH_VERIFICATION &quot;DM Verity Sig Verification&quot;
++#define DM_VERITY_ROOT_HASH_VERIFICATION_OPT_SIG_KEY &quot;root_hash_sig_key_desc&quot;
++
++struct dm_verity_sig_opts {
++	unsigned int sig_size;
++	u8 *sig;
++};
++
++#ifdef CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG
++
++#define DM_VERITY_ROOT_HASH_VERIFICATION_OPTS 2
++
++int verity_verify_root_hash(const void *data, size_t data_len,
++			    const void *sig_data, size_t sig_len);
++bool verity_verify_is_sig_opt_arg(const char *arg_name);
++
++int verity_verify_sig_parse_opt_args(struct dm_arg_set *as, struct dm_verity *v,
++				    struct dm_verity_sig_opts *sig_opts,
++				    unsigned int *argc, const char *arg_name);
++
++void verity_verify_sig_opts_cleanup(struct dm_verity_sig_opts *sig_opts);
++
++#else
++
++#define DM_VERITY_ROOT_HASH_VERIFICATION_OPTS 0
++
++int verity_verify_root_hash(const void *data, size_t data_len,
++			    const void *sig_data, size_t sig_len)
++{
++	return 0;
++}
++
++bool verity_verify_is_sig_opt_arg(const char *arg_name)
++{
++	return false;
++}
++
++int verity_verify_sig_parse_opt_args(struct dm_arg_set *as, struct dm_verity *v,
++				    struct dm_verity_sig_opts *sig_opts,
++				    unsigned int *argc, const char *arg_name)
++{
++	return -EINVAL;
++}
++
++void verity_verify_sig_opts_cleanup(struct dm_verity_sig_opts *sig_opts)
++{
++}
++
++#endif /* CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG */
++#endif /* DM_VERITY_SIG_VERIFICATION_H */
+diff --git a/drivers/md/dm-verity.h b/drivers/md/dm-verity.h
+index eeaf940aef6d..641b9e3a399b 100644
+--- a/drivers/md/dm-verity.h
++++ b/drivers/md/dm-verity.h
+@@ -63,6 +63,8 @@ struct dm_verity {
+ 
+ 	struct dm_verity_fec *fec;	/* forward error correction */
+ 	unsigned long *validated_blocks; /* bitset blocks validated */
++
++	char *signature_key_desc; /* signature keyring reference */
+ };
+ 
+ struct dm_verity_io {
+-- 
+cgit 1.2-0.3.lf.el7
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="29992" href="msg29992.html">Re: [RFC PATCH v7 1/1] Add dm verity root hash pkcs7 sig validation.</a></strong>
+<ul><li><em>From:</em> Randy Dunlap</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29990" href="msg29990.html">[RFC PATCH v7 0/1] Add dm verity root hash pkcs7 sig validation.</a></strong>
+<ul><li><em>From:</em> Jaskaran Khurana</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29990.html">[RFC PATCH v7 0/1] Add dm verity root hash pkcs7 sig validation.</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29992.html">Re: [RFC PATCH v7 1/1] Add dm verity root hash pkcs7 sig validation.</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29990.html">[RFC PATCH v7 0/1] Add dm verity root hash pkcs7 sig validation.</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29992.html">Re: [RFC PATCH v7 1/1] Add dm verity root hash pkcs7 sig validation.</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29991"><strong>Date</strong></a></li>
+<li><a href="index.html#29991"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

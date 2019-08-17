@@ -1,0 +1,545 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2 2/3] drm: plumb attaching dev thru to prime_pin/unpin -->
+<!--X-From-R13: Dbo Qynex &#60;eboqpynexNtznvy.pbz> -->
+<!--X-Date: Tue, 16 Jul 2019 10:48:18 &#45;0700 -->
+<!--X-Message-Id: 20190716174331.7371&#45;2&#45;robdclark@gmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190716174331.7371&#45;1&#45;robdclark@gmail.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH v2 2/3] drm: plumb attaching dev thru to prime_pin/unpin">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH v2 2/3] drm: plumb attaching dev thru to prime_pin/unpin &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH v2 2/3] drm: plumb attaching dev thru to prime_pin/unpin</h1>
+[<a href="msg36086.html">Date Prev</a>][<a href="msg36088.html">Date Next</a>][<a href="msg36083.html">Thread Prev</a>][<a href="msg36093.html">Thread Next</a>][<a href="maillist.html#36087">Date Index</a>][<a href="index.html#36087">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: dri-devel@xxxxxxxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH v2 2/3] drm: plumb attaching dev thru to prime_pin/unpin</li>
+<li><em>From</em>: Rob Clark &lt;robdclark@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 16 Jul 2019 10:43:22 -0700</li>
+<li><em>Cc</em>: Eric Biggers &lt;ebiggers@xxxxxxxxxx&gt;,        Maxime Ripard &lt;maxime.ripard@xxxxxxxxxxx&gt;,        nouveau@xxxxxxxxxxxxxxxxxxxxx, Imre Deak &lt;imre.deak@xxxxxxxxx&gt;,        Chris Wilson &lt;chris@xxxxxxxxxxxxxxxxxx&gt;,        Gerd Hoffmann &lt;kraxel@xxxxxxxxxx&gt;,        Emil Velikov &lt;emil.velikov@xxxxxxxxxxxxx&gt;,        Rob Clark &lt;robdclark@xxxxxxxxxxxx&gt;,        &quot;David \(ChunMing\) Zhou&quot; &lt;David1.Zhou@xxxxxxx&gt;,        amd-gfx@xxxxxxxxxxxxxxxxxxxxx, David Airlie &lt;airlied@xxxxxxxx&gt;,        Ben Skeggs &lt;bskeggs@xxxxxxxxxx&gt;,        Russell King &lt;linux+etnaviv@xxxxxxxxxxxxxxx&gt;,        Dave Airlie &lt;airlied@xxxxxxxxxx&gt;, Laura Abbott &lt;labbott@xxxxxxxxxx&gt;,        Deepak Sharma &lt;deepak.sharma@xxxxxxx&gt;,        Thomas Zimmermann &lt;tzimmermann@xxxxxxx&gt;, linux-arm-msm@xxxxxxxxxxxxxxx,        Intel Graphics Development &lt;intel-gfx@xxxxxxxxxxxxxxxxxxxxx&gt;,        Maarten Lankhorst &lt;maarten.lankhorst@xxxxxxxxxxxxxxx&gt;,        etnaviv@xxxxxxxxxxxxxxxxxxxxx, Hans de Goede &lt;hdegoede@xxxxxxxxxx&gt;,        Christian Gmeiner &lt;christian.gmeiner@xxxxxxxxx&gt;,        spice-devel@xxxxxxxxxxxxxxxxxxxxx,        virtualization@xxxxxxxxxxxxxxxxxxxxxxxxxx, Sean Paul &lt;sean@xxxxxxxxxx&gt;,        linux-kernel@xxxxxxxxxxxxxxx, Rob Clark &lt;robdclark@xxxxxxxxx&gt;,        Daniel Vetter &lt;daniel@xxxxxxxx&gt;,        Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;,        freedreno@xxxxxxxxxxxxxxxxxxxxx,        Christian K&#xF6;nig &lt;christian.koenig@xxxxxxx&gt;,        Lucas Stach &lt;l.stach@xxxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;20190716174331.7371-1-robdclark@gmail.com&gt;</li>
+<li><em>References</em>: &lt;20190716174331.7371-1-robdclark@gmail.com&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Rob Clark &lt;robdclark@xxxxxxxxxxxx&gt;
+
+Needed in the following patch for cache operations.
+
+Signed-off-by: Rob Clark &lt;robdclark@xxxxxxxxxxxx&gt;
+---
+ drivers/gpu/drm/drm_gem.c                   | 10 ++++++----
+ drivers/gpu/drm/drm_gem_vram_helper.c       |  6 ++++--
+ drivers/gpu/drm/drm_prime.c                 |  4 ++--
+ drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c |  4 ++--
+ drivers/gpu/drm/msm/msm_drv.h               |  4 ++--
+ drivers/gpu/drm/msm/msm_gem_prime.c         |  4 ++--
+ drivers/gpu/drm/nouveau/nouveau_gem.h       |  4 ++--
+ drivers/gpu/drm/nouveau/nouveau_prime.c     |  4 ++--
+ drivers/gpu/drm/qxl/qxl_prime.c             |  4 ++--
+ drivers/gpu/drm/radeon/radeon_prime.c       |  4 ++--
+ drivers/gpu/drm/vboxvideo/vbox_prime.c      |  4 ++--
+ drivers/gpu/drm/vgem/vgem_drv.c             |  4 ++--
+ include/drm/drm_drv.h                       |  4 ++--
+ include/drm/drm_gem.h                       |  4 ++--
+ include/drm/drm_gem_vram_helper.h           |  4 ++--
+ 15 files changed, 36 insertions(+), 32 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
+index 7d6242cc69f2..0a2645769624 100644
+--- a/drivers/gpu/drm/drm_gem.c
++++ b/drivers/gpu/drm/drm_gem.c
+@@ -1219,18 +1219,19 @@ void drm_gem_print_info(struct drm_printer *p, unsigned int indent,
+ /**
+  * drm_gem_pin - Pin backing buffer in memory
+  * @obj: GEM object
++ * @dev: the device the buffer is being pinned for
+  *
+  * Make sure the backing buffer is pinned in memory.
+  *
+  * Returns:
+  * 0 on success or a negative error code on failure.
+  */
+-int drm_gem_pin(struct drm_gem_object *obj)
++int drm_gem_pin(struct drm_gem_object *obj, struct device *dev)
+ {
+ 	if (obj-&gt;funcs &amp;&amp; obj-&gt;funcs-&gt;pin)
+ 		return obj-&gt;funcs-&gt;pin(obj);
+ 	else if (obj-&gt;dev-&gt;driver-&gt;gem_prime_pin)
+-		return obj-&gt;dev-&gt;driver-&gt;gem_prime_pin(obj);
++		return obj-&gt;dev-&gt;driver-&gt;gem_prime_pin(obj, dev);
+ 	else
+ 		return 0;
+ }
+@@ -1239,15 +1240,16 @@ EXPORT_SYMBOL(drm_gem_pin);
+ /**
+  * drm_gem_unpin - Unpin backing buffer from memory
+  * @obj: GEM object
++ * @dev: the device the buffer is being pinned for
+  *
+  * Relax the requirement that the backing buffer is pinned in memory.
+  */
+-void drm_gem_unpin(struct drm_gem_object *obj)
++void drm_gem_unpin(struct drm_gem_object *obj, struct device *dev)
+ {
+ 	if (obj-&gt;funcs &amp;&amp; obj-&gt;funcs-&gt;unpin)
+ 		obj-&gt;funcs-&gt;unpin(obj);
+ 	else if (obj-&gt;dev-&gt;driver-&gt;gem_prime_unpin)
+-		obj-&gt;dev-&gt;driver-&gt;gem_prime_unpin(obj);
++		obj-&gt;dev-&gt;driver-&gt;gem_prime_unpin(obj, dev);
+ }
+ EXPORT_SYMBOL(drm_gem_unpin);
+ 
+diff --git a/drivers/gpu/drm/drm_gem_vram_helper.c b/drivers/gpu/drm/drm_gem_vram_helper.c
+index 4de782ca26b2..62fafec93948 100644
+--- a/drivers/gpu/drm/drm_gem_vram_helper.c
++++ b/drivers/gpu/drm/drm_gem_vram_helper.c
+@@ -548,7 +548,8 @@ EXPORT_SYMBOL(drm_gem_vram_driver_dumb_mmap_offset);
+  * 0 on success, or
+  * a negative errno code otherwise.
+  */
+-int drm_gem_vram_driver_gem_prime_pin(struct drm_gem_object *gem)
++int drm_gem_vram_driver_gem_prime_pin(struct drm_gem_object *gem,
++				      struct device *dev)
+ {
+ 	struct drm_gem_vram_object *gbo = drm_gem_vram_of_gem(gem);
+ 
+@@ -569,7 +570,8 @@ EXPORT_SYMBOL(drm_gem_vram_driver_gem_prime_pin);
+ 	Implements &amp;struct drm_driver.gem_prime_unpin
+  * @gem:	The GEM object to unpin
+  */
+-void drm_gem_vram_driver_gem_prime_unpin(struct drm_gem_object *gem)
++void drm_gem_vram_driver_gem_prime_unpin(struct drm_gem_object *gem,
++					 struct device *dev)
+ {
+ 	struct drm_gem_vram_object *gbo = drm_gem_vram_of_gem(gem);
+ 
+diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
+index d0c01318076b..505893cfac8e 100644
+--- a/drivers/gpu/drm/drm_prime.c
++++ b/drivers/gpu/drm/drm_prime.c
+@@ -196,7 +196,7 @@ int drm_gem_map_attach(struct dma_buf *dma_buf,
+ {
+ 	struct drm_gem_object *obj = dma_buf-&gt;priv;
+ 
+-	return drm_gem_pin(obj);
++	return drm_gem_pin(obj, attach-&gt;dev);
+ }
+ EXPORT_SYMBOL(drm_gem_map_attach);
+ 
+@@ -213,7 +213,7 @@ void drm_gem_map_detach(struct dma_buf *dma_buf,
+ {
+ 	struct drm_gem_object *obj = dma_buf-&gt;priv;
+ 
+-	drm_gem_unpin(obj);
++	drm_gem_unpin(obj, attach-&gt;dev);
+ }
+ EXPORT_SYMBOL(drm_gem_map_detach);
+ 
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+index 00e8b6a817e3..44385d590aa7 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+@@ -43,7 +43,7 @@ int etnaviv_gem_prime_mmap(struct drm_gem_object *obj,
+ 	return etnaviv_obj-&gt;ops-&gt;mmap(etnaviv_obj, vma);
+ }
+ 
+-int etnaviv_gem_prime_pin(struct drm_gem_object *obj)
++int etnaviv_gem_prime_pin(struct drm_gem_object *obj, struct device *dev)
+ {
+ 	if (!obj-&gt;import_attach) {
+ 		struct etnaviv_gem_object *etnaviv_obj = to_etnaviv_bo(obj);
+@@ -55,7 +55,7 @@ int etnaviv_gem_prime_pin(struct drm_gem_object *obj)
+ 	return 0;
+ }
+ 
+-void etnaviv_gem_prime_unpin(struct drm_gem_object *obj)
++void etnaviv_gem_prime_unpin(struct drm_gem_object *obj, struct device *dev)
+ {
+ 	if (!obj-&gt;import_attach) {
+ 		struct etnaviv_gem_object *etnaviv_obj = to_etnaviv_bo(obj);
+diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+index 9ada948f6b01..6f8f6df9c289 100644
+--- a/drivers/gpu/drm/msm/msm_drv.h
++++ b/drivers/gpu/drm/msm/msm_drv.h
+@@ -298,8 +298,8 @@ void msm_gem_prime_vunmap(struct drm_gem_object *obj, void *vaddr);
+ int msm_gem_prime_mmap(struct drm_gem_object *obj, struct vm_area_struct *vma);
+ struct drm_gem_object *msm_gem_prime_import_sg_table(struct drm_device *dev,
+ 		struct dma_buf_attachment *attach, struct sg_table *sg);
+-int msm_gem_prime_pin(struct drm_gem_object *obj);
+-void msm_gem_prime_unpin(struct drm_gem_object *obj);
++int msm_gem_prime_pin(struct drm_gem_object *obj, struct device *dev);
++void msm_gem_prime_unpin(struct drm_gem_object *obj, struct device *dev);
+ void *msm_gem_get_vaddr(struct drm_gem_object *obj);
+ void *msm_gem_get_vaddr_active(struct drm_gem_object *obj);
+ void msm_gem_put_vaddr(struct drm_gem_object *obj);
+diff --git a/drivers/gpu/drm/msm/msm_gem_prime.c b/drivers/gpu/drm/msm/msm_gem_prime.c
+index 60bb290700ce..8e0ddf5c9460 100644
+--- a/drivers/gpu/drm/msm/msm_gem_prime.c
++++ b/drivers/gpu/drm/msm/msm_gem_prime.c
+@@ -58,14 +58,14 @@ struct drm_gem_object *msm_gem_prime_import_sg_table(struct drm_device *dev,
+ 	return msm_gem_import(dev, attach-&gt;dmabuf, sg);
+ }
+ 
+-int msm_gem_prime_pin(struct drm_gem_object *obj)
++int msm_gem_prime_pin(struct drm_gem_object *obj, struct device *dev)
+ {
+ 	if (!obj-&gt;import_attach)
+ 		msm_gem_get_pages(obj);
+ 	return 0;
+ }
+ 
+-void msm_gem_prime_unpin(struct drm_gem_object *obj)
++void msm_gem_prime_unpin(struct drm_gem_object *obj, struct device *dev)
+ {
+ 	if (!obj-&gt;import_attach)
+ 		msm_gem_put_pages(obj);
+diff --git a/drivers/gpu/drm/nouveau/nouveau_gem.h b/drivers/gpu/drm/nouveau/nouveau_gem.h
+index fe39998f65cc..91dcf89138f1 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_gem.h
++++ b/drivers/gpu/drm/nouveau/nouveau_gem.h
+@@ -32,9 +32,9 @@ extern int nouveau_gem_ioctl_cpu_fini(struct drm_device *, void *,
+ extern int nouveau_gem_ioctl_info(struct drm_device *, void *,
+ 				  struct drm_file *);
+ 
+-extern int nouveau_gem_prime_pin(struct drm_gem_object *);
++extern int nouveau_gem_prime_pin(struct drm_gem_object *, struct device *);
+ struct reservation_object *nouveau_gem_prime_res_obj(struct drm_gem_object *);
+-extern void nouveau_gem_prime_unpin(struct drm_gem_object *);
++extern void nouveau_gem_prime_unpin(struct drm_gem_object *, struct device *);
+ extern struct sg_table *nouveau_gem_prime_get_sg_table(struct drm_gem_object *);
+ extern struct drm_gem_object *nouveau_gem_prime_import_sg_table(
+ 	struct drm_device *, struct dma_buf_attachment *, struct sg_table *);
+diff --git a/drivers/gpu/drm/nouveau/nouveau_prime.c b/drivers/gpu/drm/nouveau/nouveau_prime.c
+index 1fefc93af1d7..dec2d5e37b34 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_prime.c
++++ b/drivers/gpu/drm/nouveau/nouveau_prime.c
+@@ -88,7 +88,7 @@ struct drm_gem_object *nouveau_gem_prime_import_sg_table(struct drm_device *dev,
+ 	return &amp;nvbo-&gt;gem;
+ }
+ 
+-int nouveau_gem_prime_pin(struct drm_gem_object *obj)
++int nouveau_gem_prime_pin(struct drm_gem_object *obj, struct device *dev)
+ {
+ 	struct nouveau_bo *nvbo = nouveau_gem_object(obj);
+ 	int ret;
+@@ -101,7 +101,7 @@ int nouveau_gem_prime_pin(struct drm_gem_object *obj)
+ 	return 0;
+ }
+ 
+-void nouveau_gem_prime_unpin(struct drm_gem_object *obj)
++void nouveau_gem_prime_unpin(struct drm_gem_object *obj, struct device *dev)
+ {
+ 	struct nouveau_bo *nvbo = nouveau_gem_object(obj);
+ 
+diff --git a/drivers/gpu/drm/qxl/qxl_prime.c b/drivers/gpu/drm/qxl/qxl_prime.c
+index 7d3816fca5a8..21e9b44eb2e4 100644
+--- a/drivers/gpu/drm/qxl/qxl_prime.c
++++ b/drivers/gpu/drm/qxl/qxl_prime.c
+@@ -28,14 +28,14 @@
+ /* Empty Implementations as there should not be any other driver for a virtual
+  * device that might share buffers with qxl */
+ 
+-int qxl_gem_prime_pin(struct drm_gem_object *obj)
++int qxl_gem_prime_pin(struct drm_gem_object *obj, struct device *dev)
+ {
+ 	struct qxl_bo *bo = gem_to_qxl_bo(obj);
+ 
+ 	return qxl_bo_pin(bo);
+ }
+ 
+-void qxl_gem_prime_unpin(struct drm_gem_object *obj)
++void qxl_gem_prime_unpin(struct drm_gem_object *obj, struct device *dev)
+ {
+ 	struct qxl_bo *bo = gem_to_qxl_bo(obj);
+ 
+diff --git a/drivers/gpu/drm/radeon/radeon_prime.c b/drivers/gpu/drm/radeon/radeon_prime.c
+index d3a5bea9a2c5..2d3eadcf0f2d 100644
+--- a/drivers/gpu/drm/radeon/radeon_prime.c
++++ b/drivers/gpu/drm/radeon/radeon_prime.c
+@@ -83,7 +83,7 @@ struct drm_gem_object *radeon_gem_prime_import_sg_table(struct drm_device *dev,
+ 	return &amp;bo-&gt;gem_base;
+ }
+ 
+-int radeon_gem_prime_pin(struct drm_gem_object *obj)
++int radeon_gem_prime_pin(struct drm_gem_object *obj, struct device *dev)
+ {
+ 	struct radeon_bo *bo = gem_to_radeon_bo(obj);
+ 	int ret = 0;
+@@ -101,7 +101,7 @@ int radeon_gem_prime_pin(struct drm_gem_object *obj)
+ 	return ret;
+ }
+ 
+-void radeon_gem_prime_unpin(struct drm_gem_object *obj)
++void radeon_gem_prime_unpin(struct drm_gem_object *obj, struct device *dev)
+ {
+ 	struct radeon_bo *bo = gem_to_radeon_bo(obj);
+ 	int ret = 0;
+diff --git a/drivers/gpu/drm/vboxvideo/vbox_prime.c b/drivers/gpu/drm/vboxvideo/vbox_prime.c
+index 702b1aa53494..ad6de9a41950 100644
+--- a/drivers/gpu/drm/vboxvideo/vbox_prime.c
++++ b/drivers/gpu/drm/vboxvideo/vbox_prime.c
+@@ -13,13 +13,13 @@
+  * device that might share buffers with vboxvideo
+  */
+ 
+-int vbox_gem_prime_pin(struct drm_gem_object *obj)
++int vbox_gem_prime_pin(struct drm_gem_object *obj, struct device *dev)
+ {
+ 	WARN_ONCE(1, &quot;not implemented&quot;);
+ 	return -ENODEV;
+ }
+ 
+-void vbox_gem_prime_unpin(struct drm_gem_object *obj)
++void vbox_gem_prime_unpin(struct drm_gem_object *obj, struct device *dev)
+ {
+ 	WARN_ONCE(1, &quot;not implemented&quot;);
+ }
+diff --git a/drivers/gpu/drm/vgem/vgem_drv.c b/drivers/gpu/drm/vgem/vgem_drv.c
+index 11a8f99ba18c..a179e962b79e 100644
+--- a/drivers/gpu/drm/vgem/vgem_drv.c
++++ b/drivers/gpu/drm/vgem/vgem_drv.c
+@@ -307,7 +307,7 @@ static void vgem_unpin_pages(struct drm_vgem_gem_object *bo)
+ 	mutex_unlock(&amp;bo-&gt;pages_lock);
+ }
+ 
+-static int vgem_prime_pin(struct drm_gem_object *obj)
++static int vgem_prime_pin(struct drm_gem_object *obj, struct device *dev)
+ {
+ 	struct drm_vgem_gem_object *bo = to_vgem_bo(obj);
+ 	long n_pages = obj-&gt;size &gt;&gt; PAGE_SHIFT;
+@@ -325,7 +325,7 @@ static int vgem_prime_pin(struct drm_gem_object *obj)
+ 	return 0;
+ }
+ 
+-static void vgem_prime_unpin(struct drm_gem_object *obj)
++static void vgem_prime_unpin(struct drm_gem_object *obj, struct device *dev)
+ {
+ 	struct drm_vgem_gem_object *bo = to_vgem_bo(obj);
+ 
+diff --git a/include/drm/drm_drv.h b/include/drm/drm_drv.h
+index 68ca736c548d..6a9489b9532f 100644
+--- a/include/drm/drm_drv.h
++++ b/include/drm/drm_drv.h
+@@ -584,8 +584,8 @@ struct drm_driver {
+ 	 */
+ 	struct drm_gem_object * (*gem_prime_import)(struct drm_device *dev,
+ 				struct dma_buf *dma_buf);
+-	int (*gem_prime_pin)(struct drm_gem_object *obj);
+-	void (*gem_prime_unpin)(struct drm_gem_object *obj);
++	int (*gem_prime_pin)(struct drm_gem_object *obj, struct device *dev);
++	void (*gem_prime_unpin)(struct drm_gem_object *obj, struct device *dev);
+ 	struct reservation_object * (*gem_prime_res_obj)(
+ 				struct drm_gem_object *obj);
+ 	struct sg_table *(*gem_prime_get_sg_table)(struct drm_gem_object *obj);
+diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
+index 5047c7ee25f5..ebd12be354d2 100644
+--- a/include/drm/drm_gem.h
++++ b/include/drm/drm_gem.h
+@@ -401,8 +401,8 @@ int drm_gem_dumb_destroy(struct drm_file *file,
+ 			 struct drm_device *dev,
+ 			 uint32_t handle);
+ 
+-int drm_gem_pin(struct drm_gem_object *obj);
+-void drm_gem_unpin(struct drm_gem_object *obj);
++int drm_gem_pin(struct drm_gem_object *obj, struct device *dev);
++void drm_gem_unpin(struct drm_gem_object *obj, struct device *dev);
+ void *drm_gem_vmap(struct drm_gem_object *obj);
+ void drm_gem_vunmap(struct drm_gem_object *obj, void *vaddr);
+ 
+diff --git a/include/drm/drm_gem_vram_helper.h b/include/drm/drm_gem_vram_helper.h
+index 9581ea0a4f7e..33556e157202 100644
+--- a/include/drm/drm_gem_vram_helper.h
++++ b/include/drm/drm_gem_vram_helper.h
+@@ -133,8 +133,8 @@ int drm_gem_vram_driver_dumb_mmap_offset(struct drm_file *file,
+  * PRIME helpers for struct drm_driver
+  */
+ 
+-int drm_gem_vram_driver_gem_prime_pin(struct drm_gem_object *obj);
+-void drm_gem_vram_driver_gem_prime_unpin(struct drm_gem_object *obj);
++int drm_gem_vram_driver_gem_prime_pin(struct drm_gem_object *obj, struct device *dev);
++void drm_gem_vram_driver_gem_prime_unpin(struct drm_gem_object *obj, struct device *dev);
+ void *drm_gem_vram_driver_gem_prime_vmap(struct drm_gem_object *obj);
+ void drm_gem_vram_driver_gem_prime_vunmap(struct drm_gem_object *obj,
+ 					  void *vaddr);
+-- 
+2.21.0
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="36093" href="msg36093.html">Re: [PATCH v2 2/3] drm: plumb attaching dev thru to prime_pin/unpin</a></strong>
+<ul><li><em>From:</em> Chris Wilson</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg36086.html">RE: [PATCH 3/3] drm/amdgpu: adding xgmi error monitoring</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg36088.html">Re: HMM related use-after-free with amdgpu</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg36083.html">[PATCH 2/3] drm/amdgpu: add perfmon and fica atomics for df</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg36093.html">Re: [PATCH v2 2/3] drm: plumb attaching dev thru to prime_pin/unpin</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#36087"><strong>Date</strong></a></li>
+<li><a href="index.html#36087"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

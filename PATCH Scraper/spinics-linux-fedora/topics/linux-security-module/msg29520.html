@@ -1,0 +1,331 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v12 02/11] PKCS#7: Refactor verify_pkcs7_signature() -->
+<!--X-From-R13: Fuvntb Xhat Pnhreznaa &#60;onhreznaNyvahk.voz.pbz> -->
+<!--X-Date: Thu, 27 Jun 2019 19:20:09 &#45;0700 -->
+<!--X-Message-Id: 20190628021934.4260&#45;3&#45;bauerman@linux.ibm.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190628021934.4260&#45;1&#45;bauerman@linux.ibm.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, [PATCH v12 02/11] PKCS#7: Refactor verify_pkcs7_signature()">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- [PATCH v12 02/11] PKCS#7: Refactor verify_pkcs7_signature()</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v12 02/11] PKCS#7: Refactor verify_pkcs7_signature()</h1>
+[<a href="msg29519.html">Date Prev</a>][<a href="msg29521.html">Date Next</a>][<a href="msg29521.html">Thread Prev</a>][<a href="msg29522.html">Thread Next</a>][<a href="maillist.html#29520">Date Index</a>][<a href="index.html#29520">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v12 02/11] PKCS#7: Refactor verify_pkcs7_signature()</li>
+<li><em>From</em>: Thiago Jung Bauermann &lt;bauerman@xxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 27 Jun 2019 23:19:25 -0300</li>
+<li><em>Cc</em>: linux-security-module@xxxxxxxxxxxxxxx, keyrings@xxxxxxxxxxxxxxx,        linux-crypto@xxxxxxxxxxxxxxx, linuxppc-dev@xxxxxxxxxxxxxxxx,        linux-doc@xxxxxxxxxxxxxxx, linux-kernel@xxxxxxxxxxxxxxx,        Mimi Zohar &lt;zohar@xxxxxxxxxxxxx&gt;,        Dmitry Kasatkin &lt;dmitry.kasatkin@xxxxxxxxx&gt;,        James Morris &lt;jmorris@xxxxxxxxx&gt;, &quot;Serge E. Hallyn&quot; &lt;serge@xxxxxxxxxx&gt;,        David Howells &lt;dhowells@xxxxxxxxxx&gt;,        David Woodhouse &lt;dwmw2@xxxxxxxxxxxxx&gt;, Jessica Yu &lt;jeyu@xxxxxxxxxx&gt;,        Herbert Xu &lt;herbert@xxxxxxxxxxxxxxxxxxx&gt;,        &quot;David S. Miller&quot; &lt;davem@xxxxxxxxxxxxx&gt;,        Jonathan Corbet &lt;corbet@xxxxxxx&gt;,        &quot;AKASHI, Takahiro&quot; &lt;takahiro.akashi@xxxxxxxxxx&gt;,        Thiago Jung Bauermann &lt;bauerman@xxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29521.html">20190628021934.4260-1-bauerman@linux.ibm.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg29521.html">20190628021934.4260-1-bauerman@linux.ibm.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>IMA will need to verify a PKCS#7 signature which has already been parsed.
+For this reason, factor out the code which does that from
+verify_pkcs7_signature() into a new function which takes a struct
+pkcs7_message instead of a data buffer.
+
+Signed-off-by: Thiago Jung Bauermann &lt;bauerman@xxxxxxxxxxxxx&gt;
+Reviewed-by: Mimi Zohar &lt;zohar@xxxxxxxxxxxxx&gt;
+Cc: David Howells &lt;dhowells@xxxxxxxxxx&gt;
+Cc: David Woodhouse &lt;dwmw2@xxxxxxxxxxxxx&gt;
+Cc: Herbert Xu &lt;herbert@xxxxxxxxxxxxxxxxxxx&gt;
+Cc: &quot;David S. Miller&quot; &lt;davem@xxxxxxxxxxxxx&gt;
+---
+ certs/system_keyring.c       | 61 ++++++++++++++++++++++++++----------
+ include/linux/verification.h | 10 ++++++
+ 2 files changed, 55 insertions(+), 16 deletions(-)
+
+diff --git a/certs/system_keyring.c b/certs/system_keyring.c
+index c05c29ae4d5d..4ba82e52e4b4 100644
+--- a/certs/system_keyring.c
++++ b/certs/system_keyring.c
+@@ -194,33 +194,27 @@ late_initcall(load_system_certificate_list);
+ #ifdef CONFIG_SYSTEM_DATA_VERIFICATION
+ 
+ /**
+- * verify_pkcs7_signature - Verify a PKCS#7-based signature on system data.
++ * verify_pkcs7_message_sig - Verify a PKCS#7-based signature on system data.
+  * @data: The data to be verified (NULL if expecting internal data).
+  * @len: Size of @data.
+- * @raw_pkcs7: The PKCS#7 message that is the signature.
+- * @pkcs7_len: The size of @raw_pkcs7.
++ * @pkcs7: The PKCS#7 message that is the signature.
+  * @trusted_keys: Trusted keys to use (NULL for builtin trusted keys only,
+  *					(void *)1UL for all trusted keys).
+  * @usage: The use to which the key is being put.
+  * @view_content: Callback to gain access to content.
+  * @ctx: Context for callback.
+  */
+-int verify_pkcs7_signature(const void *data, size_t len,
+-			   const void *raw_pkcs7, size_t pkcs7_len,
+-			   struct key *trusted_keys,
+-			   enum key_being_used_for usage,
+-			   int (*view_content)(void *ctx,
+-					       const void *data, size_t len,
+-					       size_t asn1hdrlen),
+-			   void *ctx)
++int verify_pkcs7_message_sig(const void *data, size_t len,
++			     struct pkcs7_message *pkcs7,
++			     struct key *trusted_keys,
++			     enum key_being_used_for usage,
++			     int (*view_content)(void *ctx,
++						 const void *data, size_t len,
++						 size_t asn1hdrlen),
++			     void *ctx)
+ {
+-	struct pkcs7_message *pkcs7;
+ 	int ret;
+ 
+-	pkcs7 = pkcs7_parse_message(raw_pkcs7, pkcs7_len);
+-	if (IS_ERR(pkcs7))
+-		return PTR_ERR(pkcs7);
+-
+ 	/* The data should be detached - so we need to supply it. */
+ 	if (data &amp;&amp; pkcs7_supply_detached_data(pkcs7, data, len) &lt; 0) {
+ 		pr_err(&quot;PKCS#7 signature with non-detached data\n&quot;);
+@@ -273,6 +267,41 @@ int verify_pkcs7_signature(const void *data, size_t len,
+ 	}
+ 
+ error:
++	pr_devel(&quot;&lt;==%s() = %d\n&quot;, __func__, ret);
++	return ret;
++}
++
++/**
++ * verify_pkcs7_signature - Verify a PKCS#7-based signature on system data.
++ * @data: The data to be verified (NULL if expecting internal data).
++ * @len: Size of @data.
++ * @raw_pkcs7: The PKCS#7 message that is the signature.
++ * @pkcs7_len: The size of @raw_pkcs7.
++ * @trusted_keys: Trusted keys to use (NULL for builtin trusted keys only,
++ *					(void *)1UL for all trusted keys).
++ * @usage: The use to which the key is being put.
++ * @view_content: Callback to gain access to content.
++ * @ctx: Context for callback.
++ */
++int verify_pkcs7_signature(const void *data, size_t len,
++			   const void *raw_pkcs7, size_t pkcs7_len,
++			   struct key *trusted_keys,
++			   enum key_being_used_for usage,
++			   int (*view_content)(void *ctx,
++					       const void *data, size_t len,
++					       size_t asn1hdrlen),
++			   void *ctx)
++{
++	struct pkcs7_message *pkcs7;
++	int ret;
++
++	pkcs7 = pkcs7_parse_message(raw_pkcs7, pkcs7_len);
++	if (IS_ERR(pkcs7))
++		return PTR_ERR(pkcs7);
++
++	ret = verify_pkcs7_message_sig(data, len, pkcs7, trusted_keys, usage,
++				       view_content, ctx);
++
+ 	pkcs7_free_message(pkcs7);
+ 	pr_devel(&quot;&lt;==%s() = %d\n&quot;, __func__, ret);
+ 	return ret;
+diff --git a/include/linux/verification.h b/include/linux/verification.h
+index 018fb5f13d44..5e1d41f2b336 100644
+--- a/include/linux/verification.h
++++ b/include/linux/verification.h
+@@ -36,6 +36,7 @@ extern const char *const key_being_used_for[NR__KEY_BEING_USED_FOR];
+ #ifdef CONFIG_SYSTEM_DATA_VERIFICATION
+ 
+ struct key;
++struct pkcs7_message;
+ 
+ extern int verify_pkcs7_signature(const void *data, size_t len,
+ 				  const void *raw_pkcs7, size_t pkcs7_len,
+@@ -45,6 +46,15 @@ extern int verify_pkcs7_signature(const void *data, size_t len,
+ 						      const void *data, size_t len,
+ 						      size_t asn1hdrlen),
+ 				  void *ctx);
++extern int verify_pkcs7_message_sig(const void *data, size_t len,
++				    struct pkcs7_message *pkcs7,
++				    struct key *trusted_keys,
++				    enum key_being_used_for usage,
++				    int (*view_content)(void *ctx,
++							const void *data,
++							size_t len,
++							size_t asn1hdrlen),
++				    void *ctx);
+ 
+ #ifdef CONFIG_SIGNED_PE_FILE_VERIFICATION
+ extern int verify_pefile_signature(const void *pebuf, unsigned pelen,
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29521" href="msg29521.html">[PATCH v12 00/11] Appended signatures support for IMA appraisal</a></strong>
+<ul><li><em>From:</em> Thiago Jung Bauermann</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29519.html">Re: [RFC PATCH v5 1/1] Add dm verity root hash pkcs7 sig validation.</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29521.html">[PATCH v12 00/11] Appended signatures support for IMA appraisal</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29521.html">[PATCH v12 00/11] Appended signatures support for IMA appraisal</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29522.html">[PATCH v12 04/11] integrity: Select CONFIG_KEYS instead of depending on it</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29520"><strong>Date</strong></a></li>
+<li><a href="index.html#29520"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

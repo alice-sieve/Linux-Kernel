@@ -1,0 +1,366 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 11/22] autofs&#45;5.1.4 &#45; better handle hesiod support not built in -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Sun, 14 Oct 2018 20:53:21 &#45;0700 -->
+<!--X-Message-Id: 153957504303.14897.3762961754450586043.stgit@pluto&#45;themaw&#45;net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 153957483372.14897.14805717004658230261.stgit@pluto&#45;themaw&#45;net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 11/22] autofs-5.1.4 - better handle hesiod support not built in &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 11/22] autofs-5.1.4 - better handle hesiod support not built in &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 11/22] autofs-5.1.4 - better handle hesiod support not built in</h1>
+[<a href="msg01990.html">Date Prev</a>][<a href="msg01992.html">Date Next</a>][<a href="msg01990.html">Thread Prev</a>][<a href="msg01992.html">Thread Next</a>][<a href="maillist.html#01991">Date Index</a>][<a href="index.html#01991">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 11/22] autofs-5.1.4 - better handle hesiod support not built in</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Oct 2018 11:44:03 +0800</li>
+<li><em>In-reply-to</em>: &lt;153957483372.14897.14805717004658230261.stgit@pluto-themaw-net&gt;</li>
+<li><em>References</em>: &lt;153957483372.14897.14805717004658230261.stgit@pluto-themaw-net&gt;</li>
+<li><em>User-agent</em>: StGit/unknown-version</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The configure option --without-hesiod is not handled well.
+
+If this option is given and hesiod is seen in the master
+map parser or the amd map parser issue a message telling
+the user hesiod support isn't built in.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ CHANGELOG           |    1 +
+ lib/master_parse.y  |   18 ++++++++++++++++--
+ modules/amd_parse.y |    7 +++++++
+ modules/parse_amd.c |   28 +++++++++++++++++++++++++---
+ 4 files changed, 49 insertions(+), 5 deletions(-)
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 5a317f12..8e9bd665 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -40,6 +40,7 @@ xx/xx/2018 autofs-5.1.5
+ - fix incorrect locking in sss lookup.
+ - fix amd parser opts option handling.
+ - fix possible NULL pointer dereference in get_defaults_entry().
++- better handle hesiod support not built in.
+ 
+ 19/12/2017 autofs-5.1.4
+ - fix spec file url.
+diff --git a/lib/master_parse.y b/lib/master_parse.y
+index 84ca5ca1..9aa57327 100644
+--- a/lib/master_parse.y
++++ b/lib/master_parse.y
+@@ -171,7 +171,14 @@ line:
+ 
+ 		if ((tmp = strchr($2, ',')))
+ 			*tmp++ = '\0';
+-
++#ifndef WITH_HESIOD
++		/* Map type or or map type parser is hesiod */
++		if (!strcmp($2, &quot;hesiod&quot;) || !strcmp(tmp, &quot;hesiod&quot;)) {
++			master_error(&quot;hesiod support not built in&quot;);
++			local_free_vars();
++			YYABORT;
++		}
++#endif
+ 		if (type)
+ 			free(type);
+ 		type = master_strdup($2);
+@@ -352,7 +359,14 @@ map:	PATH
+ 
+ 		if ((tmp = strchr($1, ',')))
+ 			*tmp++ = '\0';
+-
++#ifndef WITH_HESIOD
++		/* Map type or or map type parser is hesiod */
++		if (!strcmp($1, &quot;hesiod&quot;) || !strcmp(tmp, &quot;hesiod&quot;)) {
++			master_error(&quot;hesiod support not built in&quot;);
++			local_free_vars();
++			YYABORT;
++		}
++#endif
+ 		if (type)
+ 			free(type);
+ 		if (strcmp($1, &quot;exec&quot;))
+diff --git a/modules/amd_parse.y b/modules/amd_parse.y
+index be923c2f..17fd9b20 100644
+--- a/modules/amd_parse.y
++++ b/modules/amd_parse.y
+@@ -574,6 +574,13 @@ static int match_map_option_map_type(char *map_option, char *type)
+ 	    !strcmp(map_type, &quot;nisplus&quot;) ||
+ 	    !strcmp(map_type, &quot;ldap&quot;) ||
+ 	    !strcmp(map_type, &quot;hesiod&quot;)) {
++#ifndef WITH_HESIOD
++		if (!strcmp(map_type, &quot;hesiod&quot;)) {
++			amd_msg(&quot;hesiod support not built in&quot;);
++			free(map_type);
++			return 0;
++		}
++#endif
+ 		amd_set_value(&amp;entry.map_type, map_type);
+ 	} else if (!strcmp(map_type, &quot;exec&quot;)) {
+ 		/* autofs uses &quot;program&quot; for &quot;exec&quot; map type */
+diff --git a/modules/parse_amd.c b/modules/parse_amd.c
+index 7399d19e..0e48e5ce 100644
+--- a/modules/parse_amd.c
++++ b/modules/parse_amd.c
+@@ -1871,15 +1871,25 @@ struct amd_entry *make_default_entry(struct autofs_point *ap,
+ 	if (amd_parse_list(ap, defaults, &amp;dflts, &amp;sv))
+ 		return NULL;
+ 	defaults_entry = list_entry(dflts.next, struct amd_entry, list);
+-	list_del_init(&amp;defaults_entry-&gt;list);
+ 	/*
+ 	 * If map type isn't given try to inherit from
+ 	 * parent. A NULL map type is valid and means
+ 	 * use configured nss sources.
+ 	 */
+ 	map_type = conf_amd_get_map_type(ap-&gt;path);
+-	if (map_type)
++	if (map_type) {
+ 		defaults_entry-&gt;map_type = map_type;
++#ifndef HAVE_HESIOD
++		if (!strcmp(map_type, &quot;hesiod&quot;)) {
++			warn(ap-&gt;logopt, MODPREFIX
++			     &quot;hesiod support not built in, &quot;
++			     &quot;defaults map entry not set&quot;);
++			defaults_entry = NULL;
++		}
++#endif
++	}
++	if (defaults_entry)
++		list_del_init(&amp;defaults_entry-&gt;list);
+ 	/* The list should now be empty .... */
+ 	free_amd_entry_list(&amp;dflts);
+ 	return defaults_entry;
+@@ -2005,8 +2015,20 @@ static struct amd_entry *get_defaults_entry(struct autofs_point *ap,
+ 			 * use configured nss sources.
+ 			 */
+ 			char *map_type = conf_amd_get_map_type(ap-&gt;path);
+-			if (map_type)
++			if (map_type) {
+ 				entry-&gt;map_type = map_type;
++#ifndef HAVE_HESIOD
++				if (!strcmp(map_type, &quot;hesiod&quot;)) {
++					warn(ap-&gt;logopt, MODPREFIX
++					     &quot;hesiod support not built in, &quot;
++					     &quot;attempting to use internal &quot;
++					     &quot;default&quot;);
++					free_amd_entry(entry);
++					free(expand);
++					goto out;
++				}
++#endif
++			}
+ 		}
+ 		free(expand);
+ 	}
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01980" href="msg01980.html">[PATCH 00/22] Current patch queue</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01990.html">[PATCH 10/22] autofs-5.1.4 - fix possible NULL pointer dereference in get_defaults_entry()</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01992.html">[PATCH 12/22] autofs-5.1.4 - fix indent in automount(8) man page</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01990.html">[PATCH 10/22] autofs-5.1.4 - fix possible NULL pointer dereference in get_defaults_entry()</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01992.html">[PATCH 12/22] autofs-5.1.4 - fix indent in automount(8) man page</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01991"><strong>Date</strong></a></li>
+<li><a href="index.html#01991"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

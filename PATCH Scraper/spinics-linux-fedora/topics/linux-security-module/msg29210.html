@@ -1,0 +1,317 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH V34 19/29] Lock down module params that specify hardware parameters (eg. ioport) -->
+<!--X-From-R13: [nggurj Uneergg &#60;znggurjtneerggNtbbtyr.pbz> -->
+<!--X-Date: Fri, 21 Jun 2019 17:07:18 &#45;0700 -->
+<!--X-Message-Id: 20190622000358.19895&#45;20&#45;matthewgarrett@google.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190622000358.19895&#45;1&#45;matthewgarrett@google.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, [PATCH V34 19/29] Lock down module params that specify hardware parameters (eg. ioport)">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- [PATCH V34 19/29] Lock down module params that specify hardware parameters (eg. ioport)</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH V34 19/29] Lock down module params that specify hardware parameters (eg. ioport)</h1>
+[<a href="msg29209.html">Date Prev</a>][<a href="msg29211.html">Date Next</a>][<a href="msg29262.html">Thread Prev</a>][<a href="msg29254.html">Thread Next</a>][<a href="maillist.html#29210">Date Index</a>][<a href="index.html#29210">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH V34 19/29] Lock down module params that specify hardware parameters (eg. ioport)</li>
+<li><em>From</em>: Matthew Garrett &lt;matthewgarrett@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 21 Jun 2019 17:03:48 -0700</li>
+<li><em>Cc</em>: linux-security-module@xxxxxxxxxxxxxxx, linux-kernel@xxxxxxxxxxxxxxx,        linux-api@xxxxxxxxxxxxxxx, David Howells &lt;dhowells@xxxxxxxxxx&gt;,        Alan Cox &lt;gnomes@xxxxxxxxxxxxxxxxxxx&gt;,        Matthew Garrett &lt;mjg59@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29183.html">20190622000358.19895-1-matthewgarrett@google.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg29183.html">20190622000358.19895-1-matthewgarrett@google.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: David Howells &lt;dhowells@xxxxxxxxxx&gt;
+
+Provided an annotation for module parameters that specify hardware
+parameters (such as io ports, iomem addresses, irqs, dma channels, fixed
+dma buffers and other types).
+
+Suggested-by: Alan Cox &lt;gnomes@xxxxxxxxxxxxxxxxxxx&gt;
+Signed-off-by: David Howells &lt;dhowells@xxxxxxxxxx&gt;
+Signed-off-by: Matthew Garrett &lt;mjg59@xxxxxxxxxx&gt;
+---
+ include/linux/security.h     |  1 +
+ kernel/params.c              | 27 ++++++++++++++++++++++-----
+ security/lockdown/lockdown.c |  1 +
+ 3 files changed, 24 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 61e3f4a62d16..88064d7f6827 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -92,6 +92,7 @@ enum lockdown_reason {
+ 	LOCKDOWN_ACPI_TABLES,
+ 	LOCKDOWN_PCMCIA_CIS,
+ 	LOCKDOWN_TIOCSSERIAL,
++	LOCKDOWN_MODULE_PARAMETERS,
+ 	LOCKDOWN_INTEGRITY_MAX,
+ 	LOCKDOWN_CONFIDENTIALITY_MAX,
+ };
+diff --git a/kernel/params.c b/kernel/params.c
+index ce89f757e6da..f94fe79e331d 100644
+--- a/kernel/params.c
++++ b/kernel/params.c
+@@ -24,6 +24,7 @@
+ #include &lt;linux/err.h&gt;
+ #include &lt;linux/slab.h&gt;
+ #include &lt;linux/ctype.h&gt;
++#include &lt;linux/security.h&gt;
+ 
+ #ifdef CONFIG_SYSFS
+ /* Protects all built-in parameters, modules use their own param_lock */
+@@ -108,13 +109,19 @@ bool parameq(const char *a, const char *b)
+ 	return parameqn(a, b, strlen(a)+1);
+ }
+ 
+-static void param_check_unsafe(const struct kernel_param *kp)
++static bool param_check_unsafe(const struct kernel_param *kp,
++			       const char *doing)
+ {
+ 	if (kp-&gt;flags &amp; KERNEL_PARAM_FL_UNSAFE) {
+ 		pr_notice(&quot;Setting dangerous option %s - tainting kernel\n&quot;,
+ 			  kp-&gt;name);
+ 		add_taint(TAINT_USER, LOCKDEP_STILL_OK);
+ 	}
++
++	if (kp-&gt;flags &amp; KERNEL_PARAM_FL_HWPARAM &amp;&amp;
++	    security_locked_down(LOCKDOWN_MODULE_PARAMETERS))
++		return false;
++	return true;
+ }
+ 
+ static int parse_one(char *param,
+@@ -144,8 +151,10 @@ static int parse_one(char *param,
+ 			pr_debug(&quot;handling %s with %p\n&quot;, param,
+ 				params[i].ops-&gt;set);
+ 			kernel_param_lock(params[i].mod);
+-			param_check_unsafe(&amp;params[i]);
+-			err = params[i].ops-&gt;set(val, &amp;params[i]);
++			if (param_check_unsafe(&amp;params[i], doing))
++				err = params[i].ops-&gt;set(val, &amp;params[i]);
++			else
++				err = -EPERM;
+ 			kernel_param_unlock(params[i].mod);
+ 			return err;
+ 		}
+@@ -553,6 +562,12 @@ static ssize_t param_attr_show(struct module_attribute *mattr,
+ 	return count;
+ }
+ 
++#ifdef CONFIG_MODULES
++#define mod_name(mod) (mod)-&gt;name
++#else
++#define mod_name(mod) &quot;unknown&quot;
++#endif
++
+ /* sysfs always hands a nul-terminated string in buf.  We rely on that. */
+ static ssize_t param_attr_store(struct module_attribute *mattr,
+ 				struct module_kobject *mk,
+@@ -565,8 +580,10 @@ static ssize_t param_attr_store(struct module_attribute *mattr,
+ 		return -EPERM;
+ 
+ 	kernel_param_lock(mk-&gt;mod);
+-	param_check_unsafe(attribute-&gt;param);
+-	err = attribute-&gt;param-&gt;ops-&gt;set(buf, attribute-&gt;param);
++	if (param_check_unsafe(attribute-&gt;param, mod_name(mk-&gt;mod)))
++		err = attribute-&gt;param-&gt;ops-&gt;set(buf, attribute-&gt;param);
++	else
++		err = -EPERM;
+ 	kernel_param_unlock(mk-&gt;mod);
+ 	if (!err)
+ 		return len;
+diff --git a/security/lockdown/lockdown.c b/security/lockdown/lockdown.c
+index c89046dc2155..d03c4c296af7 100644
+--- a/security/lockdown/lockdown.c
++++ b/security/lockdown/lockdown.c
+@@ -28,6 +28,7 @@ static char *lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX+1] = {
+ 	[LOCKDOWN_ACPI_TABLES] = &quot;modified ACPI tables&quot;,
+ 	[LOCKDOWN_PCMCIA_CIS] = &quot;direct PCMCIA CIS storage&quot;,
+ 	[LOCKDOWN_TIOCSSERIAL] = &quot;reconfiguration of serial port IO&quot;,
++	[LOCKDOWN_MODULE_PARAMETERS] = &quot;unsafe module parameters&quot;,
+ 	[LOCKDOWN_INTEGRITY_MAX] = &quot;integrity&quot;,
+ 	[LOCKDOWN_CONFIDENTIALITY_MAX] = &quot;confidentiality&quot;,
+ };
+-- 
+2.22.0.410.gd8fdbe21b5-goog
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="29434" href="msg29434.html">Re: [PATCH V34 19/29] Lock down module params that specify hardware parameters (eg. ioport)</a></strong>
+<ul><li><em>From:</em> Daniel Axtens</li></ul></li>
+<li><strong><a name="29254" href="msg29254.html">Re: [PATCH V34 19/29] Lock down module params that specify hardware parameters (eg. ioport)</a></strong>
+<ul><li><em>From:</em> Kees Cook</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29183" href="msg29183.html">[PATCH V34 00/29] Lockdown as an LSM</a></strong>
+<ul><li><em>From:</em> Matthew Garrett</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29209.html">[PATCH V34 22/29] Lock down tracing and perf kprobes when in confidentiality mode</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29211.html">[PATCH V34 16/29] acpi: Disable ACPI table override if the kernel is locked down</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29262.html">Re: [PATCH V34 22/29] Lock down tracing and perf kprobes when in confidentiality mode</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29254.html">Re: [PATCH V34 19/29] Lock down module params that specify hardware parameters (eg. ioport)</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29210"><strong>Date</strong></a></li>
+<li><a href="index.html#29210"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

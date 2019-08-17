@@ -1,0 +1,366 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v3 00/13] Consolidate and improve NVIDIA Tegra CPUIDLE driver(s) -->
+<!--X-From-R13: Rzvgel Afvcraxb &#60;qvtrgkNtznvy.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 10:30:00 &#45;0700 -->
+<!--X-Message-Id: 20190715172629.4437&#45;1&#45;digetx@gmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH v3 00/13] Consolidate and improve NVIDIA Tegra CPUIDLE driver(s)">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH v3 00/13] Consolidate and improve NVIDIA Tegra CPUIDLE driver(s) &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH v3 00/13] Consolidate and improve NVIDIA Tegra CPUIDLE driver(s)</h1>
+[<a href="msg741191.html">Date Prev</a>][<a href="msg741193.html">Date Next</a>][<a href="msg741186.html">Thread Prev</a>][<a href="msg741193.html">Thread Next</a>][<a href="maillist.html#741192">Date Index</a>][<a href="threads.html#741192">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v3 00/13] Consolidate and improve NVIDIA Tegra CPUIDLE driver(s)</li>
+<li><em>From</em>: Dmitry Osipenko &lt;digetx@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 20:26:16 +0300</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Hello,
+
+I was spending quite some time recently trying to hunt down CPU-suspend
+bug on Tegra30 SoC and in the end it was nailed. During that time I
+realized that the CPU Idle drivers could get some polish and gain new
+features, thus that's what this series does:
+
+  1. Unifies Tegra20/30/114 drivers into a single driver and moves it out
+     into common drivers/cpuidle/ directory.
+
+  2. Enables CPU cluster power-down idling state on Tegra30.
+
+In the end there is a quite nice clean up of the Tegra CPUIDLE driver(s)
+and of the Tegra's arch code in general. Please review, thanks!
+
+Changelog:
+
+v3: - Addressed review comments that were made by Jon Hunter to v2 by
+      splitting patches into smaller (and simpler) chunks, better
+      documenting changes in the commit messages and using proper error
+      codes in the code.
+
+      Warnings are replaced with a useful error messages in the code of
+      &quot;Introduce unified driver for NVIDIA Tegra SoCs&quot; patch.
+
+      Secondary CPUs parking timeout increased to 100ms because I found
+      that it actually may happen to take more than 1ms if CPU is running
+      on a *very* low frequency.
+
+      Added diagnostic messages that are reporting Flow Controller state
+      when CPU parking fails.
+
+      Further polished cpuidle driver's code.
+
+      The coupled state entering is now aborted if there is a pending SGI
+      (Software Generated Interrupt) because it will be lost after GIC's
+      power-cycling. Like it was done by the old Tegra20 CPUIDLE driver.
+
+v2: - Added patches to enable the new cpuidle driver in the defconfigs:
+
+        ARM: multi_v7_defconfig: Enable Tegra cpuidle driver
+        ARM: tegra: Enable Tegra cpuidle driver in tegra_defconfig
+
+    - Dropped patches that removed CPUIDLE_FLAG_TIMER_STOP from the idling
+      states because that flag actually doesn't have any negative effects,
+      but still is correct for the case of a local CPU timer on older Tegra
+      SoCs:
+
+        cpuidle: tegra: Remove CPUIDLE_FLAG_TIMER_STOP from Tegra114/124 idle-state
+        cpuidle: tegra: Remove CPUIDLE_FLAG_TIMER_STOP from all states
+
+    - The &quot;Add unified driver for NVIDIA Tegra SoCs&quot; patch got more polish.
+      Tegra30 and Terga114 states are now squashed into a single common C7
+      state (following Parker TRM terminology, see 17.2.2.2 Power Management
+      States), more comments added, etc minor changes.
+
+Dmitry Osipenko (13):
+  ARM: tegra: Remove cpuidle drivers to replace them with a new driver
+  ARM: tegra: Change tegra_set_cpu_in_lp2() type to void
+  ARM: tegra: Propagate error from tegra_idle_lp2_last()
+  ARM: tegra: Compile sleep-tegra20/30.S unconditionally
+  ARM: tegra: Expose PM functions required for new cpuidle driver
+  ARM: tegra: Rename some of the newly exposed PM functions
+  ARM: tegra: Add tegra_pm_park_secondary_cpu()
+  clk: tegra: Add missing stubs for the case of !CONFIG_PM_SLEEP
+  cpuidle: Introduce unified driver for NVIDIA Tegra SoCs
+  cpuidle: tegra: Support CPU cluster power-down state on Tegra30
+  ARM: tegra: Create simple platform device for cpuidle driver
+  ARM: multi_v7_defconfig: Enable Tegra cpuidle driver
+  ARM: tegra: Enable Tegra cpuidle driver in tegra_defconfig
+
+ arch/arm/configs/multi_v7_defconfig           |   1 +
+ arch/arm/configs/tegra_defconfig              |   1 +
+ arch/arm/mach-tegra/Makefile                  |  23 +-
+ arch/arm/mach-tegra/cpuidle-tegra114.c        |  89 -----
+ arch/arm/mach-tegra/cpuidle-tegra20.c         | 212 -----------
+ arch/arm/mach-tegra/cpuidle-tegra30.c         | 132 -------
+ arch/arm/mach-tegra/cpuidle.c                 |  50 ---
+ arch/arm/mach-tegra/cpuidle.h                 |  21 --
+ arch/arm/mach-tegra/irq.c                     |   3 +-
+ arch/arm/mach-tegra/pm.c                      |  47 +--
+ arch/arm/mach-tegra/pm.h                      |   4 -
+ arch/arm/mach-tegra/reset-handler.S           |  11 -
+ arch/arm/mach-tegra/reset.h                   |   9 +-
+ arch/arm/mach-tegra/sleep-tegra20.S           | 170 ---------
+ arch/arm/mach-tegra/sleep-tegra30.S           |   6 +-
+ arch/arm/mach-tegra/sleep.h                   |  15 -
+ arch/arm/mach-tegra/tegra.c                   |   7 +-
+ drivers/cpuidle/Kconfig.arm                   |   8 +
+ drivers/cpuidle/Makefile                      |   1 +
+ drivers/cpuidle/cpuidle-tegra.c               | 348 ++++++++++++++++++
+ drivers/soc/tegra/Kconfig                     |   1 -
+ include/linux/clk/tegra.h                     |  13 +
+ include/soc/tegra/cpuidle.h                   |   2 +-
+ .../mach-tegra =&gt; include/soc/tegra}/irq.h    |   8 +-
+ include/soc/tegra/pm.h                        |  31 ++
+ 25 files changed, 450 insertions(+), 763 deletions(-)
+ delete mode 100644 arch/arm/mach-tegra/cpuidle-tegra114.c
+ delete mode 100644 arch/arm/mach-tegra/cpuidle-tegra20.c
+ delete mode 100644 arch/arm/mach-tegra/cpuidle-tegra30.c
+ delete mode 100644 arch/arm/mach-tegra/cpuidle.c
+ delete mode 100644 arch/arm/mach-tegra/cpuidle.h
+ create mode 100644 drivers/cpuidle/cpuidle-tegra.c
+ rename {arch/arm/mach-tegra =&gt; include/soc/tegra}/irq.h (59%)
+
+-- 
+2.22.0
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="741207" href="msg741207.html">[PATCH v3 06/13] ARM: tegra: Rename some of the newly exposed PM functions</a></strong>
+<ul><li><em>From:</em> Dmitry Osipenko</li></ul></li>
+<li><strong><a name="741204" href="msg741204.html">[PATCH v3 13/13] ARM: tegra: Enable Tegra cpuidle driver in tegra_defconfig</a></strong>
+<ul><li><em>From:</em> Dmitry Osipenko</li></ul></li>
+<li><strong><a name="741203" href="msg741203.html">[PATCH v3 11/13] ARM: tegra: Create simple platform device for cpuidle driver</a></strong>
+<ul><li><em>From:</em> Dmitry Osipenko</li></ul></li>
+<li><strong><a name="741202" href="msg741202.html">[PATCH v3 12/13] ARM: multi_v7_defconfig: Enable Tegra cpuidle driver</a></strong>
+<ul><li><em>From:</em> Dmitry Osipenko</li></ul></li>
+<li><strong><a name="741201" href="msg741201.html">[PATCH v3 09/13] cpuidle: Introduce unified driver for NVIDIA Tegra SoCs</a></strong>
+<ul><li><em>From:</em> Dmitry Osipenko</li></ul></li>
+<li><strong><a name="741200" href="msg741200.html">[PATCH v3 10/13] cpuidle: tegra: Support CPU cluster power-down state on Tegra30</a></strong>
+<ul><li><em>From:</em> Dmitry Osipenko</li></ul></li>
+<li><strong><a name="741199" href="msg741199.html">[PATCH v3 08/13] clk: tegra: Add missing stubs for the case of !CONFIG_PM_SLEEP</a></strong>
+<ul><li><em>From:</em> Dmitry Osipenko</li></ul></li>
+<li><strong><a name="741198" href="msg741198.html">[PATCH v3 07/13] ARM: tegra: Add tegra_pm_park_secondary_cpu()</a></strong>
+<ul><li><em>From:</em> Dmitry Osipenko</li></ul></li>
+<li><strong><a name="741197" href="msg741197.html">[PATCH v3 05/13] ARM: tegra: Expose PM functions required for new cpuidle driver</a></strong>
+<ul><li><em>From:</em> Dmitry Osipenko</li></ul></li>
+<li><strong><a name="741196" href="msg741196.html">[PATCH v3 01/13] ARM: tegra: Remove cpuidle drivers to replace them with a new driver</a></strong>
+<ul><li><em>From:</em> Dmitry Osipenko</li></ul></li>
+<li><strong><a name="741195" href="msg741195.html">[PATCH v3 04/13] ARM: tegra: Compile sleep-tegra20/30.S unconditionally</a></strong>
+<ul><li><em>From:</em> Dmitry Osipenko</li></ul></li>
+<li><strong><a name="741194" href="msg741194.html">[PATCH v3 03/13] ARM: tegra: Propagate error from tegra_idle_lp2_last()</a></strong>
+<ul><li><em>From:</em> Dmitry Osipenko</li></ul></li>
+<li><strong><a name="741193" href="msg741193.html">[PATCH v3 02/13] ARM: tegra: Change tegra_set_cpu_in_lp2() type to void</a></strong>
+<ul><li><em>From:</em> Dmitry Osipenko</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741191.html">Re: [RFC v2 14/14] kvm/arm: Align the VMID allocation with the arm64 ASID one</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741193.html">[PATCH v3 02/13] ARM: tegra: Change tegra_set_cpu_in_lp2() type to void</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741186.html">[PATCH 1/3] ARM: dts: gemini: Fix up confused pin settings</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741193.html">[PATCH v3 02/13] ARM: tegra: Change tegra_set_cpu_in_lp2() type to void</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741192"><strong>Date</strong></a></li>
+<li><a href="threads.html#741192"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

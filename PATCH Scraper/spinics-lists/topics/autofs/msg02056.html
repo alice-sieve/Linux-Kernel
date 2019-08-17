@@ -1,0 +1,443 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 1/9] autofs&#45;5.1.5 &#45; support strictexpire mount option -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Sun, 3 Feb 2019 16:59:10 &#45;0800 -->
+<!--X-Message-Id: 154924193504.28142.17696716549939650820.stgit@pluto&#45;themaw&#45;net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 154924186835.28142.15972769859928348674.stgit@pluto&#45;themaw&#45;net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 1/9] autofs-5.1.5 - support strictexpire mount option &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 1/9] autofs-5.1.5 - support strictexpire mount option &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 1/9] autofs-5.1.5 - support strictexpire mount option</h1>
+[<a href="msg02055.html">Date Prev</a>][<a href="msg02057.html">Date Next</a>][<a href="msg02055.html">Thread Prev</a>][<a href="msg02057.html">Thread Next</a>][<a href="maillist.html#02056">Date Index</a>][<a href="index.html#02056">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 1/9] autofs-5.1.5 - support strictexpire mount option</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 04 Feb 2019 08:58:55 +0800</li>
+<li><em>In-reply-to</em>: &lt;154924186835.28142.15972769859928348674.stgit@pluto-themaw-net&gt;</li>
+<li><em>References</em>: &lt;154924186835.28142.15972769859928348674.stgit@pluto-themaw-net&gt;</li>
+<li><em>User-agent</em>: StGit/unknown-version</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Kernel commit 092a53452b ((&quot;autofs: take more care to not update
+last_used on path walk&quot;) helped to (partially) resolve a problem
+where automounts were not expiring due to aggressive accesses from
+user space.
+
+This patch was later reverted because, for very large environments,
+it meant more mount requests from clients and when there are a lot
+of clients this caused a fairly significant increase in server load.
+
+But there is a need for both types of expire check, depending on use
+case, so a mount option to allow for strict update of last use of
+autofs dentrys has been added ito the autofs file system (which just
+means not updating the last use on path walk accesses).
+
+So add support for this master map mount entry option in the user
+space code.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ CHANGELOG              |    3 +++
+ daemon/direct.c        |   10 ++++++++++
+ daemon/indirect.c      |   10 ++++++++++
+ include/automount.h    |    3 +++
+ lib/master_parse.y     |    8 +++++++-
+ lib/master_tok.l       |    1 +
+ man/auto.master.5.in   |    8 ++++++++
+ modules/mount_autofs.c |    5 +++++
+ 8 files changed, 47 insertions(+), 1 deletion(-)
+
+diff --git a/CHANGELOG b/CHANGELOG
+index ca036f19..f671dc52 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -1,3 +1,6 @@
++xx/xx/2019 autofs-5.1.6
++- support strictexpire mount option.
++
+ 30/10/2018 autofs-5.1.5
+ - fix flag file permission.
+ - fix directory create permission.
+diff --git a/daemon/direct.c b/daemon/direct.c
+index b885d12f..9c61c4b4 100644
+--- a/daemon/direct.c
++++ b/daemon/direct.c
+@@ -421,6 +421,16 @@ int do_mount_autofs_direct(struct autofs_point *ap,
+ 		mp-&gt;options = make_options_string(ap-&gt;path, ap-&gt;kpipefd, str_direct);
+ 		if (!mp-&gt;options)
+ 			return 0;
++
++		if ((ap-&gt;flags &amp; MOUNT_FLAG_STRICTEXPIRE) &amp;&amp;
++		    ((get_kver_major() == 5 &amp;&amp; get_kver_minor() &gt; 3) ||
++		     (get_kver_major() &gt; 5))) {
++			char *tmp = realloc(mp-&gt;options, strlen(mp-&gt;options) + 12);
++			if (tmp) {
++				strcat(tmp, &quot;,strictexpire&quot;);
++				mp-&gt;options = tmp;
++			}
++		}
+ 	}
+ 
+ 	/* In case the directory doesn't exist, try to mkdir it */
+diff --git a/daemon/indirect.c b/daemon/indirect.c
+index 438a0a21..d0724293 100644
+--- a/daemon/indirect.c
++++ b/daemon/indirect.c
+@@ -132,6 +132,16 @@ static int do_mount_autofs_indirect(struct autofs_point *ap, const char *root)
+ 		goto out_err;
+ 	}
+ 
++	if ((ap-&gt;flags &amp; MOUNT_FLAG_STRICTEXPIRE) &amp;&amp;
++	    ((get_kver_major() == 5 &amp;&amp; get_kver_minor() &gt; 3) ||
++	     (get_kver_major() &gt; 5))) {
++		char *tmp = realloc(options, strlen(options) + 12);
++		if (tmp) {
++			strcat(tmp, &quot;,strictexpire&quot;);
++			options = tmp;
++		}
++	}
++
+ 	/* In case the directory doesn't exist, try to mkdir it */
+ 	if (mkdir_path(root, mp_mode) &lt; 0) {
+ 		if (errno != EEXIST &amp;&amp; errno != EROFS) {
+diff --git a/include/automount.h b/include/automount.h
+index 947daa10..1bb32015 100644
+--- a/include/automount.h
++++ b/include/automount.h
+@@ -554,6 +554,9 @@ struct kernel_mod_version {
+ #define MOUNT_FLAG_SLAVE		0x0100
+ #define MOUNT_FLAG_PRIVATE		0x0200
+ 
++/* Use strict expire semantics if requested and kernel supports it */
++#define MOUNT_FLAG_STRICTEXPIRE		0x0400
++
+ struct autofs_point {
+ 	pthread_t thid;
+ 	char *path;			/* Mount point name */
+diff --git a/lib/master_parse.y b/lib/master_parse.y
+index 9aa57327..8fe8b128 100644
+--- a/lib/master_parse.y
++++ b/lib/master_parse.y
+@@ -58,6 +58,7 @@ static char *format;
+ static long timeout;
+ static long negative_timeout;
+ static unsigned symlnk;
++static unsigned strictexpire;
+ static unsigned slave;
+ static unsigned private;
+ static unsigned nobind;
+@@ -105,7 +106,7 @@ static int master_fprintf(FILE *, char *, ...);
+ %token MAP
+ %token OPT_TIMEOUT OPT_NTIMEOUT OPT_NOBIND OPT_NOGHOST OPT_GHOST OPT_VERBOSE
+ %token OPT_DEBUG OPT_RANDOM OPT_USE_WEIGHT OPT_SYMLINK OPT_MODE
+-%token OPT_SLAVE OPT_PRIVATE
++%token OPT_STRICTEXPIRE OPT_SLAVE OPT_PRIVATE
+ %token COLON COMMA NL DDASH
+ %type &lt;strtype&gt; map
+ %type &lt;strtype&gt; options
+@@ -206,6 +207,7 @@ line:
+ 	| PATH OPT_DEBUG { master_notify($1); YYABORT; }
+ 	| PATH OPT_TIMEOUT { master_notify($1); YYABORT; }
+ 	| PATH OPT_SYMLINK { master_notify($1); YYABORT; }
++	| PATH OPT_STRICTEXPIRE { master_notify($1); YYABORT; }
+ 	| PATH OPT_SLAVE { master_notify($1); YYABORT; }
+ 	| PATH OPT_PRIVATE { master_notify($1); YYABORT; }
+ 	| PATH OPT_NOBIND { master_notify($1); YYABORT; }
+@@ -619,6 +621,7 @@ option: daemon_option
+ daemon_option: OPT_TIMEOUT NUMBER { timeout = $2; }
+ 	| OPT_NTIMEOUT NUMBER { negative_timeout = $2; }
+ 	| OPT_SYMLINK	{ symlnk = 1; }
++	| OPT_STRICTEXPIRE { strictexpire = 1; }
+ 	| OPT_SLAVE	{ slave = 1; }
+ 	| OPT_PRIVATE	{ private = 1; }
+ 	| OPT_NOBIND	{ nobind = 1; }
+@@ -693,6 +696,7 @@ static void local_init_vars(void)
+ 	timeout = -1;
+ 	negative_timeout = 0;
+ 	symlnk = 0;
++	strictexpire = 0;
+ 	slave = 0;
+ 	private = 0;
+ 	nobind = 0;
+@@ -901,6 +905,8 @@ int master_parse_entry(const char *buffer, unsigned int default_timeout, unsigne
+ 		entry-&gt;ap-&gt;flags |= MOUNT_FLAG_USE_WEIGHT_ONLY;
+ 	if (symlnk)
+ 		entry-&gt;ap-&gt;flags |= MOUNT_FLAG_SYMLINK;
++	if (strictexpire)
++		entry-&gt;ap-&gt;flags |= MOUNT_FLAG_STRICTEXPIRE;
+ 	if (slave)
+ 		entry-&gt;ap-&gt;flags |= MOUNT_FLAG_SLAVE;
+ 	if (private)
+diff --git a/lib/master_tok.l b/lib/master_tok.l
+index f4e940ce..7486710b 100644
+--- a/lib/master_tok.l
++++ b/lib/master_tok.l
+@@ -391,6 +391,7 @@ MODE		(--mode{OPTWS}|--mode{OPTWS}={OPTWS})
+ 	-?nobrowse		{ return(OPT_NOGHOST); }
+ 	-?slave			{ return(OPT_SLAVE); }
+ 	-?private		{ return(OPT_PRIVATE); }
++	-?strictexpire		{ return(OPT_STRICTEXPIRE); }
+ 	-g|--ghost|-?browse	{ return(OPT_GHOST); }
+ 	-v|--verbose		{ return(OPT_VERBOSE); }
+ 	-d|--debug		{ return(OPT_DEBUG); }
+diff --git a/man/auto.master.5.in b/man/auto.master.5.in
+index 68242d45..dace4a1c 100644
+--- a/man/auto.master.5.in
++++ b/man/auto.master.5.in
+@@ -199,6 +199,14 @@ entries only, either in the master map (so it effects all map entries)
+ or with individual map entries. The option is ignored for direct mounts
+ and non-root offest mount entries.
+ .TP
++.I &quot;strictexpire&quot;
++Use a strict expire policy for this automount. Using this option means
++that last use of autofs directory entries will not be updated during
++path walks so that mounts in an automount won't be kept mounted by
++applications scanning the mount tree. Note that this doesn't completely
++resolve the problem of expired automounts being immediately re-mounted
++due to application accesses triggered by the expire itself.
++.TP
+ .I slave \fPor\fI private
+ This option allows mount propagation of bind mounts to be set to
+ either \fIslave\fP or \fIprivate\fP. This option may be needed when using
+diff --git a/modules/mount_autofs.c b/modules/mount_autofs.c
+index cd0631b8..72e1aba4 100644
+--- a/modules/mount_autofs.c
++++ b/modules/mount_autofs.c
+@@ -57,6 +57,7 @@ int mount_mount(struct autofs_point *ap, const char *root, const char *name,
+ 	int nobind = ap-&gt;flags &amp; MOUNT_FLAG_NOBIND;
+ 	int ghost = ap-&gt;flags &amp; MOUNT_FLAG_GHOST;
+ 	int symlnk = ap-&gt;flags &amp; MOUNT_FLAG_SYMLINK;
++	int strictexpire = ap-&gt;flags &amp; MOUNT_FLAG_STRICTEXPIRE;
+ 	time_t timeout = get_exp_timeout(ap, ap-&gt;entry-&gt;maps);
+ 	unsigned logopt = ap-&gt;logopt;
+ 	struct map_type_info *info;
+@@ -131,6 +132,8 @@ int mount_mount(struct autofs_point *ap, const char *root, const char *name,
+ 				ghost = 1;
+ 			else if (_strncmp(&quot;symlink&quot;, cp, 7) == 0)
+ 				symlnk = 1;
++			else if (_strncmp(&quot;strictexpire&quot;, cp, 12) == 0)
++				strictexpire = 1;
+ 			else if (_strncmp(&quot;hosts&quot;, cp, 5) == 0)
+ 				hosts = 1;
+ 			else if (_strncmp(&quot;timeout=&quot;, cp, 8) == 0) {
+@@ -173,6 +176,8 @@ int mount_mount(struct autofs_point *ap, const char *root, const char *name,
+ 	nap-&gt;parent = ap;
+ 	if (symlnk)
+ 		nap-&gt;flags |= MOUNT_FLAG_SYMLINK;
++	if (strictexpire)
++		nap-&gt;flags |= MOUNT_FLAG_STRICTEXPIRE;
+ 
+ 	if (hosts)
+ 		argc = 0;
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="02055" href="msg02055.html">[PATCH 0/9] A few updates to commit</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg02055.html">[PATCH 0/9] A few updates to commit</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg02057.html">[PATCH 2/9] autofs-5.1.5 - fix hesiod string check in master_parse()</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg02055.html">[PATCH 0/9] A few updates to commit</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg02057.html">[PATCH 2/9] autofs-5.1.5 - fix hesiod string check in master_parse()</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#02056"><strong>Date</strong></a></li>
+<li><a href="index.html#02056"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

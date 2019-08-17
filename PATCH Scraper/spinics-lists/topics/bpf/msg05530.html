@@ -1,0 +1,466 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH] virtio&#45;net: parameterize min ring num_free for virtio receive -->
+<!--X-From-R13: "[vpunry E. Ffvexva" &#60;zfgNerqung.pbz> -->
+<!--X-Date: Fri, 19 Jul 2019 09:14:13 &#45;0700 -->
+<!--X-Message-Id: 20190719121243&#45;mutt&#45;send&#45;email&#45;mst@kernel.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: BYAPR14MB32056583C4963342F5D817C4A6C80@BYAPR14MB3205.namprd14.prod.outlook.com -->
+<!--X-Reference: 20190718085836&#45;mutt&#45;send&#45;email&#45;mst@kernel.org -->
+<!--X-Reference: bdd30ef5&#45;4f69&#45;8218&#45;eed0&#45;38c6daac42db@redhat.com -->
+<!--X-Reference: 20190718103641&#45;mutt&#45;send&#45;email&#45;mst@kernel.org -->
+<!--X-Reference: 20190718104307&#45;mutt&#45;send&#45;email&#45;mst@kernel.org -->
+<!--X-Reference: d1faa33a&#45;6c4c&#45;1190&#45;8430&#45;f0639edc3b96@redhat.com -->
+<!--X-Reference: 9c1bdbc5&#45;e2c1&#45;8dd7&#45;52f9&#45;1a4b43b86ff0@hotmail.com -->
+<!--X-Reference: BYAPR14MB3205CA9A194A3828D869E2E5A6CB0@BYAPR14MB3205.namprd14.prod.outlook.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BPF: Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive &mdash; BPF</title>
+<link rel="alternate" type="application/rss+xml" title="BPF" href="//feeds.feedburner.com/packetfilters">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive</h1>
+[<a href="msg05529.html">Date Prev</a>][<a href="msg05531.html">Date Next</a>][<a href="msg05522.html">Thread Prev</a>][<a href="msg05497.html">Thread Next</a>][<a href="maillist.html#05530">Date Index</a>][<a href="index.html#05530">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive</li>
+<li><em>From</em>: &quot;Michael S. Tsirkin&quot; &lt;mst@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 19 Jul 2019 12:13:53 -0400</li>
+<li><em>Cc</em>: Jason Wang &lt;jasowang@xxxxxxxxxx&gt;,        &quot;davem@xxxxxxxxxxxxx&quot; &lt;davem@xxxxxxxxxxxxx&gt;,        &quot;ast@xxxxxxxxxx&quot; &lt;ast@xxxxxxxxxx&gt;,        &quot;daniel@xxxxxxxxxxxxx&quot; &lt;daniel@xxxxxxxxxxxxx&gt;,        &quot;jakub.kicinski@xxxxxxxxxxxxx&quot; &lt;jakub.kicinski@xxxxxxxxxxxxx&gt;,        &quot;hawk@xxxxxxxxxx&quot; &lt;hawk@xxxxxxxxxx&gt;,        &quot;john.fastabend@xxxxxxxxx&quot; &lt;john.fastabend@xxxxxxxxx&gt;,        &quot;kafai@xxxxxx&quot; &lt;kafai@xxxxxx&gt;,        &quot;songliubraving@xxxxxx&quot; &lt;songliubraving@xxxxxx&gt;,        &quot;yhs@xxxxxx&quot; &lt;yhs@xxxxxx&gt;,        &quot;virtualization@xxxxxxxxxxxxxxxxxxxxxxxxxx&quot;         &lt;virtualization@xxxxxxxxxxxxxxxxxxxxxxxxxx&gt;,        &quot;netdev@xxxxxxxxxxxxxxx&quot; &lt;netdev@xxxxxxxxxxxxxxx&gt;,        &quot;linux-kernel@xxxxxxxxxxxxxxx&quot; &lt;linux-kernel@xxxxxxxxxxxxxxx&gt;,        &quot;xdp-newbies@xxxxxxxxxxxxxxx&quot; &lt;xdp-newbies@xxxxxxxxxxxxxxx&gt;,        &quot;bpf@xxxxxxxxxxxxxxx&quot; &lt;bpf@xxxxxxxxxxxxxxx&gt;,        &quot;jiangran.jr@xxxxxxxxxxxxxxx&quot; &lt;jiangran.jr@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;BYAPR14MB3205CA9A194A3828D869E2E5A6CB0@BYAPR14MB3205.namprd14.prod.outlook.com&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On Fri, Jul 19, 2019 at 03:31:29PM +0000, &#x5189; jiang wrote:
+&gt;<i> </i>
+&gt;<i> On 2019/7/19 22:29, Jiang wrote:</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; On 2019/7/19 10:36, Jason Wang wrote:</i>
+&gt;<i> &gt;&gt;</i>
+&gt;<i> &gt;&gt; On 2019/7/18 &#x4E0B;&#x5348;10:43, Michael S. Tsirkin wrote:</i>
+&gt;<i> &gt;&gt;&gt; On Thu, Jul 18, 2019 at 10:42:47AM -0400, Michael S. Tsirkin wrote:</i>
+&gt;<i> &gt;&gt;&gt;&gt; On Thu, Jul 18, 2019 at 10:01:05PM +0800, Jason Wang wrote:</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt; On 2019/7/18 &#x4E0B;&#x5348;9:04, Michael S. Tsirkin wrote:</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; On Thu, Jul 18, 2019 at 12:55:50PM +0000, ? jiang wrote:</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;&gt; This change makes ring buffer reclaim threshold num_free </i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;&gt; configurable</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;&gt; for better performance, while it's hard coded as 1/2 * queue now.</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;&gt; According to our test with qemu + dpdk, packet dropping happens </i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;&gt; when</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;&gt; the guest is not able to provide free buffer in avail ring timely.</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;&gt; Smaller value of num_free does decrease the number of packet </i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;&gt; dropping</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;&gt; during our test as it makes virtio_net reclaim buffer earlier.</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;&gt;</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;&gt; At least, we should leave the value changeable to user while the</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;&gt; default value as 1/2 * queue is kept.</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;&gt;</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;&gt; Signed-off-by: jiangkidd&lt;jiangkidd@xxxxxxxxxxx&gt;</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; That would be one reason, but I suspect it's not the</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; true one. If you need more buffer due to jitter</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; then just increase the queue size. Would be cleaner.</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; However are you sure this is the reason for</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; packet drops? Do you see them dropped by dpdk</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; due to lack of space in the ring? As opposed to</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; by guest?</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt; Besides those, this patch depends on the user to choose a suitable </i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt; threshold</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt; which is not good. You need either a good value with demonstrated </i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt; numbers or</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt; something smarter.</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt;</i>
+&gt;<i> &gt;&gt;&gt;&gt;&gt; Thanks</i>
+&gt;<i> &gt;&gt;&gt;&gt; I do however think that we have a problem right now: try_fill_recv can</i>
+&gt;<i> &gt;&gt;&gt;&gt; take up a long time during which net stack does not run at all. </i>
+&gt;<i> &gt;&gt;&gt;&gt; Imagine</i>
+&gt;<i> &gt;&gt;&gt;&gt; a 1K queue - we are talking 512 packets. That's exceessive.</i>
+&gt;<i> &gt;&gt;</i>
+&gt;<i> &gt;&gt;</i>
+&gt;<i> &gt;&gt; Yes, we will starve a fast host in this case.</i>
+&gt;<i> &gt;&gt;</i>
+&gt;<i> &gt;&gt;</i>
+&gt;<i> &gt;&gt;&gt;&gt; &#xA0;&#xA0; napi poll</i>
+&gt;<i> &gt;&gt;&gt;&gt; weight solves a similar problem, so it might make sense to cap this at</i>
+&gt;<i> &gt;&gt;&gt;&gt; napi_poll_weight.</i>
+&gt;<i> &gt;&gt;&gt;&gt;</i>
+&gt;<i> &gt;&gt;&gt;&gt; Which will allow tweaking it through a module parameter as a</i>
+&gt;<i> &gt;&gt;&gt;&gt; side effect :) Maybe just do NAPI_POLL_WEIGHT.</i>
+&gt;<i> &gt;&gt;&gt; Or maybe NAPI_POLL_WEIGHT/2 like we do at half the queue ;). Please</i>
+&gt;<i> &gt;&gt;&gt; experiment, measure performance and let the list know</i>
+&gt;<i> &gt;&gt;&gt;</i>
+&gt;<i> &gt;&gt;&gt;&gt; Need to be careful though: queues can also be small and I don't </i>
+&gt;<i> &gt;&gt;&gt;&gt; think we</i>
+&gt;<i> &gt;&gt;&gt;&gt; want to exceed queue size / 2, or maybe queue size - napi_poll_weight.</i>
+&gt;<i> &gt;&gt;&gt;&gt; Definitely must not exceed the full queue size.</i>
+&gt;<i> &gt;&gt;</i>
+&gt;<i> &gt;&gt;</i>
+&gt;<i> &gt;&gt; Looking at intel, it uses 16 and i40e uses 32.&#xA0; It looks to me </i>
+&gt;<i> &gt;&gt; NAPI_POLL_WEIGHT/2 is better.</i>
+&gt;<i> &gt;&gt;</i>
+&gt;<i> &gt;&gt; Jiang, want to try that and post a new patch?</i>
+&gt;<i> &gt;&gt;</i>
+&gt;<i> &gt;&gt; Thanks</i>
+&gt;<i> &gt;&gt;</i>
+&gt;<i> &gt;&gt;</i>
+&gt;<i> &gt;&gt;&gt;&gt;</i>
+&gt;<i> &gt;&gt;&gt;&gt; -- </i>
+&gt;<i> &gt;&gt;&gt;&gt; MST</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; We did have completed several rounds of test with setting the value to </i>
+&gt;<i> &gt; budget (64 as the default value). It does improve a lot with pps is </i>
+&gt;<i> &gt; below 400pps for a single stream. Let me consolidate the data and will </i>
+&gt;<i> &gt; send it soon. Actually, we are confident that it runs out of free </i>
+&gt;<i> &gt; buffer in avail ring when packet dropping happens with below systemtap:</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; Just a snippet:</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; probe module(&quot;virtio_ring&quot;).function(&quot;virtqueue_get_buf&quot;)</i>
+&gt;<i> &gt; {</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; x = (@cast($_vq, &quot;vring_virtqueue&quot;)-&gt;vring-&gt;used-&gt;idx)- </i>
+&gt;<i> &gt; (@cast($_vq, &quot;vring_virtqueue&quot;)-&gt;last_used_idx) ---&gt; we use this one </i>
+&gt;<i> &gt; to verify if the queue is full, which means guest is not able to take </i>
+&gt;<i> &gt; buffer from the queue timely</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; if (x&lt;0 &amp;&amp; (x+65535)&lt;4096)</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; x = x+65535</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; if((x==1024) &amp;&amp; @cast($_vq, &quot;vring_virtqueue&quot;)-&gt;vq-&gt;callback == </i>
+&gt;<i> &gt; callback_addr)</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; netrxcount[x] &lt;&lt;&lt; gettimeofday_s()</i>
+&gt;<i> &gt; }</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; probe module(&quot;virtio_ring&quot;).function(&quot;virtqueue_add_inbuf&quot;)</i>
+&gt;<i> &gt; {</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; y = (@cast($vq, &quot;vring_virtqueue&quot;)-&gt;vring-&gt;avail-&gt;idx)- </i>
+&gt;<i> &gt; (@cast($vq, &quot;vring_virtqueue&quot;)-&gt;vring-&gt;used-&gt;idx) ---&gt; we use this one </i>
+&gt;<i> &gt; to verify if we run out of free buffer in avail ring</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; if (y&lt;0 &amp;&amp; (y+65535)&lt;4096)</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; y = y+65535</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; if(@2==&quot;debugon&quot;)</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; {</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; if(y==0 &amp;&amp; @cast($vq, &quot;vring_virtqueue&quot;)-&gt;vq-&gt;callback == </i>
+&gt;<i> &gt; callback_addr)</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; {</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; netrxfreecount[y] &lt;&lt;&lt; gettimeofday_s()</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; printf(&quot;no avail ring left seen, printing most recent 5 </i>
+&gt;<i> &gt; num free, vq: %lx, current index: %d\n&quot;, $vq, recentfreecount)</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; for(i=recentfreecount; i!=((recentfreecount+4) % 5); </i>
+&gt;<i> &gt; i=((i+1) % 5))</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; {</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; printf(&quot;index: %d, num free: %d\n&quot;, i, recentfree[$vq, </i>
+&gt;<i> &gt; i])</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; }</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; printf(&quot;index: %d, num free: %d\n&quot;, i, recentfree[$vq, i])</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; //exit()</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; &#xA0;&#xA0;&#xA0; }</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; }</i>
+&gt;<i> &gt; }</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; probe </i>
+&gt;<i> &gt; module(&quot;virtio_net&quot;).statement(&quot;virtnet_receive@drivers/net/virtio_net.c:732&quot;)</i>
+&gt;<i> &gt; {</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; recentfreecount++</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; recentfreecount = recentfreecount % 5</i>
+&gt;<i> &gt; &#xA0;&#xA0;&#xA0; recentfree[$rq-&gt;vq, recentfreecount] = $rq-&gt;vq-&gt;num_free ---&gt; </i>
+&gt;<i> &gt; record the num_free for the last 5 calls to virtnet_receive, so we can </i>
+&gt;<i> &gt; see if lowering the bar helps.</i>
+&gt;<i> &gt; }</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; Here is the result:</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; no avail ring left seen, printing most recent 5 num free, vq: </i>
+&gt;<i> &gt; ffff9c13c1200000, current index: 1</i>
+&gt;<i> &gt; index: 1, num free: 561</i>
+&gt;<i> &gt; index: 2, num free: 305</i>
+&gt;<i> &gt; index: 3, num free: 369</i>
+&gt;<i> &gt; index: 4, num free: 433</i>
+&gt;<i> &gt; index: 0, num free: 497</i>
+&gt;<i> &gt; no avail ring left seen, printing most recent 5 num free, vq: </i>
+&gt;<i> &gt; ffff9c13c1200000, current index: 1</i>
+&gt;<i> &gt; index: 1, num free: 543</i>
+&gt;<i> &gt; index: 2, num free: 463</i>
+&gt;<i> &gt; index: 3, num free: 469</i>
+&gt;<i> &gt; index: 4, num free: 476</i>
+&gt;<i> &gt; index: 0, num free: 479</i>
+&gt;<i> &gt; no avail ring left seen, printing most recent 5 num free, vq: </i>
+&gt;<i> &gt; ffff9c13c1200000, current index: 2</i>
+&gt;<i> &gt; index: 2, num free: 555</i>
+&gt;<i> &gt; index: 3, num free: 414</i>
+&gt;<i> &gt; index: 4, num free: 420</i>
+&gt;<i> &gt; index: 0, num free: 427</i>
+&gt;<i> &gt; index: 1, num free: 491</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; You can see in the last 4 calls to virtnet_receive before we run out </i>
+&gt;<i> &gt; of free buffer and start to relaim, num_free is quite high. So if we </i>
+&gt;<i> &gt; can do the reclaim earlier, it will certainly help.</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; Meanwhile, the patch I proposed actually keeps the default value as </i>
+&gt;<i> &gt; 1/2 * queue. So the default behavior remains and only leave the </i>
+&gt;<i> &gt; interface to advanced users, who really understands what they are </i>
+&gt;<i> &gt; doing. Also, the best value may vary in different environment. Do you </i>
+&gt;<i> &gt; still think hardcoding this is better option?</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; Jiang</i>
+&gt;<i> &gt;</i>
+&gt;<i> Here is the snippet from our test result. Test1 was done with default </i>
+&gt;<i> driver with the value of 1/2 * queue, while test2 is with my patch and </i>
+&gt;<i> min_numfree set to 64 (the default budget value). We can see average </i>
+&gt;<i> drop packets do decrease a lot in test2. Let me know if you need the </i>
+&gt;<i> full testing data.</i>
+&gt;<i> </i>
+&gt;<i> test1Time&#xA0;&#xA0;&#xA0; avgDropPackets&#xA0;&#xA0;&#xA0; test2Time&#xA0;&#xA0;&#xA0; avgDropPackets&#xA0;&#xA0;&#xA0; pps</i>
+&gt;<i> </i>
+&gt;<i> &gt; 16:21.0&#xA0;&#xA0;&#xA0; 12.295&#xA0;&#xA0;&#xA0; 56:50.4&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 300k</i>
+&gt;<i> &gt; 17:19.1&#xA0;&#xA0;&#xA0; 15.244&#xA0;&#xA0;&#xA0; 56:50.4&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 300k</i>
+&gt;<i> &gt; 18:17.5&#xA0;&#xA0;&#xA0; 18.789&#xA0;&#xA0;&#xA0; 56:50.4&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 300k</i>
+&gt;<i> &gt; 19:15.1&#xA0;&#xA0;&#xA0; 14.208&#xA0;&#xA0;&#xA0; 56:50.4&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 300k</i>
+&gt;<i> &gt; 20:13.2&#xA0;&#xA0;&#xA0; 20.818&#xA0;&#xA0;&#xA0; 56:50.4&#xA0;&#xA0;&#xA0; 0.267&#xA0;&#xA0;&#xA0; 300k</i>
+&gt;<i> &gt; 21:11.2&#xA0;&#xA0;&#xA0; 12.397&#xA0;&#xA0;&#xA0; 56:50.4&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 300k</i>
+&gt;<i> &gt; 22:09.3&#xA0;&#xA0;&#xA0; 12.599&#xA0;&#xA0;&#xA0; 56:50.4&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 300k</i>
+&gt;<i> &gt; 23:07.3&#xA0;&#xA0;&#xA0; 15.531&#xA0;&#xA0;&#xA0; 57:48.4&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 300k</i>
+&gt;<i> &gt; 24:05.5&#xA0;&#xA0;&#xA0; 13.664&#xA0;&#xA0;&#xA0; 58:46.5&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 300k</i>
+&gt;<i> &gt; 25:03.7&#xA0;&#xA0;&#xA0; 13.158&#xA0;&#xA0;&#xA0; 59:44.5&#xA0;&#xA0;&#xA0; 4.73&#xA0;&#xA0;&#xA0; 300k</i>
+&gt;<i> &gt; 26:01.1&#xA0;&#xA0;&#xA0; 2.486&#xA0;&#xA0;&#xA0; 00:42.6&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 300k</i>
+&gt;<i> &gt; 26:59.1&#xA0;&#xA0;&#xA0; 11.241&#xA0;&#xA0;&#xA0; 01:40.6&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 300k</i>
+&gt;<i> &gt; 27:57.2&#xA0;&#xA0;&#xA0; 20.521&#xA0;&#xA0;&#xA0; 02:38.6&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 300k</i>
+&gt;<i> &gt; 28:55.2&#xA0;&#xA0;&#xA0; 30.094&#xA0;&#xA0;&#xA0; 03:36.7&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 300k</i>
+&gt;<i> &gt; 29:53.3&#xA0;&#xA0;&#xA0; 16.828&#xA0;&#xA0;&#xA0; 04:34.7&#xA0;&#xA0;&#xA0; 0.963&#xA0;&#xA0;&#xA0; 300k</i>
+&gt;<i> &gt; 30:51.3&#xA0;&#xA0;&#xA0; 46.916&#xA0;&#xA0;&#xA0; 05:32.8&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 400k</i>
+&gt;<i> &gt; 31:49.3&#xA0;&#xA0;&#xA0; 56.214&#xA0;&#xA0;&#xA0; 05:32.8&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 400k</i>
+&gt;<i> &gt; 32:47.3&#xA0;&#xA0;&#xA0; 58.69&#xA0;&#xA0;&#xA0; 05:32.8&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 400k</i>
+&gt;<i> &gt; 33:45.3&#xA0;&#xA0;&#xA0; 61.486&#xA0;&#xA0;&#xA0; 05:32.8&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 400k</i>
+&gt;<i> &gt; 34:43.3&#xA0;&#xA0;&#xA0; 72.175&#xA0;&#xA0;&#xA0; 05:32.8&#xA0;&#xA0;&#xA0; 0.598&#xA0;&#xA0;&#xA0; 400k</i>
+&gt;<i> &gt; 35:41.3&#xA0;&#xA0;&#xA0; 56.699&#xA0;&#xA0;&#xA0; 05:32.8&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 400k</i>
+&gt;<i> &gt; 36:39.3&#xA0;&#xA0;&#xA0; 61.071&#xA0;&#xA0;&#xA0; 05:32.8&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 400k</i>
+&gt;<i> &gt; 37:37.3&#xA0;&#xA0;&#xA0; 43.355&#xA0;&#xA0;&#xA0; 06:30.8&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 400k</i>
+&gt;<i> &gt; 38:35.4&#xA0;&#xA0;&#xA0; 44.644&#xA0;&#xA0;&#xA0; 06:30.8&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 400k</i>
+&gt;<i> &gt; 39:33.4&#xA0;&#xA0;&#xA0; 72.336&#xA0;&#xA0;&#xA0; 06:30.8&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 400k</i>
+&gt;<i> &gt; 40:31.4&#xA0;&#xA0;&#xA0; 70.676&#xA0;&#xA0;&#xA0; 06:30.8&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 400k</i>
+&gt;<i> &gt; 41:29.4&#xA0;&#xA0;&#xA0; 108.009&#xA0;&#xA0;&#xA0; 06:30.8&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 400k</i>
+&gt;<i> &gt; 42:27.4&#xA0;&#xA0;&#xA0; 65.216&#xA0;&#xA0;&#xA0; 06:30.8&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0; 400k</i>
+&gt;<i> </i>
+&gt;<i> </i>
+&gt;<i> Jiang</i>
+
+
+OK I find this surprising but I accept what you see.
+I'm inclined not to add a tunable and just select
+a value ourselves.
+I'm also fine with using the napi poll module parameter
+which will give you a bit of tunability.
+
+-- 
+MST
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="05496" href="msg05496.html">Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive</a></strong>
+<ul><li><em>From:</em> Michael S. Tsirkin</li></ul></li>
+<li><strong><a name="05498" href="msg05498.html">Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive</a></strong>
+<ul><li><em>From:</em> Jason Wang</li></ul></li>
+<li><strong><a name="05500" href="msg05500.html">Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive</a></strong>
+<ul><li><em>From:</em> Michael S. Tsirkin</li></ul></li>
+<li><strong><a name="05501" href="msg05501.html">Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive</a></strong>
+<ul><li><em>From:</em> Michael S. Tsirkin</li></ul></li>
+<li><strong><a name="05522" href="msg05522.html">Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive</a></strong>
+<ul><li><em>From:</em> Jason Wang</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05529.html">[PATCH 2/2] libbpf: Avoid designated initializers for unnamed union members</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05531.html">Re: [PATCH bpf] selftests/bpf: fix sendmsg6_prog on s390</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05522.html">Re: [PATCH] virtio-net: parameterize min ring num_free for virtio receive</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05497.html">Building bpftool with OUTPUT set breaks</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05530"><strong>Date</strong></a></li>
+<li><a href="index.html#05530"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;Samsung&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-rockchip/>[Linux&nbsp;Rockchip&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-actions/>[Linux&nbsp;Actions&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-snps-arc/>[Linux&nbsp;for&nbsp;Synopsys&nbsp;ARC&nbsp;Processors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nfs/>[Linux&nbsp;NFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nilfs/>[Linux&nbsp;NILFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/vfl/>[Video&nbsp;for&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<p>
+<hr>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

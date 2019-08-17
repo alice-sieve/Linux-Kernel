@@ -1,0 +1,973 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [dockerfiles PATCH 1/3] Refresh after recent changes -->
+<!--X-From-R13: Oaqern Pbybtanav &#60;nobybtanNerqung.pbz> -->
+<!--X-Date: Wed, 10 Jul 2019 09:48:31 &#45;0700 -->
+<!--X-Message-Id: 20190710164819.7617&#45;2&#45;abologna@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190710164819.7617&#45;1&#45;abologna@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [dockerfiles PATCH 1/3] Refresh after recent changes</title>
+<meta name="description" content="libvirt: [dockerfiles PATCH 1/3] Refresh after recent changes">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[dockerfiles PATCH 1/3] Refresh after recent changes</h1>
+[<a href="msg187025.html">Date Prev</a>][<a href="msg187027.html">Date Next</a>][<a href="msg187025.html">Thread Prev</a>][<a href="msg187028.html">Thread Next</a>][<a href="maillist.html#187026">Date Index</a>][<a href="index.html#187026">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [dockerfiles PATCH 1/3] Refresh after recent changes</li>
+<li><em>From</em>: Andrea Bolognani &lt;abologna@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 10 Jul 2019 18:48:17 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187027.html">20190710164819.7617-1-abologna@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187027.html">20190710164819.7617-1-abologna@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The corresponding libvirt-jenkins-ci commit is aba4604e6721.
+
+Signed-off-by: Andrea Bolognani &lt;abologna@xxxxxxxxxx&gt;
+---
+ buildenv-centos-7.Dockerfile       | 151 +++++++++----------
+ buildenv-fedora-29.Dockerfile      | 173 +++++++++++-----------
+ buildenv-fedora-30.Dockerfile      | 173 +++++++++++-----------
+ buildenv-fedora-rawhide.Dockerfile | 223 +++++++++++++++--------------
+ 4 files changed, 362 insertions(+), 358 deletions(-)
+
+diff --git a/buildenv-centos-7.Dockerfile b/buildenv-centos-7.Dockerfile
+index 9e79723..298bbc7 100644
+--- a/buildenv-centos-7.Dockerfile
++++ b/buildenv-centos-7.Dockerfile
+@@ -1,80 +1,81 @@
+ FROM centos:centos7
+ 
+ RUN yum update -y &amp;&amp; \
+-    yum install -y audit-libs-devel \
+-            augeas \
+-            autoconf \
+-            automake \
+-            avahi-devel \
+-            bash \
+-            bash-completion \
+-            ca-certificates \
+-            chrony \
+-            cyrus-sasl-devel \
+-            dbus-devel \
+-            device-mapper-devel \
+-            dnsmasq \
+-            ebtables \
+-            fuse-devel \
+-            gcc \
+-            gdb \
+-            gettext \
+-            gettext-devel \
+-            git \
+-            glibc-common \
+-            glibc-devel \
+-            glusterfs-api-devel \
+-            gnutls-devel \
+-            iproute \
+-            iscsi-initiator-utils \
+-            kmod \
+-            libacl-devel \
+-            libattr-devel \
+-            libblkid-devel \
+-            libcap-ng-devel \
+-            libcurl-devel \
+-            libiscsi-devel \
+-            libnl3-devel \
+-            libpcap-devel \
+-            libpciaccess-devel \
+-            librbd1-devel \
+-            libselinux-devel \
+-            libssh-devel \
+-            libssh2-devel \
+-            libtirpc-devel \
+-            libtool \
+-            libudev-devel \
+-            libwsman-devel \
+-            libxml2 \
+-            libxml2-devel \
+-            libxslt \
+-            lsof \
+-            lvm2 \
+-            make \
+-            ncurses-devel \
+-            net-tools \
+-            netcf-devel \
+-            nfs-utils \
+-            numactl-devel \
+-            numad \
+-            parted \
+-            parted-devel \
+-            patch \
+-            perl \
+-            pkgconfig \
+-            polkit \
+-            qemu-img \
+-            radvd \
+-            readline-devel \
+-            rpm-build \
+-            sanlock-devel \
+-            screen \
+-            scrub \
+-            strace \
+-            sudo \
+-            systemtap-sdt-devel \
+-            vim \
+-            xfsprogs-devel \
+-            yajl-devel &amp;&amp; \
++    yum install -y \
++        audit-libs-devel \
++        augeas \
++        autoconf \
++        automake \
++        avahi-devel \
++        bash \
++        bash-completion \
++        ca-certificates \
++        chrony \
++        cyrus-sasl-devel \
++        dbus-devel \
++        device-mapper-devel \
++        dnsmasq \
++        ebtables \
++        fuse-devel \
++        gcc \
++        gdb \
++        gettext \
++        gettext-devel \
++        git \
++        glibc-common \
++        glibc-devel \
++        glusterfs-api-devel \
++        gnutls-devel \
++        iproute \
++        iscsi-initiator-utils \
++        kmod \
++        libacl-devel \
++        libattr-devel \
++        libblkid-devel \
++        libcap-ng-devel \
++        libcurl-devel \
++        libiscsi-devel \
++        libnl3-devel \
++        libpcap-devel \
++        libpciaccess-devel \
++        librbd1-devel \
++        libselinux-devel \
++        libssh-devel \
++        libssh2-devel \
++        libtirpc-devel \
++        libtool \
++        libudev-devel \
++        libwsman-devel \
++        libxml2 \
++        libxml2-devel \
++        libxslt \
++        lsof \
++        lvm2 \
++        make \
++        ncurses-devel \
++        net-tools \
++        netcf-devel \
++        nfs-utils \
++        numactl-devel \
++        numad \
++        parted \
++        parted-devel \
++        patch \
++        perl \
++        pkgconfig \
++        polkit \
++        qemu-img \
++        radvd \
++        readline-devel \
++        rpm-build \
++        sanlock-devel \
++        screen \
++        scrub \
++        strace \
++        sudo \
++        systemtap-sdt-devel \
++        vim \
++        xfsprogs-devel \
++        yajl-devel &amp;&amp; \
+     yum autoremove -y &amp;&amp; \
+     yum clean all -y
+diff --git a/buildenv-fedora-29.Dockerfile b/buildenv-fedora-29.Dockerfile
+index b7086b1..bf2bf0a 100644
+--- a/buildenv-fedora-29.Dockerfile
++++ b/buildenv-fedora-29.Dockerfile
+@@ -1,88 +1,89 @@
+ FROM fedora:29
+ 
+-RUN yum update -y &amp;&amp; \
+-    yum install -y audit-libs-devel \
+-            augeas \
+-            autoconf \
+-            automake \
+-            avahi-devel \
+-            bash \
+-            bash-completion \
+-            ca-certificates \
+-            ccache \
+-            chrony \
+-            cppi \
+-            cyrus-sasl-devel \
+-            dbus-devel \
+-            device-mapper-devel \
+-            dnsmasq \
+-            dwarves \
+-            ebtables \
+-            fuse-devel \
+-            gcc \
+-            gdb \
+-            gettext \
+-            gettext-devel \
+-            git \
+-            glibc-devel \
+-            glusterfs-api-devel \
+-            gnutls-devel \
+-            iproute \
+-            iproute-tc \
+-            iscsi-initiator-utils \
+-            kmod \
+-            libacl-devel \
+-            libattr-devel \
+-            libblkid-devel \
+-            libcap-ng-devel \
+-            libcurl-devel \
+-            libiscsi-devel \
+-            libnl3-devel \
+-            libpcap-devel \
+-            libpciaccess-devel \
+-            librbd-devel \
+-            libselinux-devel \
+-            libssh-devel \
+-            libssh2-devel \
+-            libtirpc-devel \
+-            libtool \
+-            libudev-devel \
+-            libwsman-devel \
+-            libxml2 \
+-            libxml2-devel \
+-            libxslt \
+-            lsof \
+-            lvm2 \
+-            make \
+-            ncurses-devel \
+-            net-tools \
+-            netcf-devel \
+-            nfs-utils \
+-            numactl-devel \
+-            numad \
+-            parted \
+-            parted-devel \
+-            patch \
+-            perl \
+-            pkgconfig \
+-            polkit \
+-            qemu-img \
+-            radvd \
+-            readline-devel \
+-            rpcgen \
+-            rpm-build \
+-            sanlock-devel \
+-            screen \
+-            scrub \
+-            sheepdog \
+-            strace \
+-            sudo \
+-            systemtap-sdt-devel \
+-            vim \
+-            wireshark-devel \
+-            xen-devel \
+-            xfsprogs-devel \
+-            yajl-devel \
+-            zfs-fuse &amp;&amp; \
+-    yum autoremove -y &amp;&amp; \
+-    yum clean all -y
++RUN dnf update -y &amp;&amp; \
++    dnf install -y \
++        audit-libs-devel \
++        augeas \
++        autoconf \
++        automake \
++        avahi-devel \
++        bash \
++        bash-completion \
++        ca-certificates \
++        ccache \
++        chrony \
++        cppi \
++        cyrus-sasl-devel \
++        dbus-devel \
++        device-mapper-devel \
++        dnsmasq \
++        dwarves \
++        ebtables \
++        fuse-devel \
++        gcc \
++        gdb \
++        gettext \
++        gettext-devel \
++        git \
++        glibc-devel \
++        glusterfs-api-devel \
++        gnutls-devel \
++        iproute \
++        iproute-tc \
++        iscsi-initiator-utils \
++        kmod \
++        libacl-devel \
++        libattr-devel \
++        libblkid-devel \
++        libcap-ng-devel \
++        libcurl-devel \
++        libiscsi-devel \
++        libnl3-devel \
++        libpcap-devel \
++        libpciaccess-devel \
++        librbd-devel \
++        libselinux-devel \
++        libssh-devel \
++        libssh2-devel \
++        libtirpc-devel \
++        libtool \
++        libudev-devel \
++        libwsman-devel \
++        libxml2 \
++        libxml2-devel \
++        libxslt \
++        lsof \
++        lvm2 \
++        make \
++        ncurses-devel \
++        net-tools \
++        netcf-devel \
++        nfs-utils \
++        numactl-devel \
++        numad \
++        parted \
++        parted-devel \
++        patch \
++        perl \
++        pkgconfig \
++        polkit \
++        qemu-img \
++        radvd \
++        readline-devel \
++        rpcgen \
++        rpm-build \
++        sanlock-devel \
++        screen \
++        scrub \
++        sheepdog \
++        strace \
++        sudo \
++        systemtap-sdt-devel \
++        vim \
++        wireshark-devel \
++        xen-devel \
++        xfsprogs-devel \
++        yajl-devel \
++        zfs-fuse &amp;&amp; \
++    dnf autoremove -y &amp;&amp; \
++    dnf clean all -y
+diff --git a/buildenv-fedora-30.Dockerfile b/buildenv-fedora-30.Dockerfile
+index d4d5da9..e9d2365 100644
+--- a/buildenv-fedora-30.Dockerfile
++++ b/buildenv-fedora-30.Dockerfile
+@@ -1,88 +1,89 @@
+ FROM fedora:30
+ 
+-RUN yum update -y &amp;&amp; \
+-    yum install -y audit-libs-devel \
+-            augeas \
+-            autoconf \
+-            automake \
+-            avahi-devel \
+-            bash \
+-            bash-completion \
+-            ca-certificates \
+-            ccache \
+-            chrony \
+-            cppi \
+-            cyrus-sasl-devel \
+-            dbus-devel \
+-            device-mapper-devel \
+-            dnsmasq \
+-            dwarves \
+-            ebtables \
+-            fuse-devel \
+-            gcc \
+-            gdb \
+-            gettext \
+-            gettext-devel \
+-            git \
+-            glibc-devel \
+-            glusterfs-api-devel \
+-            gnutls-devel \
+-            iproute \
+-            iproute-tc \
+-            iscsi-initiator-utils \
+-            kmod \
+-            libacl-devel \
+-            libattr-devel \
+-            libblkid-devel \
+-            libcap-ng-devel \
+-            libcurl-devel \
+-            libiscsi-devel \
+-            libnl3-devel \
+-            libpcap-devel \
+-            libpciaccess-devel \
+-            librbd-devel \
+-            libselinux-devel \
+-            libssh-devel \
+-            libssh2-devel \
+-            libtirpc-devel \
+-            libtool \
+-            libudev-devel \
+-            libwsman-devel \
+-            libxml2 \
+-            libxml2-devel \
+-            libxslt \
+-            lsof \
+-            lvm2 \
+-            make \
+-            ncurses-devel \
+-            net-tools \
+-            netcf-devel \
+-            nfs-utils \
+-            numactl-devel \
+-            numad \
+-            parted \
+-            parted-devel \
+-            patch \
+-            perl \
+-            pkgconfig \
+-            polkit \
+-            qemu-img \
+-            radvd \
+-            readline-devel \
+-            rpcgen \
+-            rpm-build \
+-            sanlock-devel \
+-            screen \
+-            scrub \
+-            sheepdog \
+-            strace \
+-            sudo \
+-            systemtap-sdt-devel \
+-            vim \
+-            wireshark-devel \
+-            xen-devel \
+-            xfsprogs-devel \
+-            yajl-devel \
+-            zfs-fuse &amp;&amp; \
+-    yum autoremove -y &amp;&amp; \
+-    yum clean all -y
++RUN dnf update -y &amp;&amp; \
++    dnf install -y \
++        audit-libs-devel \
++        augeas \
++        autoconf \
++        automake \
++        avahi-devel \
++        bash \
++        bash-completion \
++        ca-certificates \
++        ccache \
++        chrony \
++        cppi \
++        cyrus-sasl-devel \
++        dbus-devel \
++        device-mapper-devel \
++        dnsmasq \
++        dwarves \
++        ebtables \
++        fuse-devel \
++        gcc \
++        gdb \
++        gettext \
++        gettext-devel \
++        git \
++        glibc-devel \
++        glusterfs-api-devel \
++        gnutls-devel \
++        iproute \
++        iproute-tc \
++        iscsi-initiator-utils \
++        kmod \
++        libacl-devel \
++        libattr-devel \
++        libblkid-devel \
++        libcap-ng-devel \
++        libcurl-devel \
++        libiscsi-devel \
++        libnl3-devel \
++        libpcap-devel \
++        libpciaccess-devel \
++        librbd-devel \
++        libselinux-devel \
++        libssh-devel \
++        libssh2-devel \
++        libtirpc-devel \
++        libtool \
++        libudev-devel \
++        libwsman-devel \
++        libxml2 \
++        libxml2-devel \
++        libxslt \
++        lsof \
++        lvm2 \
++        make \
++        ncurses-devel \
++        net-tools \
++        netcf-devel \
++        nfs-utils \
++        numactl-devel \
++        numad \
++        parted \
++        parted-devel \
++        patch \
++        perl \
++        pkgconfig \
++        polkit \
++        qemu-img \
++        radvd \
++        readline-devel \
++        rpcgen \
++        rpm-build \
++        sanlock-devel \
++        screen \
++        scrub \
++        sheepdog \
++        strace \
++        sudo \
++        systemtap-sdt-devel \
++        vim \
++        wireshark-devel \
++        xen-devel \
++        xfsprogs-devel \
++        yajl-devel \
++        zfs-fuse &amp;&amp; \
++    dnf autoremove -y &amp;&amp; \
++    dnf clean all -y
+diff --git a/buildenv-fedora-rawhide.Dockerfile b/buildenv-fedora-rawhide.Dockerfile
+index af7c77f..c618c49 100644
+--- a/buildenv-fedora-rawhide.Dockerfile
++++ b/buildenv-fedora-rawhide.Dockerfile
+@@ -1,113 +1,114 @@
+ FROM fedora:rawhide
+ 
+-RUN yum update -y --nogpgcheck fedora-gpg-keys &amp;&amp; \
+-    yum update -y &amp;&amp; \
+-    yum install -y audit-libs-devel \
+-            augeas \
+-            autoconf \
+-            automake \
+-            avahi-devel \
+-            bash \
+-            bash-completion \
+-            ca-certificates \
+-            ccache \
+-            chrony \
+-            cppi \
+-            cyrus-sasl-devel \
+-            dbus-devel \
+-            device-mapper-devel \
+-            dnsmasq \
+-            dwarves \
+-            ebtables \
+-            fuse-devel \
+-            gcc \
+-            gdb \
+-            gettext \
+-            gettext-devel \
+-            git \
+-            glibc-devel \
+-            glusterfs-api-devel \
+-            gnutls-devel \
+-            iproute \
+-            iproute-tc \
+-            iscsi-initiator-utils \
+-            kmod \
+-            libacl-devel \
+-            libattr-devel \
+-            libblkid-devel \
+-            libcap-ng-devel \
+-            libcurl-devel \
+-            libiscsi-devel \
+-            libnl3-devel \
+-            libpcap-devel \
+-            libpciaccess-devel \
+-            librbd-devel \
+-            libselinux-devel \
+-            libssh-devel \
+-            libssh2-devel \
+-            libtirpc-devel \
+-            libtool \
+-            libudev-devel \
+-            libwsman-devel \
+-            libxml2 \
+-            libxml2-devel \
+-            libxslt \
+-            lsof \
+-            lvm2 \
+-            make \
+-            mingw32-curl \
+-            mingw32-dbus \
+-            mingw32-dlfcn \
+-            mingw32-gcc \
+-            mingw32-gettext \
+-            mingw32-gnutls \
+-            mingw32-libssh2 \
+-            mingw32-libxml2 \
+-            mingw32-openssl \
+-            mingw32-pkg-config \
+-            mingw32-portablexdr \
+-            mingw32-readline \
+-            mingw64-curl \
+-            mingw64-dbus \
+-            mingw64-dlfcn \
+-            mingw64-gcc \
+-            mingw64-gettext \
+-            mingw64-gnutls \
+-            mingw64-libssh2 \
+-            mingw64-libxml2 \
+-            mingw64-openssl \
+-            mingw64-pkg-config \
+-            mingw64-portablexdr \
+-            mingw64-readline \
+-            ncurses-devel \
+-            net-tools \
+-            netcf-devel \
+-            nfs-utils \
+-            numactl-devel \
+-            numad \
+-            parted \
+-            parted-devel \
+-            patch \
+-            perl \
+-            pkgconfig \
+-            polkit \
+-            qemu-img \
+-            radvd \
+-            readline-devel \
+-            rpcgen \
+-            rpm-build \
+-            sanlock-devel \
+-            screen \
+-            scrub \
+-            sheepdog \
+-            strace \
+-            sudo \
+-            systemtap-sdt-devel \
+-            vim \
+-            wireshark-devel \
+-            xen-devel \
+-            xfsprogs-devel \
+-            yajl-devel \
+-            zfs-fuse &amp;&amp; \
+-    yum autoremove -y &amp;&amp; \
+-    yum clean all -y
++RUN dnf update -y --nogpgcheck fedora-gpg-keys &amp;&amp; \
++    dnf update -y &amp;&amp; \
++    dnf install -y \
++        audit-libs-devel \
++        augeas \
++        autoconf \
++        automake \
++        avahi-devel \
++        bash \
++        bash-completion \
++        ca-certificates \
++        ccache \
++        chrony \
++        cppi \
++        cyrus-sasl-devel \
++        dbus-devel \
++        device-mapper-devel \
++        dnsmasq \
++        dwarves \
++        ebtables \
++        fuse-devel \
++        gcc \
++        gdb \
++        gettext \
++        gettext-devel \
++        git \
++        glibc-devel \
++        glusterfs-api-devel \
++        gnutls-devel \
++        iproute \
++        iproute-tc \
++        iscsi-initiator-utils \
++        kmod \
++        libacl-devel \
++        libattr-devel \
++        libblkid-devel \
++        libcap-ng-devel \
++        libcurl-devel \
++        libiscsi-devel \
++        libnl3-devel \
++        libpcap-devel \
++        libpciaccess-devel \
++        librbd-devel \
++        libselinux-devel \
++        libssh-devel \
++        libssh2-devel \
++        libtirpc-devel \
++        libtool \
++        libudev-devel \
++        libwsman-devel \
++        libxml2 \
++        libxml2-devel \
++        libxslt \
++        lsof \
++        lvm2 \
++        make \
++        mingw32-curl \
++        mingw32-dbus \
++        mingw32-dlfcn \
++        mingw32-gcc \
++        mingw32-gettext \
++        mingw32-gnutls \
++        mingw32-libssh2 \
++        mingw32-libxml2 \
++        mingw32-openssl \
++        mingw32-pkg-config \
++        mingw32-portablexdr \
++        mingw32-readline \
++        mingw64-curl \
++        mingw64-dbus \
++        mingw64-dlfcn \
++        mingw64-gcc \
++        mingw64-gettext \
++        mingw64-gnutls \
++        mingw64-libssh2 \
++        mingw64-libxml2 \
++        mingw64-openssl \
++        mingw64-pkg-config \
++        mingw64-portablexdr \
++        mingw64-readline \
++        ncurses-devel \
++        net-tools \
++        netcf-devel \
++        nfs-utils \
++        numactl-devel \
++        numad \
++        parted \
++        parted-devel \
++        patch \
++        perl \
++        pkgconfig \
++        polkit \
++        qemu-img \
++        radvd \
++        readline-devel \
++        rpcgen \
++        rpm-build \
++        sanlock-devel \
++        screen \
++        scrub \
++        sheepdog \
++        strace \
++        sudo \
++        systemtap-sdt-devel \
++        vim \
++        wireshark-devel \
++        xen-devel \
++        xfsprogs-devel \
++        yajl-devel \
++        zfs-fuse &amp;&amp; \
++    dnf autoremove -y &amp;&amp; \
++    dnf clean all -y
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187025.html">[dockerfiles PATCH 2/3] Re-introduce Ubuntu 16.04	Dockerfile</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187027.html">[dockerfiles PATCH 0/3] Various updates</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187025.html">[dockerfiles PATCH 2/3] Re-introduce Ubuntu 16.04	Dockerfile</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187028.html">[dockerfiles PATCH 3/3] Add Debian 10 Dockerfiles</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187026"><strong>Date</strong></a></li>
+<li><a href="index.html#187026"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

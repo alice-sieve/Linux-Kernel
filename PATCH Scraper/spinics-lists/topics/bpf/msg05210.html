@@ -1,0 +1,629 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic -->
+<!--X-From-R13: Kbatubat Ebat &#60;lufNso.pbz> -->
+<!--X-Date: Wed, 10 Jul 2019 17:17:14 &#45;0700 -->
+<!--X-Message-Id: f6bc7a95&#45;e8e1&#45;eec4&#45;9728&#45;3b9e36b434fa@fb.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190710080840.2613160&#45;1&#45;andriin@fb.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BPF: Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic &mdash; BPF</title>
+<link rel="alternate" type="application/rss+xml" title="BPF" href="//feeds.feedburner.com/packetfilters">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic</h1>
+[<a href="msg05209.html">Date Prev</a>][<a href="msg05211.html">Date Next</a>][<a href="msg05159.html">Thread Prev</a>][<a href="msg05211.html">Thread Next</a>][<a href="maillist.html#05210">Date Index</a>][<a href="index.html#05210">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic</li>
+<li><em>From</em>: Yonghong Song &lt;yhs@xxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 11 Jul 2019 00:16:47 +0000</li>
+<li><em>Accept-language</em>: en-US</li>
+<li><em>Cc</em>: Martin Lau &lt;kafai@xxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg05159.html">20190710080840.2613160-1-andriin@fb.com</a>&gt;</li>
+<li><em>Thread-index</em>: AQHVNvb9OTRSXZV6J0yyn1q3qDFOw6bEjekA</li>
+<li><em>Thread-topic</em>: [PATCH bpf] bpf: fix BTF verifier size resolution logic</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>
+
+On 7/10/19 1:08 AM, Andrii Nakryiko wrote:
+&gt;<i> BTF verifier has Different logic depending on whether we are following</i>
+&gt;<i> a PTR or STRUCT/ARRAY (or something else). This is an optimization to</i>
+&gt;<i> stop early in DFS traversal while resolving BTF types. But it also</i>
+&gt;<i> results in a size resolution bug, when there is a chain, e.g., of PTR -&gt;</i>
+&gt;<i> TYPEDEF -&gt; ARRAY, in which case due to being in pointer context ARRAY</i>
+&gt;<i> size won't be resolved, as it is considered to be a sink for pointer,</i>
+&gt;<i> leading to TYPEDEF being in RESOLVED state with zero size, which is</i>
+&gt;<i> completely wrong.</i>
+&gt;<i> </i>
+&gt;<i> Optimization is doubtful, though, as btf_check_all_types() will iterate</i>
+&gt;<i> over all BTF types anyways, so the only saving is a potentially slightly</i>
+&gt;<i> shorter stack. But correctness is more important that tiny savings.</i>
+&gt;<i> </i>
+&gt;<i> This bug manifests itself in rejecting BTF-defined maps that use array</i>
+&gt;<i> typedef as a value type:</i>
+&gt;<i> </i>
+&gt;<i> typedef int array_t[16];</i>
+&gt;<i> </i>
+&gt;<i> struct {</i>
+&gt;<i> 	__uint(type, BPF_MAP_TYPE_ARRAY);</i>
+&gt;<i> 	__type(value, array_t); /* i.e., array_t *value; */</i>
+&gt;<i> } test_map SEC(&quot;.maps&quot;);</i>
+&gt;<i> </i>
+&gt;<i> Fixes: eb3f595dab40 (&quot;bpf: btf: Validate type reference&quot;)</i>
+&gt;<i> Cc: Martin KaFai Lau &lt;kafai@xxxxxx&gt;</i>
+&gt;<i> Signed-off-by: Andrii Nakryiko &lt;andriin@xxxxxx&gt;</i>
+
+The change seems okay to me. Currently, looks like intermediate
+modifier type will carry size = 0 (in the internal data structure).
+
+If we remove RESOLVE logic, we probably want to double check
+whether we handle circular types correctly or not. Maybe we will
+be okay if all self tests pass.
+
+I may still be worthwhile to qualify the RESOLVE optimization benefit
+before removing it.
+
+Another possible change is, for external usage, removing
+modifiers, before checking the size, something like below.
+Note that I am not strongly advocating my below patch as
+it has the same shortcoming that maintained modifier type
+size may not be correct.
+
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 546ebee39e2a..6f927c3e0a89 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -620,6 +620,54 @@ static bool btf_type_int_is_regular(const struct 
+btf_type *t)
+         return true;
+  }
+
++static const struct btf_type *__btf_type_id_size(const struct btf *btf,
++                                                u32 *type_id, u32 
+*ret_size,
++                                                bool skip_modifier)
++{
++       const struct btf_type *size_type;
++       u32 size_type_id = *type_id;
++       u32 size = 0;
++
++       size_type = btf_type_by_id(btf, size_type_id);
++       if (size_type &amp;&amp; skip_modifier) {
++               while (btf_type_is_modifier(size_type))
++                       size_type = btf_type_by_id(btf, size_type-&gt;type);
++       }
++
++       if (btf_type_nosize_or_null(size_type))
++               return NULL;
++
++       if (btf_type_has_size(size_type)) {
++               size = size_type-&gt;size;
++       } else if (btf_type_is_array(size_type)) {
++               size = btf-&gt;resolved_sizes[size_type_id];
++       } else if (btf_type_is_ptr(size_type)) {
++               size = sizeof(void *);
++       } else {
++               if (WARN_ON_ONCE(!btf_type_is_modifier(size_type) &amp;&amp;
++                                !btf_type_is_var(size_type)))
++                       return NULL;
++
++               size = btf-&gt;resolved_sizes[size_type_id];
++               size_type_id = btf-&gt;resolved_ids[size_type_id];
++               size_type = btf_type_by_id(btf, size_type_id);
++               if (btf_type_nosize_or_null(size_type))
++                       return NULL;
++       }
++
++       *type_id = size_type_id;
++       if (ret_size)
++               *ret_size = size;
++
++       return size_type;
++}
++
++const struct btf_type *btf_type_id_size(const struct btf *btf,
++                                       u32 *type_id, u32 *ret_size)
++{
++       return __btf_type_id_size(btf, type_id, ret_size, true);
++}
++
+  /*
+   * Check that given struct member is a regular int with expected
+   * offset and size.
+@@ -633,7 +681,7 @@ bool btf_member_is_reg_int(const struct btf *btf, 
+const struct btf_type *s,
+         u8 nr_bits;
+
+         id = m-&gt;type;
+-       t = btf_type_id_size(btf, &amp;id, NULL);
++       t = __btf_type_id_size(btf, &amp;id, NULL, false);
+         if (!t || !btf_type_is_int(t))
+                 return false;
+
+@@ -1051,42 +1099,6 @@ static const struct btf_type 
+*btf_type_id_resolve(const struct btf *btf,
+         return btf_type_by_id(btf, *type_id);
+  }
+
+-const struct btf_type *btf_type_id_size(const struct btf *btf,
+-                                       u32 *type_id, u32 *ret_size)
+-{
+-       const struct btf_type *size_type;
+-       u32 size_type_id = *type_id;
+-       u32 size = 0;
+-
+-       size_type = btf_type_by_id(btf, size_type_id);
+-       if (btf_type_nosize_or_null(size_type))
+-               return NULL;
+-
+-       if (btf_type_has_size(size_type)) {
+-               size = size_type-&gt;size;
+-       } else if (btf_type_is_array(size_type)) {
+-               size = btf-&gt;resolved_sizes[size_type_id];
+-       } else if (btf_type_is_ptr(size_type)) {
+-               size = sizeof(void *);
+-       } else {
+-               if (WARN_ON_ONCE(!btf_type_is_modifier(size_type) &amp;&amp;
+-                                !btf_type_is_var(size_type)))
+-                       return NULL;
+-
+-               size = btf-&gt;resolved_sizes[size_type_id];
+-               size_type_id = btf-&gt;resolved_ids[size_type_id];
+-               size_type = btf_type_by_id(btf, size_type_id);
+-               if (btf_type_nosize_or_null(size_type))
+-                       return NULL;
+-       }
+-
+-       *type_id = size_type_id;
+-       if (ret_size)
+-               *ret_size = size;
+-
+-       return size_type;
+-}
+-
+  static int btf_df_check_member(struct btf_verifier_env *env,
+                                const struct btf_type *struct_type,
+                                const struct btf_member *member,
+@@ -1489,7 +1501,7 @@ static int btf_modifier_check_member(struct 
+btf_verifier_env *env,
+         struct btf_member resolved_member;
+         struct btf *btf = env-&gt;btf;
+
+-       resolved_type = btf_type_id_size(btf, &amp;resolved_type_id, NULL);
++       resolved_type = __btf_type_id_size(btf, &amp;resolved_type_id, NULL, 
+false);
+         if (!resolved_type) {
+                 btf_verifier_log_member(env, struct_type, member,
+                                         &quot;Invalid member&quot;);
+@@ -1514,7 +1526,7 @@ static int btf_modifier_check_kflag_member(struct 
+btf_verifier_env *env,
+         struct btf_member resolved_member;
+         struct btf *btf = env-&gt;btf;
+
+-       resolved_type = btf_type_id_size(btf, &amp;resolved_type_id, NULL);
++       resolved_type = __btf_type_id_size(btf, &amp;resolved_type_id, NULL, 
+false);
+         if (!resolved_type) {
+                 btf_verifier_log_member(env, struct_type, member,
+                                         &quot;Invalid member&quot;);
+@@ -1620,7 +1632,7 @@ static int btf_modifier_resolve(struct 
+btf_verifier_env *env,
+          * save us a few type-following when we use it later (e.g. in
+          * pretty print).
+          */
+-       if (!btf_type_id_size(btf, &amp;next_type_id, &amp;next_type_size)) {
++       if (!__btf_type_id_size(btf, &amp;next_type_id, &amp;next_type_size, 
+false)) {
+                 if (env_type_is_resolved(env, next_type_id))
+                         next_type = btf_type_id_resolve(btf, 
+&amp;next_type_id);
+
+@@ -1675,7 +1687,7 @@ static int btf_var_resolve(struct btf_verifier_env 
+*env,
+          * forward types or similar that would resolve to size of
+          * zero is allowed.
+          */
+-       if (!btf_type_id_size(btf, &amp;next_type_id, &amp;next_type_size)) {
++       if (!__btf_type_id_size(btf, &amp;next_type_id, &amp;next_type_size, 
+false)) {
+                 btf_verifier_log_type(env, v-&gt;t, &quot;Invalid type_id&quot;);
+                 return -EINVAL;
+         }
+@@ -1725,7 +1737,7 @@ static int btf_ptr_resolve(struct btf_verifier_env 
+*env,
+                                               resolved_type_id);
+         }
+
+-       if (!btf_type_id_size(btf, &amp;next_type_id, NULL)) {
++       if (!__btf_type_id_size(btf, &amp;next_type_id, NULL, false)) {
+                 if (env_type_is_resolved(env, next_type_id))
+                         next_type = btf_type_id_resolve(btf, 
+&amp;next_type_id);
+
+@@ -1851,7 +1863,7 @@ static int btf_array_check_member(struct 
+btf_verifier_env *env,
+         }
+
+         array_type_id = member-&gt;type;
+-       btf_type_id_size(btf, &amp;array_type_id, &amp;array_size);
++       __btf_type_id_size(btf, &amp;array_type_id, &amp;array_size, false);
+         struct_size = struct_type-&gt;size;
+         bytes_offset = BITS_ROUNDDOWN_BYTES(struct_bits_off);
+         if (struct_size - bytes_offset &lt; array_size) {
+@@ -1938,7 +1950,7 @@ static int btf_array_resolve(struct 
+btf_verifier_env *env,
+             !env_type_is_resolved(env, index_type_id))
+                 return env_stack_push(env, index_type, index_type_id);
+
+-       index_type = btf_type_id_size(btf, &amp;index_type_id, NULL);
++       index_type = __btf_type_id_size(btf, &amp;index_type_id, NULL, false);
+         if (!index_type || !btf_type_is_int(index_type) ||
+             !btf_type_int_is_regular(index_type)) {
+                 btf_verifier_log_type(env, v-&gt;t, &quot;Invalid index&quot;);
+@@ -1959,7 +1971,7 @@ static int btf_array_resolve(struct 
+btf_verifier_env *env,
+             !env_type_is_resolved(env, elem_type_id))
+                 return env_stack_push(env, elem_type, elem_type_id);
+
+-       elem_type = btf_type_id_size(btf, &amp;elem_type_id, &amp;elem_size);
++       elem_type = __btf_type_id_size(btf, &amp;elem_type_id, &amp;elem_size, 
+false);
+         if (!elem_type) {
+                 btf_verifier_log_type(env, v-&gt;t, &quot;Invalid elem&quot;);
+                 return -EINVAL;
+@@ -2000,7 +2012,7 @@ static void btf_array_seq_show(const struct btf 
+*btf, const struct btf_type *t,
+         u32 i, elem_size, elem_type_id;
+
+         elem_type_id = array-&gt;type;
+-       elem_type = btf_type_id_size(btf, &amp;elem_type_id, &amp;elem_size);
++       elem_type = __btf_type_id_size(btf, &amp;elem_type_id, &amp;elem_size, 
+false);
+         elem_ops = btf_type_ops(elem_type);
+         seq_puts(m, &quot;[&quot;);
+         for (i = 0; i &lt; array-&gt;nelems; i++) {
+@@ -2732,7 +2744,7 @@ static int btf_datasec_resolve(struct 
+btf_verifier_env *env,
+                 }
+
+                 type_id = var_type-&gt;type;
+-               if (!btf_type_id_size(btf, &amp;type_id, &amp;type_size)) {
++               if (!__btf_type_id_size(btf, &amp;type_id, &amp;type_size, false)) {
+                         btf_verifier_log_vsi(env, v-&gt;t, vsi, &quot;Invalid 
+type&quot;);
+                         return -EINVAL;
+                 }
+@@ -2813,7 +2825,7 @@ static int btf_func_proto_check(struct 
+btf_verifier_env *env,
+                 }
+
+                 /* Ensure the return type is a type that has a size */
+-               if (!btf_type_id_size(btf, &amp;ret_type_id, NULL)) {
++               if (!__btf_type_id_size(btf, &amp;ret_type_id, NULL, false)) {
+                         btf_verifier_log_type(env, t, &quot;Invalid return 
+type&quot;);
+                         return -EINVAL;
+                 }
+@@ -2861,7 +2873,7 @@ static int btf_func_proto_check(struct 
+btf_verifier_env *env,
+                                 break;
+                 }
+
+-               if (!btf_type_id_size(btf, &amp;arg_type_id, NULL)) {
++               if (!__btf_type_id_size(btf, &amp;arg_type_id, NULL, false)) {
+                         btf_verifier_log_type(env, t, &quot;Invalid arg#%u&quot;, 
+i + 1);
+                         err = -EINVAL;
+                         break;
+@@ -3014,7 +3026,7 @@ static bool btf_resolve_valid(struct 
+btf_verifier_env *env,
+                 u32 elem_type_id = array-&gt;type;
+                 u32 elem_size;
+
+-               elem_type = btf_type_id_size(btf, &amp;elem_type_id, 
+&amp;elem_size);
++               elem_type = __btf_type_id_size(btf, &amp;elem_type_id, 
+&amp;elem_size, false);
+                 return elem_type &amp;&amp; !btf_type_is_modifier(elem_type) &amp;&amp;
+                         (array-&gt;nelems * elem_size ==
+                          btf-&gt;resolved_sizes[type_id]);
+
+
+&gt;<i> ---</i>
+&gt;<i>   kernel/bpf/btf.c | 42 +++---------------------------------------</i>
+&gt;<i>   1 file changed, 3 insertions(+), 39 deletions(-)</i>
+&gt;<i> </i>
+&gt;<i> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c</i>
+&gt;<i> index cad09858a5f2..c68c7e73b0d1 100644</i>
+&gt;<i> --- a/kernel/bpf/btf.c</i>
+&gt;<i> +++ b/kernel/bpf/btf.c</i>
+&gt;<i> @@ -231,14 +231,6 @@ enum visit_state {</i>
+&gt;<i>   	RESOLVED,</i>
+&gt;<i>   };</i>
+&gt;<i>   </i>
+&gt;<i> -enum resolve_mode {</i>
+&gt;<i> -	RESOLVE_TBD,	/* To Be Determined */</i>
+&gt;<i> -	RESOLVE_PTR,	/* Resolving for Pointer */</i>
+&gt;<i> -	RESOLVE_STRUCT_OR_ARRAY,	/* Resolving for struct/union</i>
+&gt;<i> -					 * or array</i>
+&gt;<i> -					 */</i>
+&gt;<i> -};</i>
+&gt;<i> -</i>
+&gt;<i>   #define MAX_RESOLVE_DEPTH 32</i>
+&gt;<i>   </i>
+&gt;<i>   struct btf_sec_info {</i>
+&gt;<i> @@ -254,7 +246,6 @@ struct btf_verifier_env {</i>
+&gt;<i>   	u32 log_type_id;</i>
+&gt;<i>   	u32 top_stack;</i>
+&gt;<i>   	enum verifier_phase phase;</i>
+&gt;<i> -	enum resolve_mode resolve_mode;</i>
+&gt;<i>   };</i>
+&gt;<i>   </i>
+&gt;<i>   static const char * const btf_kind_str[NR_BTF_KINDS] = {</i>
+&gt;<i> @@ -964,26 +955,7 @@ static void btf_verifier_env_free(struct btf_verifier_env *env)</i>
+&gt;<i>   static bool env_type_is_resolve_sink(const struct btf_verifier_env *env,</i>
+&gt;<i>   				     const struct btf_type *next_type)</i>
+&gt;<i>   {</i>
+&gt;<i> -	switch (env-&gt;resolve_mode) {</i>
+&gt;<i> -	case RESOLVE_TBD:</i>
+&gt;<i> -		/* int, enum or void is a sink */</i>
+&gt;<i> -		return !btf_type_needs_resolve(next_type);</i>
+&gt;<i> -	case RESOLVE_PTR:</i>
+&gt;<i> -		/* int, enum, void, struct, array, func or func_proto is a sink</i>
+&gt;<i> -		 * for ptr</i>
+&gt;<i> -		 */</i>
+&gt;<i> -		return !btf_type_is_modifier(next_type) &amp;&amp;</i>
+&gt;<i> -			!btf_type_is_ptr(next_type);</i>
+&gt;<i> -	case RESOLVE_STRUCT_OR_ARRAY:</i>
+&gt;<i> -		/* int, enum, void, ptr, func or func_proto is a sink</i>
+&gt;<i> -		 * for struct and array</i>
+&gt;<i> -		 */</i>
+&gt;<i> -		return !btf_type_is_modifier(next_type) &amp;&amp;</i>
+&gt;<i> -			!btf_type_is_array(next_type) &amp;&amp;</i>
+&gt;<i> -			!btf_type_is_struct(next_type);</i>
+&gt;<i> -	default:</i>
+&gt;<i> -		BUG();</i>
+&gt;<i> -	}</i>
+&gt;<i> +	return !btf_type_needs_resolve(next_type);</i>
+&gt;<i>   }</i>
+&gt;<i>   </i>
+&gt;<i>   static bool env_type_is_resolved(const struct btf_verifier_env *env,</i>
+&gt;<i> @@ -1010,13 +982,6 @@ static int env_stack_push(struct btf_verifier_env *env,</i>
+&gt;<i>   	v-&gt;type_id = type_id;</i>
+&gt;<i>   	v-&gt;next_member = 0;</i>
+&gt;<i>   </i>
+&gt;<i> -	if (env-&gt;resolve_mode == RESOLVE_TBD) {</i>
+&gt;<i> -		if (btf_type_is_ptr(t))</i>
+&gt;<i> -			env-&gt;resolve_mode = RESOLVE_PTR;</i>
+&gt;<i> -		else if (btf_type_is_struct(t) || btf_type_is_array(t))</i>
+&gt;<i> -			env-&gt;resolve_mode = RESOLVE_STRUCT_OR_ARRAY;</i>
+&gt;<i> -	}</i>
+&gt;<i> -</i>
+&gt;<i>   	return 0;</i>
+&gt;<i>   }</i>
+&gt;<i>   </i>
+&gt;<i> @@ -1038,7 +1003,7 @@ static void env_stack_pop_resolved(struct btf_verifier_env *env,</i>
+&gt;<i>   	env-&gt;visit_states[type_id] = RESOLVED;</i>
+&gt;<i>   }</i>
+&gt;<i>   </i>
+&gt;<i> -static const struct resolve_vertex *env_stack_peak(struct btf_verifier_env *env)</i>
+&gt;<i> +static const struct resolve_vertex *env_stack_peek(struct btf_verifier_env *env)</i>
+&gt;<i>   {</i>
+&gt;<i>   	return env-&gt;top_stack ? &amp;env-&gt;stack[env-&gt;top_stack - 1] : NULL;</i>
+&gt;<i>   }</i>
+&gt;<i> @@ -3030,9 +2995,8 @@ static int btf_resolve(struct btf_verifier_env *env,</i>
+&gt;<i>   	const struct resolve_vertex *v;</i>
+&gt;<i>   	int err = 0;</i>
+&gt;<i>   </i>
+&gt;<i> -	env-&gt;resolve_mode = RESOLVE_TBD;</i>
+&gt;<i>   	env_stack_push(env, t, type_id);</i>
+&gt;<i> -	while (!err &amp;&amp; (v = env_stack_peak(env))) {</i>
+&gt;<i> +	while (!err &amp;&amp; (v = env_stack_peek(env))) {</i>
+&gt;<i>   		env-&gt;log_type_id = v-&gt;type_id;</i>
+&gt;<i>   		err = btf_type_ops(v-&gt;t)-&gt;resolve(env, v);</i>
+&gt;<i>   	}</i>
+&gt;<i> </i>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="05211" href="msg05211.html">Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic</a></strong>
+<ul><li><em>From:</em> Andrii Nakryiko</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="05159" href="msg05159.html">[PATCH bpf] bpf: fix BTF verifier size resolution logic</a></strong>
+<ul><li><em>From:</em> Andrii Nakryiko</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05209.html">Re: [bpf-next v3 04/12] selftests/bpf: Use bpf_prog_test_run_xattr</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05211.html">Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05159.html">[PATCH bpf] bpf: fix BTF verifier size resolution logic</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05211.html">Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05210"><strong>Date</strong></a></li>
+<li><a href="index.html#05210"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;Samsung&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-rockchip/>[Linux&nbsp;Rockchip&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-actions/>[Linux&nbsp;Actions&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-snps-arc/>[Linux&nbsp;for&nbsp;Synopsys&nbsp;ARC&nbsp;Processors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nfs/>[Linux&nbsp;NFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nilfs/>[Linux&nbsp;NILFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/vfl/>[Video&nbsp;for&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<p>
+<hr>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

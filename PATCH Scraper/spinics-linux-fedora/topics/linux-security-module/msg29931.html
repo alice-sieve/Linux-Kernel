@@ -1,0 +1,346 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH V35 25/29] kexec: Allow kexec_file() with appropriate IMA policy when locked down -->
+<!--X-From-R13: [nggurj Uneergg &#60;znggurjtneerggNtbbtyr.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 13:02:17 &#45;0700 -->
+<!--X-Message-Id: 20190715195946.223443&#45;26&#45;matthewgarrett@google.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715195946.223443&#45;1&#45;matthewgarrett@google.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, [PATCH V35 25/29] kexec: Allow kexec_file() with appropriate IMA policy when locked down">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- [PATCH V35 25/29] kexec: Allow kexec_file() with appropriate IMA policy when locked down</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH V35 25/29] kexec: Allow kexec_file() with appropriate IMA policy when locked down</h1>
+[<a href="msg29930.html">Date Prev</a>][<a href="msg29932.html">Date Next</a>][<a href="msg29949.html">Thread Prev</a>][<a href="msg29932.html">Thread Next</a>][<a href="maillist.html#29931">Date Index</a>][<a href="index.html#29931">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH V35 25/29] kexec: Allow kexec_file() with appropriate IMA policy when locked down</li>
+<li><em>From</em>: Matthew Garrett &lt;matthewgarrett@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 12:59:42 -0700</li>
+<li><em>Cc</em>: linux-security-module@xxxxxxxxxxxxxxx, linux-kernel@xxxxxxxxxxxxxxx,        linux-api@xxxxxxxxxxxxxxx, Matthew Garrett &lt;matthewgarrett@xxxxxxxxxx&gt;,        Matthew Garrett &lt;mjg59@xxxxxxxxxx&gt;, Mimi Zohar &lt;zohar@xxxxxxxxxxxxx&gt;,        Dmitry Kasatkin &lt;dmitry.kasatkin@xxxxxxxxx&gt;,        linux-integrity@xxxxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29916.html">20190715195946.223443-1-matthewgarrett@google.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg29916.html">20190715195946.223443-1-matthewgarrett@google.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Systems in lockdown mode should block the kexec of untrusted kernels.
+For x86 and ARM we can ensure that a kernel is trustworthy by validating
+a PE signature, but this isn't possible on other architectures. On those
+platforms we can use IMA digital signatures instead. Add a function to
+determine whether IMA has or will verify signatures for a given event type,
+and if so permit kexec_file() even if the kernel is otherwise locked down.
+This is restricted to cases where CONFIG_INTEGRITY_TRUSTED_KEYRING is set
+in order to prevent an attacker from loading additional keys at runtime.
+
+Signed-off-by: Matthew Garrett &lt;mjg59@xxxxxxxxxx&gt;
+Acked-by: Mimi Zohar &lt;zohar@xxxxxxxxxxxxx&gt;
+Cc: Dmitry Kasatkin &lt;dmitry.kasatkin@xxxxxxxxx&gt;
+Cc: linux-integrity@xxxxxxxxxxxxxxx
+---
+ include/linux/ima.h                 |  9 ++++++
+ kernel/kexec_file.c                 | 12 +++++--
+ security/integrity/ima/ima.h        |  2 ++
+ security/integrity/ima/ima_main.c   |  2 +-
+ security/integrity/ima/ima_policy.c | 50 +++++++++++++++++++++++++++++
+ 5 files changed, 72 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/ima.h b/include/linux/ima.h
+index a20ad398d260..1c37f17f7203 100644
+--- a/include/linux/ima.h
++++ b/include/linux/ima.h
+@@ -131,4 +131,13 @@ static inline int ima_inode_removexattr(struct dentry *dentry,
+ 	return 0;
+ }
+ #endif /* CONFIG_IMA_APPRAISE */
++
++#if defined(CONFIG_IMA_APPRAISE) &amp;&amp; defined(CONFIG_INTEGRITY_TRUSTED_KEYRING)
++extern bool ima_appraise_signature(enum kernel_read_file_id func);
++#else
++static inline bool ima_appraise_signature(enum kernel_read_file_id func)
++{
++	return false;
++}
++#endif /* CONFIG_IMA_APPRAISE &amp;&amp; CONFIG_INTEGRITY_TRUSTED_KEYRING */
+ #endif /* _LINUX_IMA_H */
+diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+index dd06f1070d66..13c9960a5860 100644
+--- a/kernel/kexec_file.c
++++ b/kernel/kexec_file.c
+@@ -228,9 +228,17 @@ kimage_file_prepare_segments(struct kimage *image, int kernel_fd, int initrd_fd,
+ 			goto out;
+ 		}
+ 
+-		ret = security_locked_down(LOCKDOWN_KEXEC);
+-		if (ret)
++		ret = 0;
++
++		/* If IMA is guaranteed to appraise a signature on the kexec
++		 * image, permit it even if the kernel is otherwise locked
++		 * down.
++		 */
++		if (!ima_appraise_signature(READING_KEXEC_IMAGE) &amp;&amp;
++		    security_locked_down(LOCKDOWN_KEXEC)) {
++			ret = -EPERM;
+ 			goto out;
++		}
+ 
+ 		break;
+ 
+diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+index 011b91c79351..64dcb11cf444 100644
+--- a/security/integrity/ima/ima.h
++++ b/security/integrity/ima/ima.h
+@@ -113,6 +113,8 @@ struct ima_kexec_hdr {
+ 	u64 count;
+ };
+ 
++extern const int read_idmap[];
++
+ #ifdef CONFIG_HAVE_IMA_KEXEC
+ void ima_load_kexec_buffer(void);
+ #else
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index 584019728660..b9f57503af2c 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -502,7 +502,7 @@ int ima_read_file(struct file *file, enum kernel_read_file_id read_id)
+ 	return 0;
+ }
+ 
+-static const int read_idmap[READING_MAX_ID] = {
++const int read_idmap[READING_MAX_ID] = {
+ 	[READING_FIRMWARE] = FIRMWARE_CHECK,
+ 	[READING_FIRMWARE_PREALLOC_BUFFER] = FIRMWARE_CHECK,
+ 	[READING_MODULE] = MODULE_CHECK,
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index 6df7f641ff66..827f1e33fe86 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
+@@ -1456,3 +1456,53 @@ int ima_policy_show(struct seq_file *m, void *v)
+ 	return 0;
+ }
+ #endif	/* CONFIG_IMA_READ_POLICY */
++
++#if defined(CONFIG_IMA_APPRAISE) &amp;&amp; defined(CONFIG_INTEGRITY_TRUSTED_KEYRING)
++/*
++ * ima_appraise_signature: whether IMA will appraise a given function using
++ * an IMA digital signature. This is restricted to cases where the kernel
++ * has a set of built-in trusted keys in order to avoid an attacker simply
++ * loading additional keys.
++ */
++bool ima_appraise_signature(enum kernel_read_file_id id)
++{
++	struct ima_rule_entry *entry;
++	bool found = false;
++	enum ima_hooks func;
++
++	if (id &gt;= READING_MAX_ID)
++		return false;
++
++	func = read_idmap[id] ?: FILE_CHECK;
++
++	rcu_read_lock();
++	list_for_each_entry_rcu(entry, ima_rules, list) {
++		if (entry-&gt;action != APPRAISE)
++			continue;
++
++		/*
++		 * A generic entry will match, but otherwise require that it
++		 * match the func we're looking for
++		 */
++		if (entry-&gt;func &amp;&amp; entry-&gt;func != func)
++			continue;
++
++		/*
++		 * We require this to be a digital signature, not a raw IMA
++		 * hash.
++		 */
++		if (entry-&gt;flags &amp; IMA_DIGSIG_REQUIRED)
++			found = true;
++
++		/*
++		 * We've found a rule that matches, so break now even if it
++		 * didn't require a digital signature - a later rule that does
++		 * won't override it, so would be a false positive.
++		 */
++		break;
++	}
++
++	rcu_read_unlock();
++	return found;
++}
++#endif /* CONFIG_IMA_APPRAISE &amp;&amp; CONFIG_INTEGRITY_TRUSTED_KEYRING */
+-- 
+2.22.0.510.g264f2c817a-goog
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29916" href="msg29916.html">[PATCH V35 00/29] Kernel lockdown functionality</a></strong>
+<ul><li><em>From:</em> Matthew Garrett</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29930.html">[PATCH V35 26/29] debugfs: Restrict debugfs when the kernel is locked down</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29932.html">[PATCH V35 28/29] efi: Restrict efivar_ssdt_load when the kernel is locked down</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29949.html">Re: [PATCH V35 26/29] debugfs: Restrict debugfs when the kernel is locked down</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29932.html">[PATCH V35 28/29] efi: Restrict efivar_ssdt_load when the kernel is locked down</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29931"><strong>Date</strong></a></li>
+<li><a href="index.html#29931"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

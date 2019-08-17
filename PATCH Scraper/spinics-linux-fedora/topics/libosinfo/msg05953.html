@@ -1,0 +1,526 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [osinfo&#45;db&#45;tools PATCH v2 1/9] import: Use libsoup for	http:// &#38; https:// requests -->
+<!--X-From-R13: =?GFT&#45;8?d?Tnovnab=20Tvq=Q3=OOapvb?= &#60;svqrapvbNerqung.pbz> -->
+<!--X-Date: Wed, 3 Jul 2019 03:14:19 &#45;0700 -->
+<!--X-Message-Id: 20190703101410.15567&#45;2&#45;fidencio@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190703101410.15567&#45;1&#45;fidencio@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<title>[osinfo-db-tools PATCH v2 1/9] import: Use libsoup for	http:// &amp; https:// requests &mdash; libosinfo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="libosinfo: [osinfo-db-tools PATCH v2 1/9] import: Use libsoup for	http:// &amp; https:// requests">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="libosinfo" href="//feeds.feedburner.com/libosinfo">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[osinfo-db-tools PATCH v2 1/9] import: Use libsoup for	http:// &amp; https:// requests</h1>
+[<a href="msg05952.html">Date Prev</a>][<a href="msg05954.html">Date Next</a>][<a href="msg05954.html">Thread Prev</a>][<a href="msg05955.html">Thread Next</a>][<a href="maillist.html#05953">Date Index</a>][<a href="index.html#05953">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [osinfo-db-tools PATCH v2 1/9] import: Use libsoup for	http:// &amp; https:// requests</li>
+<li><em>From</em>: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed,  3 Jul 2019 12:14:02 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg05954.html">20190703101410.15567-1-fidencio@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg05954.html">20190703101410.15567-1-fidencio@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>As osinfo-db-import handles non-local requests, it'd end up relying on
+GVFS under the hood, which would cause the app to not work when running
+as root.
+
+In order to avoid this situation, let's rely on libsoup for this case.
+
+It's important to mention that glib minimum version has been bumped to
+2.44 as that's the version where g_input_stream_read_all() has been
+introduced.
+
+<a  rel="nofollow" href="https://gitlab.com/libosinfo/libosinfo/issues/30">https://gitlab.com/libosinfo/libosinfo/issues/30</a>
+
+Signed-off-by: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;
+---
+ configure.ac             |   5 +-
+ osinfo-db-tools.spec.in  |   1 +
+ tools/Makefile.am        |   2 +
+ tools/osinfo-db-import.c | 137 ++++++++++++++++++++++++++++++---------
+ 4 files changed, 113 insertions(+), 32 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 4df1139..d019941 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -63,13 +63,14 @@ m4_if(m4_version_compare([2.61a.100],
+ m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
+ 
+ # Keep these two definitions in agreement.
+-GLIB_MINIMUM_VERSION=&quot;2.36&quot;
+-GLIB_ENCODED_VERSION=&quot;GLIB_VERSION_2_36&quot;
++GLIB_MINIMUM_VERSION=&quot;2.44&quot;
++GLIB_ENCODED_VERSION=&quot;GLIB_VERSION_2_44&quot;
+ 
+ PKG_CHECK_MODULES([LIBXML], [libxml-2.0 &gt;= 2.6.0])
+ PKG_CHECK_MODULES([LIBXSLT], [libxslt &gt;= 1.0.0])
+ PKG_CHECK_MODULES([LIBARCHIVE], [libarchive &gt;= 3.0.0])
+ PKG_CHECK_MODULES([JSON_GLIB], [json-glib-1.0])
++PKG_CHECK_MODULES([LIBSOUP], [libsoup-2.4])
+ 
+ PKG_CHECK_MODULES([GLIB], [glib-2.0 &gt;= $GLIB_MINIMUM_VERSION gobject-2.0 gio-2.0])
+ GLIB_CFLAGS=&quot;$GLIB_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=$GLIB_ENCODED_VERSION&quot;
+diff --git a/osinfo-db-tools.spec.in b/osinfo-db-tools.spec.in
+index 459dde9..8a82c56 100644
+--- a/osinfo-db-tools.spec.in
++++ b/osinfo-db-tools.spec.in
+@@ -18,6 +18,7 @@ BuildRequires: gettext-devel
+ BuildRequires: glib2-devel
+ BuildRequires: libxml2-devel &gt;= 2.6.0
+ BuildRequires: libxslt-devel &gt;= 1.0.0
++BuildRequires: libsoup-devel
+ BuildRequires: libarchive-devel
+ BuildRequires: json-glib-devel
+ BuildRequires: /usr/bin/pod2man
+diff --git a/tools/Makefile.am b/tools/Makefile.am
+index e43e85d..f124d4f 100644
+--- a/tools/Makefile.am
++++ b/tools/Makefile.am
+@@ -2,6 +2,7 @@ AM_CFLAGS = $(GOBJECT_CFLAGS) \
+ 	    $(GIO_CFLAGS)     \
+ 	    $(GLIB_CFLAGS)    \
+ 	    $(LIBXML_CFLAGS)  \
++	    $(LIBSOUP_CFLAGS)  \
+ 	    -DPKGDATADIR=&quot;\&quot;$(pkgdatadir)\&quot;&quot; \
+ 	    -DDATA_DIR=&quot;\&quot;$(datadir)\&quot;&quot; \
+ 	    -DSYSCONFDIR=&quot;\&quot;$(sysconfdir)\&quot;&quot; \
+@@ -36,6 +37,7 @@ osinfo_db_import_SOURCES = osinfo-db-import.c $(COMMON_SOURCES)
+ osinfo_db_import_LDADD = $(GOBJECT_LIBS)	\
+ 		      $(GIO_LIBS)		\
+ 		      $(GLIB_LIBS)		\
++		      $(LIBSOUP_LIBS)		\
+ 		      $(JSON_GLIB_LIBS)	\
+ 		      $(LIBARCHIVE_LIBS)
+ osinfo_db_import_CFLAGS = $(AM_CFLAGS)		\
+diff --git a/tools/osinfo-db-import.c b/tools/osinfo-db-import.c
+index 675961d..830af3c 100644
+--- a/tools/osinfo-db-import.c
++++ b/tools/osinfo-db-import.c
+@@ -29,6 +29,7 @@
+ #include &lt;stdlib.h&gt;
+ #include &lt;archive.h&gt;
+ #include &lt;archive_entry.h&gt;
++#include &lt;libsoup/soup.h&gt;
+ 
+ #include &quot;osinfo-db-util.h&quot;
+ 
+@@ -36,6 +37,7 @@
+ #define VERSION_FILE &quot;VERSION&quot;
+ 
+ const char *argv0;
++static SoupSession *session = NULL;
+ 
+ static int osinfo_db_import_create_reg(GFile *file,
+                                        struct archive *arc,
+@@ -139,33 +141,64 @@ static GFile *osinfo_db_import_get_file(GFile *target,
+     return g_file_resolve_relative_path(target, tmp);
+ }
+ 
+-static int
+-osinfo_db_import_download_file(GFile *file,
+-                               gchar **source_file)
++static gchar *
++osinfo_db_import_download_file(const gchar *source)
+ {
++    GInputStream *stream = NULL;
+     GFile *out = NULL;
+     GError *err = NULL;
++    SoupMessage *message = NULL;
+     gchar *filename = NULL;
+-    GFileCopyFlags flags = G_FILE_COPY_OVERWRITE | G_FILE_COPY_BACKUP;
++    gchar *source_file = NULL;
++    gchar *content = NULL;
++    goffset content_size = 0;
++    GFileCreateFlags flags = G_FILE_CREATE_REPLACE_DESTINATION;
+     int ret = -1;
+ 
+-    filename = g_file_get_basename(file);
++    filename = g_path_get_basename(source);
+     if (filename == NULL)
+         goto cleanup;
+ 
+-    *source_file = g_build_filename(g_get_user_cache_dir(), filename, NULL);
+-    if (*source_file == NULL)
++    source_file = g_build_filename(g_get_user_cache_dir(), filename, NULL);
++    if (source_file == NULL)
+         goto cleanup;
+ 
+-    out = g_file_new_for_path(*source_file);
++    out = g_file_new_for_path(source_file);
+     if (out == NULL)
+         goto cleanup;
+ 
+-    if (!g_file_copy(file, out, flags, NULL, NULL, NULL, &amp;err)) {
+-        gchar *path = g_file_get_path(file);
++    if (session == NULL)
++        session = soup_session_new();
++
++    if (session == NULL)
++        goto cleanup;
++
++    message = soup_message_new(&quot;GET&quot;, source);
++    if (message == NULL)
++        goto cleanup;
++
++    stream = soup_session_send(session, message, NULL, &amp;err);
++    if (stream == NULL ||
++        !SOUP_STATUS_IS_SUCCESSFUL(message-&gt;status_code)) {
++        g_printerr(&quot;Could not access %s: %s\n&quot;,
++                   source,
++                   err != NULL ? err-&gt;message :
++                                 soup_status_get_phrase(message-&gt;status_code));
++        goto cleanup;
++    }
++
++    content_size = soup_message_headers_get_content_length(message-&gt;response_headers);
++    content = g_malloc0(content_size);
++
++    if (!g_input_stream_read_all(stream, content, content_size, NULL, NULL, &amp;err)) {
++        g_printerr(&quot;Could not load the content of %s: %s\n&quot;,
++                   source, err-&gt;message);
++        goto cleanup;
++    }
++
++    if (!g_file_replace_contents(out, content, content_size, NULL, TRUE, flags, NULL, NULL, &amp;err)) {
+         g_printerr(&quot;Could not download file \&quot;%s\&quot;: %s\n&quot;,
+-                   path, err-&gt;message);
+-        g_free(path);
++                   source, err-&gt;message);
+         goto cleanup;
+     }
+ 
+@@ -173,14 +206,20 @@ osinfo_db_import_download_file(GFile *file,
+ 
+  cleanup:
+     g_free(filename);
++    g_free(content);
++    g_clear_object(&amp;message);
++    g_clear_object(&amp;stream);
+     if (out != NULL)
+         g_object_unref(out);
+     if (err != NULL)
+         g_error_free(err);
+-    if (ret != 0 &amp;&amp; *source_file != NULL)
+-        unlink(*source_file);
++    if (ret != 0 &amp;&amp; source_file != NULL) {
++        unlink(source_file);
++        g_free(source_file);
++        source_file = NULL;
++    }
+ 
+-    return ret;
++    return source_file;
+ }
+ 
+ static gboolean osinfo_db_get_installed_version(GFile *dir,
+@@ -214,18 +253,39 @@ static gboolean osinfo_db_get_installed_version(GFile *dir,
+ static gboolean osinfo_db_get_latest_info(gchar **version,
+                                           gchar **url)
+ {
++    SoupMessage *message = NULL;
++    GInputStream *stream = NULL;
+     JsonParser *parser = NULL;
+     JsonReader *reader = NULL;
+-    GFile *uri = NULL;
+     GError *err = NULL;
+     gchar *content = NULL;
++    goffset content_size = 0;
+     gboolean ret = FALSE;
+ 
+-    uri = g_file_new_for_uri(LATEST_URI);
+-    if (uri == NULL)
+-        return FALSE;
++    if (session == NULL)
++        session = soup_session_new();
+ 
+-    if (!g_file_load_contents(uri, NULL, &amp;content, NULL, NULL, &amp;err)) {
++    if (session == NULL)
++        goto cleanup;
++
++    message = soup_message_new(&quot;GET&quot;, LATEST_URI);
++    if (message == NULL)
++        goto cleanup;
++
++    stream = soup_session_send(session, message, NULL, &amp;err);
++    if (stream == NULL ||
++        !SOUP_STATUS_IS_SUCCESSFUL(message-&gt;status_code)) {
++        g_printerr(&quot;Could not access %s: %s\n&quot;,
++                   LATEST_URI,
++                   err != NULL ? err-&gt;message :
++                                 soup_status_get_phrase(message-&gt;status_code));
++        goto cleanup;
++    }
++
++    content_size = soup_message_headers_get_content_length(message-&gt;response_headers);
++    content = g_malloc0(content_size);
++
++    if (!g_input_stream_read_all(stream, content, content_size, NULL, NULL, &amp;err)) {
+         g_printerr(&quot;Could not load the content of %s: %s\n&quot;,
+                    LATEST_URI, err-&gt;message);
+         goto cleanup;
+@@ -286,7 +346,7 @@ static gboolean osinfo_db_get_latest_info(gchar **version,
+     ret = TRUE;
+ 
+  cleanup:
+-    g_object_unref(uri);
++    g_clear_object(&amp;message);
+     if (parser != NULL)
+         g_object_unref(parser);
+     if (reader != NULL)
+@@ -297,6 +357,19 @@ static gboolean osinfo_db_get_latest_info(gchar **version,
+     return ret;
+ }
+ 
++static gboolean requires_soup(const gchar *source)
++{
++    const gchar *prefixes[] = { &quot;<a  rel="nofollow" href="http://&quot">http://&quot</a>;, &quot;<a  rel="nofollow" href="https://&quot">https://&quot</a>;, NULL };
++    gsize i;
++
++    for (i = 0; prefixes[i] != NULL; i++) {
++        if (g_str_has_prefix(source, prefixes[i]))
++            return TRUE;
++    }
++
++    return FALSE;
++}
++
+ static int osinfo_db_import_extract(GFile *target,
+                                     const char *source,
+                                     gboolean verbose)
+@@ -318,21 +391,21 @@ static int osinfo_db_import_extract(GFile *target,
+         source = NULL;
+ 
+     if (source != NULL) {
+-        file = g_file_new_for_commandline_arg(source);
+-        if (file == NULL)
+-            goto cleanup;
++        file_is_native = !requires_soup(source);
+ 
+-        file_is_native = g_file_is_native(file);
+-        if (!file_is_native) {
+-            if (osinfo_db_import_download_file(file, &amp;source_file) &lt; 0)
++        if (file_is_native) {
++            file = g_file_new_for_commandline_arg(source);
++            if (file == NULL)
+                 goto cleanup;
+-        } else {
++
+             source_file = g_file_get_path(file);
++            g_clear_object(&amp;file);
++        } else {
++            source_file = osinfo_db_import_download_file(source);
+         }
++
+         if (source_file == NULL)
+             goto cleanup;
+-
+-        g_clear_object(&amp;file);
+     }
+ 
+     if ((r = archive_read_open_filename(arc, source_file, 10240)) != ARCHIVE_OK) {
+@@ -478,6 +551,7 @@ gint main(gint argc, gchar **argv)
+     g_free(installed_version);
+     g_free(latest_version);
+     g_free(latest_url);
++    g_clear_object(&amp;session);
+     g_clear_error(&amp;error);
+     g_option_context_free(context);
+ 
+@@ -528,6 +602,9 @@ If run by a privileged account (ie root), the B&lt;local&gt; database
+ location will be used by default, otherwise the B&lt;user&gt; location
+ will be used.
+ 
++When passing a non local ARCHIVE-FILE, only http:// and https://
++protocols are supported.
++
+ With no ARCHIVE-FILE, or when ARCHIVE-FILE is -, read standard
+ input.
+ 
+-- 
+2.21.0
+
+_______________________________________________
+Libosinfo mailing list
+Libosinfo@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libosinfo">https://www.redhat.com/mailman/listinfo/libosinfo</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05952.html">[libosinfo PATCH v2 6/8] media: Fix	_create_from_location_with_flags_async() docs</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05954.html">[osinfo-db-tools PATCH v2 0/9] Drop GVFS dependency in	favour of libsoup (+ some cleanups)</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05954.html">[osinfo-db-tools PATCH v2 0/9] Drop GVFS dependency in	favour of libsoup (+ some cleanups)</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05955.html">[osinfo-db-tools PATCH v2 2/9] spec: Drop gvfs	dependency</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05953"><strong>Date</strong></a></li>
+<li><a href="index.html#05953"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

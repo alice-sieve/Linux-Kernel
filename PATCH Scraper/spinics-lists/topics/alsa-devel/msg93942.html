@@ -1,0 +1,280 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 0/6] ALSA/HDA: abort probe when DMICs are	detected -->
+<!--X-From-R13: Bvreer&#45;Zbhvf Pbffneg &#60;cvreer&#45;ybhvf.obffnegNyvahk.vagry.pbz> -->
+<!--X-Date: Fri, 19 Jul 2019 10:07:17 &#45;0700 -->
+<!--X-Message-Id: 20190719170610.17610&#45;1&#45;pierre&#45;louis.bossart@linux.intel.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 0/6] ALSA/HDA: abort probe when DMICs are	detected &mdash; ALSA Devel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 0/6] ALSA/HDA: abort probe when DMICs are	detected &mdash; ALSA Devel</title>
+<link rel="alternate" type="application/rss+xml" title="ALSA Devel" href="//feedproxy.google.com/AlsaDevel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 0/6] ALSA/HDA: abort probe when DMICs are	detected</h1>
+[<a href="msg93941.html">Date Prev</a>][<a href="msg93943.html">Date Next</a>][<a href="msg93934.html">Thread Prev</a>][<a href="msg93943.html">Thread Next</a>][<a href="maillist.html#93942">Date Index</a>][<a href="threads.html#93942">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: alsa-devel@xxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH 0/6] ALSA/HDA: abort probe when DMICs are	detected</li>
+<li><em>From</em>: Pierre-Louis Bossart &lt;pierre-louis.bossart@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 19 Jul 2019 12:06:04 -0500</li>
+<li><em>Cc</em>: tiwai@xxxxxxx, Pierre-Louis Bossart &lt;pierre-louis.bossart@xxxxxxxxxxxxxxx&gt;,        Daniel Drake &lt;drake@xxxxxxxxxxxx&gt;, Hui Wang &lt;hui.wang@xxxxxxxxxxxxx&gt;,        Curtis Malainey &lt;cujomalainey@xxxxxxxxxx&gt;, broonie@xxxxxxxxxx</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This is the second take on same problem of detecting when the HDaudio
+legacy driver can be used and when the SST or SOF drivers are
+required.
+
+The previous attempt based on a the PCI Class information was a
+resounding failure and broke audio on Linus' laptop, so we need
+additional information to avoid enabling a DSP-based driver without a
+good reason to do so.
+
+This patchset suggests the use of the NHLT information which *in
+theory* exposes DMIC endpoints. The legacy HDaudio driver cannot
+handle DMICs and will not provide any capture capabilities. Since it's
+typically the first one to probe due to the Makefile order, aborting
+the probe will let the PCI subsystem look for the next driver which
+hopefully will support this capability.
+
+I tested this patch on 5 devices (SKL, KBL, APL, GLK, WHL), three
+without DMICs and two with, and the detection seems to work as
+planned. Additional testing by Canonical and Endless folks did not
+expose any issues.
+
+Changes since RFC:
+Cosmetic code improvements
+Moved intel-nhlt.h to include/sound
+Moved intel-nhlt.c to sound/hda
+Removed SOC prefixes
+Added full-support for vendor-defined geometries
+Added Kconfig and kernel module parameter to opt-in
+
+Pierre-Louis Bossart (6):
+  ASoC: Intel: Skylake: move NHLT header to common directory
+  ALSA: hda: move parts of NHLT code to new module
+  ALSA: hda: intel-nhlt: remove useless OR operation
+  ALSA: hda: intel-nhlt: handle NHLT VENDOR_DEFINED DMIC geometry
+  ASoC: Intel: Skylake: use common NHLT module
+  ALSA: hda/intel: stop probe if DMICS are detected on Skylake+
+    platforms
+
+ .../skl-nhlt.h =&gt; include/sound/intel-nhlt.h  |  51 +++++++--
+ sound/hda/Kconfig                             |   3 +
+ sound/hda/Makefile                            |   3 +
+ sound/hda/intel-nhlt.c                        | 102 ++++++++++++++++++
+ sound/pci/hda/Kconfig                         |  10 ++
+ sound/pci/hda/hda_intel.c                     |  34 ++++++
+ sound/soc/intel/Kconfig                       |   1 +
+ sound/soc/intel/skylake/skl-nhlt.c            |  91 +---------------
+ sound/soc/intel/skylake/skl-ssp-clk.c         |   1 +
+ sound/soc/intel/skylake/skl-topology.c        |   1 +
+ sound/soc/intel/skylake/skl.c                 |  12 ++-
+ sound/soc/intel/skylake/skl.h                 |   4 -
+ 12 files changed, 205 insertions(+), 108 deletions(-)
+ rename sound/soc/intel/skylake/skl-nhlt.h =&gt; include/sound/intel-nhlt.h (65%)
+ create mode 100644 sound/hda/intel-nhlt.c
+
+-- 
+2.20.1
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@xxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://mailman.alsa-project.org/mailman/listinfo/alsa-devel">https://mailman.alsa-project.org/mailman/listinfo/alsa-devel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="93948" href="msg93948.html">[PATCH 6/6] ALSA: hda/intel: stop probe if DMICS are	detected on Skylake+ platforms</a></strong>
+<ul><li><em>From:</em> Pierre-Louis Bossart</li></ul></li>
+<li><strong><a name="93947" href="msg93947.html">[PATCH 5/6] ASoC: Intel: Skylake: use common NHLT	module</a></strong>
+<ul><li><em>From:</em> Pierre-Louis Bossart</li></ul></li>
+<li><strong><a name="93946" href="msg93946.html">[PATCH 3/6] ALSA: hda: intel-nhlt: remove useless OR	operation</a></strong>
+<ul><li><em>From:</em> Pierre-Louis Bossart</li></ul></li>
+<li><strong><a name="93945" href="msg93945.html">[PATCH 4/6] ALSA: hda: intel-nhlt: handle NHLT	VENDOR_DEFINED DMIC geometry</a></strong>
+<ul><li><em>From:</em> Pierre-Louis Bossart</li></ul></li>
+<li><strong><a name="93944" href="msg93944.html">[PATCH 2/6] ALSA: hda: move parts of NHLT code to new	module</a></strong>
+<ul><li><em>From:</em> Pierre-Louis Bossart</li></ul></li>
+<li><strong><a name="93943" href="msg93943.html">[PATCH 1/6] ASoC: Intel: Skylake: move NHLT header to	common directory</a></strong>
+<ul><li><em>From:</em> Pierre-Louis Bossart</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg93941.html">Re:  [PATCH 3/3] ASoC: rt1308: Convert headers to SPDX</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg93943.html">[PATCH 1/6] ASoC: Intel: Skylake: move NHLT header to	common directory</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg93934.html">[PATCH] ASoC: tlv320aic31xx: suppress error message	for EPROBE_DEFER</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg93943.html">[PATCH 1/6] ASoC: Intel: Skylake: move NHLT header to	common directory</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#93942"><strong>Date</strong></a></li>
+<li><a href="threads.html#93942"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/alsa-user/>[ALSA&nbsp;User]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/pulse-audio/>[Pulse&nbsp;Audio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=http://yosemitephotos.net/>[Photo&nbsp;Sharing]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/linux-sound/>[Linux&nbsp;Sound]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-media/>[Video&nbsp;4&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gimp/>[Gimp]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

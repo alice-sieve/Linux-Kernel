@@ -1,0 +1,370 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 2/2] sys_types: avoid glibc 2.25 warnings about major() -->
+<!--X-From-R13: Sevp Pynxr &#60;roynxrNerqung.pbz> -->
+<!--X-Date: Wed, 14 Sep 2016 18:06:13 &#45;0700 -->
+<!--X-Message-Id: 1473901523&#45;7416&#45;3&#45;git&#45;send&#45;email&#45;eblake@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1473901523&#45;7416&#45;1&#45;git&#45;send&#45;email&#45;eblake@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Gnu Autoconf: [PATCH 2/2] sys_types: avoid glibc 2.25 warnings about major() ">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Gnu Autoconf &mdash; [PATCH 2/2] sys_types: avoid glibc 2.25 warnings about major()</title>
+<link rel="alternate" type="application/rss+xml" title="Autoconf" href="//feeds.feedburner.com/GnuAutoconf">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 2/2] sys_types: avoid glibc 2.25 warnings about major()</h1>
+[<a href="msg12888.html">Date Prev</a>][<a href="msg12890.html">Date Next</a>][<a href="msg12888.html">Thread Prev</a>][<a href="msg12890.html">Thread Next</a>][<a href="maillist.html#12889">Date Index</a>][<a href="threads.html#12889">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- generic lists white -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="9313458966"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: bug-gnulib@xxxxxxx</li>
+<li><em>Subject</em>: [PATCH 2/2] sys_types: avoid glibc 2.25 warnings about major()</li>
+<li><em>From</em>: Eric Blake &lt;eblake@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 14 Sep 2016 20:05:23 -0500</li>
+<li><em>Cc</em>: libvir-list@xxxxxxxxxx, autoconf@xxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg12888.html">1473901523-7416-1-git-send-email-eblake@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg12888.html">1473901523-7416-1-git-send-email-eblake@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Todo: tweak sys_types_h.m4 comment before pushing
+
+glibc 2.25 is deprecating the namespace pollution of &lt;sys/types.h&gt;
+injecting major(), minor(), and makedev() into the compilation
+environment, with a warning that insists that users include
+&lt;sys/sysmacros.h&gt; instead.  However, because the expansion of
+AC_HEADER_MAJOR didn't bother checking sys/sysmacros.h until
+after probing whether sys/types.h pollutes the namespace, it was
+not defining MAJOR_IN_SYSMACROS, with the result that code
+compiled with -Werror chokes on the deprecation warnings because
+it was not including sysmacros.h.
+
+Backport the autoconf fix, so that gnulib projects avoid the
+warnings even when using older autoconf.
+
+* m4/sys_types_h.m4 (AC_HEADER_MAJOR): Replace broken version in
+older autoconf.
+* doc/posix-headers/sys_types.texi (sys/types.h): Document fix.
+* doc/glibc-functions/gnu_dev_major.texi (gnu_dev_major): Likewise.
+* doc/glibc-functions/gnu_dev_makedev.texi (gnu_dev_makedev): Likewise.
+* doc/glibc-functions/gnu_dev_minor.texi (gnu_dev_minor): Likewise.
+
+Signed-off-by: Eric Blake &lt;eblake@xxxxxxxxxx&gt;
+---
+
+Obviously, I'll be tweaking this slightly to list an actual
+commit id that gets pushed to autoconf, but posting now for
+review.
+
+ ChangeLog                                |  8 ++++++++
+ doc/glibc-functions/gnu_dev_major.texi   |  4 ++++
+ doc/glibc-functions/gnu_dev_makedev.texi |  4 ++++
+ doc/glibc-functions/gnu_dev_minor.texi   |  4 ++++
+ doc/posix-headers/sys_types.texi         |  6 ++++++
+ m4/sys_types_h.m4                        | 27 ++++++++++++++++++++++++++-
+ 6 files changed, 52 insertions(+), 1 deletion(-)
+
+diff --git a/ChangeLog b/ChangeLog
+index ae0816d..1e694e6 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -1,5 +1,13 @@
+ 2016-09-14  Eric Blake  &lt;eblake@xxxxxxxxxx&gt;
+
++	sys_types: avoid glibc 2.25 warnings about major()
++	* m4/sys_types_h.m4 (AC_HEADER_MAJOR): Replace broken version in
++	older autoconf.
++	* doc/posix-headers/sys_types.texi (sys/types.h): Document fix.
++	* doc/glibc-functions/gnu_dev_major.texi (gnu_dev_major): Likewise.
++	* doc/glibc-functions/gnu_dev_makedev.texi (gnu_dev_makedev): Likewise.
++	* doc/glibc-functions/gnu_dev_minor.texi (gnu_dev_minor): Likewise.
++
+ 	mountlist: include sysmacros.h for glibc
+ 	* m4/mountlist.m4 (gl_PREREQ_MOUTLIST_EXTRA): Include
+ 	AC_HEADER_MAJOR.
+diff --git a/doc/glibc-functions/gnu_dev_major.texi b/doc/glibc-functions/gnu_dev_major.texi
+index f7a2cfd..3a85300 100644
+--- a/doc/glibc-functions/gnu_dev_major.texi
++++ b/doc/glibc-functions/gnu_dev_major.texi
+@@ -6,6 +6,10 @@ gnu_dev_major
+
+ Portability problems fixed by Gnulib:
+ @itemize
++The @code{AC_HEADER_MAJOR} macro in Autoconf 2.69 and earlier fails to
++set @code{MAJOR_IN_SYSMACROS} when it detects namespace pollution in
++@file{sys/types.h}; which in turn provokes deprecation warnings in
++glibc 2.25.
+ @end itemize
+
+ Portability problems not fixed by Gnulib:
+diff --git a/doc/glibc-functions/gnu_dev_makedev.texi b/doc/glibc-functions/gnu_dev_makedev.texi
+index febd7f8..2738698 100644
+--- a/doc/glibc-functions/gnu_dev_makedev.texi
++++ b/doc/glibc-functions/gnu_dev_makedev.texi
+@@ -6,6 +6,10 @@ gnu_dev_makedev
+
+ Portability problems fixed by Gnulib:
+ @itemize
++The @code{AC_HEADER_MAJOR} macro in Autoconf 2.69 and earlier fails to
++set @code{MAJOR_IN_SYSMACROS} when it detects namespace pollution in
++@file{sys/types.h}; which in turn provokes deprecation warnings in
++glibc 2.25.
+ @end itemize
+
+ Portability problems not fixed by Gnulib:
+diff --git a/doc/glibc-functions/gnu_dev_minor.texi b/doc/glibc-functions/gnu_dev_minor.texi
+index a3dbefe..b4c789c 100644
+--- a/doc/glibc-functions/gnu_dev_minor.texi
++++ b/doc/glibc-functions/gnu_dev_minor.texi
+@@ -6,6 +6,10 @@ gnu_dev_minor
+
+ Portability problems fixed by Gnulib:
+ @itemize
++The @code{AC_HEADER_MAJOR} macro in Autoconf 2.69 and earlier fails to
++set @code{MAJOR_IN_SYSMACROS} when it detects namespace pollution in
++@file{sys/types.h}; which in turn provokes deprecation warnings in
++glibc 2.25.
+ @end itemize
+
+ Portability problems not fixed by Gnulib:
+diff --git a/doc/posix-headers/sys_types.texi b/doc/posix-headers/sys_types.texi
+index 29bb9ae..cf44bea 100644
+--- a/doc/posix-headers/sys_types.texi
++++ b/doc/posix-headers/sys_types.texi
+@@ -19,6 +19,12 @@ sys/types.h
+ @item
+ The type @code{mode_t} is not defined on some platforms:
+ MSVC 9.
++@item
++Some systems leak definitions of @code{major}, @code{minor}, and
++@code{makedev} through this header; however, when
++@file{sys/sysmacros.h} exists, that file should also be included to
++avoid deprecation warnings from the versions in this header:
++glibc 2.25.
+ @end itemize
+
+ Portability problems not fixed by Gnulib:
+diff --git a/m4/sys_types_h.m4 b/m4/sys_types_h.m4
+index b0aabb4..64be679 100644
+--- a/m4/sys_types_h.m4
++++ b/m4/sys_types_h.m4
+@@ -1,4 +1,4 @@
+-# sys_types_h.m4 serial 5
++# sys_types_h.m4 serial 6
+ dnl Copyright (C) 2011-2016 Free Software Foundation, Inc.
+ dnl This file is free software; the Free Software Foundation
+ dnl gives unlimited permission to copy and/or distribute it,
+@@ -22,3 +22,28 @@ AC_DEFUN_ONCE([gl_SYS_TYPES_H],
+ AC_DEFUN([gl_SYS_TYPES_H_DEFAULTS],
+ [
+ ])
++
++# This works around a buggy version in autoconf &lt;= 2.69.
++# See &lt;<a  rel="nofollow" href="https://lists.gnu.org/archive/html/autoconf/2016-08/msg00014.html">https://lists.gnu.org/archive/html/autoconf/2016-08/msg00014.html</a>&gt;
++
++m4_version_prereq([2.70], [], [
++
++# This is taken from the following Autoconf patch:
++# <a  rel="nofollow" href="http://git.sv.gnu.org/cgit/autoconf.git/commit/?id=XXXXXXX">http://git.sv.gnu.org/cgit/autoconf.git/commit/?id=XXXXXXX</a>
++
++m4_undefine([AC_HEADER_MAJOR])
++AC_DEFUN([AC_HEADER_MAJOR],
++[AC_CHECK_HEADERS_ONCE([sys/types.h])
++AC_CHECK_HEADER([sys/mkdev.h],
++  [AC_DEFINE([MAJOR_IN_MKDEV], [1],
++    [Define to 1 if `major', `minor', and `makedev' are declared in
++     &lt;mkdev.h&gt;.])])
++if test $ac_cv_header_sys_mkdev_h = no; then
++  AC_CHECK_HEADER([sys/sysmacros.h],
++    [AC_DEFINE([MAJOR_IN_SYSMACROS], [1],
++      [Define to 1 if `major', `minor', and `makedev' are declared in
++       &lt;sysmacros.h&gt;.])])
++fi
++])
++
++])
+-- 
+2.7.4
+
+
+_______________________________________________
+Autoconf mailing list
+Autoconf@xxxxxxx
+<a  rel="nofollow" href="https://lists.gnu.org/mailman/listinfo/autoconf">https://lists.gnu.org/mailman/listinfo/autoconf</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="12888" href="msg12888.html">[gnulib PATCH 0/2] Work around glibc 2.25 deprecation warnings</a></strong>
+<ul><li><em>From:</em> Eric Blake</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg12888.html">[gnulib PATCH 0/2] Work around glibc 2.25 deprecation warnings</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg12890.html">[PATCH 1/2] mountlist: include sysmacros.h for glibc</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg12888.html">[gnulib PATCH 0/2] Work around glibc 2.25 deprecation warnings</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg12890.html">[PATCH 1/2] mountlist: include sysmacros.h for glibc</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#12889"><strong>Date</strong></a></li>
+<li><a href="threads.html#12889"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[GCC&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel&nbsp;Discussion]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/rpm/>[RPM&nbsp;Discussion]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/rh-devel/>[Red&nbsp;Hat&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/usb/>[Linux&nbsp;USB]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/samba/>[Samba]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

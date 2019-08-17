@@ -1,0 +1,319 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH bpf v2] bpf: fix narrower loads on s390 -->
+<!--X-From-R13: Oyrkrv Egnebibvgbi &#60;nyrkrv.fgnebibvgbiNtznvy.pbz> -->
+<!--X-Date: Thu, 18 Jul 2019 13:43:59 &#45;0700 -->
+<!--X-Message-Id: 20190718204353.nkdsvvxybqt7vahk@ast&#45;mbp -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190718150103.84837&#45;1&#45;iii@linux.ibm.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BPF: Re: [PATCH bpf v2] bpf: fix narrower loads on s390">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Re: [PATCH bpf v2] bpf: fix narrower loads on s390 &mdash; BPF</title>
+<link rel="alternate" type="application/rss+xml" title="BPF" href="//feeds.feedburner.com/packetfilters">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re: [PATCH bpf v2] bpf: fix narrower loads on s390</h1>
+[<a href="msg05514.html">Date Prev</a>][<a href="msg05516.html">Date Next</a>][<a href="msg05503.html">Thread Prev</a>][<a href="msg05504.html">Thread Next</a>][<a href="maillist.html#05515">Date Index</a>][<a href="index.html#05515">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH bpf v2] bpf: fix narrower loads on s390</li>
+<li><em>From</em>: Alexei Starovoitov &lt;alexei.starovoitov@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 18 Jul 2019 13:43:54 -0700</li>
+<li><em>Cc</em>: bpf@xxxxxxxxxxxxxxx, netdev@xxxxxxxxxxxxxxx, ys114321@xxxxxxxxx,        gor@xxxxxxxxxxxxx, heiko.carstens@xxxxxxxxxx, daniel@xxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg05502.html">20190718150103.84837-1-iii@linux.ibm.com</a>&gt;</li>
+<li><em>User-agent</em>: NeoMutt/20180223</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On Thu, Jul 18, 2019 at 05:01:03PM +0200, Ilya Leoshkevich wrote:
+&gt;<i> The very first check in test_pkt_md_access is failing on s390, which</i>
+&gt;<i> happens because loading a part of a struct __sk_buff field produces</i>
+&gt;<i> an incorrect result.</i>
+&gt;<i> </i>
+&gt;<i> The preprocessed code of the check is:</i>
+&gt;<i> </i>
+&gt;<i> {</i>
+&gt;<i> 	__u8 tmp = *((volatile __u8 *)&amp;skb-&gt;len +</i>
+&gt;<i> 		((sizeof(skb-&gt;len) - sizeof(__u8)) / sizeof(__u8)));</i>
+&gt;<i> 	if (tmp != ((*(volatile __u32 *)&amp;skb-&gt;len) &amp; 0xFF)) return 2;</i>
+&gt;<i> };</i>
+&gt;<i> </i>
+&gt;<i> clang generates the following code for it:</i>
+&gt;<i> </i>
+&gt;<i>       0:	71 21 00 03 00 00 00 00	r2 = *(u8 *)(r1 + 3)</i>
+&gt;<i>       1:	61 31 00 00 00 00 00 00	r3 = *(u32 *)(r1 + 0)</i>
+&gt;<i>       2:	57 30 00 00 00 00 00 ff	r3 &amp;= 255</i>
+&gt;<i>       3:	5d 23 00 1d 00 00 00 00	if r2 != r3 goto +29 &lt;LBB0_10&gt;</i>
+&gt;<i> </i>
+&gt;<i> Finally, verifier transforms it to:</i>
+&gt;<i> </i>
+&gt;<i>   0: (61) r2 = *(u32 *)(r1 +104)</i>
+&gt;<i>   1: (bc) w2 = w2</i>
+&gt;<i>   2: (74) w2 &gt;&gt;= 24</i>
+&gt;<i>   3: (bc) w2 = w2</i>
+&gt;<i>   4: (54) w2 &amp;= 255</i>
+&gt;<i>   5: (bc) w2 = w2</i>
+&gt;<i> </i>
+&gt;<i> The problem is that when verifier emits the code to replace a partial</i>
+&gt;<i> load of a struct __sk_buff field (*(u8 *)(r1 + 3)) with a full load of</i>
+&gt;<i> struct sk_buff field (*(u32 *)(r1 + 104)), an optional shift and a</i>
+&gt;<i> bitwise AND, it assumes that the machine is little endian and</i>
+&gt;<i> incorrectly decides to use a shift.</i>
+&gt;<i> </i>
+&gt;<i> Adjust shift count calculation to account for endianness.</i>
+&gt;<i> </i>
+&gt;<i> Fixes: 31fd85816dbe (&quot;bpf: permits narrower load from bpf program context fields&quot;)</i>
+&gt;<i> Signed-off-by: Ilya Leoshkevich &lt;iii@xxxxxxxxxxxxx&gt;</i>
+&gt;<i> ---</i>
+&gt;<i>  include/linux/filter.h | 13 +++++++++++++</i>
+&gt;<i>  kernel/bpf/verifier.c  |  4 ++--</i>
+&gt;<i>  2 files changed, 15 insertions(+), 2 deletions(-)</i>
+&gt;<i> </i>
+&gt;<i> diff --git a/include/linux/filter.h b/include/linux/filter.h</i>
+&gt;<i> index ff65d22cf336..4fe88e43f0fe 100644</i>
+&gt;<i> --- a/include/linux/filter.h</i>
+&gt;<i> +++ b/include/linux/filter.h</i>
+&gt;<i> @@ -24,6 +24,8 @@</i>
+&gt;<i>  </i>
+&gt;<i>  #include &lt;net/sch_generic.h&gt;</i>
+&gt;<i>  </i>
+&gt;<i> +#include &lt;asm/byteorder.h&gt;</i>
+&gt;<i> +</i>
+
+unnecessary empty line
+
+&gt;<i>  #include &lt;uapi/linux/filter.h&gt;</i>
+&gt;<i>  #include &lt;uapi/linux/bpf.h&gt;</i>
+&gt;<i>  </i>
+&gt;<i> @@ -1216,4 +1218,15 @@ struct bpf_sockopt_kern {</i>
+&gt;<i>  	s32		retval;</i>
+&gt;<i>  };</i>
+&gt;<i>  </i>
+&gt;<i> +static inline u8 bpf_narrower_load_shift(u32 size_default, u32 size, u32 off)</i>
+
+please place this function right after bpf_ctx_narrow_access_ok()
+and order arguments the same way as bpf_ctx_narrow_access_ok does.
+
+&gt;<i> +{</i>
+&gt;<i> +	u8 load_off = off &amp; (size_default - 1);</i>
+&gt;<i> +</i>
+&gt;<i> +#ifdef __LITTLE_ENDIAN</i>
+&gt;<i> +	return load_off * 8;</i>
+&gt;<i> +#else</i>
+&gt;<i> +	return (size_default - (load_off + size)) * 8;</i>
+&gt;<i> +#endif</i>
+&gt;<i> +}</i>
+&gt;<i> +</i>
+&gt;<i>  #endif /* __LINUX_FILTER_H__ */</i>
+&gt;<i> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c</i>
+&gt;<i> index 5900cbb966b1..48edc9c9a879 100644</i>
+&gt;<i> --- a/kernel/bpf/verifier.c</i>
+&gt;<i> +++ b/kernel/bpf/verifier.c</i>
+&gt;<i> @@ -8616,8 +8616,8 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)</i>
+&gt;<i>  		}</i>
+&gt;<i>  </i>
+&gt;<i>  		if (is_narrower_load &amp;&amp; size &lt; target_size) {</i>
+&gt;<i> -			u8 shift = (off &amp; (size_default - 1)) * 8;</i>
+&gt;<i> -</i>
+&gt;<i> +			u8 shift = bpf_narrower_load_shift(size_default, size,</i>
+&gt;<i> +							   off);</i>
+&gt;<i>  			if (ctx_field_size &lt;= 4) {</i>
+&gt;<i>  				if (shift)</i>
+&gt;<i>  					insn_buf[cnt++] = BPF_ALU32_IMM(BPF_RSH,</i>
+&gt;<i> -- </i>
+&gt;<i> 2.21.0</i>
+&gt;<i> </i>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="05502" href="msg05502.html">[PATCH bpf v2] bpf: fix narrower loads on s390</a></strong>
+<ul><li><em>From:</em> Ilya Leoshkevich</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05514.html">Re: [PATCH AUTOSEL 5.2 226/249] selftests: bpf: fix inlines in test_lwt_seg6local</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05516.html">Re: [PATCH bpf] selftests/bpf: fix &quot;valid read map access into a read-only array 1&quot; on s390</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05503.html">Re: [PATCH bpf v2] bpf: fix narrower loads on s390</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05504.html">[PATCH bpf] libbpf: fix missing __WORDSIZE definition</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05515"><strong>Date</strong></a></li>
+<li><a href="index.html#05515"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;Samsung&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-rockchip/>[Linux&nbsp;Rockchip&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-actions/>[Linux&nbsp;Actions&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-snps-arc/>[Linux&nbsp;for&nbsp;Synopsys&nbsp;ARC&nbsp;Processors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nfs/>[Linux&nbsp;NFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nilfs/>[Linux&nbsp;NILFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/vfl/>[Video&nbsp;for&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<p>
+<hr>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 3/6] do_list_no_hash: factor out structure	output into static function -->
+<!--X-From-R13: Rnir Ilfbpunafxv &#60;qjlfbpunNerqung.pbz> -->
+<!--X-Date: Tue, 10 Jul 2018 15:24:49 &#45;0700 -->
+<!--X-Message-Id: 1531261479&#45;23412&#45;4&#45;git&#45;send&#45;email&#45;dwysocha@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1531261479&#45;23412&#45;1&#45;git&#45;send&#45;email&#45;dwysocha@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 3/6] do_list_no_hash: factor out structure	output into static function &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  [PATCH 3/6] do_list_no_hash: factor out structure	output into static function</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 3/6] do_list_no_hash: factor out structure	output into static function</h1>
+[<a href="msg07527.html">Date Prev</a>][<a href="msg07528.html">Date Next</a>][<a href="msg07527.html">Thread Prev</a>][<a href="msg07528.html">Thread Next</a>][<a href="maillist.html#07531">Date Index</a>][<a href="index.html#07531">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 3/6] do_list_no_hash: factor out structure	output into static function</li>
+<li><em>From</em>: Dave Wysochanski &lt;dwysocha@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 10 Jul 2018 18:24:36 -0400</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg07525.html">1531261479-23412-1-git-send-email-dwysocha@redhat.com</a>&gt;</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Create do_list_output_struct function to dump out the structure name
+and members.  No functional change.
+
+Signed-off-by: Dave Wysochanski &lt;dwysocha@xxxxxxxxxx&gt;
+---
+ tools.c | 42 +++++++++++++++++++++++++-----------------
+ 1 file changed, 25 insertions(+), 17 deletions(-)
+
+diff --git a/tools.c b/tools.c
+index 2af114f..f9bf56f 100644
+--- a/tools.c
++++ b/tools.c
+@@ -3914,6 +3914,30 @@ static void do_list_debug_entry(struct list_data *ld)
+ 	}
+ }
+ 
++
++static void do_list_output_struct(struct list_data *ld, ulong next, ulong offset,
++				  unsigned int radix, struct req_entry **e)
++{
++	int i;
++
++	for (i = 0; i &lt; ld-&gt;structname_args; i++) {
++		switch (count_chars(ld-&gt;structname[i], '.'))
++		{
++			case 0:
++				dump_struct(ld-&gt;structname[i],
++					    next - offset, radix);
++				break;
++			default:
++				if (ld-&gt;flags &amp; LIST_PARSE_MEMBER)
++					dump_struct_members(ld, i, next);
++				else if (ld-&gt;flags &amp; LIST_READ_MEMBER)
++					dump_struct_members_fast(e[i],
++						 radix, next - offset);
++				break;
++		}
++	}
++}
++
+ /*
+  * Similar to do_list() but without the hash_table or LIST_ALLOCATE.
+  * Useful for the 'list' command and other callers needing faster list
+@@ -3964,24 +3988,8 @@ do_list_no_hash(struct list_data *ld)
+ 	while (1) {
+ 		if (ld-&gt;flags &amp; VERBOSE) {
+ 			fprintf(fp, &quot;%lx\n&quot;, next - ld-&gt;list_head_offset);
+-
+ 			if (ld-&gt;structname) {
+-				for (i = 0; i &lt; ld-&gt;structname_args; i++) {
+-					switch (count_chars(ld-&gt;structname[i], '.'))
+-					{
+-					case 0:
+-						dump_struct(ld-&gt;structname[i],
+-							next - offset, radix);
+-						break;
+-					default:
+-						if (ld-&gt;flags &amp; LIST_PARSE_MEMBER)
+-							dump_struct_members(ld, i, next);
+-						else if (ld-&gt;flags &amp; LIST_READ_MEMBER)
+-							dump_struct_members_fast(e[i],
+-								radix, next - offset);
+-						break;
+-					}
+-				}
++				do_list_output_struct(ld, next, offset, radix, e);
+ 			}
+ 		}
+ 
+-- 
+1.8.3.1
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="07525" href="msg07525.html">[PATCH 0/5] Add Brent algorithm as an option for	the 'list' command</a></strong>
+<ul><li><em>From:</em> Dave Wysochanski</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07527.html">[PATCH 4/6] do_list_no_hash: factor out a small	readmem function</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07528.html">[PATCH 5/6] Implement R. P. Brent's algorithm for	loop detection for 'list' command.</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07527.html">[PATCH 4/6] do_list_no_hash: factor out a small	readmem function</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07528.html">[PATCH 5/6] Implement R. P. Brent's algorithm for	loop detection for 'list' command.</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07531"><strong>Date</strong></a></li>
+<li><a href="index.html#07531"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

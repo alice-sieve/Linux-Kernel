@@ -1,0 +1,302 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2] qapi: add dirty&#45;bitmaps to	query&#45;named&#45;block&#45;nodes result -->
+<!--X-From-R13: Xbua Eabj &#60;wfabjNerqung.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 18:14:02 &#45;0700 -->
+<!--X-Message-Id: 20190716011344.25380&#45;1&#45;jsnow@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v2] qapi: add dirty-bitmaps to	query-named-block-nodes result</title>
+<meta name="description" content="libvirt: [PATCH v2] qapi: add dirty-bitmaps to	query-named-block-nodes result">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v2] qapi: add dirty-bitmaps to	query-named-block-nodes result</h1>
+[<a href="msg187442.html">Date Prev</a>][<a href="msg187444.html">Date Next</a>][<a href="msg187437.html">Thread Prev</a>][<a href="msg187445.html">Thread Next</a>][<a href="maillist.html#187443">Date Index</a>][<a href="index.html#187443">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v2] qapi: add dirty-bitmaps to	query-named-block-nodes result</li>
+<li><em>From</em>: John Snow &lt;jsnow@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 21:13:44 -0400</li>
+<li><em>Cc</em>: Kevin Wolf &lt;kwolf@xxxxxxxxxx&gt;,        Vladimir Sementsov-Ogievskiy &lt;vsementsov@xxxxxxxxxxxxx&gt;,        libvir-list@xxxxxxxxxx, John Snow &lt;jsnow@xxxxxxxxxx&gt;,        Max Reitz &lt;mreitz@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Vladimir Sementsov-Ogievskiy &lt;vsementsov@xxxxxxxxxxxxx&gt;
+
+Let's add a possibility to query dirty-bitmaps not only on root nodes.
+It is useful when dealing both with snapshots and incremental backups.
+
+Signed-off-by: Vladimir Sementsov-Ogievskiy &lt;vsementsov@xxxxxxxxxxxxx&gt;
+[Added deprecation and feature flag information. --js]
+Signed-off-by: John Snow &lt;jsnow@xxxxxxxxxx&gt;
+---
+ block/qapi.c         |  5 +++++
+ qapi/block-core.json | 14 +++++++++++++-
+ qemu-deprecated.texi | 12 ++++++++++++
+ 3 files changed, 30 insertions(+), 1 deletion(-)
+
+diff --git a/block/qapi.c b/block/qapi.c
+index 917435f022..15f1030264 100644
+--- a/block/qapi.c
++++ b/block/qapi.c
+@@ -79,6 +79,11 @@ BlockDeviceInfo *bdrv_block_device_info(BlockBackend *blk,
+         info-&gt;backing_file = g_strdup(bs-&gt;backing_file);
+     }
+ 
++    if (!QLIST_EMPTY(&amp;bs-&gt;dirty_bitmaps)) {
++        info-&gt;has_dirty_bitmaps = true;
++        info-&gt;dirty_bitmaps = bdrv_query_dirty_bitmaps(bs);
++    }
++
+     info-&gt;detect_zeroes = bs-&gt;detect_zeroes;
+ 
+     if (blk &amp;&amp; blk_get_public(blk)-&gt;throttle_group_member.throttle_state) {
+diff --git a/qapi/block-core.json b/qapi/block-core.json
+index 0d43d4f37c..0d67dd245c 100644
+--- a/qapi/block-core.json
++++ b/qapi/block-core.json
+@@ -360,6 +360,16 @@
+ # @write_threshold: configured write threshold for the device.
+ #                   0 if disabled. (Since 2.3)
+ #
++# @dirty-bitmaps: dirty bitmaps information (only present if node
++#                 has one or more dirty bitmaps) (Since 4.2)
++#
++# Features:
++# @node-dirty-bitmaps: Signals the capability to return dirty bitmap information
++#                      per-node instead of per-drive. If this flag is present,
++#                      dirty-bitmaps should not be read from the BlockInfo
++#                      structure, the top-level data for query-block.
++#                      (Since 4.2)
++#
+ # Since: 0.14.0
+ #
+ ##
+@@ -378,7 +388,8 @@
+             '*bps_wr_max_length': 'int', '*iops_max_length': 'int',
+             '*iops_rd_max_length': 'int', '*iops_wr_max_length': 'int',
+             '*iops_size': 'int', '*group': 'str', 'cache': 'BlockdevCacheInfo',
+-            'write_threshold': 'int' } }
++            'write_threshold': 'int', '*dirty-bitmaps': ['BlockDirtyInfo'] },
++  'features': [ { 'name': 'node-dirty-bitmaps' } ] }
+ 
+ ##
+ # @BlockDeviceIoStatus:
+@@ -656,6 +667,7 @@
+ #
+ # @dirty-bitmaps: dirty bitmaps information (only present if the
+ #                 driver has one or more dirty bitmaps) (Since 2.0)
++#                 Deprecated in 4.2; see BlockDirtyInfo instead.
+ #
+ # @io-status: @BlockDeviceIoStatus. Only present if the device
+ #             supports it and the VM is configured to stop on errors
+diff --git a/qemu-deprecated.texi b/qemu-deprecated.texi
+index c90b08d553..bc4e5ac1d7 100644
+--- a/qemu-deprecated.texi
++++ b/qemu-deprecated.texi
+@@ -134,6 +134,18 @@ The ``status'' field of the ``BlockDirtyInfo'' structure, returned by
+ the query-block command is deprecated. Two new boolean fields,
+ ``recording'' and ``busy'' effectively replace it.
+ 
++@subsection query-block result field dirty-bitmaps (Since 4.2)
++
++The ``dirty-bitmaps`` field of the ``BlockInfo`` structure, returned by
++the query-block command is itself now deprecated. The ``dirty-bitmaps``
++field of the ``BlockDeviceInfo`` struct should be used instead, which is the
++type of the ``inserted`` field in query-block replies, as well as the
++type of array items in query-named-block-nodes.
++
++In the absence of bitmaps on either structure, management APIs may use the
++presence of the ``node-dirty-bitmaps`` feature flag on the ``BlockDeviceInfo``
++structure to know where to anticipate bitmap data when present.
++
+ @subsection query-cpus (since 2.12.0)
+ 
+ The ``query-cpus'' command is replaced by the ``query-cpus-fast'' command.
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187442.html">Re:  [PATCH 3/3] virCommand: use procfs to learn opened FDs</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187444.html">Re:  [PATCH 00/19] Add vhost-user-gpu support</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187437.html">[PATCH] tests: don't assume &quot;localhost&quot; only resolves to	1/2 IPs</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187445.html">[PATCH v2 0/4] Optimize mass closing of FDs on child	spwaning</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187443"><strong>Date</strong></a></li>
+<li><a href="index.html#187443"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

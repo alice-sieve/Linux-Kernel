@@ -1,0 +1,433 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Update centos.git.repolist.py to use pagure	api -->
+<!--X-From-R13: Bng Dvrurpxl &#60;evrurpxlNsany.tbi> -->
+<!--X-Date: Tue, 9 Apr 2019 11:00:37 &#45;0700 -->
+<!--X-Message-Id: 1554832797&#45;3753&#45;2&#45;git&#45;send&#45;email&#45;riehecky@fnal.gov -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1554832797&#45;3753&#45;1&#45;git&#45;send&#45;email&#45;riehecky@fnal.gov -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH] Update centos.git.repolist.py to use pagure	api &mdash; Centos Devel Archive">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH] Update centos.git.repolist.py to use pagure	api &mdash; Linux Network Development</title>
+<link rel="alternate" type="application/rss+xml" title="Centos Devel" href="//feeds.feedburner.com/CentosDevel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] Update centos.git.repolist.py to use pagure	api</h1>
+[<a href="msg17303.html">Date Prev</a>][<a href="msg17305.html">Date Next</a>][<a href="msg17303.html">Thread Prev</a>][<a href="msg17306.html">Thread Next</a>][<a href="maillist.html#17304">Date Index</a>][<a href="index.html#17304">Thread Index</a>] 
+
+
+<p>&nbsp;<p>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Update centos.git.repolist.py to use pagure	api</li>
+<li><em>From</em>: Pat Riehecky &lt;riehecky@xxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 9 Apr 2019 12:59:57 -0500</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg17303.html">1554832797-3753-1-git-send-email-riehecky@fnal.gov</a>&gt;</li>
+<li><em>Reply-to</em>: &quot;The CentOS developers mailing list.&quot; &lt;centos-devel@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>---
+ centos.git.repolist.py | 142 +++++++++++++++++++++++++++++++------------------
+ 1 file changed, 91 insertions(+), 51 deletions(-)
+
+diff --git a/centos.git.repolist.py b/centos.git.repolist.py
+index e135ca7..3485a38 100755
+--- a/centos.git.repolist.py
++++ b/centos.git.repolist.py
+@@ -1,4 +1,5 @@
+ #!/usr/bin/env python
++#pylint: disable=line-too-long
+ #
+ #  License: GPLv3
+ #
+@@ -6,73 +7,112 @@
+ #         Updates:
+ #                  Pat Riehecky &lt;riehecky@xxxxxxxx&gt;
+ #
+-'''Get list of repos from gitblit RPC, to grab CentOS sources'''
++'''Get list of repos from pagure, to grab CentOS sources'''
+ 
+-import optparse
+-import requests
+-import simplejson as json
++# for python3 compat
++from __future__ import unicode_literals
++from __future__ import absolute_import
++from __future__ import print_function
++
++import logging
+ import sys
++import json
++import textwrap
++import time
+ 
+-RPCURL = &quot;<a  rel="nofollow" href="https://git.centos.org/rpc/?req=LIST_REPOSITORIES&quot">https://git.centos.org/rpc/?req=LIST_REPOSITORIES&quot</a>;
++sys.setrecursionlimit(500)
+ 
+-def read_args():
+-    '''
+-        read in the command line args and set things up
+-    '''
++try:
++    from argparse import ArgumentParser
++except ImportError:  # pragma: no cover
++    print(&quot;Please install argparse - rpm: python-argparse&quot;, file=sys.stderr)
++    raise
+ 
+-    desc = '''Get list of git repositories from the GitBlit json RPC
+-           '''
++try:
++    import requests
++except ImportError:  # pragma: no cover
++    print(&quot;Please install requests - rpm: python-requests&quot;, file=sys.stderr)
++    raise
+ 
+-    usage = &quot;usage: %prog [options] &quot;
+-    parser = optparse.OptionParser(usage=usage, description=desc)
+-    parser.add_option('-p', '--project', metavar=&quot;&lt;PROJECTS&gt;&quot;,
+-                      help='''project path (default 'rpms', could be 'all', 'core-sig'...)''',
+-                      default='rpms')
+ 
+-    parser.add_option('-b', '--branch', metavar=&quot;&lt;branch name&gt;&quot;,
+-                      help='Only list repos with this branch (default master)',
+-                      default = 'master')
++def setup_args():
++    '''
++        Setup the argparse object.
+ 
+-    parser.add_option('-u', '--url', metavar=&quot;&lt;URL&gt;&quot;,
+-                      help='URL to check (default %s)' % (RPCURL),
+-                      default = RPCURL)
++        Make sure all fields have defaults so we could use this as an object
++    '''
++    parser = ArgumentParser(description=textwrap.dedent(__doc__))
++
++    parser.add_argument('--debug', action='store_true', default=False,
++                        help='Print debugging information')
++    parser.add_argument('--hostname', default='git.centos.org',
++                        type=str, help='What host should we query?')
++    parser.add_argument('--apiver', default='0',
++                        type=str, help='What api version is the host?')
++    parser.add_argument('--namespace', default='rpms',
++                        type=str, help='What project namespace?')
++    parser.add_argument('--show-forks', action='store_true', default=False,
++                        help='Should we also show project forks?')
++
++    return parser
++
++def run_query(hostname, api, namespace, forks):
++    '''
++        Actually call the API version
++    '''
++    list_of_urls = []
++    if str(api) == '0':
++        query = '<a  rel="nofollow" href="https://{hostname}/api/0/projects?per_page=50&amp;namespace={namespace}">https://{hostname}/api/0/projects?per_page=50&amp;namespace={namespace}</a>'.format(hostname=hostname, namespace=namespace)
++        if forks:
++            query = query + '&amp;forks=1'
++        else:
++            query = query + '&amp;forks=0'
+ 
+-    (options, args) = parser.parse_args()
+-    return options
++        fetch_prefix = '<a  rel="nofollow" href="https://{hostname}/">https://{hostname}/</a>'.format(hostname=hostname)
+ 
+-def get_repo_list(url, branch, projectpath):
+-    '''return a list of repo URLs'''
++        fetch_next_v0(query, fetch_prefix, list_of_urls)
++    else:
++        raise NotImplementedError(&quot;Unknown API version %s&quot;, api)
++
++    list_of_urls.sort()
++    return list_of_urls
++
++def fetch_next_v0(page, fetch_prefix, list_of_urls):
++    '''
++        Recursively fetch the page until we are done
++    '''
++    logging.debug('Trying to fetch %s', page)
+     try:
+-        req = requests.get(url)
++        req = requests.get(page)
+     except requests.exceptions.RequestException as err_msg:
+-        print err_msg
+-        sys.exit(1)
++        print(err_msg, file=sys.stderr)
++        raise
++
++    try:
++        message = json.loads(req.text)
++    except ValueError as err_msg:
++        print(page, file=sys.stderr)
++        print(req.text, file=sys.stderr)
++        print(err_msg, file=sys.stderr)
++        raise
+ 
+-    if req.status_code != 200:
+-        print &quot;Unable to access gitblit api at &quot; + url
+-        sys.exit(1)
++    for project in message['projects']:
++        list_of_urls.append(fetch_prefix + project['fullname'])
+ 
++    if 'next' in message['pagination']:
++        if message['pagination']['next']:
++            time.sleep(0.25) # Add a smallish delay to help with load
++            fetch_next_v0(message['pagination']['next'], fetch_prefix, list_of_urls)
+ 
+-    payload = req.text
+-    repos = json.loads(payload)
+-    branchname = 'refs/heads/' + branch
++if __name__ == '__main__':
+ 
+-    for repo in repos.keys():
+-        if projectpath != 'all':
+-            if repos[repo]['projectPath'] != projectpath:
+-                del repos[repo]
+-                continue
+-        if branchname not in repos[repo]['availableRefs']:
+-            del repos[repo]
++    PARSER = setup_args()
++    ARGS = PARSER.parse_args()
+ 
+-    return repos.keys()
++    if ARGS.debug:
++        logging.basicConfig(level=logging.DEBUG)
+ 
+-def main():
+-    '''Broken out so it can be inherited if someone wants'''
+-    options = read_args()
+-    repos = get_repo_list(url=options.url, branch=options.branch, projectpath=options.project)
+-    if repos:
+-        print '\n'.join(repos)
++    URLS = run_query(ARGS.hostname, ARGS.apiver, ARGS.namespace, ARGS.show_forks)
+ 
+-if __name__ == &quot;__main__&quot;:
+-    main()
++    for URL in URLS:
++        print(URL)
+-- 
+1.8.3.1
+
+_______________________________________________
+CentOS-devel mailing list
+CentOS-devel@xxxxxxxxxx
+<a  rel="nofollow" href="https://lists.centos.org/mailman/listinfo/centos-devel">https://lists.centos.org/mailman/listinfo/centos-devel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="17303" href="msg17303.html">[PATCH] Update centos.git.repolist.py for pagure api</a></strong>
+<ul><li><em>From:</em> Pat Riehecky</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg17303.html">[PATCH] Update centos.git.repolist.py for pagure api</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg17305.html">Re:  git.centos.org : Delayed migration</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg17303.html">[PATCH] Update centos.git.repolist.py for pagure api</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg17306.html">OpenInfra Summit Denver AND Red Hat Summit Booth Duty</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#17304"><strong>Date</strong></a></li>
+<li><a href="index.html#17304"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[Centos&nbsp;ARM&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos/>[Centos&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel&nbsp;Discussion]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/y2038/>[Linux&nbsp;Year&nbsp;2038&nbsp;Problem]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/tcpinst-wg/>[TCP&nbsp;Instrumentation]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ethernet-bridging/>[Ethernet&nbsp;Bridging]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-wireless/>[Linux&nbsp;Wireless&nbsp;Networking]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-wpan/>[Linux&nbsp;WPAN&nbsp;Networking]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-bluetooth/>[Linux&nbsp;Bluetooth&nbsp;Networking]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ath6kl/>[Linux&nbsp;ATH6KL&nbsp;Networking]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-net/>[Linux&nbsp;Networking&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-coverity/>[Linux&nbsp;Coverity]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-assembly/>[Linux&nbsp;Assembly]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;Information]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[MIPS&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[ARM&nbsp;Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[ARM&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-virtualization/>[Linux&nbsp;Virtualization]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ide/>[Linux&nbsp;IDE]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/raid/>[Linux&nbsp;RAID]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;/<.td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

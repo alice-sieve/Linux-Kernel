@@ -1,0 +1,448 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v5 1/3] dmaengine: ti: edma: Clean up the 2x32bit array register accesses -->
+<!--X-From-R13: Brgre Gwsnyhfv &#60;crgre.hwsnyhfvNgv.pbz> -->
+<!--X-Date: Tue, 16 Jul 2019 01:26:47 &#45;0700 -->
+<!--X-Message-Id: 20190716082655.1620&#45;2&#45;peter.ujfalusi@ti.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190716082655.1620&#45;1&#45;peter.ujfalusi@ti.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH v5 1/3] dmaengine: ti: edma: Clean up the 2x32bit array register accesses">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH v5 1/3] dmaengine: ti: edma: Clean up the 2x32bit array register accesses &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH v5 1/3] dmaengine: ti: edma: Clean up the 2x32bit array register accesses</h1>
+[<a href="msg741269.html">Date Prev</a>][<a href="msg741271.html">Date Next</a>][<a href="msg741268.html">Thread Prev</a>][<a href="msg741271.html">Thread Next</a>][<a href="maillist.html#741270">Date Index</a>][<a href="threads.html#741270">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v5 1/3] dmaengine: ti: edma: Clean up the 2x32bit array register accesses</li>
+<li><em>From</em>: Peter Ujfalusi &lt;peter.ujfalusi@xxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 16 Jul 2019 11:26:53 +0300</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg741269.html">20190716082655.1620-1-peter.ujfalusi@ti.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Introduce defines for getting the array index and the bit number within the
+64bit array register pairs.
+
+Signed-off-by: Peter Ujfalusi &lt;peter.ujfalusi@xxxxxx&gt;
+---
+ drivers/dma/ti/edma.c | 106 ++++++++++++++++++++++++------------------
+ 1 file changed, 61 insertions(+), 45 deletions(-)
+
+diff --git a/drivers/dma/ti/edma.c b/drivers/dma/ti/edma.c
+index ceabdea40ae0..a39f817b3888 100644
+--- a/drivers/dma/ti/edma.c
++++ b/drivers/dma/ti/edma.c
+@@ -133,6 +133,17 @@
+ #define EDMA_CONT_PARAMS_FIXED_EXACT	 1002
+ #define EDMA_CONT_PARAMS_FIXED_NOT_EXACT 1003
+ 
++/*
++ * 64bit array registers are split into two 32bit registers:
++ * reg0: channel/event 0-31
++ * reg1: channel/event 32-63
++ *
++ * bit 5 in the channel number tells the array index (0/1)
++ * bit 0-4 (0x1f) is the bit offset within the register
++ */
++#define EDMA_REG_ARRAY_INDEX(channel)	((channel) &gt;&gt; 5)
++#define EDMA_CHANNEL_BIT(channel)	(BIT((channel) &amp; 0x1f))
++
+ /* PaRAM slots are laid out like this */
+ struct edmacc_param {
+ 	u32 opt;
+@@ -441,15 +452,14 @@ static void edma_setup_interrupt(struct edma_chan *echan, bool enable)
+ {
+ 	struct edma_cc *ecc = echan-&gt;ecc;
+ 	int channel = EDMA_CHAN_SLOT(echan-&gt;ch_num);
++	int idx = EDMA_REG_ARRAY_INDEX(channel);
++	int ch_bit = EDMA_CHANNEL_BIT(channel);
+ 
+ 	if (enable) {
+-		edma_shadow0_write_array(ecc, SH_ICR, channel &gt;&gt; 5,
+-					 BIT(channel &amp; 0x1f));
+-		edma_shadow0_write_array(ecc, SH_IESR, channel &gt;&gt; 5,
+-					 BIT(channel &amp; 0x1f));
++		edma_shadow0_write_array(ecc, SH_ICR, idx, ch_bit);
++		edma_shadow0_write_array(ecc, SH_IESR, idx, ch_bit);
+ 	} else {
+-		edma_shadow0_write_array(ecc, SH_IECR, channel &gt;&gt; 5,
+-					 BIT(channel &amp; 0x1f));
++		edma_shadow0_write_array(ecc, SH_IECR, idx, ch_bit);
+ 	}
+ }
+ 
+@@ -587,26 +597,26 @@ static void edma_start(struct edma_chan *echan)
+ {
+ 	struct edma_cc *ecc = echan-&gt;ecc;
+ 	int channel = EDMA_CHAN_SLOT(echan-&gt;ch_num);
+-	int j = (channel &gt;&gt; 5);
+-	unsigned int mask = BIT(channel &amp; 0x1f);
++	int idx = EDMA_REG_ARRAY_INDEX(channel);
++	int ch_bit = EDMA_CHANNEL_BIT(channel);
+ 
+ 	if (!echan-&gt;hw_triggered) {
+ 		/* EDMA channels without event association */
+-		dev_dbg(ecc-&gt;dev, &quot;ESR%d %08x\n&quot;, j,
+-			edma_shadow0_read_array(ecc, SH_ESR, j));
+-		edma_shadow0_write_array(ecc, SH_ESR, j, mask);
++		dev_dbg(ecc-&gt;dev, &quot;ESR%d %08x\n&quot;, idx,
++			edma_shadow0_read_array(ecc, SH_ESR, idx));
++		edma_shadow0_write_array(ecc, SH_ESR, idx, ch_bit);
+ 	} else {
+ 		/* EDMA channel with event association */
+-		dev_dbg(ecc-&gt;dev, &quot;ER%d %08x\n&quot;, j,
+-			edma_shadow0_read_array(ecc, SH_ER, j));
++		dev_dbg(ecc-&gt;dev, &quot;ER%d %08x\n&quot;, idx,
++			edma_shadow0_read_array(ecc, SH_ER, idx));
+ 		/* Clear any pending event or error */
+-		edma_write_array(ecc, EDMA_ECR, j, mask);
+-		edma_write_array(ecc, EDMA_EMCR, j, mask);
++		edma_write_array(ecc, EDMA_ECR, idx, ch_bit);
++		edma_write_array(ecc, EDMA_EMCR, idx, ch_bit);
+ 		/* Clear any SER */
+-		edma_shadow0_write_array(ecc, SH_SECR, j, mask);
+-		edma_shadow0_write_array(ecc, SH_EESR, j, mask);
+-		dev_dbg(ecc-&gt;dev, &quot;EER%d %08x\n&quot;, j,
+-			edma_shadow0_read_array(ecc, SH_EER, j));
++		edma_shadow0_write_array(ecc, SH_SECR, idx, ch_bit);
++		edma_shadow0_write_array(ecc, SH_EESR, idx, ch_bit);
++		dev_dbg(ecc-&gt;dev, &quot;EER%d %08x\n&quot;, idx,
++			edma_shadow0_read_array(ecc, SH_EER, idx));
+ 	}
+ }
+ 
+@@ -614,19 +624,19 @@ static void edma_stop(struct edma_chan *echan)
+ {
+ 	struct edma_cc *ecc = echan-&gt;ecc;
+ 	int channel = EDMA_CHAN_SLOT(echan-&gt;ch_num);
+-	int j = (channel &gt;&gt; 5);
+-	unsigned int mask = BIT(channel &amp; 0x1f);
++	int idx = EDMA_REG_ARRAY_INDEX(channel);
++	int ch_bit = EDMA_CHANNEL_BIT(channel);
+ 
+-	edma_shadow0_write_array(ecc, SH_EECR, j, mask);
+-	edma_shadow0_write_array(ecc, SH_ECR, j, mask);
+-	edma_shadow0_write_array(ecc, SH_SECR, j, mask);
+-	edma_write_array(ecc, EDMA_EMCR, j, mask);
++	edma_shadow0_write_array(ecc, SH_EECR, idx, ch_bit);
++	edma_shadow0_write_array(ecc, SH_ECR, idx, ch_bit);
++	edma_shadow0_write_array(ecc, SH_SECR, idx, ch_bit);
++	edma_write_array(ecc, EDMA_EMCR, idx, ch_bit);
+ 
+ 	/* clear possibly pending completion interrupt */
+-	edma_shadow0_write_array(ecc, SH_ICR, j, mask);
++	edma_shadow0_write_array(ecc, SH_ICR, idx, ch_bit);
+ 
+-	dev_dbg(ecc-&gt;dev, &quot;EER%d %08x\n&quot;, j,
+-		edma_shadow0_read_array(ecc, SH_EER, j));
++	dev_dbg(ecc-&gt;dev, &quot;EER%d %08x\n&quot;, idx,
++		edma_shadow0_read_array(ecc, SH_EER, idx));
+ 
+ 	/* REVISIT:  consider guarding against inappropriate event
+ 	 * chaining by overwriting with dummy_paramset.
+@@ -640,45 +650,49 @@ static void edma_stop(struct edma_chan *echan)
+ static void edma_pause(struct edma_chan *echan)
+ {
+ 	int channel = EDMA_CHAN_SLOT(echan-&gt;ch_num);
+-	unsigned int mask = BIT(channel &amp; 0x1f);
+ 
+-	edma_shadow0_write_array(echan-&gt;ecc, SH_EECR, channel &gt;&gt; 5, mask);
++	edma_shadow0_write_array(echan-&gt;ecc, SH_EECR,
++				 EDMA_REG_ARRAY_INDEX(channel),
++				 EDMA_CHANNEL_BIT(channel));
+ }
+ 
+ /* Re-enable EDMA hardware events on the specified channel.  */
+ static void edma_resume(struct edma_chan *echan)
+ {
+ 	int channel = EDMA_CHAN_SLOT(echan-&gt;ch_num);
+-	unsigned int mask = BIT(channel &amp; 0x1f);
+ 
+-	edma_shadow0_write_array(echan-&gt;ecc, SH_EESR, channel &gt;&gt; 5, mask);
++	edma_shadow0_write_array(echan-&gt;ecc, SH_EESR,
++				 EDMA_REG_ARRAY_INDEX(channel),
++				 EDMA_CHANNEL_BIT(channel));
+ }
+ 
+ static void edma_trigger_channel(struct edma_chan *echan)
+ {
+ 	struct edma_cc *ecc = echan-&gt;ecc;
+ 	int channel = EDMA_CHAN_SLOT(echan-&gt;ch_num);
+-	unsigned int mask = BIT(channel &amp; 0x1f);
++	int idx = EDMA_REG_ARRAY_INDEX(channel);
++	int ch_bit = EDMA_CHANNEL_BIT(channel);
+ 
+-	edma_shadow0_write_array(ecc, SH_ESR, (channel &gt;&gt; 5), mask);
++	edma_shadow0_write_array(ecc, SH_ESR, idx, ch_bit);
+ 
+-	dev_dbg(ecc-&gt;dev, &quot;ESR%d %08x\n&quot;, (channel &gt;&gt; 5),
+-		edma_shadow0_read_array(ecc, SH_ESR, (channel &gt;&gt; 5)));
++	dev_dbg(ecc-&gt;dev, &quot;ESR%d %08x\n&quot;, idx,
++		edma_shadow0_read_array(ecc, SH_ESR, idx));
+ }
+ 
+ static void edma_clean_channel(struct edma_chan *echan)
+ {
+ 	struct edma_cc *ecc = echan-&gt;ecc;
+ 	int channel = EDMA_CHAN_SLOT(echan-&gt;ch_num);
+-	int j = (channel &gt;&gt; 5);
+-	unsigned int mask = BIT(channel &amp; 0x1f);
++	int idx = EDMA_REG_ARRAY_INDEX(channel);
++	int ch_bit = EDMA_CHANNEL_BIT(channel);
+ 
+-	dev_dbg(ecc-&gt;dev, &quot;EMR%d %08x\n&quot;, j, edma_read_array(ecc, EDMA_EMR, j));
+-	edma_shadow0_write_array(ecc, SH_ECR, j, mask);
++	dev_dbg(ecc-&gt;dev, &quot;EMR%d %08x\n&quot;, idx,
++		edma_read_array(ecc, EDMA_EMR, idx));
++	edma_shadow0_write_array(ecc, SH_ECR, idx, ch_bit);
+ 	/* Clear the corresponding EMR bits */
+-	edma_write_array(ecc, EDMA_EMCR, j, mask);
++	edma_write_array(ecc, EDMA_EMCR, idx, ch_bit);
+ 	/* Clear any SER */
+-	edma_shadow0_write_array(ecc, SH_SECR, j, mask);
++	edma_shadow0_write_array(ecc, SH_SECR, idx, ch_bit);
+ 	edma_write(ecc, EDMA_CCERRCLR, BIT(16) | BIT(1) | BIT(0));
+ }
+ 
+@@ -708,7 +722,8 @@ static int edma_alloc_channel(struct edma_chan *echan,
+ 	int channel = EDMA_CHAN_SLOT(echan-&gt;ch_num);
+ 
+ 	/* ensure access through shadow region 0 */
+-	edma_or_array2(ecc, EDMA_DRAE, 0, channel &gt;&gt; 5, BIT(channel &amp; 0x1f));
++	edma_or_array2(ecc, EDMA_DRAE, 0, EDMA_REG_ARRAY_INDEX(channel),
++		       EDMA_CHANNEL_BIT(channel));
+ 
+ 	/* ensure no events are pending */
+ 	edma_stop(echan);
+@@ -2482,8 +2497,9 @@ static int edma_pm_resume(struct device *dev)
+ 	for (i = 0; i &lt; ecc-&gt;num_channels; i++) {
+ 		if (echan[i].alloced) {
+ 			/* ensure access through shadow region 0 */
+-			edma_or_array2(ecc, EDMA_DRAE, 0, i &gt;&gt; 5,
+-				       BIT(i &amp; 0x1f));
++			edma_or_array2(ecc, EDMA_DRAE, 0,
++				       EDMA_REG_ARRAY_INDEX(i),
++				       EDMA_CHANNEL_BIT(i));
+ 
+ 			edma_setup_interrupt(&amp;echan[i], true);
+ 
+-- 
+Peter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="741269" href="msg741269.html">[PATCH v5 0/3] dmaengine: ti: edma: Polled completion support</a></strong>
+<ul><li><em>From:</em> Peter Ujfalusi</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741269.html">[PATCH v5 0/3] dmaengine: ti: edma: Polled completion support</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741271.html">[PATCH v5 3/3] dmaengine: ti: edma: Support for polled (memcpy) completion</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741268.html">[PATCH v5 2/3] dmaengine: ti: edma: Correct the residue calculation (fix for memcpy)</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741271.html">[PATCH v5 3/3] dmaengine: ti: edma: Support for polled (memcpy) completion</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741270"><strong>Date</strong></a></li>
+<li><a href="threads.html#741270"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v3 05/24] drm/amdgpu: remove memset after kzalloc -->
+<!--X-From-R13: Thdvna Vhnat &#60;uhnatsd.qnkvnaNtznvy.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 00:58:39 &#45;0700 -->
+<!--X-Message-Id: 20190715031731.6421&#45;1&#45;huangfq.daxian@gmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH v3 05/24] drm/amdgpu: remove memset after kzalloc">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH v3 05/24] drm/amdgpu: remove memset after kzalloc &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH v3 05/24] drm/amdgpu: remove memset after kzalloc</h1>
+[<a href="msg35815.html">Date Prev</a>][<a href="msg35817.html">Date Next</a>][<a href="msg35809.html">Thread Prev</a>][<a href="msg35823.html">Thread Next</a>][<a href="maillist.html#35816">Date Index</a>][<a href="index.html#35816">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: </li>
+<li><em>Subject</em>: [PATCH v3 05/24] drm/amdgpu: remove memset after kzalloc</li>
+<li><em>From</em>: Fuqian Huang &lt;huangfq.daxian@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 11:17:31 +0800</li>
+<li><em>Cc</em>: David Zhou &lt;David1.Zhou@xxxxxxx&gt;, Leo Li &lt;sunpeng.li@xxxxxxx&gt;,        Rex Zhu &lt;rex.zhu@xxxxxxx&gt;, linux-kernel@xxxxxxxxxxxxxxx,        amd-gfx@xxxxxxxxxxxxxxxxxxxxx, David Airlie &lt;airlied@xxxxxxxx&gt;,        dri-devel@xxxxxxxxxxxxxxxxxxxxx, Daniel Vetter &lt;daniel@xxxxxxxx&gt;,        Fuqian Huang &lt;huangfq.daxian@xxxxxxxxx&gt;,        Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;,        Evan Quan &lt;evan.quan@xxxxxxx&gt;, Harry Wentland &lt;harry.wentland@xxxxxxx&gt;,        Christian K&#xF6;nig &lt;christian.koenig@xxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>kzalloc has already zeroed the memory during the allocation.
+So memset is unneeded.
+
+Signed-off-by: Fuqian Huang &lt;huangfq.daxian@xxxxxxxxx&gt;
+---
+Changes in v3:
+  - Fix subject prefix: gpu/drm -&gt; drm/amdgpu
+
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c       | 2 --
+ drivers/gpu/drm/amd/powerplay/hwmgr/process_pptables_v1_0.c | 2 --
+ drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c            | 2 --
+ drivers/gpu/drm/amd/powerplay/smumgr/iceland_smumgr.c       | 2 --
+ drivers/gpu/drm/amd/powerplay/smumgr/tonga_smumgr.c         | 2 --
+ 5 files changed, 10 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c
+index fd22b4474dbf..4e6da61d1a93 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c
+@@ -279,8 +279,6 @@ void *amdgpu_dm_irq_register_interrupt(struct amdgpu_device *adev,
+ 		return DAL_INVALID_IRQ_HANDLER_IDX;
+ 	}
+ 
+-	memset(handler_data, 0, sizeof(*handler_data));
+-
+ 	init_handler_common_data(handler_data, ih, handler_args, &amp;adev-&gt;dm);
+ 
+ 	irq_source = int_params-&gt;irq_source;
+diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/process_pptables_v1_0.c b/drivers/gpu/drm/amd/powerplay/hwmgr/process_pptables_v1_0.c
+index 1cd5a8b5cdc1..b760f95e7fa7 100644
+--- a/drivers/gpu/drm/amd/powerplay/hwmgr/process_pptables_v1_0.c
++++ b/drivers/gpu/drm/amd/powerplay/hwmgr/process_pptables_v1_0.c
+@@ -1067,8 +1067,6 @@ static int pp_tables_v1_0_initialize(struct pp_hwmgr *hwmgr)
+ 	PP_ASSERT_WITH_CODE((NULL != hwmgr-&gt;pptable),
+ 			    &quot;Failed to allocate hwmgr-&gt;pptable!&quot;, return -ENOMEM);
+ 
+-	memset(hwmgr-&gt;pptable, 0x00, sizeof(struct phm_ppt_v1_information));
+-
+ 	powerplay_table = get_powerplay_table(hwmgr);
+ 
+ 	PP_ASSERT_WITH_CODE((NULL != powerplay_table),
+diff --git a/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c b/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
+index 669bd0c2a16c..d55e264c5df5 100644
+--- a/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
++++ b/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
+@@ -2702,8 +2702,6 @@ static int ci_initialize_mc_reg_table(struct pp_hwmgr *hwmgr)
+ 	cgs_write_register(hwmgr-&gt;device, mmMC_SEQ_PMG_CMD_MRS2_LP, cgs_read_register(hwmgr-&gt;device, mmMC_PMG_CMD_MRS2));
+ 	cgs_write_register(hwmgr-&gt;device, mmMC_SEQ_WR_CTL_2_LP, cgs_read_register(hwmgr-&gt;device, mmMC_SEQ_WR_CTL_2));
+ 
+-	memset(table, 0x00, sizeof(pp_atomctrl_mc_reg_table));
+-
+ 	result = atomctrl_initialize_mc_reg_table(hwmgr, module_index, table);
+ 
+ 	if (0 == result)
+diff --git a/drivers/gpu/drm/amd/powerplay/smumgr/iceland_smumgr.c b/drivers/gpu/drm/amd/powerplay/smumgr/iceland_smumgr.c
+index 375ccf6ff5f2..c123b4d9c621 100644
+--- a/drivers/gpu/drm/amd/powerplay/smumgr/iceland_smumgr.c
++++ b/drivers/gpu/drm/amd/powerplay/smumgr/iceland_smumgr.c
+@@ -2631,8 +2631,6 @@ static int iceland_initialize_mc_reg_table(struct pp_hwmgr *hwmgr)
+ 	cgs_write_register(hwmgr-&gt;device, mmMC_SEQ_PMG_CMD_MRS2_LP, cgs_read_register(hwmgr-&gt;device, mmMC_PMG_CMD_MRS2));
+ 	cgs_write_register(hwmgr-&gt;device, mmMC_SEQ_WR_CTL_2_LP, cgs_read_register(hwmgr-&gt;device, mmMC_SEQ_WR_CTL_2));
+ 
+-	memset(table, 0x00, sizeof(pp_atomctrl_mc_reg_table));
+-
+ 	result = atomctrl_initialize_mc_reg_table(hwmgr, module_index, table);
+ 
+ 	if (0 == result)
+diff --git a/drivers/gpu/drm/amd/powerplay/smumgr/tonga_smumgr.c b/drivers/gpu/drm/amd/powerplay/smumgr/tonga_smumgr.c
+index 3ed6c5f1e5cf..60462c7211e3 100644
+--- a/drivers/gpu/drm/amd/powerplay/smumgr/tonga_smumgr.c
++++ b/drivers/gpu/drm/amd/powerplay/smumgr/tonga_smumgr.c
+@@ -3114,8 +3114,6 @@ static int tonga_initialize_mc_reg_table(struct pp_hwmgr *hwmgr)
+ 	cgs_write_register(hwmgr-&gt;device, mmMC_SEQ_WR_CTL_2_LP,
+ 			cgs_read_register(hwmgr-&gt;device, mmMC_SEQ_WR_CTL_2));
+ 
+-	memset(table, 0x00, sizeof(pp_atomctrl_mc_reg_table));
+-
+ 	result = atomctrl_initialize_mc_reg_table(hwmgr, module_index, table);
+ 
+ 	if (!result)
+-- 
+2.11.0
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="35843" href="msg35843.html">Re: [PATCH v3 05/24] drm/amdgpu: remove memset after kzalloc</a></strong>
+<ul><li><em>From:</em> Alex Deucher</li></ul></li>
+<li><strong><a name="35823" href="msg35823.html">Re: [PATCH v3 05/24] drm/amdgpu: remove memset after kzalloc</a></strong>
+<ul><li><em>From:</em> Emil Velikov</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35815.html">RE: [PATCH] drm/ttm: Fix the memory delay free issue</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35817.html">Re: [PATCH] drm/amd/display: Support clang option for stack alignment</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35809.html">[PATCH] drm/amdgpu: Fix unaligned memory copies</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35823.html">Re: [PATCH v3 05/24] drm/amdgpu: remove memset after kzalloc</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35816"><strong>Date</strong></a></li>
+<li><a href="index.html#35816"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,474 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*() -->
+<!--X-From-R13: Punengu Hrqnegunz &#60;yvahk.ouneNtznvy.pbz> -->
+<!--X-Date: Sun, 14 Jul 2019 23:57:34 &#45;0700 -->
+<!--X-Message-Id: 20190715065654.GA3716@bharath12345&#45;Inspiron&#45;5559 -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1563131456&#45;11488&#45;1&#45;git&#45;send&#45;email&#45;linux.bhar@gmail.com -->
+<!--X-Reference: deea584f&#45;2da2&#45;8e1f&#45;5a07&#45;e97bf32c63bb@nvidia.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BPF: Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*()">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*() &mdash; BPF</title>
+<link rel="alternate" type="application/rss+xml" title="BPF" href="//feeds.feedburner.com/packetfilters">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*()</h1>
+[<a href="msg05326.html">Date Prev</a>][<a href="msg05328.html">Date Next</a>][<a href="msg05325.html">Thread Prev</a>][<a href="msg05369.html">Thread Next</a>][<a href="maillist.html#05327">Date Index</a>][<a href="index.html#05327">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*()</li>
+<li><em>From</em>: Bharath Vedartham &lt;linux.bhar@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 12:26:54 +0530</li>
+<li><em>Cc</em>: akpm@xxxxxxxxxxxxxxxxxxxx, ira.weiny@xxxxxxxxx,        Mauro Carvalho Chehab &lt;mchehab@xxxxxxxxxx&gt;,        Dimitri Sivanich &lt;sivanich@xxxxxxx&gt;, Arnd Bergmann &lt;arnd@xxxxxxxx&gt;,        Greg Kroah-Hartman &lt;gregkh@xxxxxxxxxxxxxxxxxxx&gt;,        Alex Williamson &lt;alex.williamson@xxxxxxxxxx&gt;,        Cornelia Huck &lt;cohuck@xxxxxxxxxx&gt;, Jens Axboe &lt;axboe@xxxxxxxxx&gt;,        Alexander Viro &lt;viro@xxxxxxxxxxxxxxxxxx&gt;,        Bj&#xF6;rn T&#xF6;pel &lt;bjorn.topel@xxxxxxxxx&gt;,        Magnus Karlsson &lt;magnus.karlsson@xxxxxxxxx&gt;,        &quot;David S. Miller&quot; &lt;davem@xxxxxxxxxxxxx&gt;,        Alexei Starovoitov &lt;ast@xxxxxxxxxx&gt;,        Daniel Borkmann &lt;daniel@xxxxxxxxxxxxx&gt;,        Jakub Kicinski &lt;jakub.kicinski@xxxxxxxxxxxxx&gt;,        Jesper Dangaard Brouer &lt;hawk@xxxxxxxxxx&gt;,        John Fastabend &lt;john.fastabend@xxxxxxxxx&gt;,        Enrico Weigelt &lt;info@xxxxxxxxx&gt;, Thomas Gleixner &lt;tglx@xxxxxxxxxxxxx&gt;,        Alexios Zavras &lt;alexios.zavras@xxxxxxxxx&gt;,        Dan Carpenter &lt;dan.carpenter@xxxxxxxxxx&gt;,        Max Filippov &lt;jcmvbkbc@xxxxxxxxx&gt;,        Matt Sickler &lt;Matt.Sickler@xxxxxxxxxxxxxx&gt;,        &quot;Kirill A. Shutemov&quot; &lt;kirill.shutemov@xxxxxxxxxxxxxxx&gt;,        Keith Busch &lt;keith.busch@xxxxxxxxx&gt;,        YueHaibing &lt;yuehaibing@xxxxxxxxxx&gt;, linux-media@xxxxxxxxxxxxxxx,        linux-kernel@xxxxxxxxxxxxxxx, devel@xxxxxxxxxxxxxxxxxxxx,        kvm@xxxxxxxxxxxxxxx, linux-block@xxxxxxxxxxxxxxx,        linux-fsdevel@xxxxxxxxxxxxxxx, linux-mm@xxxxxxxxx,        netdev@xxxxxxxxxxxxxxx, bpf@xxxxxxxxxxxxxxx,        xdp-newbies@xxxxxxxxxxxxxxx, Jason Gunthorpe &lt;jgg@xxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg05325.html">deea584f-2da2-8e1f-5a07-e97bf32c63bb@nvidia.com</a>&gt;</li>
+<li><em>User-agent</em>: Mutt/1.5.24 (2015-08-30)</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On Sun, Jul 14, 2019 at 04:33:42PM -0700, John Hubbard wrote:
+&gt;<i> On 7/14/19 12:08 PM, Bharath Vedartham wrote:</i>
+&gt;<i> &gt; This patch converts all call sites of get_user_pages</i>
+&gt;<i> &gt; to use put_user_page*() instead of put_page*() functions to</i>
+&gt;<i> &gt; release reference to gup pinned pages.</i>
+Hi John, 
+&gt;<i> Hi Bharath,</i>
+&gt;<i> </i>
+&gt;<i> Thanks for jumping in to help, and welcome to the party!</i>
+&gt;<i> </i>
+&gt;<i> You've caught everyone in the middle of a merge window, btw.  As a</i>
+&gt;<i> result, I'm busy rebasing and reworking the get_user_pages call sites, </i>
+&gt;<i> and gup tracking, in the wake of some semi-traumatic changes to bio </i>
+&gt;<i> and gup and such. I plan to re-post right after 5.3-rc1 shows up, from </i>
+&gt;<i> here:</i>
+&gt;<i> </i>
+&gt;<i>     <a  rel="nofollow" href="https://github.com/johnhubbard/linux/commits/gup_dma_core">https://github.com/johnhubbard/linux/commits/gup_dma_core</a></i>
+&gt;<i> </i>
+&gt;<i> ...which you'll find already covers the changes you've posted, except for:</i>
+&gt;<i> </i>
+&gt;<i>     drivers/misc/sgi-gru/grufault.c</i>
+&gt;<i>     drivers/staging/kpc2000/kpc_dma/fileops.c</i>
+&gt;<i> </i>
+&gt;<i> ...and this one, which is undergoing to larger local changes, due to</i>
+&gt;<i> bvec, so let's leave it out of the choices:</i>
+&gt;<i> </i>
+&gt;<i>     fs/io_uring.c</i>
+&gt;<i> </i>
+&gt;<i> Therefore, until -rc1, if you'd like to help, I'd recommend one or more</i>
+&gt;<i> of the following ideas:</i>
+&gt;<i> </i>
+&gt;<i> 1. Pull down <a  rel="nofollow" href="https://github.com/johnhubbard/linux/commits/gup_dma_core">https://github.com/johnhubbard/linux/commits/gup_dma_core</a></i>
+&gt;<i> and find missing conversions: look for any additional missing </i>
+&gt;<i> get_user_pages/put_page conversions. You've already found a couple missing </i>
+&gt;<i> ones. I haven't re-run a search in a long time, so there's probably even more.</i>
+&gt;<i> 	a) And find more, after I rebase to 5.3-rc1: people probably are adding</i>
+&gt;<i> 	get_user_pages() calls as we speak. :)</i>
+Shouldn't this be documented then? I don't see any docs for using
+put_user_page*() in v5.2.1 in the memory management API section?
+&gt;<i> 2. Patches: Focus on just one subsystem at a time, and perfect the patch for</i>
+&gt;<i> it. For example, I think this the staging driver would be perfect to start with:</i>
+&gt;<i> </i>
+&gt;<i>     drivers/staging/kpc2000/kpc_dma/fileops.c</i>
+&gt;<i> </i>
+&gt;<i> 	a) verify that you've really, corrected converted the whole</i>
+&gt;<i> 	driver. (Hint: I think you might be overlooking a put_page call.)</i>
+Yup. I did see that! Will fix it!
+&gt;<i> 	b) Attempt to test it if you can (I'm being hypocritical in</i>
+&gt;<i> 	the extreme here, but one of my problems is that testing</i>
+&gt;<i> 	has been light, so any help is very valuable). qemu...?</i>
+&gt;<i> 	OTOH, maybe even qemu cannot easily test a kpc2000, but</i>
+&gt;<i> 	perhaps `git blame` and talking to the authors would help</i>
+&gt;<i> 	figure out a way to validate the changes.</i>
+Great! I ll do that, I ll mail the patch authors and ask them for help
+in testing. 
+&gt;<i> 	Thinking about whether you can run a test that would prove or</i>
+&gt;<i> 	disprove my claim in (a), above, could be useful in coming up</i>
+&gt;<i> 	with tests to run.</i>
+
+&gt;<i> In other words, a few very high quality conversions (even just one) that</i>
+&gt;<i> we can really put our faith in, is what I value most here. Tested patches</i>
+&gt;<i> are awesome.</i>
+I understand that! 
+&gt;<i> 3. Once I re-post, turn on the new CONFIG_DEBUG_GET_USER_PAGES_REFERENCES</i>
+&gt;<i> and run things such as xfstest/fstest. (Again, doing so would be going</i>
+&gt;<i> further than I have yet--very helpful). Help clarify what conversions have</i>
+&gt;<i> actually been tested and work, and which ones remain unvalidated.</i>
+&gt;<i> Other: Please note that this:</i>
+Yup will do that.
+&gt;<i>     <a  rel="nofollow" href="https://github.com/johnhubbard/linux/commits/gup_dma_core">https://github.com/johnhubbard/linux/commits/gup_dma_core</a></i>
+&gt;<i> </i>
+&gt;<i>     a) gets rebased often, and</i>
+&gt;<i> </i>
+&gt;<i>     b) has a bunch of commits (iov_iter and related) that conflict</i>
+&gt;<i>        with the latest linux.git,</i>
+&gt;<i> </i>
+&gt;<i>     c) has some bugs in the bio area, that I'm fixing, so I don't trust</i>
+&gt;<i>        that's it's safely runnable, for a few more days.</i>
+I assume your repo contains only work related to fixing gup issues and
+not the main repo for gup development? i.e where gup changes are merged?
+Also are release_pages and put_user_pages interchangable? 
+&gt;<i> One note below, for the future:</i>
+&gt;<i> </i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; This is a bunch of trivial conversions which is a part of an effort</i>
+&gt;<i> &gt; by John Hubbard to solve issues with gup pinned pages and </i>
+&gt;<i> &gt; filesystem writeback.</i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; The issue is more clearly described in John Hubbard's patch[1] where</i>
+&gt;<i> &gt; put_user_page*() functions are introduced.</i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; Currently put_user_page*() simply does put_page but future implementations</i>
+&gt;<i> &gt; look to change that once treewide change of put_page callsites to </i>
+&gt;<i> &gt; put_user_page*() is finished.</i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; The lwn article describing the issue with gup pinned pages and filesystem </i>
+&gt;<i> &gt; writeback [2].</i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; This patch has been tested by building and booting the kernel as I don't</i>
+&gt;<i> &gt; have the required hardware to test the device drivers.</i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; I did not modify gpu/drm drivers which use release_pages instead of</i>
+&gt;<i> &gt; put_page() to release reference of gup pinned pages as I am not clear</i>
+&gt;<i> &gt; whether release_pages and put_page are interchangable. </i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; [1] <a  rel="nofollow" href="https://lkml.org/lkml/2019/3/26/1396">https://lkml.org/lkml/2019/3/26/1396</a></i>
+&gt;<i> </i>
+&gt;<i> When referring to patches in a commit description, please use the </i>
+&gt;<i> commit hash, not an external link. See Submitting Patches [1] for details.</i>
+&gt;<i> </i>
+&gt;<i> Also, once you figure out the right maintainers and other involved people,</i>
+&gt;<i> putting Cc: in the commit description is common practice, too.</i>
+&gt;<i> </i>
+&gt;<i> [1] <a  rel="nofollow" href="https://www.kernel.org/doc/html/latest/process/submitting-patches.html">https://www.kernel.org/doc/html/latest/process/submitting-patches.html</a></i>
+Will work on that! Thanks!
+&gt;<i> thanks,</i>
+&gt;<i> -- </i>
+&gt;<i> John Hubbard</i>
+&gt;<i> NVIDIA</i>
+&gt;<i> </i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; [2] <a  rel="nofollow" href="https://lwn.net/Articles/784574/">https://lwn.net/Articles/784574/</a></i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; Signed-off-by: Bharath Vedartham &lt;linux.bhar@xxxxxxxxx&gt;</i>
+&gt;<i> &gt; ---</i>
+&gt;<i> &gt;  drivers/media/v4l2-core/videobuf-dma-sg.c | 3 +--</i>
+&gt;<i> &gt;  drivers/misc/sgi-gru/grufault.c           | 2 +-</i>
+&gt;<i> &gt;  drivers/staging/kpc2000/kpc_dma/fileops.c | 4 +---</i>
+&gt;<i> &gt;  drivers/vfio/vfio_iommu_type1.c           | 2 +-</i>
+&gt;<i> &gt;  fs/io_uring.c                             | 7 +++----</i>
+&gt;<i> &gt;  mm/gup_benchmark.c                        | 6 +-----</i>
+&gt;<i> &gt;  net/xdp/xdp_umem.c                        | 7 +------</i>
+&gt;<i> &gt;  7 files changed, 9 insertions(+), 22 deletions(-)</i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c</i>
+&gt;<i> &gt; index 66a6c6c..d6eeb43 100644</i>
+&gt;<i> &gt; --- a/drivers/media/v4l2-core/videobuf-dma-sg.c</i>
+&gt;<i> &gt; +++ b/drivers/media/v4l2-core/videobuf-dma-sg.c</i>
+&gt;<i> &gt; @@ -349,8 +349,7 @@ int videobuf_dma_free(struct videobuf_dmabuf *dma)</i>
+&gt;<i> &gt;  	BUG_ON(dma-&gt;sglen);</i>
+&gt;<i> &gt;  </i>
+&gt;<i> &gt;  	if (dma-&gt;pages) {</i>
+&gt;<i> &gt; -		for (i = 0; i &lt; dma-&gt;nr_pages; i++)</i>
+&gt;<i> &gt; -			put_page(dma-&gt;pages[i]);</i>
+&gt;<i> &gt; +		put_user_pages(dma-&gt;pages, dma-&gt;nr_pages);</i>
+&gt;<i> &gt;  		kfree(dma-&gt;pages);</i>
+&gt;<i> &gt;  		dma-&gt;pages = NULL;</i>
+&gt;<i> &gt;  	}</i>
+&gt;<i> &gt; diff --git a/drivers/misc/sgi-gru/grufault.c b/drivers/misc/sgi-gru/grufault.c</i>
+&gt;<i> &gt; index 4b713a8..61b3447 100644</i>
+&gt;<i> &gt; --- a/drivers/misc/sgi-gru/grufault.c</i>
+&gt;<i> &gt; +++ b/drivers/misc/sgi-gru/grufault.c</i>
+&gt;<i> &gt; @@ -188,7 +188,7 @@ static int non_atomic_pte_lookup(struct vm_area_struct *vma,</i>
+&gt;<i> &gt;  	if (get_user_pages(vaddr, 1, write ? FOLL_WRITE : 0, &amp;page, NULL) &lt;= 0)</i>
+&gt;<i> &gt;  		return -EFAULT;</i>
+&gt;<i> &gt;  	*paddr = page_to_phys(page);</i>
+&gt;<i> &gt; -	put_page(page);</i>
+&gt;<i> &gt; +	put_user_page(page);</i>
+&gt;<i> &gt;  	return 0;</i>
+&gt;<i> &gt;  }</i>
+&gt;<i> &gt;  </i>
+&gt;<i> &gt; diff --git a/drivers/staging/kpc2000/kpc_dma/fileops.c b/drivers/staging/kpc2000/kpc_dma/fileops.c</i>
+&gt;<i> &gt; index 6166587..26dceed 100644</i>
+&gt;<i> &gt; --- a/drivers/staging/kpc2000/kpc_dma/fileops.c</i>
+&gt;<i> &gt; +++ b/drivers/staging/kpc2000/kpc_dma/fileops.c</i>
+&gt;<i> &gt; @@ -198,9 +198,7 @@ int  kpc_dma_transfer(struct dev_private_data *priv, struct kiocb *kcb, unsigned</i>
+&gt;<i> &gt;  	sg_free_table(&amp;acd-&gt;sgt);</i>
+&gt;<i> &gt;   err_dma_map_sg:</i>
+&gt;<i> &gt;   err_alloc_sg_table:</i>
+&gt;<i> &gt; -	for (i = 0 ; i &lt; acd-&gt;page_count ; i++){</i>
+&gt;<i> &gt; -		put_page(acd-&gt;user_pages[i]);</i>
+&gt;<i> &gt; -	}</i>
+&gt;<i> &gt; +	put_user_pages(acd-&gt;user_pages, acd-&gt;page_count);</i>
+&gt;<i> &gt;   err_get_user_pages:</i>
+&gt;<i> &gt;  	kfree(acd-&gt;user_pages);</i>
+&gt;<i> &gt;   err_alloc_userpages:</i>
+&gt;<i> &gt; diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c</i>
+&gt;<i> &gt; index add34ad..c491524 100644</i>
+&gt;<i> &gt; --- a/drivers/vfio/vfio_iommu_type1.c</i>
+&gt;<i> &gt; +++ b/drivers/vfio/vfio_iommu_type1.c</i>
+&gt;<i> &gt; @@ -369,7 +369,7 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,</i>
+&gt;<i> &gt;  		 */</i>
+&gt;<i> &gt;  		if (ret &gt; 0 &amp;&amp; vma_is_fsdax(vmas[0])) {</i>
+&gt;<i> &gt;  			ret = -EOPNOTSUPP;</i>
+&gt;<i> &gt; -			put_page(page[0]);</i>
+&gt;<i> &gt; +			put_user_page(page[0]);</i>
+&gt;<i> &gt;  		}</i>
+&gt;<i> &gt;  	}</i>
+&gt;<i> &gt;  	up_read(&amp;mm-&gt;mmap_sem);</i>
+&gt;<i> &gt; diff --git a/fs/io_uring.c b/fs/io_uring.c</i>
+&gt;<i> &gt; index 4ef62a4..b4a4549 100644</i>
+&gt;<i> &gt; --- a/fs/io_uring.c</i>
+&gt;<i> &gt; +++ b/fs/io_uring.c</i>
+&gt;<i> &gt; @@ -2694,10 +2694,9 @@ static int io_sqe_buffer_register(struct io_ring_ctx *ctx, void __user *arg,</i>
+&gt;<i> &gt;  			 * if we did partial map, or found file backed vmas,</i>
+&gt;<i> &gt;  			 * release any pages we did get</i>
+&gt;<i> &gt;  			 */</i>
+&gt;<i> &gt; -			if (pret &gt; 0) {</i>
+&gt;<i> &gt; -				for (j = 0; j &lt; pret; j++)</i>
+&gt;<i> &gt; -					put_page(pages[j]);</i>
+&gt;<i> &gt; -			}</i>
+&gt;<i> &gt; +			if (pret &gt; 0)</i>
+&gt;<i> &gt; +				put_user_pages(pages, pret);</i>
+&gt;<i> &gt; +</i>
+&gt;<i> &gt;  			if (ctx-&gt;account_mem)</i>
+&gt;<i> &gt;  				io_unaccount_mem(ctx-&gt;user, nr_pages);</i>
+&gt;<i> &gt;  			kvfree(imu-&gt;bvec);</i>
+&gt;<i> &gt; diff --git a/mm/gup_benchmark.c b/mm/gup_benchmark.c</i>
+&gt;<i> &gt; index 7dd602d..15fc7a2 100644</i>
+&gt;<i> &gt; --- a/mm/gup_benchmark.c</i>
+&gt;<i> &gt; +++ b/mm/gup_benchmark.c</i>
+&gt;<i> &gt; @@ -76,11 +76,7 @@ static int __gup_benchmark_ioctl(unsigned int cmd,</i>
+&gt;<i> &gt;  	gup-&gt;size = addr - gup-&gt;addr;</i>
+&gt;<i> &gt;  </i>
+&gt;<i> &gt;  	start_time = ktime_get();</i>
+&gt;<i> &gt; -	for (i = 0; i &lt; nr_pages; i++) {</i>
+&gt;<i> &gt; -		if (!pages[i])</i>
+&gt;<i> &gt; -			break;</i>
+&gt;<i> &gt; -		put_page(pages[i]);</i>
+&gt;<i> &gt; -	}</i>
+&gt;<i> &gt; +	put_user_pages(pages, nr_pages);</i>
+&gt;<i> &gt;  	end_time = ktime_get();</i>
+&gt;<i> &gt;  	gup-&gt;put_delta_usec = ktime_us_delta(end_time, start_time);</i>
+&gt;<i> &gt;  </i>
+&gt;<i> &gt; diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c</i>
+&gt;<i> &gt; index 9c6de4f..6103e19 100644</i>
+&gt;<i> &gt; --- a/net/xdp/xdp_umem.c</i>
+&gt;<i> &gt; +++ b/net/xdp/xdp_umem.c</i>
+&gt;<i> &gt; @@ -173,12 +173,7 @@ static void xdp_umem_unpin_pages(struct xdp_umem *umem)</i>
+&gt;<i> &gt;  {</i>
+&gt;<i> &gt;  	unsigned int i;</i>
+&gt;<i> &gt;  </i>
+&gt;<i> &gt; -	for (i = 0; i &lt; umem-&gt;npgs; i++) {</i>
+&gt;<i> &gt; -		struct page *page = umem-&gt;pgs[i];</i>
+&gt;<i> &gt; -</i>
+&gt;<i> &gt; -		set_page_dirty_lock(page);</i>
+&gt;<i> &gt; -		put_page(page);</i>
+&gt;<i> &gt; -	}</i>
+&gt;<i> &gt; +	put_user_pages_dirty_lock(umem-&gt;pgs, umem-&gt;npgs);</i>
+&gt;<i> &gt;  </i>
+&gt;<i> &gt;  	kfree(umem-&gt;pgs);</i>
+&gt;<i> &gt;  	umem-&gt;pgs = NULL;</i>
+&gt;<i> &gt; </i>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="05377" href="msg05377.html">Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*()</a></strong>
+<ul><li><em>From:</em> John Hubbard</li></ul></li>
+<li><strong><a name="05369" href="msg05369.html">Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*()</a></strong>
+<ul><li><em>From:</em> Ira Weiny</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="05324" href="msg05324.html">[PATCH] mm/gup: Use put_user_page*() instead of put_page*()</a></strong>
+<ul><li><em>From:</em> Bharath Vedartham</li></ul></li>
+<li><strong><a name="05325" href="msg05325.html">Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*()</a></strong>
+<ul><li><em>From:</em> John Hubbard</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05326.html">Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*()</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05328.html">Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*()</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05325.html">Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*()</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05369.html">Re: [PATCH] mm/gup: Use put_user_page*() instead of put_page*()</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05327"><strong>Date</strong></a></li>
+<li><a href="index.html#05327"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;Samsung&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-rockchip/>[Linux&nbsp;Rockchip&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-actions/>[Linux&nbsp;Actions&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-snps-arc/>[Linux&nbsp;for&nbsp;Synopsys&nbsp;ARC&nbsp;Processors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nfs/>[Linux&nbsp;NFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nilfs/>[Linux&nbsp;NILFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/vfl/>[Video&nbsp;for&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<p>
+<hr>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,361 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v10 8/9] kselftest: save&#45;and&#45;restore errno to allow for %m formatting -->
+<!--X-From-R13: Oyrxfn Enenv &#60;plcuneNplcune.pbz> -->
+<!--X-Date: Fri, 19 Jul 2019 09:46:32 &#45;0700 -->
+<!--X-Message-Id: 20190719164225.27083&#45;9&#45;cyphar@cyphar.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190719164225.27083&#45;1&#45;cyphar@cyphar.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH v10 8/9] kselftest: save-and-restore errno to allow for %m formatting">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH v10 8/9] kselftest: save-and-restore errno to allow for %m formatting &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH v10 8/9] kselftest: save-and-restore errno to allow for %m formatting</h1>
+[<a href="msg741985.html">Date Prev</a>][<a href="msg741987.html">Date Next</a>][<a href="msg741985.html">Thread Prev</a>][<a href="msg742006.html">Thread Next</a>][<a href="maillist.html#741986">Date Index</a>][<a href="threads.html#741986">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v10 8/9] kselftest: save-and-restore errno to allow for %m formatting</li>
+<li><em>From</em>: Aleksa Sarai &lt;cyphar@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Sat, 20 Jul 2019 02:42:24 +1000</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg741978.html">20190719164225.27083-1-cyphar@cyphar.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Previously, using &quot;%m&quot; in a ksft_* format string can result in strange
+output because the errno value wasn't saved before calling other libc
+functions. The solution is to simply save and restore the errno before
+we format the user-supplied format string.
+
+Signed-off-by: Aleksa Sarai &lt;cyphar@xxxxxxxxxx&gt;
+---
+ tools/testing/selftests/kselftest.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/tools/testing/selftests/kselftest.h b/tools/testing/selftests/kselftest.h
+index ec15c4f6af55..0ac49d91a260 100644
+--- a/tools/testing/selftests/kselftest.h
++++ b/tools/testing/selftests/kselftest.h
+@@ -10,6 +10,7 @@
+ #ifndef __KSELFTEST_H
+ #define __KSELFTEST_H
+ 
++#include &lt;errno.h&gt;
+ #include &lt;stdlib.h&gt;
+ #include &lt;unistd.h&gt;
+ #include &lt;stdarg.h&gt;
+@@ -81,58 +82,68 @@ static inline void ksft_print_cnts(void)
+ 
+ static inline void ksft_print_msg(const char *msg, ...)
+ {
++	int saved_errno = errno;
+ 	va_list args;
+ 
+ 	va_start(args, msg);
+ 	printf(&quot;# &quot;);
++	errno = saved_errno;
+ 	vprintf(msg, args);
+ 	va_end(args);
+ }
+ 
+ static inline void ksft_test_result_pass(const char *msg, ...)
+ {
++	int saved_errno = errno;
+ 	va_list args;
+ 
+ 	ksft_cnt.ksft_pass++;
+ 
+ 	va_start(args, msg);
+ 	printf(&quot;ok %d &quot;, ksft_test_num());
++	errno = saved_errno;
+ 	vprintf(msg, args);
+ 	va_end(args);
+ }
+ 
+ static inline void ksft_test_result_fail(const char *msg, ...)
+ {
++	int saved_errno = errno;
+ 	va_list args;
+ 
+ 	ksft_cnt.ksft_fail++;
+ 
+ 	va_start(args, msg);
+ 	printf(&quot;not ok %d &quot;, ksft_test_num());
++	errno = saved_errno;
+ 	vprintf(msg, args);
+ 	va_end(args);
+ }
+ 
+ static inline void ksft_test_result_skip(const char *msg, ...)
+ {
++	int saved_errno = errno;
+ 	va_list args;
+ 
+ 	ksft_cnt.ksft_xskip++;
+ 
+ 	va_start(args, msg);
+ 	printf(&quot;not ok %d # SKIP &quot;, ksft_test_num());
++	errno = saved_errno;
+ 	vprintf(msg, args);
+ 	va_end(args);
+ }
+ 
+ static inline void ksft_test_result_error(const char *msg, ...)
+ {
++	int saved_errno = errno;
+ 	va_list args;
+ 
+ 	ksft_cnt.ksft_error++;
+ 
+ 	va_start(args, msg);
+ 	printf(&quot;not ok %d # error &quot;, ksft_test_num());
++	errno = saved_errno;
+ 	vprintf(msg, args);
+ 	va_end(args);
+ }
+@@ -152,10 +163,12 @@ static inline int ksft_exit_fail(void)
+ 
+ static inline int ksft_exit_fail_msg(const char *msg, ...)
+ {
++	int saved_errno = errno;
+ 	va_list args;
+ 
+ 	va_start(args, msg);
+ 	printf(&quot;Bail out! &quot;);
++	errno = saved_errno;
+ 	vprintf(msg, args);
+ 	va_end(args);
+ 
+@@ -178,10 +191,12 @@ static inline int ksft_exit_xpass(void)
+ static inline int ksft_exit_skip(const char *msg, ...)
+ {
+ 	if (msg) {
++		int saved_errno = errno;
+ 		va_list args;
+ 
+ 		va_start(args, msg);
+ 		printf(&quot;not ok %d # SKIP &quot;, 1 + ksft_test_num());
++		errno = saved_errno;
+ 		vprintf(msg, args);
+ 		va_end(args);
+ 	} else {
+-- 
+2.22.0
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="742006" href="msg742006.html">Re: [PATCH v10 8/9] kselftest: save-and-restore errno to allow for %m formatting</a></strong>
+<ul><li><em>From:</em> shuah</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="741978" href="msg741978.html">[PATCH v10 0/9] namei: openat2(2) path resolution restrictions</a></strong>
+<ul><li><em>From:</em> Aleksa Sarai</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741985.html">[PATCH v10 7/9] open: openat2(2) syscall</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741987.html">[PATCH v10 9/9] selftests: add openat2(2) selftests</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741985.html">[PATCH v10 7/9] open: openat2(2) syscall</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg742006.html">Re: [PATCH v10 8/9] kselftest: save-and-restore errno to allow for %m formatting</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741986"><strong>Date</strong></a></li>
+<li><a href="threads.html#741986"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

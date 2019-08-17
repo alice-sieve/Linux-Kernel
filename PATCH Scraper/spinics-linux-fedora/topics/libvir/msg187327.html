@@ -1,0 +1,615 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 13/25] tests: qemustatusxml2xml: Add test case for	block job tracking -->
+<!--X-From-R13: Brgre Yerzcn &#60;cxerzcnNerqung.pbz> -->
+<!--X-Date: Fri, 12 Jul 2019 09:06:50 &#45;0700 -->
+<!--X-Message-Id: 9b02dc26f66a15a2da957e39f4bca7791d848750.1562947284.git.pkrempa@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1562947283.git.pkrempa@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 13/25] tests: qemustatusxml2xml: Add test case for	block job tracking</title>
+<meta name="description" content="libvirt: [PATCH 13/25] tests: qemustatusxml2xml: Add test case for	block job tracking">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 13/25] tests: qemustatusxml2xml: Add test case for	block job tracking</h1>
+[<a href="msg187326.html">Date Prev</a>][<a href="msg187328.html">Date Next</a>][<a href="msg187591.html">Thread Prev</a>][<a href="msg187423.html">Thread Next</a>][<a href="maillist.html#187327">Date Index</a>][<a href="index.html#187327">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 13/25] tests: qemustatusxml2xml: Add test case for	block job tracking</li>
+<li><em>From</em>: Peter Krempa &lt;pkrempa@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 12 Jul 2019 18:05:54 +0200</li>
+<li><em>Cc</em>: Peter Krempa &lt;pkrempa@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187317.html">cover.1562947283.git.pkrempa@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187317.html">cover.1562947283.git.pkrempa@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Signed-off-by: Peter Krempa &lt;pkrempa@xxxxxxxxxx&gt;
+---
+ .../blockjob-blockdev-in.xml                  | 366 ++++++++++++++++++
+ .../blockjob-blockdev-out.xml                 |   1 +
+ tests/qemuxml2xmltest.c                       |   2 +
+ 3 files changed, 369 insertions(+)
+ create mode 100644 tests/qemustatusxml2xmldata/blockjob-blockdev-in.xml
+ create mode 120000 tests/qemustatusxml2xmldata/blockjob-blockdev-out.xml
+
+diff --git a/tests/qemustatusxml2xmldata/blockjob-blockdev-in.xml b/tests/qemustatusxml2xmldata/blockjob-blockdev-in.xml
+new file mode 100644
+index 0000000000..115eaa4887
+--- /dev/null
++++ b/tests/qemustatusxml2xmldata/blockjob-blockdev-in.xml
+@@ -0,0 +1,366 @@
++&lt;domstatus state='running' reason='booted' pid='7690'&gt;
++  &lt;taint flag='high-privileges'/&gt;
++  &lt;monitor path='/var/lib/libvirt/qemu/domain-4-copy/monitor.sock' type='unix'/&gt;
++  &lt;namespaces&gt;
++    &lt;mount/&gt;
++  &lt;/namespaces&gt;
++  &lt;vcpus&gt;
++    &lt;vcpu id='0' pid='7696'/&gt;
++    &lt;vcpu id='1' pid='7697'/&gt;
++  &lt;/vcpus&gt;
++  &lt;qemuCaps&gt;
++    &lt;flag name='kvm'/&gt;
++    &lt;flag name='no-hpet'/&gt;
++    &lt;flag name='spice'/&gt;
++    &lt;flag name='hda-duplex'/&gt;
++    &lt;flag name='ccid-emulated'/&gt;
++    &lt;flag name='ccid-passthru'/&gt;
++    &lt;flag name='virtio-tx-alg'/&gt;
++    &lt;flag name='virtio-blk-pci.ioeventfd'/&gt;
++    &lt;flag name='sga'/&gt;
++    &lt;flag name='virtio-blk-pci.event_idx'/&gt;
++    &lt;flag name='virtio-net-pci.event_idx'/&gt;
++    &lt;flag name='piix3-usb-uhci'/&gt;
++    &lt;flag name='piix4-usb-uhci'/&gt;
++    &lt;flag name='usb-ehci'/&gt;
++    &lt;flag name='ich9-usb-ehci1'/&gt;
++    &lt;flag name='vt82c686b-usb-uhci'/&gt;
++    &lt;flag name='pci-ohci'/&gt;
++    &lt;flag name='usb-redir'/&gt;
++    &lt;flag name='usb-hub'/&gt;
++    &lt;flag name='ich9-ahci'/&gt;
++    &lt;flag name='no-acpi'/&gt;
++    &lt;flag name='virtio-blk-pci.scsi'/&gt;
++    &lt;flag name='scsi-disk.channel'/&gt;
++    &lt;flag name='scsi-block'/&gt;
++    &lt;flag name='transaction'/&gt;
++    &lt;flag name='block-job-async'/&gt;
++    &lt;flag name='scsi-cd'/&gt;
++    &lt;flag name='ide-cd'/&gt;
++    &lt;flag name='hda-micro'/&gt;
++    &lt;flag name='dump-guest-memory'/&gt;
++    &lt;flag name='nec-usb-xhci'/&gt;
++    &lt;flag name='balloon-event'/&gt;
++    &lt;flag name='lsi'/&gt;
++    &lt;flag name='virtio-scsi-pci'/&gt;
++    &lt;flag name='blockio'/&gt;
++    &lt;flag name='disable-s3'/&gt;
++    &lt;flag name='disable-s4'/&gt;
++    &lt;flag name='usb-redir.filter'/&gt;
++    &lt;flag name='ide-drive.wwn'/&gt;
++    &lt;flag name='scsi-disk.wwn'/&gt;
++    &lt;flag name='seccomp-sandbox'/&gt;
++    &lt;flag name='reboot-timeout'/&gt;
++    &lt;flag name='seamless-migration'/&gt;
++    &lt;flag name='block-commit'/&gt;
++    &lt;flag name='vnc'/&gt;
++    &lt;flag name='drive-mirror'/&gt;
++    &lt;flag name='blockdev-snapshot-sync'/&gt;
++    &lt;flag name='qxl'/&gt;
++    &lt;flag name='VGA'/&gt;
++    &lt;flag name='cirrus-vga'/&gt;
++    &lt;flag name='vmware-svga'/&gt;
++    &lt;flag name='device-video-primary'/&gt;
++    &lt;flag name='usb-serial'/&gt;
++    &lt;flag name='nbd-server'/&gt;
++    &lt;flag name='virtio-rng'/&gt;
++    &lt;flag name='rng-random'/&gt;
++    &lt;flag name='rng-egd'/&gt;
++    &lt;flag name='megasas'/&gt;
++    &lt;flag name='tpm-passthrough'/&gt;
++    &lt;flag name='tpm-tis'/&gt;
++    &lt;flag name='pci-bridge'/&gt;
++    &lt;flag name='vfio-pci'/&gt;
++    &lt;flag name='mem-merge'/&gt;
++    &lt;flag name='drive-discard'/&gt;
++    &lt;flag name='mlock'/&gt;
++    &lt;flag name='device-del-event'/&gt;
++    &lt;flag name='dmi-to-pci-bridge'/&gt;
++    &lt;flag name='i440fx-pci-hole64-size'/&gt;
++    &lt;flag name='q35-pci-hole64-size'/&gt;
++    &lt;flag name='usb-storage'/&gt;
++    &lt;flag name='usb-storage.removable'/&gt;
++    &lt;flag name='ich9-intel-hda'/&gt;
++    &lt;flag name='kvm-pit-lost-tick-policy'/&gt;
++    &lt;flag name='boot-strict'/&gt;
++    &lt;flag name='pvpanic'/&gt;
++    &lt;flag name='spice-file-xfer-disable'/&gt;
++    &lt;flag name='usb-kbd'/&gt;
++    &lt;flag name='msg-timestamp'/&gt;
++    &lt;flag name='active-commit'/&gt;
++    &lt;flag name='change-backing-file'/&gt;
++    &lt;flag name='memory-backend-ram'/&gt;
++    &lt;flag name='numa'/&gt;
++    &lt;flag name='memory-backend-file'/&gt;
++    &lt;flag name='usb-audio'/&gt;
++    &lt;flag name='rtc-reset-reinjection'/&gt;
++    &lt;flag name='splash-timeout'/&gt;
++    &lt;flag name='iothread'/&gt;
++    &lt;flag name='migrate-rdma'/&gt;
++    &lt;flag name='ivshmem'/&gt;
++    &lt;flag name='drive-iotune-max'/&gt;
++    &lt;flag name='VGA.vgamem_mb'/&gt;
++    &lt;flag name='vmware-svga.vgamem_mb'/&gt;
++    &lt;flag name='qxl.vgamem_mb'/&gt;
++    &lt;flag name='pc-dimm'/&gt;
++    &lt;flag name='machine-vmport-opt'/&gt;
++    &lt;flag name='aes-key-wrap'/&gt;
++    &lt;flag name='dea-key-wrap'/&gt;
++    &lt;flag name='pci-serial'/&gt;
++    &lt;flag name='vhost-user-multiqueue'/&gt;
++    &lt;flag name='migration-event'/&gt;
++    &lt;flag name='ioh3420'/&gt;
++    &lt;flag name='x3130-upstream'/&gt;
++    &lt;flag name='xio3130-downstream'/&gt;
++    &lt;flag name='rtl8139'/&gt;
++    &lt;flag name='e1000'/&gt;
++    &lt;flag name='virtio-net'/&gt;
++    &lt;flag name='gic-version'/&gt;
++    &lt;flag name='incoming-defer'/&gt;
++    &lt;flag name='virtio-gpu'/&gt;
++    &lt;flag name='virtio-gpu.virgl'/&gt;
++    &lt;flag name='virtio-keyboard'/&gt;
++    &lt;flag name='virtio-mouse'/&gt;
++    &lt;flag name='virtio-tablet'/&gt;
++    &lt;flag name='virtio-input-host'/&gt;
++    &lt;flag name='chardev-file-append'/&gt;
++    &lt;flag name='ich9-disable-s3'/&gt;
++    &lt;flag name='ich9-disable-s4'/&gt;
++    &lt;flag name='vserport-change-event'/&gt;
++    &lt;flag name='virtio-balloon-pci.deflate-on-oom'/&gt;
++    &lt;flag name='mptsas1068'/&gt;
++    &lt;flag name='spice-gl'/&gt;
++    &lt;flag name='qxl.vram64_size_mb'/&gt;
++    &lt;flag name='chardev-logfile'/&gt;
++    &lt;flag name='debug-threads'/&gt;
++    &lt;flag name='secret'/&gt;
++    &lt;flag name='pxb'/&gt;
++    &lt;flag name='pxb-pcie'/&gt;
++    &lt;flag name='device-tray-moved-event'/&gt;
++    &lt;flag name='nec-usb-xhci-ports'/&gt;
++    &lt;flag name='virtio-scsi-pci.iothread'/&gt;
++    &lt;flag name='name-guest'/&gt;
++    &lt;flag name='qxl.max_outputs'/&gt;
++    &lt;flag name='spice-unix'/&gt;
++    &lt;flag name='drive-detect-zeroes'/&gt;
++    &lt;flag name='tls-creds-x509'/&gt;
++    &lt;flag name='intel-iommu'/&gt;
++    &lt;flag name='smm'/&gt;
++    &lt;flag name='virtio-pci-disable-legacy'/&gt;
++    &lt;flag name='query-hotpluggable-cpus'/&gt;
++    &lt;flag name='virtio-net.rx_queue_size'/&gt;
++    &lt;flag name='virtio-vga'/&gt;
++    &lt;flag name='drive-iotune-max-length'/&gt;
++    &lt;flag name='ivshmem-plain'/&gt;
++    &lt;flag name='ivshmem-doorbell'/&gt;
++    &lt;flag name='query-qmp-schema'/&gt;
++    &lt;flag name='gluster.debug_level'/&gt;
++    &lt;flag name='vhost-scsi'/&gt;
++    &lt;flag name='drive-iotune-group'/&gt;
++    &lt;flag name='query-cpu-model-expansion'/&gt;
++    &lt;flag name='virtio-net.host_mtu'/&gt;
++    &lt;flag name='spice-rendernode'/&gt;
++    &lt;flag name='nvdimm'/&gt;
++    &lt;flag name='pcie-root-port'/&gt;
++    &lt;flag name='query-cpu-definitions'/&gt;
++    &lt;flag name='block-write-threshold'/&gt;
++    &lt;flag name='query-named-block-nodes'/&gt;
++    &lt;flag name='cpu-cache'/&gt;
++    &lt;flag name='qemu-xhci'/&gt;
++    &lt;flag name='kernel-irqchip'/&gt;
++    &lt;flag name='kernel-irqchip.split'/&gt;
++    &lt;flag name='intel-iommu.intremap'/&gt;
++    &lt;flag name='intel-iommu.caching-mode'/&gt;
++    &lt;flag name='intel-iommu.eim'/&gt;
++    &lt;flag name='intel-iommu.device-iotlb'/&gt;
++    &lt;flag name='virtio.iommu_platform'/&gt;
++    &lt;flag name='virtio.ats'/&gt;
++    &lt;flag name='loadparm'/&gt;
++    &lt;flag name='vnc-multi-servers'/&gt;
++    &lt;flag name='virtio-net.tx_queue_size'/&gt;
++    &lt;flag name='chardev-reconnect'/&gt;
++    &lt;flag name='virtio-gpu.max_outputs'/&gt;
++    &lt;flag name='vxhs'/&gt;
++    &lt;flag name='virtio-blk.num-queues'/&gt;
++    &lt;flag name='vmcoreinfo'/&gt;
++    &lt;flag name='numa.dist'/&gt;
++    &lt;flag name='disk-share-rw'/&gt;
++    &lt;flag name='iscsi.password-secret'/&gt;
++    &lt;flag name='isa-serial'/&gt;
++    &lt;flag name='dump-completed'/&gt;
++    &lt;flag name='qcow2-luks'/&gt;
++    &lt;flag name='pcie-pci-bridge'/&gt;
++    &lt;flag name='seccomp-blacklist'/&gt;
++    &lt;flag name='query-cpus-fast'/&gt;
++    &lt;flag name='disk-write-cache'/&gt;
++    &lt;flag name='nbd-tls'/&gt;
++    &lt;flag name='tpm-crb'/&gt;
++    &lt;flag name='pr-manager-helper'/&gt;
++    &lt;flag name='qom-list-properties'/&gt;
++    &lt;flag name='memory-backend-file.discard-data'/&gt;
++    &lt;flag name='sdl-gl'/&gt;
++    &lt;flag name='screendump_device'/&gt;
++    &lt;flag name='hda-output'/&gt;
++    &lt;flag name='blockdev-del'/&gt;
++    &lt;flag name='vmgenid'/&gt;
++    &lt;flag name='vhost-vsock'/&gt;
++    &lt;flag name='chardev-fd-pass'/&gt;
++    &lt;flag name='tpm-emulator'/&gt;
++    &lt;flag name='mch'/&gt;
++    &lt;flag name='mch.extended-tseg-mbytes'/&gt;
++    &lt;flag name='usb-storage.werror'/&gt;
++    &lt;flag name='egl-headless'/&gt;
++    &lt;flag name='vfio-pci.display'/&gt;
++    &lt;flag name='blockdev'/&gt;
++    &lt;flag name='memory-backend-memfd'/&gt;
++    &lt;flag name='memory-backend-memfd.hugetlb'/&gt;
++    &lt;flag name='iothread.poll-max-ns'/&gt;
++    &lt;flag name='egl-headless.rendernode'/&gt;
++  &lt;/qemuCaps&gt;
++  &lt;devices&gt;
++    &lt;device alias='rng0'/&gt;
++    &lt;device alias='sound0-codec0'/&gt;
++    &lt;device alias='virtio-disk0'/&gt;
++    &lt;device alias='virtio-serial0'/&gt;
++    &lt;device alias='video0'/&gt;
++    &lt;device alias='serial0'/&gt;
++    &lt;device alias='sound0'/&gt;
++    &lt;device alias='channel1'/&gt;
++    &lt;device alias='channel0'/&gt;
++    &lt;device alias='usb'/&gt;
++  &lt;/devices&gt;
++  &lt;numad nodeset='0' cpuset='0-7'/&gt;
++  &lt;libDir path='/var/lib/libvirt/qemu/domain-4-copy'/&gt;
++  &lt;channelTargetDir path='/var/lib/libvirt/qemu/channel/target/domain-4-copy'/&gt;
++  &lt;chardevStdioLogd/&gt;
++  &lt;allowReboot value='yes'/&gt;
++  &lt;nodename index='0'/&gt;
++  &lt;blockjobs active='yes'&gt;
++    &lt;blockjob name='drive-virtio-disk0' type='copy' state='ready'&gt;
++      &lt;disk dst='vda'/&gt;
++    &lt;/blockjob&gt;
++  &lt;/blockjobs&gt;
++  &lt;domain type='kvm' id='4'&gt;
++    &lt;name&gt;copy&lt;/name&gt;
++    &lt;uuid&gt;0439a4a8-db56-4933-9183-d8681d7b0746&lt;/uuid&gt;
++    &lt;memory unit='KiB'&gt;1024000&lt;/memory&gt;
++    &lt;currentMemory unit='KiB'&gt;1024000&lt;/currentMemory&gt;
++    &lt;vcpu placement='auto' current='2'&gt;8&lt;/vcpu&gt;
++    &lt;numatune&gt;
++      &lt;memory mode='strict' placement='auto'/&gt;
++    &lt;/numatune&gt;
++    &lt;resource&gt;
++      &lt;partition&gt;/machine&lt;/partition&gt;
++    &lt;/resource&gt;
++    &lt;os&gt;
++      &lt;type arch='x86_64' machine='pc-i440fx-2.9'&gt;hvm&lt;/type&gt;
++      &lt;boot dev='hd'/&gt;
++      &lt;bootmenu enable='yes'/&gt;
++    &lt;/os&gt;
++    &lt;features&gt;
++      &lt;acpi/&gt;
++      &lt;apic/&gt;
++      &lt;vmport state='off'/&gt;
++    &lt;/features&gt;
++    &lt;cpu&gt;
++      &lt;numa&gt;
++        &lt;cell id='0' cpus='0,2,4,6' memory='512000' unit='KiB'/&gt;
++        &lt;cell id='1' cpus='1,3,5,7' memory='512000' unit='KiB'/&gt;
++      &lt;/numa&gt;
++    &lt;/cpu&gt;
++    &lt;clock offset='utc'&gt;
++      &lt;timer name='rtc' tickpolicy='catchup'/&gt;
++      &lt;timer name='pit' tickpolicy='delay'/&gt;
++      &lt;timer name='hpet' present='no'/&gt;
++    &lt;/clock&gt;
++    &lt;on_poweroff&gt;destroy&lt;/on_poweroff&gt;
++    &lt;on_reboot&gt;restart&lt;/on_reboot&gt;
++    &lt;on_crash&gt;restart&lt;/on_crash&gt;
++    &lt;pm&gt;
++      &lt;suspend-to-mem enabled='no'/&gt;
++      &lt;suspend-to-disk enabled='no'/&gt;
++    &lt;/pm&gt;
++    &lt;devices&gt;
++      &lt;emulator&gt;/home/pipo/git/qemu.git/x86_64-softmmu/qemu-system-x86_64&lt;/emulator&gt;
++      &lt;disk type='file' device='disk'&gt;
++        &lt;driver name='qemu' type='qcow2'/&gt;
++        &lt;source file='/tmp/src'/&gt;
++        &lt;backingStore/&gt;
++        &lt;mirror type='file' file='/tmp/copy' format='qcow2' job='copy' ready='yes'&gt;
++          &lt;format type='qcow2'/&gt;
++          &lt;source file='/tmp/copy'/&gt;
++        &lt;/mirror&gt;
++        &lt;target dev='vda' bus='virtio'/&gt;
++        &lt;alias name='virtio-disk0'/&gt;
++        &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x0a' function='0x0'/&gt;
++      &lt;/disk&gt;
++      &lt;controller type='usb' index='0' model='piix3-uhci'&gt;
++        &lt;alias name='usb'/&gt;
++        &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x2'/&gt;
++      &lt;/controller&gt;
++      &lt;controller type='pci' index='0' model='pci-root'&gt;
++        &lt;alias name='pci.0'/&gt;
++      &lt;/controller&gt;
++      &lt;controller type='virtio-serial' index='0'&gt;
++        &lt;alias name='virtio-serial0'/&gt;
++        &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/&gt;
++      &lt;/controller&gt;
++      &lt;serial type='pty'&gt;
++        &lt;source path='/dev/pts/34'/&gt;
++        &lt;target type='isa-serial' port='0'&gt;
++          &lt;model name='isa-serial'/&gt;
++        &lt;/target&gt;
++        &lt;alias name='serial0'/&gt;
++      &lt;/serial&gt;
++      &lt;console type='pty' tty='/dev/pts/34'&gt;
++        &lt;source path='/dev/pts/34'/&gt;
++        &lt;target type='serial' port='0'/&gt;
++        &lt;alias name='serial0'/&gt;
++      &lt;/console&gt;
++      &lt;channel type='unix'&gt;
++        &lt;source mode='bind' path='/var/lib/libvirt/qemu/channel/target/domain-4-copy/org.qemu.guest_agent.0'/&gt;
++        &lt;target type='virtio' name='org.qemu.guest_agent.0' state='disconnected'/&gt;
++        &lt;alias name='channel0'/&gt;
++        &lt;address type='virtio-serial' controller='0' bus='0' port='1'/&gt;
++      &lt;/channel&gt;
++      &lt;channel type='spicevmc'&gt;
++        &lt;target type='virtio' name='com.redhat.spice.0' state='disconnected'/&gt;
++        &lt;alias name='channel1'/&gt;
++        &lt;address type='virtio-serial' controller='0' bus='0' port='2'/&gt;
++      &lt;/channel&gt;
++      &lt;input type='mouse' bus='ps2'&gt;
++        &lt;alias name='input0'/&gt;
++      &lt;/input&gt;
++      &lt;input type='keyboard' bus='ps2'&gt;
++        &lt;alias name='input1'/&gt;
++      &lt;/input&gt;
++      &lt;graphics type='spice' port='5900' autoport='yes' listen='127.0.0.1'&gt;
++        &lt;listen type='address' address='127.0.0.1' fromConfig='1' autoGenerated='no'/&gt;
++        &lt;image compression='off'/&gt;
++      &lt;/graphics&gt;
++      &lt;sound model='ich6'&gt;
++        &lt;alias name='sound0'/&gt;
++        &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/&gt;
++      &lt;/sound&gt;
++      &lt;video&gt;
++        &lt;model type='qxl' ram='65536' vram='65536' vgamem='16384' heads='1' primary='yes'/&gt;
++        &lt;alias name='video0'/&gt;
++        &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/&gt;
++      &lt;/video&gt;
++      &lt;memballoon model='none'/&gt;
++      &lt;rng model='virtio'&gt;
++        &lt;backend model='random'&gt;/dev/random&lt;/backend&gt;
++        &lt;alias name='rng0'/&gt;
++        &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/&gt;
++      &lt;/rng&gt;
++    &lt;/devices&gt;
++    &lt;seclabel type='dynamic' model='selinux' relabel='yes'&gt;
++      &lt;label&gt;unconfined_u:unconfined_r:svirt_t:s0:c550,c786&lt;/label&gt;
++      &lt;imagelabel&gt;unconfined_u:object_r:svirt_image_t:s0:c550,c786&lt;/imagelabel&gt;
++    &lt;/seclabel&gt;
++    &lt;seclabel type='dynamic' model='dac' relabel='yes'&gt;
++      &lt;label&gt;+0:+0&lt;/label&gt;
++      &lt;imagelabel&gt;+0:+0&lt;/imagelabel&gt;
++    &lt;/seclabel&gt;
++  &lt;/domain&gt;
++&lt;/domstatus&gt;
+diff --git a/tests/qemustatusxml2xmldata/blockjob-blockdev-out.xml b/tests/qemustatusxml2xmldata/blockjob-blockdev-out.xml
+new file mode 120000
+index 0000000000..cdca6e4a8b
+--- /dev/null
++++ b/tests/qemustatusxml2xmldata/blockjob-blockdev-out.xml
+@@ -0,0 +1 @@
++blockjob-blockdev-in.xml
+\ No newline at end of file
+diff --git a/tests/qemuxml2xmltest.c b/tests/qemuxml2xmltest.c
+index 6d808e172f..09c86eda2a 100644
+--- a/tests/qemuxml2xmltest.c
++++ b/tests/qemuxml2xmltest.c
+@@ -1284,6 +1284,8 @@ mymain(void)
+     DO_TEST_STATUS(&quot;migration-out-nbd-tls&quot;);
+     DO_TEST_STATUS(&quot;disk-secinfo-upgrade&quot;);
+
++    DO_TEST_STATUS(&quot;blockjob-blockdev&quot;);
++
+     DO_TEST(&quot;vhost-vsock&quot;, QEMU_CAPS_DEVICE_VHOST_VSOCK);
+     DO_TEST(&quot;vhost-vsock-auto&quot;, QEMU_CAPS_DEVICE_VHOST_VSOCK);
+     DO_TEST(&quot;vhost-vsock-ccw&quot;, QEMU_CAPS_DEVICE_VHOST_VSOCK,
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187326.html">[PATCH 12/25] qemu: driver: Remove unnecessary saving of	status XML</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187328.html">[PATCH 14/25] qemu: blockjob: Add 'concluded' state for a	block job</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187591.html">Re:  [PATCH v2 12/25] qemu: driver: Remove unnecessary saving of status XML</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187423.html">Re:  [PATCH 13/25] tests: qemustatusxml2xml: Add test case for block job tracking</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187327"><strong>Date</strong></a></li>
+<li><a href="index.html#187327"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

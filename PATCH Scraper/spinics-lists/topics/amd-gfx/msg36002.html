@@ -1,0 +1,266 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 070/102] drm/amd/powerplay: get smc firmware and pptable -->
+<!--X-From-R13: Oyrk Rrhpure &#60;nyrkqrhpureNtznvy.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 14:25:51 &#45;0700 -->
+<!--X-Message-Id: 20190715212437.31793&#45;68&#45;alexander.deucher@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715212437.31793&#45;1&#45;alexander.deucher@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 070/102] drm/amd/powerplay: get smc firmware and pptable">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 070/102] drm/amd/powerplay: get smc firmware and pptable &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 070/102] drm/amd/powerplay: get smc firmware and pptable</h1>
+[<a href="msg36001.html">Date Prev</a>][<a href="msg36003.html">Date Next</a>][<a href="msg36001.html">Thread Prev</a>][<a href="msg36003.html">Thread Next</a>][<a href="maillist.html#36002">Date Index</a>][<a href="index.html#36002">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: amd-gfx@xxxxxxxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH 070/102] drm/amd/powerplay: get smc firmware and pptable</li>
+<li><em>From</em>: Alex Deucher &lt;alexdeucher@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 16:24:05 -0500</li>
+<li><em>Cc</em>: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;, Kevin Wang &lt;kevin1.wang@xxxxxxx&gt;,        Chengming Gui &lt;Jack.Gui@xxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg35938.html">20190715212437.31793-1-alexander.deucher@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg35938.html">20190715212437.31793-1-alexander.deucher@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Chengming Gui &lt;Jack.Gui@xxxxxxx&gt;
+
+get smc firmware and pptable for arcturus
+
+Signed-off-by: Chengming Gui &lt;Jack.Gui@xxxxxxx&gt;
+Reviewed-by: Kevin Wang &lt;kevin1.wang@xxxxxxx&gt;
+Signed-off-by: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;
+---
+ drivers/gpu/drm/amd/powerplay/smu_v11_0.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/powerplay/smu_v11_0.c b/drivers/gpu/drm/amd/powerplay/smu_v11_0.c
+index d0764ba2705c..7d723a5e4135 100644
+--- a/drivers/gpu/drm/amd/powerplay/smu_v11_0.c
++++ b/drivers/gpu/drm/amd/powerplay/smu_v11_0.c
+@@ -43,6 +43,7 @@
+ #include &quot;asic_reg/smuio/smuio_11_0_0_sh_mask.h&quot;
+ 
+ MODULE_FIRMWARE(&quot;amdgpu/vega20_smc.bin&quot;);
++MODULE_FIRMWARE(&quot;amdgpu/arcturus_smc.bin&quot;);
+ MODULE_FIRMWARE(&quot;amdgpu/navi10_smc.bin&quot;);
+ MODULE_FIRMWARE(&quot;amdgpu/navi14_smc.bin&quot;);
+ 
+@@ -153,6 +154,9 @@ static int smu_v11_0_init_microcode(struct smu_context *smu)
+ 	case CHIP_VEGA20:
+ 		chip_name = &quot;vega20&quot;;
+ 		break;
++	case CHIP_ARCTURUS:
++		chip_name = &quot;arcturus&quot;;
++		break;
+ 	case CHIP_NAVI10:
+ 		chip_name = &quot;navi10&quot;;
+ 		break;
+@@ -204,7 +208,7 @@ static int smu_v11_0_load_microcode(struct smu_context *smu)
+ 	uint32_t i;
+ 	uint32_t mp1_fw_flags;
+ 
+-	hdr = (const struct smc_firmware_header_v1_0 *)	adev-&gt;pm.fw-&gt;data;
++	hdr = (const struct smc_firmware_header_v1_0 *) adev-&gt;pm.fw-&gt;data;
+ 	src = (const uint32_t *)(adev-&gt;pm.fw-&gt;data +
+ 		le32_to_cpu(hdr-&gt;header.ucode_array_offset_bytes));
+ 
+@@ -291,7 +295,8 @@ static int smu_v11_0_set_pptable_v2_0(struct smu_context *smu, void **table, uin
+ 	return 0;
+ }
+ 
+-static int smu_v11_0_set_pptable_v2_1(struct smu_context *smu, void **table, uint32_t *size, uint32_t pptable_id)
++static int smu_v11_0_set_pptable_v2_1(struct smu_context *smu, void **table,
++				      uint32_t *size, uint32_t pptable_id)
+ {
+ 	struct amdgpu_device *adev = smu-&gt;adev;
+ 	const struct smc_firmware_header_v2_1 *v2_1;
+@@ -1739,7 +1744,7 @@ static const struct smu_funcs smu_v11_0_funcs = {
+ 	.send_smc_msg = smu_v11_0_send_msg,
+ 	.send_smc_msg_with_param = smu_v11_0_send_msg_with_param,
+ 	.read_smc_arg = smu_v11_0_read_arg,
+-	.setup_pptable= smu_v11_0_setup_pptable,
++	.setup_pptable = smu_v11_0_setup_pptable,
+ 	.init_smc_tables = smu_v11_0_init_smc_tables,
+ 	.fini_smc_tables = smu_v11_0_fini_smc_tables,
+ 	.init_power = smu_v11_0_init_power,
+-- 
+2.20.1
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="35938" href="msg35938.html">[PATCH 000/102] Add Arcturus support</a></strong>
+<ul><li><em>From:</em> Alex Deucher</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg36001.html">[PATCH 068/102] drm/amdgpu/powerplay: add arcturus ppt functions</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg36003.html">[PATCH 069/102] drm/amdgpu/powerplay: add smu11 driver interface for arcturus. (v2)</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg36001.html">[PATCH 068/102] drm/amdgpu/powerplay: add arcturus ppt functions</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg36003.html">[PATCH 069/102] drm/amdgpu/powerplay: add smu11 driver interface for arcturus. (v2)</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#36002"><strong>Date</strong></a></li>
+<li><a href="index.html#36002"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

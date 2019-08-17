@@ -1,0 +1,390 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2] use pkg&#45;config to search for libtirpc to fix cross&#45;compilation -->
+<!--X-From-R13: Inyqrzne Pebqxbeo &#60;jokNbcranqx.bet> -->
+<!--X-Date: Wed, 28 Jun 2017 03:30:15 &#45;0700 -->
+<!--X-Message-Id: 20170628102950.GA7247@waldemar&#45;brodkorb.de -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH v2] use pkg-config to search for libtirpc to fix cross-compilation &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH v2] use pkg-config to search for libtirpc to fix cross-compilation &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v2] use pkg-config to search for libtirpc to fix cross-compilation</h1>
+[<a href="msg01625.html">Date Prev</a>][<a href="msg01627.html">Date Next</a>][<a href="msg01622.html">Thread Prev</a>][<a href="msg01627.html">Thread Next</a>][<a href="maillist.html#01626">Date Index</a>][<a href="index.html#01626">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: autofs@xxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH v2] use pkg-config to search for libtirpc to fix cross-compilation</li>
+<li><em>From</em>: Waldemar Brodkorb &lt;wbx@xxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 28 Jun 2017 12:29:50 +0200</li>
+<li><em>Cc</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>User-agent</em>: Mutt/1.5.23 (2014-03-12)</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>When trying to cross-compile autofs for example with a buildsystem
+like buildroot, the compilation fails in case the user wants to use
+libtirpc library as RPC implementation. A hard coded include path
+in aclocal.m4 is used. Other opensource software like rpcbind or
+nfs-utils are suing autotools pkgconfig infrastructure to find
+the libtirpc headers and to pass the correct linker flags.
+
+Convert configure.in to use PKG_CHECK_MODULES and remove the
+hand written autoconf macros from aclocal.m4.
+
+To autoreconf the package you need pkg-config or pkgconf installed,
+which provides the needed autoconf macros in pkg.m4. For an
+non-automake project a full path to pkg.m4 is required.
+
+This fixes cross-compilation of autofs and allows to use
+alternative C libraries as uClibc-ng without internal RPC
+support to be used in cross-compiling environments.
+
+Signed-off-by: Waldemar Brodkorb &lt;wbx@xxxxxxxxxxx&gt;
+---
+v1 -&gt; v2:
+  - add a better commit decription
+  - add back missing TIRPC_WORKAROUND/WITH_LIBTIRPC defines
+  - add back AC_CHECK_FUNCS([getrpcbyname getservbyname])
+
+For autoheader/autoconf to generate configure/config.h you
+need to have pkg-config installed on your development machine.
+When the user does not have installed pkg-config later, he
+can use autofs without libtirpc as before. 
+Configure will fail when the user use --with-libtirpc and
+pkg-config is not installed.
+
+---
+ Makefile.conf.in |  3 ++-
+ Makefile.rules   |  2 +-
+ aclocal.m4       | 48 ------------------------------------------------
+ configure.in     | 16 ++++++++++++++--
+ 4 files changed, 17 insertions(+), 52 deletions(-)
+
+diff --git a/Makefile.conf.in b/Makefile.conf.in
+index 2bc3202..f879e26 100644
+--- a/Makefile.conf.in
++++ b/Makefile.conf.in
+@@ -64,7 +64,8 @@ RPCGEN = @PATH_RPCGEN@
+ RANLIB = @PATH_RANLIB@
+ 
+ # Use libtirpc if requested and available
+-TIRPCLIB = @TIRPCLIB@
++TIRPCLIB = @TIRPC_LIBS@
++TIRPCCFLAGS = @TIRPC_CFLAGS@
+ 
+ # Use dmalloc for memory debuging
+ DMALLOCLIB = @DMALLOCLIB@
+diff --git a/Makefile.rules b/Makefile.rules
+index 7d1af2e..0edf9bf 100644
+--- a/Makefile.rules
++++ b/Makefile.rules
+@@ -46,7 +46,7 @@ CFLAGS += -D_REENTRANT -D_FILE_OFFSET_BITS=64
+ LIBS += -lpthread
+ 
+ ifdef TIRPCLIB
+-CFLAGS += -I/usr/include/tirpc
++CFLAGS += $(TIRPCCFLAGS)
+ LIBS += $(TIRPCLIB)
+ endif
+ 
+diff --git a/aclocal.m4 b/aclocal.m4
+index 00811e0..31ca602 100644
+--- a/aclocal.m4
++++ b/aclocal.m4
+@@ -399,51 +399,3 @@ fi
+ LIBS=&quot;$af_check_ldap_parse_page_control_save_libs&quot;
+ ])
+ 
+-dnl --------------------------------------------------------------------------
+-dnl AF_CHECK_LIBTIRPC
+-dnl
+-dnl Use libtirpc for rpc transport
+-dnl --------------------------------------------------------------------------
+-AC_DEFUN([AF_CHECK_LIBTIRPC],
+-[
+-# save current flags
+-af_check_libtirpc_save_cflags=&quot;$CFLAGS&quot;
+-af_check_libtirpc_save_libs=&quot;$LIBS&quot;
+-CFLAGS=&quot;$CFLAGS -I/usr/include/tirpc&quot;
+-LIBS=&quot;$LIBS -ltirpc&quot;
+-
+-AC_TRY_LINK(
+-    [ #include &lt;rpc/rpc.h&gt; ],
+-    [ CLIENT *cl;
+-      struct sockaddr_in addr;
+-      int fd;
+-      unsigned long ul; struct timeval t; unsigned int ui;
+-      cl = clntudp_bufcreate(&amp;addr,ul,ul,t,&amp;fd,ui,ui); ],
+-    [ af_have_libtirpc=yes
+-      AC_MSG_RESULT(yes) ],
+-    [ AC_MSG_RESULT(no) ])
+-
+-if test &quot;$af_have_libtirpc&quot; = &quot;yes&quot;; then
+-    AC_DEFINE(WITH_LIBTIRPC,1, [Define to 1 if you have the libtirpc library installed])
+-    AC_DEFINE(TIRPC_WORKAROUND,1, [Define to 1 to use the libtirpc tsd usage workaround])
+-    TIRPCLIB=&quot;-ltirpc&quot;
+-fi
+-
+-AC_CHECK_FUNCS([getrpcbyname getservbyname])
+-
+-# restore flags
+-CFLAGS=&quot;$af_check_libtirpc_save_cflags&quot;
+-LIBS=&quot;$af_check_libtirpc_save_libs&quot;
+-])
+-
+-AC_DEFUN([AF_WITH_LIBTIRPC],
+-[AC_MSG_CHECKING([if libtirpc is requested and available])
+-AC_ARG_WITH(libtirpc,
+-[  --with-libtirpc         use libtirpc if available],
+-[if test &quot;$withval&quot; = yes; then
+-  AF_CHECK_LIBTIRPC()
+-else
+-  AC_MSG_RESULT(no)
+-fi], [AC_MSG_RESULT(no)])
+-])
+-
+diff --git a/configure.in b/configure.in
+index 0521252..71e9573 100644
+--- a/configure.in
++++ b/configure.in
+@@ -11,6 +11,9 @@ define([AC_CACHE_LOAD], )dnl
+ define([AC_CACHE_SAVE], )dnl
+ AC_INIT(.autofs-5.1.3)
+ 
++# for pkg-config macros
++m4_include([/usr/share/aclocal/pkg.m4])
++
+ #
+ # autofs installs by default in /usr
+ #
+@@ -124,8 +127,17 @@ AC_SUBST(flagdir)
+ #
+ # Use libtirpc
+ #
+-AF_WITH_LIBTIRPC()
+-AC_SUBST(TIRPCLIB)
++PKG_PROG_PKG_CONFIG()
++AC_ARG_WITH([libtirpc], AS_HELP_STRING([--with-libtirpc], [use libtirpc if available]))
++if test &quot;x$with_libtirpc&quot; = &quot;xyes&quot;; then
++  PKG_CHECK_MODULES([TIRPC],[libtirpc],[
++		AC_DEFINE(WITH_LIBTIRPC,1,
++			[Define to 1 if you have the libtirpc library installed])
++		AC_DEFINE(TIRPC_WORKAROUND,1,
++			[Define to 1 to use the libtirpc tsd usage workaround])
++    ])
++  AC_CHECK_FUNCS([getrpcbyname getservbyname])
++fi
+ 
+ #
+ # Optional include dmalloc
+-- 
+2.1.4
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="01627" href="msg01627.html">Re: [PATCH v2] use pkg-config to search for libtirpc to fix cross-compilation</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01625.html">Re: fix cross-compile when libtirpc is used</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01627.html">Re: [PATCH v2] use pkg-config to search for libtirpc to fix cross-compilation</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01622.html">fix cross-compile when libtirpc is used</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01627.html">Re: [PATCH v2] use pkg-config to search for libtirpc to fix cross-compilation</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01626"><strong>Date</strong></a></li>
+<li><a href="index.html#01626"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

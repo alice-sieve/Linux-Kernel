@@ -1,0 +1,377 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2 2/9] soc: samsung: Convert exynos&#45;chipid driver to use the regmap API -->
+<!--X-From-R13: Elyjrfgre @njebpxv &#60;f.anjebpxvNfnzfhat.pbz> -->
+<!--X-Date: Thu, 18 Jul 2019 07:32:28 &#45;0700 -->
+<!--X-Message-Id: 20190718143044.25066&#45;3&#45;s.nawrocki@samsung.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190718143044.25066&#45;1&#45;s.nawrocki@samsung.com -->
+<!--X-Reference: CGME20190718143128eucas1p2677ae16d229dddcd9a0db8084f0da5cf@eucas1p2.samsung.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH v2 2/9] soc: samsung: Convert exynos-chipid driver to use the regmap API">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH v2 2/9] soc: samsung: Convert exynos-chipid driver to use the regmap API &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH v2 2/9] soc: samsung: Convert exynos-chipid driver to use the regmap API</h1>
+[<a href="msg741772.html">Date Prev</a>][<a href="msg741774.html">Date Next</a>][<a href="msg741772.html">Thread Prev</a>][<a href="msg741774.html">Thread Next</a>][<a href="maillist.html#741773">Date Index</a>][<a href="threads.html#741773">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v2 2/9] soc: samsung: Convert exynos-chipid driver to use the regmap API</li>
+<li><em>From</em>: Sylwester Nawrocki &lt;s.nawrocki@xxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 18 Jul 2019 16:30:37 +0200</li>
+<li><em>Cms-type</em>: 201P</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg741771.html">20190718143044.25066-1-s.nawrocki@samsung.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Convert the driver to use regmap API in order to allow other
+drivers, like ASV, to access the CHIPID registers.
+
+This patch adds definition of selected CHIPID register offsets
+and register bit fields for Exynos5422 SoC.
+
+Signed-off-by: Sylwester Nawrocki &lt;s.nawrocki@xxxxxxxxxxx&gt;
+---
+Changes since v1 (RFC):
+ - new patch
+---
+ drivers/soc/samsung/exynos-chipid.c       | 33 ++++++----------
+ include/linux/soc/samsung/exynos-chipid.h | 48 +++++++++++++++++++++++
+ 2 files changed, 61 insertions(+), 20 deletions(-)
+ create mode 100644 include/linux/soc/samsung/exynos-chipid.h
+
+diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
+index 78b123ee60c0..594b00488013 100644
+--- a/drivers/soc/samsung/exynos-chipid.c
++++ b/drivers/soc/samsung/exynos-chipid.c
+@@ -9,18 +9,16 @@
+  */
+ 
+ #include &lt;linux/io.h&gt;
++#include &lt;linux/mfd/syscon.h&gt;
+ #include &lt;linux/of.h&gt;
+ #include &lt;linux/of_address.h&gt;
+ #include &lt;linux/of_platform.h&gt;
+ #include &lt;linux/platform_device.h&gt;
++#include &lt;linux/regmap.h&gt;
+ #include &lt;linux/slab.h&gt;
++#include &lt;linux/soc/samsung/exynos-chipid.h&gt;
+ #include &lt;linux/sys_soc.h&gt;
+ 
+-#define EXYNOS_SUBREV_MASK	(0xF &lt;&lt; 4)
+-#define EXYNOS_MAINREV_MASK	(0xF &lt;&lt; 0)
+-#define EXYNOS_REV_MASK		(EXYNOS_SUBREV_MASK | EXYNOS_MAINREV_MASK)
+-#define EXYNOS_MASK		0xFFFFF000
+-
+ static const struct exynos_soc_id {
+ 	const char *name;
+ 	unsigned int id;
+@@ -53,29 +51,24 @@ static const char * __init product_id_to_soc_id(unsigned int product_id)
+ int __init exynos_chipid_early_init(void)
+ {
+ 	struct soc_device_attribute *soc_dev_attr;
+-	void __iomem *exynos_chipid_base;
+ 	struct soc_device *soc_dev;
+ 	struct device_node *root;
+-	struct device_node *np;
++	struct regmap *regmap;
+ 	u32 product_id;
+ 	u32 revision;
++	int ret;
+ 
+-	/* look up for chipid node */
+-	np = of_find_compatible_node(NULL, NULL, &quot;samsung,exynos4210-chipid&quot;);
+-	if (!np)
+-		return -ENODEV;
+-
+-	exynos_chipid_base = of_iomap(np, 0);
+-	of_node_put(np);
+-
+-	if (!exynos_chipid_base) {
+-		pr_err(&quot;Failed to map SoC chipid\n&quot;);
+-		return -ENXIO;
++	regmap = syscon_regmap_lookup_by_compatible(&quot;samsung,exynos4210-chipid&quot;);
++	if (IS_ERR(regmap)) {
++		pr_err(&quot;%s: failed to get regmap\n&quot;, __func__);
++		return PTR_ERR(regmap);
+ 	}
+ 
+-	product_id = readl_relaxed(exynos_chipid_base);
++	ret = regmap_read(regmap, EXYNOS_CHIPID_REG_PRO_ID, &amp;product_id);
++	if (ret &lt; 0)
++		return ret;
++
+ 	revision = product_id &amp; EXYNOS_REV_MASK;
+-	iounmap(exynos_chipid_base);
+ 
+ 	soc_dev_attr = kzalloc(sizeof(*soc_dev_attr), GFP_KERNEL);
+ 	if (!soc_dev_attr)
+diff --git a/include/linux/soc/samsung/exynos-chipid.h b/include/linux/soc/samsung/exynos-chipid.h
+new file mode 100644
+index 000000000000..25359d70d617
+--- /dev/null
++++ b/include/linux/soc/samsung/exynos-chipid.h
+@@ -0,0 +1,48 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (c) 2018 Samsung Electronics Co., Ltd.
++ *	      <a  rel="nofollow" href="http://www.samsung.com/">http://www.samsung.com/</a>
++ *
++ * Exynos - CHIPID support
++ */
++
++#define EXYNOS_CHIPID_REG_PRO_ID	0x00
++ #define EXYNOS_SUBREV_MASK		(0xf &lt;&lt; 4)
++ #define EXYNOS_MAINREV_MASK		(0xf &lt;&lt; 0)
++ #define EXYNOS_REV_MASK		(EXYNOS_SUBREV_MASK | \
++					 EXYNOS_MAINREV_MASK)
++ #define EXYNOS_MASK			0xfffff000
++
++#define EXYNOS_CHIPID_REG_PKG_ID	0x04
++/* Bit field definitions for EXYNOS_CHIPID_REG_PKG_ID register */
++ #define EXYNOS5422_IDS_OFFSET		24
++ #define EXYNOS5422_IDS_MASK		0xff
++ #define EXYNOS5422_USESG_OFFSET	3
++ #define EXYNOS5422_USESG_MASK		0x01
++ #define EXYNOS5422_SG_OFFSET		0
++ #define EXYNOS5422_SG_MASK		0x07
++ #define EXYNOS5422_TABLE_OFFSET	8
++ #define EXYNOS5422_TABLE_MASK		0x03
++ #define EXYNOS5422_SG_A_OFFSET		17
++ #define EXYNOS5422_SG_A_MASK		0x0f
++ #define EXYNOS5422_SG_B_OFFSET		21
++ #define EXYNOS5422_SG_B_MASK		0x03
++ #define EXYNOS5422_SG_BSIGN_OFFSET	23
++ #define EXYNOS5422_SG_BSIGN_MASK	0x01
++ #define EXYNOS5422_BIN2_OFFSET		12
++ #define EXYNOS5422_BIN2_MASK		0x01
++
++#define EXYNOS_CHIPID_REG_LOT_ID	0x14
++
++#define EXYNOS_CHIPID_REG_AUX_INFO	0x1c
++/* Bit field definitions for EXYNOS_CHIPID_REG_AUX_INFO register */
++ #define EXYNOS5422_TMCB_OFFSET		0
++ #define EXYNOS5422_TMCB_MASK		0x7f
++ #define EXYNOS5422_ARM_UP_OFFSET	8
++ #define EXYNOS5422_ARM_UP_MASK		0x03
++ #define EXYNOS5422_ARM_DN_OFFSET	10
++ #define EXYNOS5422_ARM_DN_MASK		0x03
++ #define EXYNOS5422_KFC_UP_OFFSET	12
++ #define EXYNOS5422_KFC_UP_MASK		0x03
++ #define EXYNOS5422_KFC_DN_OFFSET	14
++ #define EXYNOS5422_KFC_DN_MASK		0x03
+-- 
+2.17.1
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="741771" href="msg741771.html">[PATCH v2 0/9] Exynos Adaptive Supply Voltage support</a></strong>
+<ul><li><em>From:</em> Sylwester Nawrocki</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741772.html">[PATCH v2 1/9] soc: samsung: Add exynos chipid driver support</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741774.html">[PATCH v2 4/9] ARM: EXYNOS: enable exynos_chipid for ARCH_EXYNOS</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741772.html">[PATCH v2 1/9] soc: samsung: Add exynos chipid driver support</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741774.html">[PATCH v2 4/9] ARM: EXYNOS: enable exynos_chipid for ARCH_EXYNOS</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741773"><strong>Date</strong></a></li>
+<li><a href="threads.html#741773"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>
