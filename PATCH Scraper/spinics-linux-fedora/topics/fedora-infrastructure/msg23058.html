@@ -1,0 +1,292 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Add a nagios check for each rabbitmq server -->
+<!--X-From-R13: Xrerzl Qyvar &#60;wpyvarNerqung.pbz> -->
+<!--X-Date: Thu, 16 May 2019 07:51:54 &#45;0700 -->
+<!--X-Message-Id: 20190516145006.5881&#45;1&#45;jcline@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Infrastructure, [PATCH] Add a nagios check for each rabbitmq server">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Fedora Infrastructure &mdash; [PATCH] Add a nagios check for each rabbitmq server</title>
+<link rel="alternate" type="application/rss+xml" title="Fedora Infrastructure" href="maillist.rdf">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH] Add a nagios check for each rabbitmq server</h1>
+[<a href="msg23057.html">Date Prev</a>][<a href="msg23059.html">Date Next</a>][<a href="msg23057.html">Thread Prev</a>][<a href="msg23060.html">Thread Next</a>][<a href="maillist.html#23058">Date Index</a>][<a href="index.html#23058">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Add a nagios check for each rabbitmq server</li>
+<li><em>From</em>: Jeremy Cline &lt;jcline@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 16 May 2019 10:50:06 -0400</li>
+<li><em>Cc</em>: Jeremy Cline &lt;jcline@xxxxxxxxxx&gt;</li>
+<li><em>Reply-to</em>: Fedora Infrastructure &lt;infrastructure@xxxxxxxxxxxxxxxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Commit eae92f73e95 installed the nagios scripts[0] that are packaged for
+epel7-infra on the RabbitMQ hosts. This is an attempt to use them with
+nagios. I don't know anything about nagios though, so I have no idea if
+this is even close to right, or if it works.
+
+[0] <a  rel="nofollow" href="https://github.com/nagios-plugins-rabbitmq/nagios-plugins-rabbitmq">https://github.com/nagios-plugins-rabbitmq/nagios-plugins-rabbitmq</a>
+
+Signed-off-by: Jeremy Cline &lt;jcline@xxxxxxxxxx&gt;
+
+---
+ roles/nagios_client/tasks/main.yml            | 15 +++++++++++++
+ .../templates/check_rabbitmq_server.cfg.j2    |  1 +
+ roles/nagios_server/tasks/main.yml            | 22 +++++++++++++++++++
+ .../nrpe/check_rabbitmq_server.cfg.j2         |  1 +
+ 4 files changed, 39 insertions(+)
+ create mode 100644 roles/nagios_client/templates/check_rabbitmq_server.cfg.j2
+ create mode 100644 roles/nagios_server/templates/nrpe/check_rabbitmq_server.cfg.j2
+
+diff --git a/roles/nagios_client/tasks/main.yml b/roles/nagios_client/tasks/main.yml
+index 0259a43ca..65a60a7c3 100644
+--- a/roles/nagios_client/tasks/main.yml
++++ b/roles/nagios_client/tasks/main.yml
+@@ -233,6 +233,21 @@
+   tags:
+   - nagios_client
+ 
++- name: install nrpe checks for the RabbitMQ cluster
++  template:
++    src: &quot;{{ item }}.j2&quot;
++    dest: &quot;/etc/nrpe.d/{{ item }}&quot;
++    owner: root
++    group: root
++    mode: 0600
++  with_items:
++    - check_rabbitmq_server.cfg
++  when: inventory_hostname.startswith('rabbitmq')
++  notify:
++  - restart nrpe
++  tags:
++  - nagios_client
++
+ - name: nrpe service start
+   service: name=nrpe state=started enabled=true
+   tags:
+diff --git a/roles/nagios_client/templates/check_rabbitmq_server.cfg.j2 b/roles/nagios_client/templates/check_rabbitmq_server.cfg.j2
+new file mode 100644
+index 000000000..498a8757e
+--- /dev/null
++++ b/roles/nagios_client/templates/check_rabbitmq_server.cfg.j2
+@@ -0,0 +1 @@
++command[check_nrpe_check_rabbitmq_server]=exec /usr/lib64/nagios/plugins-rabbitmq/check_rabbitmq_server -H localhost --password &quot;{{ (env == 'production')|ternary(rabbitmq_monitoring_password_production, rabbitmq_monitoring_password_staging) }}&quot; --user nagios-monitoring
+diff --git a/roles/nagios_server/tasks/main.yml b/roles/nagios_server/tasks/main.yml
+index 2d6d50c31..f61584ed6 100644
+--- a/roles/nagios_server/tasks/main.yml
++++ b/roles/nagios_server/tasks/main.yml
+@@ -110,6 +110,28 @@
+   - config
+   - nagios_server
+ 
++- name: Ensure the nrpe.d directory exists for nrpe configs
++  file:
++    dest: /etc/nrpe.d
++    state: directory
++  tags:
++  - nagios_server
++
++- name: Add nrpe configurations to /etc/nrpe.d
++  template:
++    src: &quot;/nrpe/{{ item }}.j2&quot;
++    dest: &quot;/etc/nrpe.d/{{ item }}&quot;
++    owner: root
++    group: root
++    mode: 0600
++  with_items:
++    - check_rabbitmq_server.cfg
++  notify:
++  - restart nrpe
++  tags:
++  - config
++  - nagios_server
++
+ ## Copy over the nagios configs
+ - name: Copy /etc/nagios/conf.d/*cfg files
+   copy: src=nagios/configs/{{ item }} dest=/etc/nagios/conf.d/{{ item }}
+diff --git a/roles/nagios_server/templates/nrpe/check_rabbitmq_server.cfg.j2 b/roles/nagios_server/templates/nrpe/check_rabbitmq_server.cfg.j2
+new file mode 100644
+index 000000000..498a8757e
+--- /dev/null
++++ b/roles/nagios_server/templates/nrpe/check_rabbitmq_server.cfg.j2
+@@ -0,0 +1 @@
++command[check_nrpe_check_rabbitmq_server]=exec /usr/lib64/nagios/plugins-rabbitmq/check_rabbitmq_server -H localhost --password &quot;{{ (env == 'production')|ternary(rabbitmq_monitoring_password_production, rabbitmq_monitoring_password_staging) }}&quot; --user nagios-monitoring
+-- 
+2.21.0
+_______________________________________________
+infrastructure mailing list -- infrastructure@xxxxxxxxxxxxxxxxxxxxxxx
+To unsubscribe send an email to infrastructure-leave@xxxxxxxxxxxxxxxxxxxxxxx
+Fedora Code of Conduct: <a  rel="nofollow" href="https://getfedora.org/code-of-conduct.html">https://getfedora.org/code-of-conduct.html</a>
+List Guidelines: <a  rel="nofollow" href="https://fedoraproject.org/wiki/Mailing_list_guidelines">https://fedoraproject.org/wiki/Mailing_list_guidelines</a>
+List Archives: <a  rel="nofollow" href="https://lists.fedoraproject.org/archives/list/infrastructure@xxxxxxxxxxxxxxxxxxxxxxx">https://lists.fedoraproject.org/archives/list/infrastructure@xxxxxxxxxxxxxxxxxxxxxxx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg23057.html">Greenwave and WaiverDB new release</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg23059.html">Re: Meeting Agenda Item: Introduction Braydon Kains</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg23057.html">Greenwave and WaiverDB new release</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg23060.html">Revamp Fedora Gooey karma</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#23058"><strong>Date</strong></a></li>
+<li><a href="index.html#23058"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

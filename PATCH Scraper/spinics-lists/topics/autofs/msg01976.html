@@ -1,0 +1,587 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 19/22] autofs&#45;5.1.4 &#45; refactor negative map entry check -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Sun, 14 Oct 2018 20:48:16 &#45;0700 -->
+<!--X-Message-Id: 153957510788.14897.10708214402106434872.stgit@pluto&#45;themaw&#45;net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 153957483372.14897.14805717004658230261.stgit@pluto&#45;themaw&#45;net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 19/22] autofs-5.1.4 - refactor negative map entry check &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 19/22] autofs-5.1.4 - refactor negative map entry check &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 19/22] autofs-5.1.4 - refactor negative map entry check</h1>
+[<a href="msg01975.html">Date Prev</a>][<a href="msg01977.html">Date Next</a>][<a href="msg01975.html">Thread Prev</a>][<a href="msg01977.html">Thread Next</a>][<a href="maillist.html#01976">Date Index</a>][<a href="index.html#01976">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 19/22] autofs-5.1.4 - refactor negative map entry check</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Oct 2018 11:45:08 +0800</li>
+<li><em>In-reply-to</em>: &lt;153957483372.14897.14805717004658230261.stgit@pluto-themaw-net&gt;</li>
+<li><em>References</em>: &lt;153957483372.14897.14805717004658230261.stgit@pluto-themaw-net&gt;</li>
+<li><em>User-agent</em>: StGit/unknown-version</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Create a function to check for a negative map entry on lookup and use
+it in each of the relevant modules.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ CHANGELOG                |    1 +
+ include/automount.h      |    1 +
+ lib/cache.c              |   30 ++++++++++++++++++++++++++++++
+ modules/lookup_file.c    |   22 ++--------------------
+ modules/lookup_hesiod.c  |   22 ++--------------------
+ modules/lookup_hosts.c   |   22 ++--------------------
+ modules/lookup_ldap.c    |   22 ++--------------------
+ modules/lookup_nisplus.c |   22 ++--------------------
+ modules/lookup_program.c |   22 ++--------------------
+ modules/lookup_sss.c     |   22 ++--------------------
+ modules/lookup_yp.c      |   22 ++--------------------
+ 11 files changed, 48 insertions(+), 160 deletions(-)
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 21fc9ca7..0de3f31b 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -48,6 +48,7 @@ xx/xx/2018 autofs-5.1.5
+ - use flags for startup boolean options.
+ - move close stdio descriptors to become_daemon().
+ - add systemd service command line option.
++- refactor negative map entry check.
+ 
+ 19/12/2017 autofs-5.1.4
+ - fix spec file url.
+diff --git a/include/automount.h b/include/automount.h
+index 45fde53e..947daa10 100644
+--- a/include/automount.h
++++ b/include/automount.h
+@@ -223,6 +223,7 @@ struct mapent *cache_partial_match(struct mapent_cache *mc, const char *prefix);
+ struct mapent *cache_partial_match_wild(struct mapent_cache *mc, const char *prefix);
+ int cache_add(struct mapent_cache *mc, struct map_source *ms, const char *key, const char *mapent, time_t age);
+ int cache_update_offset(struct mapent_cache *mc, const char *mkey, const char *key, const char *mapent, time_t age);
++int cache_lookup_negative(struct mapent *me, const char *key);
+ void cache_update_negative(struct mapent_cache *mc, struct map_source *ms, const char *key, time_t timeout);
+ int cache_set_parents(struct mapent *mm);
+ int cache_update(struct mapent_cache *mc, struct map_source *ms, const char *key, const char *mapent, time_t age);
+diff --git a/lib/cache.c b/lib/cache.c
+index 44e323dd..d3b6642b 100644
+--- a/lib/cache.c
++++ b/lib/cache.c
+@@ -771,6 +771,36 @@ done:
+ 	return ret; 
+ }
+ 
++/* Called with cache_lock held for map entry me and is released
++ * on return.
++ */
++int cache_lookup_negative(struct mapent *me, const char *key)
++{
++	if (me-&gt;status &gt;= monotonic_time(NULL)) {
++		cache_unlock(me-&gt;mc);
++		return CHE_UNAVAIL;
++	} else {
++		struct mapent_cache *smc = me-&gt;mc;
++		struct mapent *sme;
++
++		if (me-&gt;mapent)
++			cache_unlock(smc);
++		else {
++			cache_unlock(smc);
++			cache_writelock(smc);
++			sme = cache_lookup_distinct(smc, key);
++			/* Negative timeout expired for non-existent entry. */
++			if (sme &amp;&amp; !sme-&gt;mapent) {
++				if (cache_pop_mapent(sme) == CHE_FAIL)
++					cache_delete(smc, key);
++			}
++			cache_unlock(smc);
++		}
++	}
++
++	return CHE_OK;
++}
++
+ void cache_update_negative(struct mapent_cache *mc,
+ 			   struct map_source *ms, const char *key,
+ 			   time_t timeout)
+diff --git a/modules/lookup_file.c b/modules/lookup_file.c
+index ed5caa47..6986830b 100644
+--- a/modules/lookup_file.c
++++ b/modules/lookup_file.c
+@@ -1177,27 +1177,9 @@ int lookup_mount(struct autofs_point *ap, const char *name, int name_len, void *
+ 	/* Check if we recorded a mount fail for this key anywhere */
+ 	me = lookup_source_mapent(ap, key, LKP_DISTINCT);
+ 	if (me) {
+-		if (me-&gt;status &gt;= monotonic_time(NULL)) {
+-			cache_unlock(me-&gt;mc);
++		/* negative timeout has not passed, return fail */
++		if (cache_lookup_negative(me, key) == CHE_UNAVAIL)
+ 			return NSS_STATUS_NOTFOUND;
+-		} else {
+-			struct mapent_cache *smc = me-&gt;mc;
+-			struct mapent *sme;
+-
+-			if (me-&gt;mapent)
+-				cache_unlock(smc);
+-			else {
+-				cache_unlock(smc);
+-				cache_writelock(smc);
+-				sme = cache_lookup_distinct(smc, key);
+-				/* Negative timeout expired for non-existent entry. */
+-				if (sme &amp;&amp; !sme-&gt;mapent) {
+-					if (cache_pop_mapent(sme) == CHE_FAIL)
+-						cache_delete(smc, key);
+-				}
+-				cache_unlock(smc);
+-			}
+-		}
+ 	}
+ 
+ 	/*
+diff --git a/modules/lookup_hesiod.c b/modules/lookup_hesiod.c
+index b3278d20..13f3678d 100644
+--- a/modules/lookup_hesiod.c
++++ b/modules/lookup_hesiod.c
+@@ -397,27 +397,9 @@ int lookup_mount(struct autofs_point *ap, const char *name, int name_len, void *
+ 	/* Check if we recorded a mount fail for this key anywhere */
+ 	me = lookup_source_mapent(ap, name, LKP_DISTINCT);
+ 	if (me) {
+-		if (me-&gt;status &gt;= monotonic_time(NULL)) {
+-			cache_unlock(me-&gt;mc);
++		/* negative timeout has not passed, return fail */
++		if (cache_lookup_negative(me, key) == CHE_UNAVAIL)
+ 			return NSS_STATUS_NOTFOUND;
+-		} else {
+-			struct mapent_cache *smc = me-&gt;mc;
+-			struct mapent *sme;
+-
+-			if (me-&gt;mapent)
+-				cache_unlock(smc);
+-			else {
+-				cache_unlock(smc);
+-				cache_writelock(smc);
+-				sme = cache_lookup_distinct(smc, name);
+-				/* Negative timeout expired for non-existent entry. */
+-				if (sme &amp;&amp; !sme-&gt;mapent) {
+-					if (cache_pop_mapent(sme) == CHE_FAIL)
+-						cache_delete(smc, name);
+-				}
+-				cache_unlock(smc);
+-			}
+-		}
+ 	}
+ 
+ 	/* If this is not here the filesystem stays busy, for some reason... */
+diff --git a/modules/lookup_hosts.c b/modules/lookup_hosts.c
+index 163b02d5..744062e2 100644
+--- a/modules/lookup_hosts.c
++++ b/modules/lookup_hosts.c
+@@ -314,27 +314,9 @@ int lookup_mount(struct autofs_point *ap, const char *name, int name_len, void *
+ 	/* Check if we recorded a mount fail for this key anywhere */
+ 	me = lookup_source_mapent(ap, name, LKP_DISTINCT);
+ 	if (me) {
+-		if (me-&gt;status &gt;= monotonic_time(NULL)) {
+-			cache_unlock(me-&gt;mc);
++		/* negative timeout has not passed, return fail */
++		if (cache_lookup_negative(me, name) == CHE_UNAVAIL)
+ 			return NSS_STATUS_NOTFOUND;
+-		} else {
+-			struct mapent_cache *smc = me-&gt;mc;
+-			struct mapent *sme;
+-
+-			if (me-&gt;mapent)
+-				cache_unlock(smc);
+-			else {
+-				cache_unlock(smc);
+-				cache_writelock(smc);
+-				sme = cache_lookup_distinct(smc, name);
+-				/* Negative timeout expired for non-existent entry. */
+-				if (sme &amp;&amp; !sme-&gt;mapent) {
+-					if (cache_pop_mapent(sme) == CHE_FAIL)
+-						cache_delete(smc, name);
+-				}
+-				cache_unlock(smc);
+-			}
+-		}
+ 	}
+ 
+ 	cache_readlock(mc);
+diff --git a/modules/lookup_ldap.c b/modules/lookup_ldap.c
+index 911a34a5..f7432a2a 100644
+--- a/modules/lookup_ldap.c
++++ b/modules/lookup_ldap.c
+@@ -3687,27 +3687,9 @@ int lookup_mount(struct autofs_point *ap, const char *name, int name_len, void *
+ 	/* Check if we recorded a mount fail for this key anywhere */
+ 	me = lookup_source_mapent(ap, key, LKP_DISTINCT);
+ 	if (me) {
+-		if (me-&gt;status &gt;= monotonic_time(NULL)) {
+-			cache_unlock(me-&gt;mc);
++		/* negative timeout has not passed, return fail */
++		if (cache_lookup_negative(me, key) == CHE_UNAVAIL)
+ 			return NSS_STATUS_NOTFOUND;
+-		} else {
+-			struct mapent_cache *smc = me-&gt;mc;
+-			struct mapent *sme;
+-
+-			if (me-&gt;mapent)
+-				cache_unlock(smc);
+-			else {
+-				cache_unlock(smc);
+-				cache_writelock(smc);
+-				sme = cache_lookup_distinct(smc, key);
+-				/* Negative timeout expired for non-existent entry. */
+-				if (sme &amp;&amp; !sme-&gt;mapent) {
+-					if (cache_pop_mapent(sme) == CHE_FAIL)
+-						cache_delete(smc, key);
+-				}
+-				cache_unlock(smc);
+-			}
+-		}
+ 	}
+ 
+         /*
+diff --git a/modules/lookup_nisplus.c b/modules/lookup_nisplus.c
+index 8dee4630..cbd03cdb 100644
+--- a/modules/lookup_nisplus.c
++++ b/modules/lookup_nisplus.c
+@@ -709,27 +709,9 @@ int lookup_mount(struct autofs_point *ap, const char *name, int name_len, void *
+ 	/* Check if we recorded a mount fail for this key anywhere */
+ 	me = lookup_source_mapent(ap, key, LKP_DISTINCT);
+ 	if (me) {
+-		if (me-&gt;status &gt;= monotonic_time(NULL)) {
+-			cache_unlock(me-&gt;mc);
++		/* negative timeout has not passed, return fail */
++		if (cache_lookup_negative(me, key) == CHE_UNAVAIL)
+ 			return NSS_STATUS_NOTFOUND;
+-		} else {
+-			struct mapent_cache *smc = me-&gt;mc;
+-			struct mapent *sme;
+-
+-			if (me-&gt;mapent)
+-				cache_unlock(smc);
+-			else {
+-				cache_unlock(smc);
+-				cache_writelock(smc);
+-				sme = cache_lookup_distinct(smc, key);
+-				/* Negative timeout expired for non-existent entry. */
+-				if (sme &amp;&amp; !sme-&gt;mapent) {
+-					if (cache_pop_mapent(sme) == CHE_FAIL)
+-						cache_delete(smc, key);
+-				}
+-				cache_unlock(smc);
+-			}
+-		}
+ 	}
+ 
+ 	/*
+diff --git a/modules/lookup_program.c b/modules/lookup_program.c
+index 56e19394..88939471 100644
+--- a/modules/lookup_program.c
++++ b/modules/lookup_program.c
+@@ -601,27 +601,9 @@ int lookup_mount(struct autofs_point *ap, const char *name, int name_len, void *
+ 	/* Check if we recorded a mount fail for this key anywhere */
+ 	me = lookup_source_mapent(ap, name, LKP_DISTINCT);
+ 	if (me) {
+-		if (me-&gt;status &gt;= monotonic_time(NULL)) {
+-			cache_unlock(me-&gt;mc);
++		/* negative timeout has not passed, return fail */
++		if (cache_lookup_negative(me, key) == CHE_UNAVAIL)
+ 			return NSS_STATUS_NOTFOUND;
+-		} else {
+-			struct mapent_cache *smc = me-&gt;mc;
+-			struct mapent *sme;
+-
+-			if (me-&gt;mapent)
+-				cache_unlock(smc);
+-			else {
+-				cache_unlock(smc);
+-				cache_writelock(smc);
+-				sme = cache_lookup_distinct(smc, name);
+-				/* Negative timeout expired for non-existent entry. */
+-				if (sme &amp;&amp; !sme-&gt;mapent) {
+-					if (cache_pop_mapent(sme) == CHE_FAIL)
+-						cache_delete(smc, name);
+-				}
+-				cache_unlock(smc);
+-			}
+-		}
+ 	}
+ 
+ 	/* Catch installed direct offset triggers */
+diff --git a/modules/lookup_sss.c b/modules/lookup_sss.c
+index 78598300..ce60acd3 100644
+--- a/modules/lookup_sss.c
++++ b/modules/lookup_sss.c
+@@ -726,27 +726,9 @@ int lookup_mount(struct autofs_point *ap, const char *name, int name_len, void *
+ 	/* Check if we recorded a mount fail for this key anywhere */
+ 	me = lookup_source_mapent(ap, key, LKP_DISTINCT);
+ 	if (me) {
+-		if (me-&gt;status &gt;= monotonic_time(NULL)) {
+-			cache_unlock(me-&gt;mc);
++		/* negative timeout has not passed, return fail */
++		if (cache_lookup_negative(me, key) == CHE_UNAVAIL)
+ 			return NSS_STATUS_NOTFOUND;
+-		} else {
+-			struct mapent_cache *smc = me-&gt;mc;
+-			struct mapent *sme;
+-
+-			if (me-&gt;mapent)
+-				cache_unlock(smc);
+-			else {
+-				cache_unlock(smc);
+-				cache_writelock(smc);
+-				sme = cache_lookup_distinct(smc, key);
+-				/* Negative timeout expired for non-existent entry. */
+-				if (sme &amp;&amp; !sme-&gt;mapent) {
+-					if (cache_pop_mapent(sme) == CHE_FAIL)
+-						cache_delete(smc, key);
+-				}
+-				cache_unlock(smc);
+-			}
+-		}
+ 	}
+ 
+         /*
+diff --git a/modules/lookup_yp.c b/modules/lookup_yp.c
+index d1ffcae4..38f75497 100644
+--- a/modules/lookup_yp.c
++++ b/modules/lookup_yp.c
+@@ -813,27 +813,9 @@ int lookup_mount(struct autofs_point *ap, const char *name, int name_len, void *
+ 	/* Check if we recorded a mount fail for this key anywhere */
+ 	me = lookup_source_mapent(ap, key, LKP_DISTINCT);
+ 	if (me) {
+-		if (me-&gt;status &gt;= monotonic_time(NULL)) {
+-			cache_unlock(me-&gt;mc);
++		/* negative timeout has not passed, return fail */
++		if (cache_lookup_negative(me, key) == CHE_UNAVAIL)
+ 			return NSS_STATUS_NOTFOUND;
+-		} else {
+-			struct mapent_cache *smc = me-&gt;mc;
+-			struct mapent *sme;
+-
+-			if (me-&gt;mapent)
+-				cache_unlock(smc);
+-			else {
+-				cache_unlock(smc);
+-				cache_writelock(smc);
+-				sme = cache_lookup_distinct(smc, key);
+-				/* Negative timeout expired for non-existent entry. */
+-				if (sme &amp;&amp; !sme-&gt;mapent) {
+-					if (cache_pop_mapent(sme) == CHE_FAIL)
+-						cache_delete(smc, key);
+-				}
+-				cache_unlock(smc);
+-			}
+-		}
+ 	}
+ 
+ 	 /*
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01980" href="msg01980.html">[PATCH 00/22] Current patch queue</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01975.html">[PATCH 18/22] autofs-5.1.4 - add systemd service command line option</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01977.html">[PATCH 20/22] autofs-5.1.4 - remove unused function dump_master()</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01975.html">[PATCH 18/22] autofs-5.1.4 - add systemd service command line option</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01977.html">[PATCH 20/22] autofs-5.1.4 - remove unused function dump_master()</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01976"><strong>Date</strong></a></li>
+<li><a href="index.html#01976"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re:  [PATCH] Fix for 4.19&#45;rc1 and later "relative __ksymtab entries" -->
+<!--X-From-R13: Rnir Oaqrefba &#60;naqrefbaNerqung.pbz> -->
+<!--X-Date: Wed, 29 Aug 2018 07:48:45 &#45;0700 -->
+<!--X-Message-Id: 323602500.31529577.1535554007086.JavaMail.zimbra@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1535499290&#45;17491&#45;1&#45;git&#45;send&#45;email&#45;asmadeus@codewreck.org -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Re:  [PATCH] Fix for 4.19-rc1 and later &quot;relative __ksymtab entries&quot; &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  Re:  [PATCH] Fix for 4.19-rc1 and later &quot;relative __ksymtab entries&quot;</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re:  [PATCH] Fix for 4.19-rc1 and later &quot;relative __ksymtab entries&quot;</h1>
+[<a href="msg07574.html">Date Prev</a>][<a href="msg07576.html">Date Next</a>][<a href="msg07574.html">Thread Prev</a>][<a href="msg07576.html">Thread Next</a>][<a href="maillist.html#07575">Date Index</a>][<a href="index.html#07575">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re:  [PATCH] Fix for 4.19-rc1 and later &quot;relative __ksymtab entries&quot;</li>
+<li><em>From</em>: Dave Anderson &lt;anderson@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 29 Aug 2018 10:46:47 -0400 (EDT)</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg07574.html">1535499290-17491-1-git-send-email-asmadeus@codewreck.org</a>&gt;</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>
+
+----- Original Message -----
+&gt;<i> kernels which have CONFIG_HAVE_ARCH_PREL32_RELOCATIONS will now store</i>
+&gt;<i> module symbol values relative to themselves since linux kernel's commit</i>
+&gt;<i> 7290d580957 (&quot;module: use relative references for __ksymtab entries&quot;)</i>
+&gt;<i> </i>
+&gt;<i> Do the lookup one way or another depending on the kernel's kernel_symbol</i>
+&gt;<i> struct, the case without the ARCH_PREL32_RELOCATIONS is the same as the</i>
+&gt;<i> old behaviour</i>
+
+Hi Dominique,
+
+Thanks for both the bug report and fix -- your patch is queued for crash-7.2.4:
+  
+  <a  rel="nofollow" href="https://github.com/crash-utility/crash/commit/001f77a05585c15ebd14bb72d5fde314a63c06fe">https://github.com/crash-utility/crash/commit/001f77a05585c15ebd14bb72d5fde314a63c06fe</a>
+
+My task_struct.pids patch has also been applied:
+
+  <a  rel="nofollow" href="https://github.com/crash-utility/crash/commit/d7eec45d4c2cdd836ce48a81b0ae688a7d2879ba">https://github.com/crash-utility/crash/commit/d7eec45d4c2cdd836ce48a81b0ae688a7d2879ba</a>
+
+Thanks,
+  Dave
+
+
+&gt;<i> </i>
+&gt;<i> ---</i>
+&gt;<i> Hi! This is a follow-up on the bz I opened yesterday[1]</i>
+&gt;<i> </i>
+&gt;<i> I'll let you commit your part of the tasks_struct pids, with both patches</i>
+&gt;<i> I can start crash normally and could check that address of symbols within</i>
+&gt;<i> a module look correct when compared to /proc/kallsyms, so I guess this</i>
+&gt;<i> isn't too bad.</i>
+&gt;<i> I also tried with an older kernel without problem.</i>
+&gt;<i> </i>
+&gt;<i> [1] <a  rel="nofollow" href="https://bugzilla.redhat.com/show_bug.cgi?id=1623127">https://bugzilla.redhat.com/show_bug.cgi?id=1623127</a></i>
+&gt;<i> </i>
+&gt;<i>  defs.h    |  1 +</i>
+&gt;<i>  symbols.c | 98 +++++++++++++++++++++++++++++++++++++------------------</i>
+&gt;<i>  2 files changed, 68 insertions(+), 31 deletions(-)</i>
+&gt;<i> </i>
+&gt;<i> diff --git a/defs.h b/defs.h</i>
+&gt;<i> index 8687ff1..166ee48 100644</i>
+&gt;<i> --- a/defs.h</i>
+&gt;<i> +++ b/defs.h</i>
+&gt;<i> @@ -2036,6 +2036,7 @@ struct offset_table {                    /* stash of</i>
+&gt;<i> commonly-used offsets */</i>
+&gt;<i>  	long memcg_cache_params___root_caches_node;</i>
+&gt;<i>  	long memcg_cache_params_children;</i>
+&gt;<i>  	long memcg_cache_params_children_node;</i>
+&gt;<i> +	long kernel_symbol_value;</i>
+&gt;<i>  };</i>
+&gt;<i>  </i>
+&gt;<i>  struct size_table {         /* stash of commonly-used sizes */</i>
+&gt;<i> diff --git a/symbols.c b/symbols.c</i>
+&gt;<i> index 2e6713a..7e73bad 100644</i>
+&gt;<i> --- a/symbols.c</i>
+&gt;<i> +++ b/symbols.c</i>
+&gt;<i> @@ -1595,12 +1595,40 @@ store_module_symbols_v1(ulong total, int</i>
+&gt;<i> mods_installed)</i>
+&gt;<i>                  st-&gt;flags |= INSMOD_BUILTIN;</i>
+&gt;<i>  }</i>
+&gt;<i>  </i>
+&gt;<i> -struct kernel_symbol</i>
+&gt;<i> -{</i>
+&gt;<i> -        unsigned long value;</i>
+&gt;<i> -        const char *name;</i>
+&gt;<i> +union kernel_symbol {</i>
+&gt;<i> +	struct kernel_symbol_v1 {</i>
+&gt;<i> +		unsigned long value;</i>
+&gt;<i> +		const char *name;</i>
+&gt;<i> +	} v1;</i>
+&gt;<i> +	/* kernel 4.19 introduced relative symbol positionning */</i>
+&gt;<i> +	struct kernel_symbol_v2 {</i>
+&gt;<i> +		int value_offset;</i>
+&gt;<i> +		int name_offset;</i>
+&gt;<i> +	} v2;</i>
+&gt;<i>  };</i>
+&gt;<i>  </i>
+&gt;<i> +static ulong</i>
+&gt;<i> +modsym_name(ulong syms, union kernel_symbol *modsym, int i)</i>
+&gt;<i> +{</i>
+&gt;<i> +	if (VALID_MEMBER(kernel_symbol_value))</i>
+&gt;<i> +		return (ulong)modsym-&gt;v1.name;</i>
+&gt;<i> +</i>
+&gt;<i> +	return syms + i * sizeof(struct kernel_symbol_v2) +</i>
+&gt;<i> +		offsetof(struct kernel_symbol_v2, name_offset) +</i>
+&gt;<i> +		modsym-&gt;v2.name_offset;</i>
+&gt;<i> +}</i>
+&gt;<i> +</i>
+&gt;<i> +static ulong</i>
+&gt;<i> +modsym_value(ulong syms, union kernel_symbol *modsym, int i)</i>
+&gt;<i> +{</i>
+&gt;<i> +	if (VALID_MEMBER(kernel_symbol_value))</i>
+&gt;<i> +		return (ulong)modsym-&gt;v1.value;</i>
+&gt;<i> +</i>
+&gt;<i> +	return syms + i * sizeof(struct kernel_symbol_v2) +</i>
+&gt;<i> +		offsetof(struct kernel_symbol_v2, value_offset) +</i>
+&gt;<i> +		modsym-&gt;v2.value_offset;</i>
+&gt;<i> +}</i>
+&gt;<i> +</i>
+&gt;<i>  void</i>
+&gt;<i>  store_module_symbols_v2(ulong total, int mods_installed)</i>
+&gt;<i>  {</i>
+&gt;<i> @@ -1614,7 +1642,8 @@ store_module_symbols_v2(ulong total, int</i>
+&gt;<i> mods_installed)</i>
+&gt;<i>  	long strbuflen;</i>
+&gt;<i>  	ulong size;</i>
+&gt;<i>  	int mcnt, lm_mcnt;</i>
+&gt;<i> -	struct kernel_symbol *modsym;</i>
+&gt;<i> +	union kernel_symbol *modsym;</i>
+&gt;<i> +	size_t kernel_symbol_size;</i>
+&gt;<i>  	struct load_module *lm;</i>
+&gt;<i>  	char buf1[BUFSIZE];</i>
+&gt;<i>  	char buf2[BUFSIZE];</i>
+&gt;<i> @@ -1639,6 +1668,13 @@ store_module_symbols_v2(ulong total, int</i>
+&gt;<i> mods_installed)</i>
+&gt;<i>  		  &quot;re-initialization of module symbols not implemented yet!\n&quot;);</i>
+&gt;<i>  	}</i>
+&gt;<i>  </i>
+&gt;<i> +	MEMBER_OFFSET_INIT(kernel_symbol_value, &quot;kernel_symbol&quot;, &quot;value&quot;);</i>
+&gt;<i> +	if (VALID_MEMBER(kernel_symbol_value)) {</i>
+&gt;<i> +		kernel_symbol_size = sizeof(struct kernel_symbol_v1);</i>
+&gt;<i> +	} else {</i>
+&gt;<i> +		kernel_symbol_size = sizeof(struct kernel_symbol_v2);</i>
+&gt;<i> +	}</i>
+&gt;<i> +</i>
+&gt;<i>          if ((st-&gt;ext_module_symtable = (struct syment *)</i>
+&gt;<i>               calloc(total, sizeof(struct syment))) == NULL)</i>
+&gt;<i>                  error(FATAL, &quot;v2 module syment space malloc (%ld symbols):</i>
+&gt;<i>                  %s\n&quot;,</i>
+&gt;<i> @@ -1750,20 +1786,20 @@ store_module_symbols_v2(ulong total, int</i>
+&gt;<i> mods_installed)</i>
+&gt;<i>  		}</i>
+&gt;<i>  </i>
+&gt;<i>  		if (nsyms) {</i>
+&gt;<i> -			modsymbuf = GETBUF(sizeof(struct kernel_symbol)*nsyms);</i>
+&gt;<i> +			modsymbuf = GETBUF(kernel_symbol_size*nsyms);</i>
+&gt;<i>  			readmem((ulong)syms, KVADDR, modsymbuf,</i>
+&gt;<i> -				nsyms * sizeof(struct kernel_symbol),</i>
+&gt;<i> +				nsyms * kernel_symbol_size,</i>
+&gt;<i>  				&quot;module symbols&quot;, FAULT_ON_ERROR);</i>
+&gt;<i>  		}</i>
+&gt;<i>  </i>
+&gt;<i>  		for (i = first = last = 0; i &lt; nsyms; i++) {</i>
+&gt;<i> -			modsym = (struct kernel_symbol *)</i>
+&gt;<i> -			    (modsymbuf + (i * sizeof(struct kernel_symbol)));</i>
+&gt;<i> +			modsym = (union kernel_symbol *)</i>
+&gt;<i> +			    (modsymbuf + (i * kernel_symbol_size));</i>
+&gt;<i>  			if (!first</i>
+&gt;<i> -			    || first &gt; (ulong)modsym-&gt;name)</i>
+&gt;<i> -				first = (ulong)modsym-&gt;name;</i>
+&gt;<i> -			if ((ulong)modsym-&gt;name &gt; last)</i>
+&gt;<i> -				last = (ulong)modsym-&gt;name;</i>
+&gt;<i> +			    || first &gt; modsym_name(syms, modsym, i))</i>
+&gt;<i> +				first = modsym_name(syms, modsym, i);</i>
+&gt;<i> +			if (modsym_name(syms, modsym, i) &gt; last)</i>
+&gt;<i> +				last = modsym_name(syms, modsym, i);</i>
+&gt;<i>  		}</i>
+&gt;<i>  </i>
+&gt;<i>  		if (last &gt; first) {</i>
+&gt;<i> @@ -1787,21 +1823,21 @@ store_module_symbols_v2(ulong total, int</i>
+&gt;<i> mods_installed)</i>
+&gt;<i>  </i>
+&gt;<i>  		for (i = 0; i &lt; nsyms; i++) {</i>
+&gt;<i>  </i>
+&gt;<i> -			modsym = (struct kernel_symbol *)</i>
+&gt;<i> -			    (modsymbuf + (i * sizeof(struct kernel_symbol)));</i>
+&gt;<i> +			modsym = (union kernel_symbol *)</i>
+&gt;<i> +			    (modsymbuf + (i * kernel_symbol_size));</i>
+&gt;<i>  </i>
+&gt;<i>  			BZERO(buf1, BUFSIZE);</i>
+&gt;<i>  </i>
+&gt;<i>  			if (strbuf)</i>
+&gt;<i>  				strcpy(buf1,</i>
+&gt;<i> -					&amp;strbuf[(ulong)modsym-&gt;name - first]);</i>
+&gt;<i> +					&amp;strbuf[modsym_name(syms, modsym, i) - first]);</i>
+&gt;<i>  			else</i>
+&gt;<i> -				read_string((ulong)modsym-&gt;name, buf1,</i>
+&gt;<i> +				read_string(modsym_name(syms, modsym, i), buf1,</i>
+&gt;<i>                              		BUFSIZE-1);</i>
+&gt;<i>  </i>
+&gt;<i>                  	if (strlen(buf1)) {</i>
+&gt;<i>  				st-&gt;ext_module_symtable[mcnt].value =</i>
+&gt;<i> -					modsym-&gt;value;</i>
+&gt;<i> +					modsym_value(syms, modsym, i);</i>
+&gt;<i>  				st-&gt;ext_module_symtable[mcnt].type = '?';</i>
+&gt;<i>  				st-&gt;ext_module_symtable[mcnt].flags |= MODULE_SYMBOL;</i>
+&gt;<i>  				strip_module_symbol_end(buf1);</i>
+&gt;<i> @@ -1823,21 +1859,21 @@ store_module_symbols_v2(ulong total, int</i>
+&gt;<i> mods_installed)</i>
+&gt;<i>  			FREEBUF(strbuf);</i>
+&gt;<i>  </i>
+&gt;<i>  		if (ngplsyms) {</i>
+&gt;<i> -			modsymbuf = GETBUF(sizeof(struct kernel_symbol) *</i>
+&gt;<i> +			modsymbuf = GETBUF(kernel_symbol_size *</i>
+&gt;<i>  				ngplsyms);</i>
+&gt;<i>  			readmem((ulong)gpl_syms, KVADDR, modsymbuf,</i>
+&gt;<i> -				ngplsyms * sizeof(struct kernel_symbol),</i>
+&gt;<i> +				ngplsyms * kernel_symbol_size,</i>
+&gt;<i>  				&quot;module gpl symbols&quot;, FAULT_ON_ERROR);</i>
+&gt;<i>  		}</i>
+&gt;<i>  </i>
+&gt;<i>  		for (i = first = last = 0; i &lt; ngplsyms; i++) {</i>
+&gt;<i> -			modsym = (struct kernel_symbol *)</i>
+&gt;<i> -			    (modsymbuf + (i * sizeof(struct kernel_symbol)));</i>
+&gt;<i> +			modsym = (union kernel_symbol *)</i>
+&gt;<i> +			    (modsymbuf + (i * kernel_symbol_size));</i>
+&gt;<i>  			if (!first</i>
+&gt;<i> -			    || first &gt; (ulong)modsym-&gt;name)</i>
+&gt;<i> -				first = (ulong)modsym-&gt;name;</i>
+&gt;<i> -			if ((ulong)modsym-&gt;name &gt; last)</i>
+&gt;<i> -				last = (ulong)modsym-&gt;name;</i>
+&gt;<i> +			    || first &gt; modsym_name(gpl_syms, modsym, i))</i>
+&gt;<i> +				first = modsym_name(gpl_syms, modsym, i);</i>
+&gt;<i> +			if (modsym_name(gpl_syms, modsym, i) &gt; last)</i>
+&gt;<i> +				last = modsym_name(gpl_syms, modsym, i);</i>
+&gt;<i>  		}</i>
+&gt;<i>  </i>
+&gt;<i>  		if (last &gt; first) {</i>
+&gt;<i> @@ -1860,21 +1896,21 @@ store_module_symbols_v2(ulong total, int</i>
+&gt;<i> mods_installed)</i>
+&gt;<i>  </i>
+&gt;<i>  		for (i = 0; i &lt; ngplsyms; i++) {</i>
+&gt;<i>  </i>
+&gt;<i> -			modsym = (struct kernel_symbol *)</i>
+&gt;<i> -			    (modsymbuf + (i * sizeof(struct kernel_symbol)));</i>
+&gt;<i> +			modsym = (union kernel_symbol *)</i>
+&gt;<i> +			    (modsymbuf + (i * kernel_symbol_size));</i>
+&gt;<i>  </i>
+&gt;<i>  			BZERO(buf1, BUFSIZE);</i>
+&gt;<i>  </i>
+&gt;<i>  			if (strbuf)</i>
+&gt;<i>  				strcpy(buf1,</i>
+&gt;<i> -					&amp;strbuf[(ulong)modsym-&gt;name - first]);</i>
+&gt;<i> +					&amp;strbuf[modsym_name(gpl_syms, modsym, i) - first]);</i>
+&gt;<i>  			else</i>
+&gt;<i> -				read_string((ulong)modsym-&gt;name, buf1,</i>
+&gt;<i> +				read_string(modsym_name(gpl_syms, modsym, i), buf1,</i>
+&gt;<i>                              		BUFSIZE-1);</i>
+&gt;<i>  </i>
+&gt;<i>                  	if (strlen(buf1)) {</i>
+&gt;<i>  				st-&gt;ext_module_symtable[mcnt].value =</i>
+&gt;<i> -					modsym-&gt;value;</i>
+&gt;<i> +					modsym_value(gpl_syms, modsym, i);</i>
+&gt;<i>  				st-&gt;ext_module_symtable[mcnt].type = '?';</i>
+&gt;<i>  				st-&gt;ext_module_symtable[mcnt].flags |= MODULE_SYMBOL;</i>
+&gt;<i>  				strip_module_symbol_end(buf1);</i>
+&gt;<i> --</i>
+&gt;<i> 2.17.1</i>
+&gt;<i> </i>
+&gt;<i> --</i>
+&gt;<i> Crash-utility mailing list</i>
+&gt;<i> Crash-utility@xxxxxxxxxx</i>
+&gt;<i> <a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a></i>
+&gt;<i> </i>
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="07574" href="msg07574.html">[PATCH] Fix for 4.19-rc1 and later &quot;relative	__ksymtab entries&quot;</a></strong>
+<ul><li><em>From:</em> Dominique Martinet</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07574.html">[PATCH] Fix for 4.19-rc1 and later &quot;relative	__ksymtab entries&quot;</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07576.html">[PATCH] Fix for &quot;files -[cp]&quot; options on Linux 4.17</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07574.html">[PATCH] Fix for 4.19-rc1 and later &quot;relative	__ksymtab entries&quot;</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07576.html">[PATCH] Fix for &quot;files -[cp]&quot; options on Linux 4.17</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07575"><strong>Date</strong></a></li>
+<li><a href="index.html#07575"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

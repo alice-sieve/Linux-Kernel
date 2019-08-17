@@ -1,0 +1,547 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 4/6] autofs &#45; use struct for mount params -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Mon, 12 Nov 2018 17:36:29 &#45;0800 -->
+<!--X-Message-Id: 154207297923.11064.15608451642929332541.stgit@pluto&#45;themaw&#45;net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 154207295533.11064.12485527860509413072.stgit@pluto&#45;themaw&#45;net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 4/6] autofs - use struct for mount params &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 4/6] autofs - use struct for mount params &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 4/6] autofs - use struct for mount params</h1>
+[<a href="msg01998.html">Date Prev</a>][<a href="msg02000.html">Date Next</a>][<a href="msg01998.html">Thread Prev</a>][<a href="msg02002.html">Thread Next</a>][<a href="maillist.html#01999">Date Index</a>][<a href="index.html#01999">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: Andrew Morton &lt;akpm@xxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 4/6] autofs - use struct for mount params</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 13 Nov 2018 09:36:19 +0800</li>
+<li><em>Cc</em>: Al Viro &lt;viro@xxxxxxxxxxxxxxxxxx&gt;,        autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;,        Kernel Mailing List &lt;linux-kernel@xxxxxxxxxxxxxxx&gt;,        linux-fsdevel &lt;linux-fsdevel@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;154207295533.11064.12485527860509413072.stgit@pluto-themaw-net&gt;</li>
+<li><em>References</em>: &lt;154207295533.11064.12485527860509413072.stgit@pluto-themaw-net&gt;</li>
+<li><em>User-agent</em>: StGit/unknown-version</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Use a structure to hold parsed parameters to simplify the
+autofs_parse_options() function call.
+
+Also seperate option parsing and applying the options into
+seperate functions.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ fs/autofs/inode.c |  193 ++++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 116 insertions(+), 77 deletions(-)
+
+diff --git a/fs/autofs/inode.c b/fs/autofs/inode.c
+index 93af0d5777ae..53ed6c637cbf 100644
+--- a/fs/autofs/inode.c
++++ b/fs/autofs/inode.c
+@@ -108,6 +108,17 @@ static const struct super_operations autofs_sops = {
+ 	.evict_inode	= autofs_evict_inode,
+ };
+ 
++struct autofs_fs_params {
++	int pipefd;
++	kuid_t uid;
++	kgid_t gid;
++	int pgrp;
++	bool pgrp_set;
++	int min_proto;
++	int max_proto;
++	unsigned int type;
++};
++
+ enum {Opt_err, Opt_fd, Opt_uid, Opt_gid, Opt_pgrp, Opt_minproto, Opt_maxproto,
+ 	Opt_indirect, Opt_direct, Opt_offset};
+ 
+@@ -124,24 +135,26 @@ static const match_table_t tokens = {
+ 	{Opt_err, NULL}
+ };
+ 
+-static int parse_options(char *options, int *pipefd, kuid_t *uid, kgid_t *gid,
+-			 int *pgrp, bool *pgrp_set, unsigned int *type,
+-			 int *minproto, int *maxproto)
++static int autofs_parse_options(char *options, struct autofs_fs_params *params)
+ {
+ 	char *p;
+ 	substring_t args[MAX_OPT_ARGS];
+ 	int option;
++	kuid_t uid;
++	kgid_t gid;
++
++	if (!options)
++		return 1;
+ 
+-	*uid = current_uid();
+-	*gid = current_gid();
++	params-&gt;pipefd = -1;
+ 
+-	*minproto = AUTOFS_MIN_PROTO_VERSION;
+-	*maxproto = AUTOFS_MAX_PROTO_VERSION;
++	params-&gt;uid = current_uid();
++	params-&gt;gid = current_gid();
+ 
+-	*pipefd = -1;
++	params-&gt;min_proto = AUTOFS_MIN_PROTO_VERSION;
++	params-&gt;max_proto = AUTOFS_MAX_PROTO_VERSION;
+ 
+-	if (!options)
+-		return 1;
++	params-&gt;pgrp_set = false;
+ 
+ 	while ((p = strsep(&amp;options, &quot;,&quot;)) != NULL) {
+ 		int token;
+@@ -152,53 +165,126 @@ static int parse_options(char *options, int *pipefd, kuid_t *uid, kgid_t *gid,
+ 		token = match_token(p, tokens, args);
+ 		switch (token) {
+ 		case Opt_fd:
+-			if (match_int(args, pipefd))
++			if (match_int(args, &amp;option))
+ 				return 1;
++			params-&gt;pipefd = option;
+ 			break;
+ 		case Opt_uid:
+ 			if (match_int(args, &amp;option))
+ 				return 1;
+-			*uid = make_kuid(current_user_ns(), option);
+-			if (!uid_valid(*uid))
++			uid = make_kuid(current_user_ns(), option);
++			if (!uid_valid(uid))
+ 				return 1;
++			params-&gt;uid = uid;
+ 			break;
+ 		case Opt_gid:
+ 			if (match_int(args, &amp;option))
+ 				return 1;
+-			*gid = make_kgid(current_user_ns(), option);
+-			if (!gid_valid(*gid))
++			gid = make_kgid(current_user_ns(), option);
++			if (!gid_valid(gid))
+ 				return 1;
++			params-&gt;gid = gid;
+ 			break;
+ 		case Opt_pgrp:
+ 			if (match_int(args, &amp;option))
+ 				return 1;
+-			*pgrp = option;
+-			*pgrp_set = true;
++			params-&gt;pgrp = option;
++			params-&gt;pgrp_set = true;
+ 			break;
+ 		case Opt_minproto:
+ 			if (match_int(args, &amp;option))
+ 				return 1;
+-			*minproto = option;
++			params-&gt;min_proto = option;
+ 			break;
+ 		case Opt_maxproto:
+ 			if (match_int(args, &amp;option))
+ 				return 1;
+-			*maxproto = option;
++			params-&gt;max_proto = option;
+ 			break;
+ 		case Opt_indirect:
+-			set_autofs_type_indirect(type);
++			set_autofs_type_indirect(&amp;params-&gt;type);
+ 			break;
+ 		case Opt_direct:
+-			set_autofs_type_direct(type);
++			set_autofs_type_direct(&amp;params-&gt;type);
+ 			break;
+ 		case Opt_offset:
+-			set_autofs_type_offset(type);
++			set_autofs_type_offset(&amp;params-&gt;type);
+ 			break;
+ 		default:
+ 			return 1;
+ 		}
+ 	}
+-	return (*pipefd &lt; 0);
++	return (params-&gt;pipefd &lt; 0);
++}
++
++static int autofs_apply_sbi_options(struct autofs_sb_info *sbi,
++				    struct autofs_fs_params *params)
++{
++	int err;
++
++	sbi-&gt;pipefd = params-&gt;pipefd;
++
++	if (params-&gt;type)
++		sbi-&gt;type = params-&gt;type;
++
++	/* Test versions first */
++	if (params-&gt;max_proto &lt; AUTOFS_MIN_PROTO_VERSION ||
++	    params-&gt;min_proto &gt; AUTOFS_MAX_PROTO_VERSION) {
++		pr_err(&quot;kernel does not match daemon version\n&quot;);
++		pr_err(&quot;daemon (%d, %d) kernel (%d, %d)\n&quot;,
++			params-&gt;min_proto, params-&gt;max_proto,
++			AUTOFS_MIN_PROTO_VERSION, AUTOFS_MAX_PROTO_VERSION);
++		goto out;
++	}
++
++	sbi-&gt;max_proto = params-&gt;max_proto;
++	sbi-&gt;min_proto = params-&gt;min_proto;
++
++	if (sbi-&gt;min_proto &gt; sbi-&gt;max_proto)
++		sbi-&gt;min_proto = params-&gt;max_proto;
++
++	/* Establish highest kernel protocol version */
++	if (sbi-&gt;max_proto &gt; AUTOFS_MAX_PROTO_VERSION)
++		sbi-&gt;version = AUTOFS_MAX_PROTO_VERSION;
++	else
++		sbi-&gt;version = params-&gt;max_proto;
++
++	sbi-&gt;sub_version = AUTOFS_PROTO_SUBVERSION;
++
++	if (!params-&gt;pgrp_set)
++		sbi-&gt;oz_pgrp = get_task_pid(current, PIDTYPE_PGID);
++	else {
++		sbi-&gt;oz_pgrp = find_get_pid(params-&gt;pgrp);
++		if (!sbi-&gt;oz_pgrp) {
++			pr_err(&quot;could not find process group %d\n&quot;,
++			       params-&gt;pgrp);
++			goto out;
++		}
++	}
++
++	pr_debug(&quot;pipe fd = %d, pgrp = %u\n&quot;,
++		  sbi-&gt;pipefd, pid_nr(sbi-&gt;oz_pgrp));
++
++	sbi-&gt;pipe = fget(sbi-&gt;pipefd);
++	if (!sbi-&gt;pipe) {
++		pr_err(&quot;could not open pipe file descriptor\n&quot;);
++		goto out_put_pid;
++	}
++
++	err = autofs_prepare_pipe(sbi-&gt;pipe);
++	if (err &lt; 0)
++		goto out_fput;
++
++	sbi-&gt;catatonic = 0;
++
++	return 0;
++
++out_fput:
++	fput(sbi-&gt;pipe);
++out_put_pid:
++	put_pid(sbi-&gt;oz_pgrp);
++out:
++	return 1;
+ }
+ 
+ static struct autofs_sb_info *autofs_alloc_sbi(struct super_block *s)
+@@ -229,12 +315,9 @@ int autofs_fill_super(struct super_block *s, void *data, int silent)
+ {
+ 	struct inode *root_inode;
+ 	struct dentry *root;
+-	struct file *pipe;
+-	int pipefd;
++	struct autofs_fs_params params;
+ 	struct autofs_sb_info *sbi;
+ 	struct autofs_info *ino;
+-	int pgrp = 0;
+-	bool pgrp_set = false;
+ 	int ret = -EINVAL;
+ 
+ 	sbi = autofs_alloc_sbi(s);
+@@ -267,45 +350,20 @@ int autofs_fill_super(struct super_block *s, void *data, int silent)
+ 	root = d_make_root(root_inode);
+ 	if (!root)
+ 		goto fail_iput;
+-	pipe = NULL;
+ 
+ 	root-&gt;d_fsdata = ino;
+ 
+-	/* Can this call block? */
+-	if (parse_options(data, &amp;pipefd, &amp;root_inode-&gt;i_uid, &amp;root_inode-&gt;i_gid,
+-			  &amp;pgrp, &amp;pgrp_set, &amp;sbi-&gt;type, &amp;sbi-&gt;min_proto,
+-			  &amp;sbi-&gt;max_proto)) {
++	memset(&amp;params, 0, sizeof(struct autofs_fs_params));
++	if (autofs_parse_options(data, &amp;params)) {
+ 		pr_err(&quot;called with bogus options\n&quot;);
+ 		goto fail_dput;
+ 	}
++	root_inode-&gt;i_uid = params-&gt;uid;
++	root_inode-&gt;i_gid = params-&gt;gid;
+ 
+-	/* Test versions first */
+-	if (sbi-&gt;max_proto &lt; AUTOFS_MIN_PROTO_VERSION ||
+-	    sbi-&gt;min_proto &gt; AUTOFS_MAX_PROTO_VERSION) {
+-		pr_err(&quot;kernel does not match daemon version &quot;
+-		       &quot;daemon (%d, %d) kernel (%d, %d)\n&quot;,
+-		       sbi-&gt;min_proto, sbi-&gt;max_proto,
+-		       AUTOFS_MIN_PROTO_VERSION, AUTOFS_MAX_PROTO_VERSION);
++	ret = autofs_apply_sbi_options(sbi, &amp;params);
++	if (ret)
+ 		goto fail_dput;
+-	}
+-
+-	/* Establish highest kernel protocol version */
+-	if (sbi-&gt;max_proto &gt; AUTOFS_MAX_PROTO_VERSION)
+-		sbi-&gt;version = AUTOFS_MAX_PROTO_VERSION;
+-	else
+-		sbi-&gt;version = sbi-&gt;max_proto;
+-	sbi-&gt;sub_version = AUTOFS_PROTO_SUBVERSION;
+-
+-	if (pgrp_set) {
+-		sbi-&gt;oz_pgrp = find_get_pid(pgrp);
+-		if (!sbi-&gt;oz_pgrp) {
+-			pr_err(&quot;could not find process group %d\n&quot;,
+-				pgrp);
+-			goto fail_dput;
+-		}
+-	} else {
+-		sbi-&gt;oz_pgrp = get_task_pid(current, PIDTYPE_PGID);
+-	}
+ 
+ 	if (autofs_type_trigger(sbi-&gt;type))
+ 		__managed_dentry_set_managed(root);
+@@ -313,20 +371,6 @@ int autofs_fill_super(struct super_block *s, void *data, int silent)
+ 	root_inode-&gt;i_fop = &amp;autofs_root_operations;
+ 	root_inode-&gt;i_op = &amp;autofs_dir_inode_operations;
+ 
+-	pr_debug(&quot;pipe fd = %d, pgrp = %u\n&quot;, pipefd, pid_nr(sbi-&gt;oz_pgrp));
+-
+-	pipe = fget(pipefd);
+-	if (!pipe) {
+-		pr_err(&quot;could not open pipe file descriptor\n&quot;);
+-		goto fail_put_pid;
+-	}
+-	ret = autofs_prepare_pipe(pipe);
+-	if (ret &lt; 0)
+-		goto fail_fput;
+-	sbi-&gt;pipe = pipe;
+-	sbi-&gt;pipefd = pipefd;
+-	sbi-&gt;catatonic = 0;
+-
+ 	/*
+ 	 * Success! Install the root dentry now to indicate completion.
+ 	 */
+@@ -336,11 +380,6 @@ int autofs_fill_super(struct super_block *s, void *data, int silent)
+ 	/*
+ 	 * Failure ... clean up.
+ 	 */
+-fail_fput:
+-	pr_err(&quot;pipe file descriptor does not contain proper ops\n&quot;);
+-	fput(pipe);
+-fail_put_pid:
+-	put_pid(sbi-&gt;oz_pgrp);
+ fail_dput:
+ 	dput(root);
+ 	goto fail_free;
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="02002" href="msg02002.html">Re: [PATCH 4/6] autofs - use struct for mount params</a></strong>
+<ul><li><em>From:</em> kbuild test robot</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01996" href="msg01996.html">[PATCH 1/6] autofs - improve ioctl sbi checks</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01998.html">[PATCH 3/6] autofs - refactor super block info init</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg02000.html">[PATCH 5/6] autofs - change catatonic setting to a bit flag</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01998.html">[PATCH 3/6] autofs - refactor super block info init</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg02002.html">Re: [PATCH 4/6] autofs - use struct for mount params</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01999"><strong>Date</strong></a></li>
+<li><a href="index.html#01999"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

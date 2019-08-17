@@ -1,0 +1,448 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [bpf PATCH v2 1/6] tls: remove close callback sock unlock/lock and flush_sync -->
+<!--X-From-R13: Xbua Tnfgnoraq &#60;wbua.snfgnoraqNtznvy.pbz> -->
+<!--X-Date: Mon, 8 Jul 2019 12:14:02 &#45;0700 -->
+<!--X-Message-Id: 156261322680.31108.7327349397950347146.stgit@ubuntu3&#45;kvm1 -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 156261310104.31108.4569969631798277807.stgit@ubuntu3&#45;kvm1 -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BPF: [bpf PATCH v2 1/6] tls: remove close callback sock unlock/lock and flush_sync">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[bpf PATCH v2 1/6] tls: remove close callback sock unlock/lock and flush_sync &mdash; BPF</title>
+<link rel="alternate" type="application/rss+xml" title="BPF" href="//feeds.feedburner.com/packetfilters">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[bpf PATCH v2 1/6] tls: remove close callback sock unlock/lock and flush_sync</h1>
+[<a href="msg05095.html">Date Prev</a>][<a href="msg05097.html">Date Next</a>][<a href="msg05095.html">Thread Prev</a>][<a href="msg05097.html">Thread Next</a>][<a href="maillist.html#05096">Date Index</a>][<a href="index.html#05096">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [bpf PATCH v2 1/6] tls: remove close callback sock unlock/lock and flush_sync</li>
+<li><em>From</em>: John Fastabend &lt;john.fastabend@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 08 Jul 2019 19:13:47 +0000</li>
+<li><em>Cc</em>: netdev@xxxxxxxxxxxxxxx, edumazet@xxxxxxxxxx, john.fastabend@xxxxxxxxx,        bpf@xxxxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;156261310104.31108.4569969631798277807.stgit@ubuntu3-kvm1&gt;</li>
+<li><em>User-agent</em>: StGit/0.17.1-dirty</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The tls close() callback currently drops the sock lock, makes a
+cancel_delayed_work_sync() call, and then relocks the sock. The
+same pattern is used again to call strp_done().
+
+By restructuring the code we can avoid droping lock and then
+reclaiming it. To simplify this we do the following,
+
+ tls_sk_proto_close
+  set_bit(CLOSING)
+  set_bit(SCHEDULE)
+  cancel_delay_work_sync() &lt;- cancel workqueue
+  lock_sock(sk)
+  ...
+  release_sock(sk)
+  strp_done()
+
+Setting the CLOSING bit prevents the SCHEDULE bit from being
+cleared by any workqueue items e.g. if one happens to be
+scheduled and run between when we set SCHEDULE bit and cancel
+work. Then because SCHEDULE bit is set now no new work will
+be scheduled.
+
+Then strp_done() is called after the sk work is completed.
+Any outstanding work is sync'd and finally ctx is free'd.
+
+Tested with net selftests and bpf selftests.
+
+Signed-off-by: John Fastabend &lt;john.fastabend@xxxxxxxxx&gt;
+---
+ include/net/tls.h  |    4 ++--
+ net/tls/tls_main.c |   56 ++++++++++++++++++++++++++--------------------------
+ net/tls/tls_sw.c   |   38 ++++++++++++++++++++++-------------
+ 3 files changed, 54 insertions(+), 44 deletions(-)
+
+diff --git a/include/net/tls.h b/include/net/tls.h
+index 63e473420b00..0a3540a6304d 100644
+--- a/include/net/tls.h
++++ b/include/net/tls.h
+@@ -107,9 +107,7 @@ struct tls_device {
+ enum {
+ 	TLS_BASE,
+ 	TLS_SW,
+-#ifdef CONFIG_TLS_DEVICE
+ 	TLS_HW,
+-#endif
+ 	TLS_HW_RECORD,
+ 	TLS_NUM_CONFIG,
+ };
+@@ -162,6 +160,7 @@ struct tls_sw_context_tx {
+ 	int async_capable;
+ 
+ #define BIT_TX_SCHEDULED	0
++#define BIT_TX_CLOSING		1
+ 	unsigned long tx_bitmask;
+ };
+ 
+@@ -361,6 +360,7 @@ void tls_sw_close(struct sock *sk, long timeout);
+ void tls_sw_free_resources_tx(struct sock *sk);
+ void tls_sw_free_resources_rx(struct sock *sk);
+ void tls_sw_release_resources_rx(struct sock *sk);
++void tls_sw_release_strp_rx(struct tls_context *tls_ctx);
+ int tls_sw_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
+ 		   int nonblock, int flags, int *addr_len);
+ bool tls_sw_stream_read(const struct sock *sk);
+diff --git a/net/tls/tls_main.c b/net/tls/tls_main.c
+index fc81ae18cc44..d63c3583d2f7 100644
+--- a/net/tls/tls_main.c
++++ b/net/tls/tls_main.c
+@@ -261,24 +261,9 @@ static void tls_ctx_free(struct tls_context *ctx)
+ 	kfree(ctx);
+ }
+ 
+-static void tls_sk_proto_close(struct sock *sk, long timeout)
++static void tls_sk_proto_cleanup(struct sock *sk,
++				 struct tls_context *ctx, long timeo)
+ {
+-	struct tls_context *ctx = tls_get_ctx(sk);
+-	long timeo = sock_sndtimeo(sk, 0);
+-	void (*sk_proto_close)(struct sock *sk, long timeout);
+-	bool free_ctx = false;
+-
+-	lock_sock(sk);
+-	sk_proto_close = ctx-&gt;sk_proto_close;
+-
+-	if (ctx-&gt;tx_conf == TLS_HW_RECORD &amp;&amp; ctx-&gt;rx_conf == TLS_HW_RECORD)
+-		goto skip_tx_cleanup;
+-
+-	if (ctx-&gt;tx_conf == TLS_BASE &amp;&amp; ctx-&gt;rx_conf == TLS_BASE) {
+-		free_ctx = true;
+-		goto skip_tx_cleanup;
+-	}
+-
+ 	if (!tls_complete_pending_work(sk, ctx, 0, &amp;timeo))
+ 		tls_handle_open_record(sk, 0);
+ 
+@@ -299,22 +284,37 @@ static void tls_sk_proto_close(struct sock *sk, long timeout)
+ #ifdef CONFIG_TLS_DEVICE
+ 	if (ctx-&gt;rx_conf == TLS_HW)
+ 		tls_device_offload_cleanup_rx(sk);
+-
+-	if (ctx-&gt;tx_conf != TLS_HW &amp;&amp; ctx-&gt;rx_conf != TLS_HW) {
+-#else
+-	{
+ #endif
+-		tls_ctx_free(ctx);
+-		ctx = NULL;
+-	}
++}
++
++static void tls_sk_proto_close(struct sock *sk, long timeout)
++{
++	struct tls_context *ctx = tls_get_ctx(sk);
++	long timeo = sock_sndtimeo(sk, 0);
++	void (*sk_proto_close)(struct sock *sk, long timeout);
++
++	if (ctx-&gt;tx_conf == TLS_SW)
++		tls_sw_cancel_work_tx(ctx);
++
++	lock_sock(sk);
++	sk_proto_close = ctx-&gt;sk_proto_close;
++
++	if (ctx-&gt;tx_conf == TLS_HW_RECORD &amp;&amp; ctx-&gt;rx_conf == TLS_HW_RECORD)
++		goto skip_tx_cleanup;
++
++	if (ctx-&gt;tx_conf == TLS_BASE &amp;&amp; ctx-&gt;rx_conf == TLS_BASE)
++		goto skip_tx_cleanup;
++
++	tls_sk_proto_cleanup(sk, ctx, timeo);
+ 
+ skip_tx_cleanup:
+ 	release_sock(sk);
++	if (ctx-&gt;rx_conf == TLS_SW)
++		tls_sw_release_strp_rx(ctx);
+ 	sk_proto_close(sk, timeout);
+-	/* free ctx for TLS_HW_RECORD, used by tcp_set_state
+-	 * for sk-&gt;sk_prot-&gt;unhash [tls_hw_unhash]
+-	 */
+-	if (free_ctx)
++
++	if (ctx-&gt;tx_conf != TLS_HW &amp;&amp; ctx-&gt;rx_conf != TLS_HW &amp;&amp;
++	    ctx-&gt;tx_conf != TLS_HW_RECORD &amp;&amp; ctx-&gt;rx_conf != TLS_HW_RECORD)
+ 		tls_ctx_free(ctx);
+ }
+ 
+diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+index db585964b52b..3b01cd72ca6c 100644
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -2053,6 +2053,15 @@ static void tls_data_ready(struct sock *sk)
+ 	}
+ }
+ 
++void tls_sw_cancel_work_tx(struct tls_context *tls_ctx)
++{
++	struct tls_sw_context_tx *ctx = tls_sw_ctx_tx(tls_ctx);
++
++	set_bit(BIT_TX_CLOSING, &amp;ctx-&gt;tx_bitmask);
++	set_bit(BIT_TX_SCHEDULED, &amp;ctx-&gt;tx_bitmask);
++	cancel_delayed_work_sync(&amp;ctx-&gt;tx_work.work);
++}
++
+ void tls_sw_free_resources_tx(struct sock *sk)
+ {
+ 	struct tls_context *tls_ctx = tls_get_ctx(sk);
+@@ -2064,11 +2073,6 @@ void tls_sw_free_resources_tx(struct sock *sk)
+ 	if (atomic_read(&amp;ctx-&gt;encrypt_pending))
+ 		crypto_wait_req(-EINPROGRESS, &amp;ctx-&gt;async_wait);
+ 
+-	release_sock(sk);
+-	cancel_delayed_work_sync(&amp;ctx-&gt;tx_work.work);
+-	lock_sock(sk);
+-
+-	/* Tx whatever records we can transmit and abandon the rest */
+ 	tls_tx_records(sk, -1);
+ 
+ 	/* Free up un-sent records in tx_list. First, free
+@@ -2112,22 +2116,22 @@ void tls_sw_release_resources_rx(struct sock *sk)
+ 		write_lock_bh(&amp;sk-&gt;sk_callback_lock);
+ 		sk-&gt;sk_data_ready = ctx-&gt;saved_data_ready;
+ 		write_unlock_bh(&amp;sk-&gt;sk_callback_lock);
+-		release_sock(sk);
+-		strp_done(&amp;ctx-&gt;strp);
+-		lock_sock(sk);
+ 	}
+ }
+ 
+-void tls_sw_free_resources_rx(struct sock *sk)
++void tls_sw_release_strp_rx(struct tls_context *tls_ctx)
+ {
+-	struct tls_context *tls_ctx = tls_get_ctx(sk);
+ 	struct tls_sw_context_rx *ctx = tls_sw_ctx_rx(tls_ctx);
+ 
+-	tls_sw_release_resources_rx(sk);
+-
++	strp_done(&amp;ctx-&gt;strp);
+ 	kfree(ctx);
+ }
+ 
++void tls_sw_free_resources_rx(struct sock *sk)
++{
++	tls_sw_release_resources_rx(sk);
++}
++
+ /* The work handler to transmitt the encrypted records in tx_list */
+ static void tx_work_handler(struct work_struct *work)
+ {
+@@ -2136,11 +2140,17 @@ static void tx_work_handler(struct work_struct *work)
+ 					       struct tx_work, work);
+ 	struct sock *sk = tx_work-&gt;sk;
+ 	struct tls_context *tls_ctx = tls_get_ctx(sk);
+-	struct tls_sw_context_tx *ctx = tls_sw_ctx_tx(tls_ctx);
++	struct tls_sw_context_tx *ctx;
+ 
+-	if (!test_and_clear_bit(BIT_TX_SCHEDULED, &amp;ctx-&gt;tx_bitmask))
++	if (unlikely(!tls_ctx))
++		return;
++
++	ctx = tls_sw_ctx_tx(tls_ctx);
++	if (test_bit(BIT_TX_CLOSING, &amp;ctx-&gt;tx_bitmask))
+ 		return;
+ 
++	if (!test_and_clear_bit(BIT_TX_SCHEDULED, &amp;ctx-&gt;tx_bitmask))
++		return;
+ 	lock_sock(sk);
+ 	tls_tx_records(sk, -1);
+ 	release_sock(sk);
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="05095" href="msg05095.html">[bpf PATCH v2 0/6] bpf: sockmap/tls fixes</a></strong>
+<ul><li><em>From:</em> John Fastabend</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05095.html">[bpf PATCH v2 0/6] bpf: sockmap/tls fixes</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05097.html">[bpf PATCH v2 2/6] bpf: tls fix transition through disconnect with close</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05095.html">[bpf PATCH v2 0/6] bpf: sockmap/tls fixes</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05097.html">[bpf PATCH v2 2/6] bpf: tls fix transition through disconnect with close</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05096"><strong>Date</strong></a></li>
+<li><a href="index.html#05096"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;Samsung&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-rockchip/>[Linux&nbsp;Rockchip&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-actions/>[Linux&nbsp;Actions&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-snps-arc/>[Linux&nbsp;for&nbsp;Synopsys&nbsp;ARC&nbsp;Processors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nfs/>[Linux&nbsp;NFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nilfs/>[Linux&nbsp;NILFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/vfl/>[Video&nbsp;for&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<p>
+<hr>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

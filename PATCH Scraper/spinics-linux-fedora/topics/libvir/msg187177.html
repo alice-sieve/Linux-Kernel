@@ -1,0 +1,783 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v1 12/31] util: Introduce virNVMeDevice module -->
+<!--X-From-R13: [vpuny Bevibmavx &#60;zcevibmaNerqung.pbz> -->
+<!--X-Date: Thu, 11 Jul 2019 08:54:58 &#45;0700 -->
+<!--X-Message-Id: 3c185732424075ada2124640fdaed154672aca6c.1562859733.git.mprivozn@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1562859733.git.mprivozn@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v1 12/31] util: Introduce virNVMeDevice module</title>
+<meta name="description" content="libvirt: [PATCH v1 12/31] util: Introduce virNVMeDevice module">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v1 12/31] util: Introduce virNVMeDevice module</h1>
+[<a href="msg187176.html">Date Prev</a>][<a href="msg187178.html">Date Next</a>][<a href="msg187176.html">Thread Prev</a>][<a href="msg187477.html">Thread Next</a>][<a href="maillist.html#187177">Date Index</a>][<a href="index.html#187177">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v1 12/31] util: Introduce virNVMeDevice module</li>
+<li><em>From</em>: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 11 Jul 2019 17:53:59 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187163.html">cover.1562859733.git.mprivozn@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187163.html">cover.1562859733.git.mprivozn@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This module will be used by virHostdevManager and it's inspired
+by virPCIDevice module. They are very similar except instead of
+what makes a NVMe device: PCI address AND namespace ID. This
+means that a NVMe device can appear in a domain multiple times,
+each time with a different namespace.
+
+Signed-off-by: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;
+---
+ src/libvirt_private.syms |  18 ++
+ src/util/Makefile.inc.am |   2 +
+ src/util/virnvme.c       | 412 +++++++++++++++++++++++++++++++++++++++
+ src/util/virnvme.h       |  89 +++++++++
+ 4 files changed, 521 insertions(+)
+ create mode 100644 src/util/virnvme.c
+ create mode 100644 src/util/virnvme.h
+
+diff --git a/src/libvirt_private.syms b/src/libvirt_private.syms
+index 350b638193..856b770e57 100644
+--- a/src/libvirt_private.syms
++++ b/src/libvirt_private.syms
+@@ -2585,6 +2585,24 @@ virNumaSetPagePoolSize;
+ virNumaSetupMemoryPolicy;
+ 
+ 
++# util/virnvme.h
++virNVMeDeviceAddressGet;
++virNVMeDeviceCopy;
++virNVMeDeviceFree;
++virNVMeDeviceListAdd;
++virNVMeDeviceListCount;
++virNVMeDeviceListCreateDetachList;
++virNVMeDeviceListDel;
++virNVMeDeviceListGet;
++virNVMeDeviceListLookup;
++virNVMeDeviceListLookupIndex;
++virNVMeDeviceListNew;
++virNVMeDeviceNew;
++virNVMeDeviceUsedByClear;
++virNVMeDeviceUsedByGet;
++virNVMeDeviceUsedBySet;
++
++
+ # util/virobject.h
+ virClassForObject;
+ virClassForObjectLockable;
+diff --git a/src/util/Makefile.inc.am b/src/util/Makefile.inc.am
+index a47f333a98..998bec741e 100644
+--- a/src/util/Makefile.inc.am
++++ b/src/util/Makefile.inc.am
+@@ -143,6 +143,8 @@ UTIL_SOURCES = \
+ 	util/virnetlink.h \
+ 	util/virnodesuspend.c \
+ 	util/virnodesuspend.h \
++	util/virnvme.c \
++	util/virnvme.h \
+ 	util/virkmod.c \
+ 	util/virkmod.h \
+ 	util/virnuma.c \
+diff --git a/src/util/virnvme.c b/src/util/virnvme.c
+new file mode 100644
+index 0000000000..53724b63f7
+--- /dev/null
++++ b/src/util/virnvme.c
+@@ -0,0 +1,412 @@
++/*
++ * virnvme.c: helper APIs for managing NVMe devices
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library.  If not, see
++ * &lt;<a  rel="nofollow" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.
++ */
++
++#include &lt;config.h&gt;
++
++#include &quot;virnvme.h&quot;
++#include &quot;virobject.h&quot;
++#include &quot;virpci.h&quot;
++#include &quot;viralloc.h&quot;
++#include &quot;virlog.h&quot;
++#include &quot;virstring.h&quot;
++
++VIR_LOG_INIT(&quot;util.pci&quot;);
++#define VIR_FROM_THIS VIR_FROM_NONE
++
++struct _virNVMeDevice {
++    virPCIDeviceAddress address; /* PCI address of controller */
++    unsigned long namespace; /* Namespace ID */
++    bool managed;
++
++    char *drvname;
++    char *domname;
++};
++
++
++struct _virNVMeDeviceList {
++    virObjectLockable parent;
++
++    size_t count;
++    virNVMeDevicePtr *devs;
++};
++
++
++static virClassPtr virNVMeDeviceListClass;
++
++static void virNVMeDeviceListDispose(void *obj);
++
++static int
++virNVMeOnceInit(void)
++{
++    if (!VIR_CLASS_NEW(virNVMeDeviceList, virClassForObjectLockable()))
++        return -1;
++
++    return 0;
++}
++
++VIR_ONCE_GLOBAL_INIT(virNVMe);
++
++
++virNVMeDevicePtr
++virNVMeDeviceNew(const virPCIDeviceAddress *address,
++                 unsigned long namespace,
++                 bool managed)
++{
++    VIR_AUTOPTR(virNVMeDevice) dev = NULL;
++
++    if (VIR_ALLOC(dev) &lt; 0)
++        return NULL;
++
++    virPCIDeviceAddressCopy(&amp;dev-&gt;address, address);
++    dev-&gt;namespace = namespace;
++    dev-&gt;managed = managed;
++
++    VIR_RETURN_PTR(dev);
++}
++
++
++void
++virNVMeDeviceFree(virNVMeDevicePtr dev)
++{
++    if (!dev)
++        return;
++
++    virNVMeDeviceUsedByClear(dev);
++    VIR_FREE(dev);
++}
++
++
++virNVMeDevicePtr
++virNVMeDeviceCopy(const virNVMeDevice *dev)
++{
++    VIR_AUTOPTR(virNVMeDevice) copy = NULL;
++
++    if (VIR_ALLOC(copy) &lt; 0 ||
++        VIR_STRDUP(copy-&gt;drvname, dev-&gt;drvname) &lt; 0 ||
++        VIR_STRDUP(copy-&gt;domname, dev-&gt;domname) &lt; 0)
++        return NULL;
++
++    virPCIDeviceAddressCopy(&amp;copy-&gt;address, &amp;dev-&gt;address);
++    copy-&gt;namespace = dev-&gt;namespace;
++    copy-&gt;managed = dev-&gt;managed;
++
++    VIR_RETURN_PTR(copy);
++}
++
++
++const virPCIDeviceAddress *
++virNVMeDeviceAddressGet(const virNVMeDevice *dev)
++{
++    return &amp;dev-&gt;address;
++}
++
++
++void
++virNVMeDeviceUsedByClear(virNVMeDevicePtr dev)
++{
++    VIR_FREE(dev-&gt;drvname);
++    VIR_FREE(dev-&gt;domname);
++}
++
++
++void
++virNVMeDeviceUsedByGet(const virNVMeDevice *dev,
++                       const char **drv,
++                       const char **dom)
++{
++    *drv = dev-&gt;drvname;
++    *dom = dev-&gt;domname;
++}
++
++
++int
++virNVMeDeviceUsedBySet(virNVMeDevicePtr dev,
++                       const char *drv,
++                       const char *dom)
++{
++    if (VIR_STRDUP(dev-&gt;drvname, drv) &lt; 0 ||
++        VIR_STRDUP(dev-&gt;domname, dom) &lt; 0) {
++        virNVMeDeviceUsedByClear(dev);
++        return -1;
++    }
++
++    return 0;
++}
++
++
++virNVMeDeviceListPtr
++virNVMeDeviceListNew(void)
++{
++    virNVMeDeviceListPtr list;
++
++    if (virNVMeInitialize() &lt; 0)
++        return NULL;
++
++    if (!(list = virObjectLockableNew(virNVMeDeviceListClass)))
++        return NULL;
++
++    return list;
++}
++
++
++static void
++virNVMeDeviceListDispose(void *obj)
++{
++    virNVMeDeviceListPtr list = obj;
++    size_t i;
++
++    for (i = 0; i &lt; list-&gt;count; i++)
++        virNVMeDeviceFree(list-&gt;devs[i]);
++
++    VIR_FREE(list-&gt;devs);
++}
++
++
++size_t
++virNVMeDeviceListCount(const virNVMeDeviceList *list)
++{
++    return list-&gt;count;
++}
++
++
++int
++virNVMeDeviceListAdd(virNVMeDeviceListPtr list,
++                     const virNVMeDevice *dev)
++{
++    virNVMeDevicePtr tmp;
++
++    if ((tmp = virNVMeDeviceListLookup(list, dev))) {
++        VIR_AUTOFREE(char *) addrStr = virPCIDeviceAddressAsString(&amp;tmp-&gt;address);
++        virReportError(VIR_ERR_INTERNAL_ERROR,
++                       _(&quot;NVMe device %s namespace %lu is already on the list&quot;),
++                       NULLSTR(addrStr), tmp-&gt;namespace);
++        return -1;
++    }
++
++    if (!(tmp = virNVMeDeviceCopy(dev)) ||
++        VIR_APPEND_ELEMENT(list-&gt;devs, list-&gt;count, tmp) &lt; 0) {
++        virNVMeDeviceFree(tmp);
++        return -1;
++    }
++
++    return 0;
++}
++
++
++int
++virNVMeDeviceListDel(virNVMeDeviceListPtr list,
++                     const virNVMeDevice *dev)
++{
++    ssize_t idx;
++    virNVMeDevicePtr tmp = NULL;
++
++    if ((idx = virNVMeDeviceListLookupIndex(list, dev)) &lt; 0) {
++        VIR_AUTOFREE(char *) addrStr = virPCIDeviceAddressAsString(&amp;dev-&gt;address);
++        virReportError(VIR_ERR_INTERNAL_ERROR,
++                       _(&quot;NVMe device %s namespace %lu not found&quot;),
++                       NULLSTR(addrStr), dev-&gt;namespace);
++        return -1;
++    }
++
++    tmp = list-&gt;devs[idx];
++    VIR_DELETE_ELEMENT(list-&gt;devs, idx, list-&gt;count);
++    virNVMeDeviceFree(tmp);
++    return 0;
++}
++
++
++virNVMeDevicePtr
++virNVMeDeviceListGet(virNVMeDeviceListPtr list,
++                     size_t i)
++{
++    return i &lt; list-&gt;count ? list-&gt;devs[i] : NULL;
++}
++
++
++virNVMeDevicePtr
++virNVMeDeviceListLookup(virNVMeDeviceListPtr list,
++                        const virNVMeDevice *dev)
++{
++    ssize_t idx;
++
++    if ((idx = virNVMeDeviceListLookupIndex(list, dev)) &lt; 0)
++        return NULL;
++
++    return list-&gt;devs[idx];
++}
++
++
++ssize_t
++virNVMeDeviceListLookupIndex(virNVMeDeviceListPtr list,
++                             const virNVMeDevice *dev)
++{
++    size_t i;
++
++    if (!list)
++        return -1;
++
++    for (i = 0; i &lt; list-&gt;count; i++) {
++        virNVMeDevicePtr other = list-&gt;devs[i];
++
++        if (virPCIDeviceAddressEqual(&amp;dev-&gt;address, &amp;other-&gt;address) &amp;&amp;
++            dev-&gt;namespace == other-&gt;namespace)
++            return i;
++    }
++
++    return -1;
++}
++
++
++static virNVMeDevicePtr
++virNVMeDeviceListLookupByPCIAddress(virNVMeDeviceListPtr list,
++                                    const virPCIDeviceAddress *address)
++{
++    size_t i;
++
++    if (!list)
++        return NULL;
++
++    for (i = 0; i &lt; list-&gt;count; i++) {
++        virNVMeDevicePtr other = list-&gt;devs[i];
++
++        if (virPCIDeviceAddressEqual(address, &amp;other-&gt;address))
++            return other;
++    }
++
++    return NULL;
++}
++
++
++virPCIDeviceListPtr
++virNVMeDeviceListCreateDetachList(virNVMeDeviceListPtr activeList,
++                                  virNVMeDeviceListPtr toDetachList)
++{
++    VIR_AUTOUNREF(virPCIDeviceListPtr) pciDevices = NULL;
++    size_t i;
++
++    if (!(pciDevices = virPCIDeviceListNew()))
++        return NULL;
++
++    for (i = 0; i &lt; toDetachList-&gt;count; i++) {
++        const virNVMeDevice *d = toDetachList-&gt;devs[i];
++        VIR_AUTOPTR(virPCIDevice) pci = NULL;
++
++        /* If there is a NVMe device with the same PCI address on
++         * the activeList, the device is already detached. */
++        if (virNVMeDeviceListLookupByPCIAddress(activeList, &amp;d-&gt;address))
++            continue;
++
++        /* It may happen that we want to detach two namespaces
++         * from the same NVMe device. This will be represented as
++         * two different instances of virNVMeDevice, but
++         * obviously we want to put the PCI device on the detach
++         * list only once. */
++        if (virPCIDeviceListFindByIDs(pciDevices,
++                                      d-&gt;address.domain,
++                                      d-&gt;address.bus,
++                                      d-&gt;address.slot,
++                                      d-&gt;address.function))
++            continue;
++
++        if (!(pci = virPCIDeviceNew(d-&gt;address.domain,
++                                    d-&gt;address.bus,
++                                    d-&gt;address.slot,
++                                    d-&gt;address.function)))
++            return NULL;
++
++        /* NVMe devices must be bound to vfio */
++        virPCIDeviceSetStubDriver(pci, VIR_PCI_STUB_DRIVER_VFIO);
++        virPCIDeviceSetManaged(pci, d-&gt;managed);
++
++        if (virPCIDeviceListAdd(pciDevices, pci) &lt; 0)
++            return NULL;
++
++        /* avoid freeing the device */
++        pci = NULL;
++    }
++
++    VIR_RETURN_PTR(pciDevices);
++}
++
++
++virPCIDeviceListPtr
++virNVMeDeviceListCreateReAttachList(virNVMeDeviceListPtr activeList,
++                                    virNVMeDeviceListPtr toReAttachList)
++{
++    VIR_AUTOUNREF(virPCIDeviceListPtr) pciDevices = NULL;
++    size_t i;
++
++    if (!(pciDevices = virPCIDeviceListNew()))
++        return NULL;
++
++    for (i = 0; i &lt; toReAttachList-&gt;count; i++) {
++        const virNVMeDevice *d = toReAttachList-&gt;devs[i];
++        VIR_AUTOPTR(virPCIDevice) pci = NULL;
++        size_t nused = 0;
++
++        /* Check if there is any other NVMe device with the same PCI address as
++         * @d. To simplify this, let's just count how many NVMe devices with
++         * the same PCI address there are on the @activeList. */
++        for (i = 0; i &lt; activeList-&gt;count; i++) {
++            virNVMeDevicePtr other = activeList-&gt;devs[i];
++
++            if (!virPCIDeviceAddressEqual(&amp;d-&gt;address, &amp;other-&gt;address))
++                continue;
++
++            nused++;
++        }
++
++        /* Now, the following cases can happen:
++         * nused &gt; 1  -&gt; there are other NVMe device active, do NOT detach it
++         * nused == 1 -&gt; we've found only @d on the @activeList, detach it
++         * nused == 0 -&gt; huh, wait, what? @d is NOT on the @active list, how can
++         *               we reattach it?
++         */
++
++        if (nused == 0) {
++            /* Shouldn't happen (TM) */
++            VIR_AUTOFREE(char *) addrStr = virPCIDeviceAddressAsString(&amp;d-&gt;address);
++            virReportError(VIR_ERR_INTERNAL_ERROR,
++                           _(&quot;NVMe device %s namespace %lu not found&quot;),
++                           NULLSTR(addrStr), d-&gt;namespace);
++            return NULL;
++        } else if (nused &gt; 1) {
++            /* NVMe device is still in use */
++            continue;
++        }
++
++        /* nused == 1 -&gt; detach the device */
++        if (!(pci = virPCIDeviceNew(d-&gt;address.domain,
++                                    d-&gt;address.bus,
++                                    d-&gt;address.slot,
++                                    d-&gt;address.function)))
++            return NULL;
++
++        /* NVMe devices must be bound to vfio */
++        virPCIDeviceSetStubDriver(pci, VIR_PCI_STUB_DRIVER_VFIO);
++        virPCIDeviceSetManaged(pci, d-&gt;managed);
++
++        if (virPCIDeviceListAdd(pciDevices, pci) &lt; 0)
++            return NULL;
++
++        /* avoid freeing the device */
++        pci = NULL;
++    }
++
++    VIR_RETURN_PTR(pciDevices);
++}
+diff --git a/src/util/virnvme.h b/src/util/virnvme.h
+new file mode 100644
+index 0000000000..edf5fe58ab
+--- /dev/null
++++ b/src/util/virnvme.h
+@@ -0,0 +1,89 @@
++/*
++ * virnvme.h: helper APIs for managing NVMe devices
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library.  If not, see
++ * &lt;<a  rel="nofollow" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.
++ */
++
++#pragma once
++
++#include &quot;virpci.h&quot;
++
++typedef struct _virNVMeDevice virNVMeDevice;
++typedef virNVMeDevice *virNVMeDevicePtr;
++typedef struct _virNVMeDeviceList virNVMeDeviceList;
++typedef virNVMeDeviceList *virNVMeDeviceListPtr;
++
++virNVMeDevicePtr
++virNVMeDeviceNew(const virPCIDeviceAddress *address,
++                 unsigned long namespace,
++                 bool managed);
++
++void
++virNVMeDeviceFree(virNVMeDevicePtr dev);
++
++VIR_DEFINE_AUTOPTR_FUNC(virNVMeDevice, virNVMeDeviceFree);
++
++virNVMeDevicePtr
++virNVMeDeviceCopy(const virNVMeDevice *dev);
++
++const virPCIDeviceAddress *
++virNVMeDeviceAddressGet(const virNVMeDevice *dev);
++
++void
++virNVMeDeviceUsedByClear(virNVMeDevicePtr dev);
++
++void
++virNVMeDeviceUsedByGet(const virNVMeDevice *dev,
++                       const char **drv,
++                       const char **dom);
++
++int
++virNVMeDeviceUsedBySet(virNVMeDevicePtr dev,
++                       const char *drv,
++                       const char *dom);
++
++virNVMeDeviceListPtr
++virNVMeDeviceListNew(void);
++
++size_t
++virNVMeDeviceListCount(const virNVMeDeviceList *list);
++
++int
++virNVMeDeviceListAdd(virNVMeDeviceListPtr list,
++                     const virNVMeDevice *dev);
++
++int
++virNVMeDeviceListDel(virNVMeDeviceListPtr list,
++                     const virNVMeDevice *dev);
++
++virNVMeDevicePtr
++virNVMeDeviceListGet(virNVMeDeviceListPtr list,
++                     size_t i);
++
++virNVMeDevicePtr
++virNVMeDeviceListLookup(virNVMeDeviceListPtr list,
++                        const virNVMeDevice *dev);
++
++ssize_t
++virNVMeDeviceListLookupIndex(virNVMeDeviceListPtr list,
++                             const virNVMeDevice *dev);
++
++virPCIDeviceListPtr
++virNVMeDeviceListCreateDetachList(virNVMeDeviceListPtr activeList,
++                                  virNVMeDeviceListPtr toDetachList);
++
++virPCIDeviceListPtr
++virNVMeDeviceListCreateReAttachList(virNVMeDeviceListPtr activeList,
++                                    virNVMeDeviceListPtr toReAttachList);
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187176.html">[PATCH v1 13/31] virhostdev: Include virNVMeDevice module</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187178.html">[PATCH v1 15/31] virhostdevtest:	s/CHECK_LIST_COUNT/CHECK_PCI_LIST_COUNT/</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187176.html">[PATCH v1 13/31] virhostdev: Include virNVMeDevice module</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187477.html">Re:  [PATCH v1 12/31] util: Introduce virNVMeDevice module</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187177"><strong>Date</strong></a></li>
+<li><a href="index.html#187177"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

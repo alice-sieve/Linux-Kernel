@@ -1,0 +1,290 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v5 0/2] Add basic support for pico&#45;pi&#45;imx8m -->
+<!--X-From-R13: naqenqnapvh1997 &#60;naqenqnapvh1997Ntznvy.pbz> -->
+<!--X-Date: Fri, 19 Jul 2019 05:14:57 &#45;0700 -->
+<!--X-Message-Id: 20190719121430.9318&#45;1&#45;andradanciu1997@gmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH v5 0/2] Add basic support for pico-pi-imx8m">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH v5 0/2] Add basic support for pico-pi-imx8m &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH v5 0/2] Add basic support for pico-pi-imx8m</h1>
+[<a href="msg741949.html">Date Prev</a>][<a href="msg741951.html">Date Next</a>][<a href="msg741948.html">Thread Prev</a>][<a href="msg741951.html">Thread Next</a>][<a href="maillist.html#741950">Date Index</a>][<a href="threads.html#741950">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v5 0/2] Add basic support for pico-pi-imx8m</li>
+<li><em>From</em>: andradanciu1997 &lt;andradanciu1997@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 19 Jul 2019 15:14:28 +0300</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Add support for TechNexion PICO-PI-IMX8M based on patches from Richard Hu
+Datasheet is at: <a  rel="nofollow" href="https://s3.us-east-2.amazonaws.com/technexion/datasheets/picopiimx8m.pdf">https://s3.us-east-2.amazonaws.com/technexion/datasheets/picopiimx8m.pdf</a>
+
+Changes since v4:
+ - removed #address-cells and  #size-cells from regulators node
+
+Changes since v3:
+ - renamed pico-pi-8m.dts to imx8mq-pico-pi.dts
+ - moved iomuxc node as the last one
+ - removed pinctrl-assert-gpios property from fec1 node
+ - removed at803x,led-act-blind-workaround, at803x,eee-disabled
+   properties from mdio node
+ - added pinctrl-names = &quot;default&quot; to i2c1 node
+ - changed bd71837 pmic support properties according to
+   Documentation/devicetree/bindings/regulator/rohm,bd71837-regulator.txt
+ - removed A53_0 node
+
+Changes since v2:
+ - changed PICO-PI-8M bord compatible from wand,imx8mq-pico-pi to
+   technexion,pico-pi-imx8m
+ - removed bootargs property
+ - removed regulators node and put fixed regulator directly under root node
+ - changed node name from usb_otg_vbus to regulator-usb-otg-vbus
+ - removed pinctrl-names property from iomuxc node
+ - removed wand-pi-8m container node
+ - sorted pinctrl nodes alphabetically
+ - removed tusb320_irqgrp, tusb320_irqgrp nodes because there is no upstream
+   driver
+ - changed properties' order in usb_dwc3_1 node
+
+Changes since v1:
+ - renamed wandboard-pi-8m.dts to pico-pi-8m.dts
+ - removed pinctrl_csi1, pinctrl_wifi_ctrl
+ - used generic name for pmic
+ - removed gpo node
+ - delete regulator-virtuals node
+ - remove always-on property from buck1-8 and ldo3-7
+ - remove pmic-buck-uses-i2c-dvs property for buck1-4
+
+Andra Danciu (1):
+  dt-bindings: arm: fsl: Add the pico-pi-imx8m board
+
+Richard Hu (1):
+  arm64: dts: fsl: pico-pi: Add a device tree for the PICO-PI-IMX8M
+
+ Documentation/devicetree/bindings/arm/fsl.yaml   |   1 +
+ arch/arm64/boot/dts/freescale/Makefile           |   1 +
+ arch/arm64/boot/dts/freescale/imx8mq-pico-pi.dts | 414 +++++++++++++++++++++++
+ 3 files changed, 416 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-pico-pi.dts
+
+-- 
+2.11.0
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="741952" href="msg741952.html">[PATCH v5 2/2] dt-bindings: arm: fsl: Add the pico-pi-imx8m board</a></strong>
+<ul><li><em>From:</em> andradanciu1997</li></ul></li>
+<li><strong><a name="741951" href="msg741951.html">[PATCH v5 1/2] arm64: dts: fsl: pico-pi: Add a device tree for the PICO-PI-IMX8M</a></strong>
+<ul><li><em>From:</em> andradanciu1997</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741949.html">Re: [PATCH v4 1/2] arm64: dts: fsl: pico-pi: Add a device tree for the PICO-PI-IMX8M</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741951.html">[PATCH v5 1/2] arm64: dts: fsl: pico-pi: Add a device tree for the PICO-PI-IMX8M</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741948.html">[PATCH] Input: touchscreen - Use dev_get_drvdata</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741951.html">[PATCH v5 1/2] arm64: dts: fsl: pico-pi: Add a device tree for the PICO-PI-IMX8M</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741950"><strong>Date</strong></a></li>
+<li><a href="threads.html#741950"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

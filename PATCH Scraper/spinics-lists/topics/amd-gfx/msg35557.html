@@ -1,0 +1,591 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 02/10] drm/dp_mst: Enable registration of AUX devices for MST ports (v2) -->
+<!--X-From-R13: &#60;fhacrat.yvNnzq.pbz> -->
+<!--X-Date: Thu, 4 Jul 2019 12:06:31 &#45;0700 -->
+<!--X-Message-Id: 20190704190519.29525&#45;3&#45;sunpeng.li@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190704190519.29525&#45;1&#45;sunpeng.li@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 02/10] drm/dp_mst: Enable registration of AUX devices for MST ports (v2)">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 02/10] drm/dp_mst: Enable registration of AUX devices for MST ports (v2) &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 02/10] drm/dp_mst: Enable registration of AUX devices for MST ports (v2)</h1>
+[<a href="msg35556.html">Date Prev</a>][<a href="msg35558.html">Date Next</a>][<a href="msg35556.html">Thread Prev</a>][<a href="msg35705.html">Thread Next</a>][<a href="maillist.html#35557">Date Index</a>][<a href="index.html#35557">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: &lt;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&gt;, &lt;dri-devel@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 02/10] drm/dp_mst: Enable registration of AUX devices for MST ports (v2)</li>
+<li><em>From</em>: &lt;sunpeng.li@xxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 4 Jul 2019 15:05:11 -0400</li>
+<li><em>Cc</em>: Leo Li &lt;sunpeng.li@xxxxxxx&gt;, ville.syrjala@xxxxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg35555.html">20190704190519.29525-1-sunpeng.li@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg35555.html">20190704190519.29525-1-sunpeng.li@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Ville Syrj&#xE4;l&#xE4; &lt;ville.syrjala@xxxxxxxxxxxxxxx&gt;
+
+All available downstream ports - physical and logical - are exposed for
+each MST device. They are listed in /dev/, following the same naming
+scheme as SST devices by appending an incremental ID.
+
+Although all downstream ports are exposed, only some will work as
+expected. Consider the following topology:
+
+               +---------+
+               |  ASIC   |
+               +---------+
+              Conn-0|
+                    |
+               +----v----+
+          +----| MST HUB |----+
+          |    +---------+    |
+          |                   |
+          |Port-1       Port-2|
+    +-----v-----+       +-----v-----+
+    |  MST      |       |  SST      |
+    |  Display  |       |  Display  |
+    +-----------+       +-----------+
+          |Port-1
+          x
+
+ MST Path  | MST Device
+ ----------+----------------------------------
+ sst:0     | MST Hub
+ mst:0-1   | MST Display
+ mst:0-1-1 | MST Display's disconnected DP out
+ mst:0-1-8 | MST Display's internal sink
+ mst:0-2   | SST Display
+
+On certain MST displays, the upstream physical port will ACK DPCD reads.
+However, reads on the local logical port to the internal sink will
+*NAK*. i.e. reading mst:0-1 ACKs, but mst:0-1-8 NAKs.
+
+There may also be duplicates. Some displays will return the same GUID
+when reading DPCD from both mst:0-1 and mst:0-1-8.
+
+There are some device-dependent behavior as well. The MST hub used
+during testing will actually *ACK* read requests on a disconnected
+physical port, whereas the MST displays will NAK.
+
+In light of these discrepancies, it's simpler to expose all downstream
+ports - both physical and logical - and let the user decide what to use.
+
+(v2) changes:
+
+Moved remote aux device (un)registration to new mst connector late
+register and early unregister helpers. Drivers should call these from
+their own mst connector function hooks.
+
+This is to solve an issue during driver unload, where mst connector
+devices are unregistered before the remote aux devices are. In a setup
+where aux devices are created as children of connector devices, the aux
+device would be removed too early, and uncleanly. Doing so in
+early_unregister solves this issue, as that is called before connector
+unregistration.
+
+Signed-off-by: Ville Syrj&#xE4;l&#xE4; &lt;ville.syrjala@xxxxxxxxxxxxxxx&gt;
+Signed-off-by: Leo Li &lt;sunpeng.li@xxxxxxx&gt;
+---
+ drivers/gpu/drm/drm_dp_aux_dev.c      |  16 ++-
+ drivers/gpu/drm/drm_dp_mst_topology.c | 137 ++++++++++++++++++++++++--
+ include/drm/drm_dp_helper.h           |   4 +
+ include/drm/drm_dp_mst_helper.h       |  11 +++
+ 4 files changed, 156 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_dp_aux_dev.c b/drivers/gpu/drm/drm_dp_aux_dev.c
+index 26e38dacf654..4aa5e455e894 100644
+--- a/drivers/gpu/drm/drm_dp_aux_dev.c
++++ b/drivers/gpu/drm/drm_dp_aux_dev.c
+@@ -37,6 +37,7 @@
+ 
+ #include &lt;drm/drm_crtc.h&gt;
+ #include &lt;drm/drm_dp_helper.h&gt;
++#include &lt;drm/drm_dp_mst_helper.h&gt;
+ #include &lt;drm/drm_print.h&gt;
+ 
+ #include &quot;drm_crtc_helper_internal.h&quot;
+@@ -116,6 +117,7 @@ static ssize_t name_show(struct device *dev,
+ 
+ 	return res;
+ }
++
+ static DEVICE_ATTR_RO(name);
+ 
+ static struct attribute *drm_dp_aux_attrs[] = {
+@@ -162,7 +164,12 @@ static ssize_t auxdev_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ 			break;
+ 		}
+ 
+-		res = drm_dp_dpcd_read(aux_dev-&gt;aux, pos, buf, todo);
++		if (aux_dev-&gt;aux-&gt;is_remote)
++			res = drm_dp_mst_dpcd_read(aux_dev-&gt;aux, pos, buf,
++						   todo);
++		else
++			res = drm_dp_dpcd_read(aux_dev-&gt;aux, pos, buf, todo);
++
+ 		if (res &lt;= 0)
+ 			break;
+ 
+@@ -209,7 +216,12 @@ static ssize_t auxdev_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 			break;
+ 		}
+ 
+-		res = drm_dp_dpcd_write(aux_dev-&gt;aux, pos, buf, todo);
++		if (aux_dev-&gt;aux-&gt;is_remote)
++			res = drm_dp_mst_dpcd_write(aux_dev-&gt;aux, pos, buf,
++						    todo);
++		else
++			res = drm_dp_dpcd_write(aux_dev-&gt;aux, pos, buf, todo);
++
+ 		if (res &lt;= 0)
+ 			break;
+ 
+diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+index 0984b9a34d55..dde79c44b625 100644
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -36,6 +36,8 @@
+ #include &lt;drm/drm_print.h&gt;
+ #include &lt;drm/drm_probe_helper.h&gt;
+ 
++#include &quot;drm_crtc_helper_internal.h&quot;
++
+ /**
+  * DOC: dp mst helper
+  *
+@@ -53,6 +55,9 @@ static int drm_dp_dpcd_write_payload(struct drm_dp_mst_topology_mgr *mgr,
+ 				     int id,
+ 				     struct drm_dp_payload *payload);
+ 
++static int drm_dp_send_dpcd_read(struct drm_dp_mst_topology_mgr *mgr,
++				 struct drm_dp_mst_port *port,
++				 int offset, int size, u8 *bytes);
+ static int drm_dp_send_dpcd_write(struct drm_dp_mst_topology_mgr *mgr,
+ 				  struct drm_dp_mst_port *port,
+ 				  int offset, int size, u8 *bytes);
+@@ -1238,6 +1243,9 @@ static void drm_dp_destroy_port(struct kref *kref)
+ 	struct drm_dp_mst_topology_mgr *mgr = port-&gt;mgr;
+ 
+ 	if (!port-&gt;input) {
++
++		port-&gt;vcpi.num_slots = 0;
++
+ 		kfree(port-&gt;cached_edid);
+ 
+ 		/*
+@@ -1483,6 +1491,48 @@ static bool drm_dp_port_setup_pdt(struct drm_dp_mst_port *port)
+ 	return send_link;
+ }
+ 
++/**
++ * drm_dp_mst_dpcd_read() - read a series of bytes from the DPCD via sideband
++ * @aux: Fake sideband AUX CH
++ * @offset: address of the (first) register to read
++ * @buffer: buffer to store the register values
++ * @size: number of bytes in @buffer
++ *
++ * Performs the same functionality for remote devices via
++ * sideband messaging as drm_dp_dpcd_read() does for local
++ * devices via actual AUX CH.
++ */
++ssize_t drm_dp_mst_dpcd_read(struct drm_dp_aux *aux,
++			     unsigned int offset, void *buffer, size_t size)
++{
++	struct drm_dp_mst_port *port = container_of(aux, struct drm_dp_mst_port,
++						    aux);
++
++	return drm_dp_send_dpcd_read(port-&gt;mgr, port,
++				     offset, size, buffer);
++}
++
++/**
++ * drm_dp_mst_dpcd_write() - write a series of bytes to the DPCD via sideband
++ * @aux: Fake sideband AUX CH
++ * @offset: address of the (first) register to write
++ * @buffer: buffer containing the values to write
++ * @size: number of bytes in @buffer
++ *
++ * Performs the same functionality for remote devices via
++ * sideband messaging as drm_dp_dpcd_write() does for local
++ * devices via actual AUX CH.
++ */
++ssize_t drm_dp_mst_dpcd_write(struct drm_dp_aux *aux,
++			      unsigned int offset, void *buffer, size_t size)
++{
++	struct drm_dp_mst_port *port = container_of(aux, struct drm_dp_mst_port,
++						    aux);
++
++	return drm_dp_send_dpcd_write(port-&gt;mgr, port,
++				      offset, size, buffer);
++}
++
+ static void drm_dp_check_mstb_guid(struct drm_dp_mst_branch *mstb, u8 *guid)
+ {
+ 	int ret;
+@@ -1526,6 +1576,44 @@ static void build_mst_prop_path(const struct drm_dp_mst_branch *mstb,
+ 	strlcat(proppath, temp, proppath_size);
+ }
+ 
++/**
++ * drm_dp_mst_connector_late_register() - Late MST connector registration
++ * @drm_connector: The MST connector
++ * @port: The MST port for this connector
++ *
++ * Helper to register the remote aux device for this MST port. Drivers should
++ * call this from their mst connector's late_register hook to enable MST aux
++ * devices.
++ */
++int drm_dp_mst_connector_late_register(struct drm_connector *connector,
++				       struct drm_dp_mst_port *port)
++{
++	DRM_DEBUG_KMS(&quot;registering %s remote bus for %s\n&quot;,
++		      port-&gt;aux.name, connector-&gt;kdev-&gt;kobj.name);
++
++	port-&gt;aux.dev = connector-&gt;kdev;
++	return drm_dp_aux_register_devnode(&amp;port-&gt;aux);
++}
++EXPORT_SYMBOL(drm_dp_mst_connector_late_register);
++
++/**
++ * drm_dp_mst_connector_early_unregister() - Early MST connector unregistration
++ * @drm_connector: The MST connector
++ * @port: The MST port for this connector
++ *
++ * Helper to unregister the remote aux device for this MST port, registered by
++ * drm_dp_mst_connector_late_register(). Drivers should call this from their mst
++ * connector's early_unregister hook.
++ */
++void drm_dp_mst_connector_early_unregister(struct drm_connector *connector,
++					   struct drm_dp_mst_port *port)
++{
++	DRM_DEBUG_KMS(&quot;unregistering %s remote bus for %s\n&quot;,
++		      port-&gt;aux.name, connector-&gt;kdev-&gt;kobj.name);
++	drm_dp_aux_unregister_devnode(&amp;port-&gt;aux);
++}
++EXPORT_SYMBOL(drm_dp_mst_connector_early_unregister);
++
+ static void drm_dp_add_port(struct drm_dp_mst_branch *mstb,
+ 			    struct drm_device *dev,
+ 			    struct drm_dp_link_addr_reply_port *port_msg)
+@@ -1548,6 +1636,7 @@ static void drm_dp_add_port(struct drm_dp_mst_branch *mstb,
+ 		port-&gt;mgr = mstb-&gt;mgr;
+ 		port-&gt;aux.name = &quot;DPMST&quot;;
+ 		port-&gt;aux.dev = dev-&gt;dev;
++		port-&gt;aux.is_remote = true;
+ 
+ 		/*
+ 		 * Make sure the memory allocation for our parent branch stays
+@@ -1816,7 +1905,6 @@ static bool drm_dp_validate_guid(struct drm_dp_mst_topology_mgr *mgr,
+ 	return false;
+ }
+ 
+-#if 0
+ static int build_dpcd_read(struct drm_dp_sideband_msg_tx *msg, u8 port_num, u32 offset, u8 num_bytes)
+ {
+ 	struct drm_dp_sideband_msg_req_body req;
+@@ -1829,7 +1917,6 @@ static int build_dpcd_read(struct drm_dp_sideband_msg_tx *msg, u8 port_num, u32
+ 
+ 	return 0;
+ }
+-#endif
+ 
+ static int drm_dp_send_sideband_msg(struct drm_dp_mst_topology_mgr *mgr,
+ 				    bool up, u8 *msg, int len)
+@@ -2441,26 +2528,56 @@ int drm_dp_update_payload_part2(struct drm_dp_mst_topology_mgr *mgr)
+ }
+ EXPORT_SYMBOL(drm_dp_update_payload_part2);
+ 
+-#if 0 /* unused as of yet */
+ static int drm_dp_send_dpcd_read(struct drm_dp_mst_topology_mgr *mgr,
+ 				 struct drm_dp_mst_port *port,
+-				 int offset, int size)
++				 int offset, int size, u8 *bytes)
+ {
+ 	int len;
++	int ret = 0;
+ 	struct drm_dp_sideband_msg_tx *txmsg;
++	struct drm_dp_mst_branch *mstb;
++
++	mstb = drm_dp_mst_topology_get_mstb_validated(mgr, port-&gt;parent);
++	if (!mstb)
++		return -EINVAL;
+ 
+ 	txmsg = kzalloc(sizeof(*txmsg), GFP_KERNEL);
+-	if (!txmsg)
+-		return -ENOMEM;
++	if (!txmsg) {
++		ret = -ENOMEM;
++		goto fail_put;
++	}
+ 
+-	len = build_dpcd_read(txmsg, port-&gt;port_num, 0, 8);
++	len = build_dpcd_read(txmsg, port-&gt;port_num, offset, size);
+ 	txmsg-&gt;dst = port-&gt;parent;
+ 
+ 	drm_dp_queue_down_tx(mgr, txmsg);
+ 
+-	return 0;
++	ret = drm_dp_mst_wait_tx_reply(mstb, txmsg);
++	if (ret &lt; 0)
++		goto fail_free;
++
++	/* DPCD read should never be NACKed */
++	if (WARN_ON_ONCE(txmsg-&gt;reply.reply_type == 1)) {
++		ret = -EIO;
++		goto fail_free;
++	}
++
++	if (txmsg-&gt;reply.u.remote_dpcd_read_ack.num_bytes != size) {
++		ret = -EPROTO;
++		goto fail_free;
++	}
++
++	ret = min_t(size_t, txmsg-&gt;reply.u.remote_dpcd_read_ack.num_bytes,
++		    size);
++	memcpy(bytes, txmsg-&gt;reply.u.remote_dpcd_read_ack.bytes, ret);
++
++fail_free:
++	kfree(txmsg);
++fail_put:
++	drm_dp_mst_topology_put_mstb(mstb);
++
++	return ret;
+ }
+-#endif
+ 
+ static int drm_dp_send_dpcd_write(struct drm_dp_mst_topology_mgr *mgr,
+ 				  struct drm_dp_mst_port *port,
+@@ -2489,7 +2606,7 @@ static int drm_dp_send_dpcd_write(struct drm_dp_mst_topology_mgr *mgr,
+ 	ret = drm_dp_mst_wait_tx_reply(mstb, txmsg);
+ 	if (ret &gt; 0) {
+ 		if (txmsg-&gt;reply.reply_type == DP_SIDEBAND_REPLY_NAK)
+-			ret = -EINVAL;
++			ret = -EIO;
+ 		else
+ 			ret = 0;
+ 	}
+diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
+index 397896b5b21a..cb2deface950 100644
+--- a/include/drm/drm_dp_helper.h
++++ b/include/drm/drm_dp_helper.h
+@@ -1309,6 +1309,10 @@ struct drm_dp_aux {
+ 	 * @cec: struct containing fields used for CEC-Tunneling-over-AUX.
+ 	 */
+ 	struct drm_dp_aux_cec cec;
++	/**
++	 * @is_remote: Is this &quot;AUX CH&quot; actually using sideband messaging.
++	 */
++	bool is_remote;
+ };
+ 
+ ssize_t drm_dp_dpcd_read(struct drm_dp_aux *aux, unsigned int offset,
+diff --git a/include/drm/drm_dp_mst_helper.h b/include/drm/drm_dp_mst_helper.h
+index 8c97a5f92c47..2ba6253ea6d3 100644
+--- a/include/drm/drm_dp_mst_helper.h
++++ b/include/drm/drm_dp_mst_helper.h
+@@ -643,6 +643,17 @@ void drm_dp_mst_dump_topology(struct seq_file *m,
+ void drm_dp_mst_topology_mgr_suspend(struct drm_dp_mst_topology_mgr *mgr);
+ int __must_check
+ drm_dp_mst_topology_mgr_resume(struct drm_dp_mst_topology_mgr *mgr);
++
++ssize_t drm_dp_mst_dpcd_read(struct drm_dp_aux *aux,
++			     unsigned int offset, void *buffer, size_t size);
++ssize_t drm_dp_mst_dpcd_write(struct drm_dp_aux *aux,
++			      unsigned int offset, void *buffer, size_t size);
++
++int drm_dp_mst_connector_late_register(struct drm_connector *connector,
++				       struct drm_dp_mst_port *port);
++void drm_dp_mst_connector_early_unregister(struct drm_connector *connector,
++					   struct drm_dp_mst_port *port);
++
+ struct drm_dp_mst_topology_state *drm_atomic_get_mst_topology_state(struct drm_atomic_state *state,
+ 								    struct drm_dp_mst_topology_mgr *mgr);
+ int __must_check
+-- 
+2.22.0
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="35708" href="msg35708.html">Re: [PATCH 02/10] drm/dp_mst: Enable registration of AUX devices for MST ports (v2)</a></strong>
+<ul><li><em>From:</em> Lyude Paul</li></ul></li>
+<li><strong><a name="35705" href="msg35705.html">Re: [PATCH 02/10] drm/dp_mst: Enable registration of AUX devices for MST ports (v2)</a></strong>
+<ul><li><em>From:</em> Lyude Paul</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="35555" href="msg35555.html">[PATCH 00/10] Enable MST Aux devices (v2)</a></strong>
+<ul><li><em>From:</em> sunpeng.li</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35556.html">[PATCH 01/10] drm/dp: Use non-cyclic idr</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35558.html">[PATCH 04/10] drm/nouveau: Use connector kdev as aux device parent</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35556.html">[PATCH 01/10] drm/dp: Use non-cyclic idr</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35705.html">Re: [PATCH 02/10] drm/dp_mst: Enable registration of AUX devices for MST ports (v2)</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35557"><strong>Date</strong></a></li>
+<li><a href="index.html#35557"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 27/87] drm/amd/display: Poll for GPUVM context ready -->
+<!--X-From-R13: &#60;fhacrat.yvNnzq.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 14:21:34 &#45;0700 -->
+<!--X-Message-Id: 20190715212049.4584&#45;28&#45;sunpeng.li@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715212049.4584&#45;1&#45;sunpeng.li@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 27/87] drm/amd/display: Poll for GPUVM context ready">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 27/87] drm/amd/display: Poll for GPUVM context ready &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 27/87] drm/amd/display: Poll for GPUVM context ready</h1>
+[<a href="msg35872.html">Date Prev</a>][<a href="msg35874.html">Date Next</a>][<a href="msg35872.html">Thread Prev</a>][<a href="msg35874.html">Thread Next</a>][<a href="maillist.html#35873">Date Index</a>][<a href="index.html#35873">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: &lt;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 27/87] drm/amd/display: Poll for GPUVM context ready</li>
+<li><em>From</em>: &lt;sunpeng.li@xxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 17:19:49 -0400</li>
+<li><em>Cc</em>: Leo Li &lt;sunpeng.li@xxxxxxx&gt;, Charlene Liu &lt;Charlene.Liu@xxxxxxx&gt;,        Julian Parkin &lt;julian.parkin@xxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg35850.html">20190715212049.4584-1-sunpeng.li@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg35850.html">20190715212049.4584-1-sunpeng.li@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Julian Parkin &lt;julian.parkin@xxxxxxx&gt;
+
+[Why]
+Hardware docs state that we must wait until the GPUVM context is ready
+after programming it.
+
+[How]
+Poll until the valid bit of PAGE_TABLE_BASE_ADDR_LO32 is set to 1 after
+programming it.
+
+Signed-off-by: Julian Parkin &lt;julian.parkin@xxxxxxx&gt;
+Reviewed-by: Charlene Liu &lt;Charlene.Liu@xxxxxxx&gt;
+Acked-by: Leo Li &lt;sunpeng.li@xxxxxxx&gt;
+---
+ .../gpu/drm/amd/display/dc/dcn20/dcn20_vmid.c | 35 +++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_vmid.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_vmid.c
+index 27679ef6ebe8..84512e646f87 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_vmid.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_vmid.c
+@@ -36,6 +36,38 @@
+ #define FN(reg_name, field_name) \
+ 	vmid-&gt;shifts-&gt;field_name, vmid-&gt;masks-&gt;field_name
+ 
++static void dcn20_wait_for_vmid_ready(struct dcn20_vmid *vmid)
++{
++	/* According the hardware spec, we need to poll for the lowest
++	 * bit of PAGE_TABLE_BASE_ADDR_LO32 = 1 any time a GPUVM
++	 * context is updated. We can't use REG_WAIT here since we
++	 * don't have a seperate field to wait on.
++	 *
++	 * TODO: Confirm timeout / poll interval with hardware team
++	 */
++
++	int max_times = 10000;
++	int delay_us  = 5;
++	int i;
++
++	for (i = 0; i &lt; max_times; ++i) {
++		uint32_t entry_lo32;
++
++		REG_GET(PAGE_TABLE_BASE_ADDR_LO32,
++			VM_CONTEXT0_PAGE_DIRECTORY_ENTRY_LO32,
++			&amp;entry_lo32);
++
++		if (entry_lo32 &amp; 0x1)
++			return;
++
++		udelay(delay_us);
++	}
++
++	/* VM setup timed out */
++	DC_LOG_WARNING(&quot;Timeout while waiting for GPUVM context update\n&quot;);
++	ASSERT(0);
++}
++
+ void dcn20_vmid_setup(struct dcn20_vmid *vmid, const struct dcn_vmid_page_table_config *config)
+ {
+ 	REG_SET(PAGE_TABLE_START_ADDR_HI32, 0,
+@@ -54,6 +86,9 @@ void dcn20_vmid_setup(struct dcn20_vmid *vmid, const struct dcn_vmid_page_table_
+ 
+ 	REG_SET(PAGE_TABLE_BASE_ADDR_HI32, 0,
+ 			VM_CONTEXT0_PAGE_DIRECTORY_ENTRY_HI32, (config-&gt;page_table_base_addr &gt;&gt; 32) &amp; 0xFFFFFFFF);
++	/* Note: per hardware spec PAGE_TABLE_BASE_ADDR_LO32 must be programmed last in sequence */
+ 	REG_SET(PAGE_TABLE_BASE_ADDR_LO32, 0,
+ 			VM_CONTEXT0_PAGE_DIRECTORY_ENTRY_LO32, config-&gt;page_table_base_addr &amp; 0xFFFFFFFF);
++
++	dcn20_wait_for_vmid_ready(vmid);
+ }
+-- 
+2.22.0
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="35850" href="msg35850.html">[PATCH 00/87] DC Patches 15 Jul, 2019</a></strong>
+<ul><li><em>From:</em> sunpeng.li</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35872.html">[PATCH 24/87] drm/amd/display: refactor dump_clk_registers</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35874.html">[PATCH 25/87] drm/amd/display: add hdmi2.1 dsc pps packet programming</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35872.html">[PATCH 24/87] drm/amd/display: refactor dump_clk_registers</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35874.html">[PATCH 25/87] drm/amd/display: add hdmi2.1 dsc pps packet programming</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35873"><strong>Date</strong></a></li>
+<li><a href="index.html#35873"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

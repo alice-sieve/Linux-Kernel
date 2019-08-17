@@ -1,0 +1,295 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] drm/amdgpu/psp: add a mutex to protect access to the psp ring -->
+<!--X-From-R13: Oyrk Rrhpure &#60;nyrkqrhpureNtznvy.pbz> -->
+<!--X-Date: Mon, 8 Jul 2019 11:36:35 &#45;0700 -->
+<!--X-Message-Id: 20190708183622.5705&#45;1&#45;alexander.deucher@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH] drm/amdgpu/psp: add a mutex to protect access to the psp ring">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH] drm/amdgpu/psp: add a mutex to protect access to the psp ring &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH] drm/amdgpu/psp: add a mutex to protect access to the psp ring</h1>
+[<a href="msg35639.html">Date Prev</a>][<a href="msg35641.html">Date Next</a>][<a href="msg35632.html">Thread Prev</a>][<a href="msg35645.html">Thread Next</a>][<a href="maillist.html#35640">Date Index</a>][<a href="index.html#35640">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: amd-gfx@xxxxxxxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH] drm/amdgpu/psp: add a mutex to protect access to the psp ring</li>
+<li><em>From</em>: Alex Deucher &lt;alexdeucher@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon,  8 Jul 2019 13:36:22 -0500</li>
+<li><em>Cc</em>: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>We need to serialize access to the psp ring if there are multiple
+callers at runtime.
+
+Signed-off-by: Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c |  1 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c    | 16 ++++++++++++++--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_psp.h    |  1 +
+ 3 files changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index 30989b455047..8f0f207bf3d9 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -2544,6 +2544,7 @@ int amdgpu_device_init(struct amdgpu_device *adev,
+ 	hash_init(adev-&gt;mn_hash);
+ 	mutex_init(&amp;adev-&gt;lock_reset);
+ 	mutex_init(&amp;adev-&gt;virt.dpm_mutex);
++	mutex_init(&amp;adev-&gt;psp.mutex);
+ 
+ 	r = amdgpu_device_check_arguments(adev);
+ 	if (r)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+index 0dd2fbb0fb2a..5b0f0b5744c0 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+@@ -131,6 +131,8 @@ psp_cmd_submit_buf(struct psp_context *psp,
+ 	int index;
+ 	int timeout = 2000;
+ 
++	mutex_lock(&amp;psp-&gt;mutex);
++
+ 	memset(psp-&gt;cmd_buf_mem, 0, PSP_CMD_BUFFER_SIZE);
+ 
+ 	memcpy(psp-&gt;cmd_buf_mem, cmd, sizeof(struct psp_gfx_cmd_resp));
+@@ -140,6 +142,7 @@ psp_cmd_submit_buf(struct psp_context *psp,
+ 			     fence_mc_addr, index);
+ 	if (ret) {
+ 		atomic_dec(&amp;psp-&gt;fence_value);
++		mutex_unlock(&amp;psp-&gt;mutex);
+ 		return ret;
+ 	}
+ 
+@@ -162,8 +165,10 @@ psp_cmd_submit_buf(struct psp_context *psp,
+ 				  ucode-&gt;ucode_id);
+ 		DRM_WARN(&quot;psp command failed and response status is (%d)\n&quot;,
+ 			  psp-&gt;cmd_buf_mem-&gt;resp.status);
+-		if (!timeout)
++		if (!timeout) {
++			mutex_unlock(&amp;psp-&gt;mutex);
+ 			return -EINVAL;
++		}
+ 	}
+ 
+ 	/* get xGMI session id from response buffer */
+@@ -173,6 +178,7 @@ psp_cmd_submit_buf(struct psp_context *psp,
+ 		ucode-&gt;tmr_mc_addr_lo = psp-&gt;cmd_buf_mem-&gt;resp.fw_addr_lo;
+ 		ucode-&gt;tmr_mc_addr_hi = psp-&gt;cmd_buf_mem-&gt;resp.fw_addr_hi;
+ 	}
++	mutex_unlock(&amp;psp-&gt;mutex);
+ 
+ 	return ret;
+ }
+@@ -1189,10 +1195,16 @@ static int psp_resume(void *handle)
+ 
+ int psp_gpu_reset(struct amdgpu_device *adev)
+ {
++	int ret;
++
+ 	if (adev-&gt;firmware.load_type != AMDGPU_FW_LOAD_PSP)
+ 		return 0;
+ 
+-	return psp_mode1_reset(&amp;adev-&gt;psp);
++	mutex_lock(&amp;adev-&gt;psp.mutex);
++	ret = psp_mode1_reset(&amp;adev-&gt;psp);
++	mutex_unlock(&amp;adev-&gt;psp.mutex);
++
++	return ret;
+ }
+ 
+ int psp_rlc_autoload_start(struct psp_context *psp)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.h
+index 6039acc84346..e28cf5e4016e 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.h
+@@ -201,6 +201,7 @@ struct psp_context
+ 	uint8_t				*ta_ras_start_addr;
+ 	struct psp_xgmi_context		xgmi_context;
+ 	struct psp_ras_context		ras;
++	struct mutex			mutex;
+ };
+ 
+ struct amdgpu_psp_funcs {
+-- 
+2.20.1
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="35645" href="msg35645.html">RE: [PATCH] drm/amdgpu/psp: add a mutex to protect access to the psp ring</a></strong>
+<ul><li><em>From:</em> Zhang, Hawking</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35639.html">Re: [PATCH] drm/amd/display: avoid 64-bit division</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35641.html">[PATCH 1/3] drm/amdgpu: add missing documentation on new module parameters</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35632.html">[PATCH] drm/amdgpu: Fix build errors with HMM disabled</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35645.html">RE: [PATCH] drm/amdgpu/psp: add a mutex to protect access to the psp ring</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35640"><strong>Date</strong></a></li>
+<li><a href="index.html#35640"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

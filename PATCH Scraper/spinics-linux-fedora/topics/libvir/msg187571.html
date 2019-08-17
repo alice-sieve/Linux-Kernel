@@ -1,0 +1,303 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v4 0/8] CPU Model Baseline and Comparison for s390x -->
+<!--X-From-R13: Qbyyva Inyyvat &#60;jnyyvatNyvahk.voz.pbz> -->
+<!--X-Date: Wed, 17 Jul 2019 07:04:03 &#45;0700 -->
+<!--X-Message-Id: 1563372209&#45;23466&#45;1&#45;git&#45;send&#45;email&#45;walling@linux.ibm.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v4 0/8] CPU Model Baseline and Comparison for s390x</title>
+<meta name="description" content="libvirt: [PATCH v4 0/8] CPU Model Baseline and Comparison for s390x">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v4 0/8] CPU Model Baseline and Comparison for s390x</h1>
+[<a href="msg187573.html">Date Prev</a>][<a href="msg187572.html">Date Next</a>][<a href="msg187545.html">Thread Prev</a>][<a href="msg187567.html">Thread Next</a>][<a href="maillist.html#187571">Date Index</a>][<a href="index.html#187571">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v4 0/8] CPU Model Baseline and Comparison for s390x</li>
+<li><em>From</em>: Collin Walling &lt;walling@xxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 17 Jul 2019 10:03:21 -0400</li>
+<li><em>Cc</em>: bwalk@xxxxxxxxxxxxx, jdenemar@xxxxxxxxxx, danielhb413@xxxxxxxxx,        david@xxxxxxxxxx</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Changelog:
+
+    v3
+        - rebased on master
+
+    v2
+        - numerous cleanups
+            - removed &quot;policy fix function&quot; and now properly check
+                for policy == -1 in the CPUDef -&gt; JSON parser
+            - resolved some memory leaks
+
+        - added string arg to qemuMonitorJSONParseCPUModelData for
+            error message to print out proper command name
+
+    v1
+        - introduce baseline
+        - split patches into small chunks
+        - free'd lingering qemuMonitorCPUModelInfo pointer
+        - when converting from virCPUDef -&gt; virJSON, consider
+            feature policy FORCED for enabled
+
+___
+
+To run these patches, execute the virsh hypervisor-cpu-compare or 
+hypervisor-cpu-baseline commands and pass an XML file describing one or 
+more CPU definition. You can use the definition from virsh domcapabilities 
+or from a guest XML. There is no need extract it from the file and place 
+it a new one, as the XML parser will look specifically for the CPU tags.
+
+___
+
+These patches hookup the virsh hypervisor-cpu-compare/baseline commands 
+for the s390x architecture. They take an XML file describing some CPU 
+definitions and passes the data to QEMU, where the actual CPU model 
+comparison / baseline calculation is handled (available since QEMU 2.8.5).
+These calculations are compared against / baselined with the hypervisor
+CPU model, which can be observed via the virsh domcapabilities command 
+for s390x.
+
+When baselining CPU models and the user appends the --features argument 
+to the command, s390x will only report back features that supersede the 
+base model definition.
+
+*NOTE* if the --features flag is intended to expand /ALL/ features
+available to a CPU model (such as the huge list of features reported
+by a full CPU model expansion), please let me know and I can resolve 
+this.
+
+The first patch pulls some code out of the CPU Model Expansion JSON 
+function so that it can be later used for the Comparison and Baseline 
+JSON functions.
+
+The rest of the patches follow this sequence:
+    - introduce JSON monitor functions
+    - introduce capability and update test files
+    - hook up monitor functions to virsh command
+
+Patch 7 pulls out some code from the CPUDef XML parser to be
+reused in the comparison hookup.
+
+Thanks.
+
+x86 and Power review by Daniel Henrique Barboza (thanks!)
+Collin Walling (8):
+  qemu_monitor: helper functions for CPU models
+  qemu_monitor: implement query-cpu-model-baseline
+  qemu_capabilities: introduce QEMU_CAPS_QUERY_CPU_MODEL_BASELINE
+  qemu_driver: hook up query-cpu-model-baseline
+  qemu_monitor: implement query-cpu-model-comparison
+  qemu_capabilities: introduce QEMU_CAPS_QUERY_CPU_MODEL_COMPARISON
+  cpu_conf: xml to cpu definition parse helper
+  qemu_driver: hook up query-cpu-model-comparison
+
+ src/conf/cpu_conf.c                              |  30 +++
+ src/conf/cpu_conf.h                              |   6 +
+ src/cpu/cpu.c                                    |  14 +-
+ src/libvirt_private.syms                         |   1 +
+ src/qemu/qemu_capabilities.c                     | 136 +++++++++++
+ src/qemu/qemu_capabilities.h                     |  18 ++
+ src/qemu/qemu_driver.c                           |  38 +++
+ src/qemu/qemu_monitor.c                          |  44 ++++
+ src/qemu/qemu_monitor.h                          |  18 ++
+ src/qemu/qemu_monitor_json.c                     | 297 ++++++++++++++++++++---
+ src/qemu/qemu_monitor_json.h                     |  20 ++
+ tests/qemucapabilitiesdata/caps_2.10.0.s390x.xml |   2 +
+ tests/qemucapabilitiesdata/caps_2.11.0.s390x.xml |   2 +
+ tests/qemucapabilitiesdata/caps_2.12.0.s390x.xml |   2 +
+ tests/qemucapabilitiesdata/caps_2.8.0.s390x.xml  |   2 +
+ tests/qemucapabilitiesdata/caps_2.9.0.s390x.xml  |   2 +
+ tests/qemucapabilitiesdata/caps_3.0.0.s390x.xml  |   2 +
+ tests/qemucapabilitiesdata/caps_4.0.0.s390x.xml  |   2 +
+ 18 files changed, 587 insertions(+), 49 deletions(-)
+
+-- 
+2.7.4
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187573.html">[PATCH v4 6/8] qemu_capabilities: introduce	QEMU_CAPS_QUERY_CPU_MODEL_COMPARISON</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187572.html">[PATCH v4 3/8] qemu_capabilities: introduce	QEMU_CAPS_QUERY_CPU_MODEL_BASELINE</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187545.html">[jenkins-ci PATCH v2 00/20] quayadmin: Introduce Quay API	client</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187567.html">[PATCH v4 1/8] qemu_monitor: helper functions for CPU	models</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187571"><strong>Date</strong></a></li>
+<li><a href="index.html#187571"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

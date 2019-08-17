@@ -1,0 +1,468 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock -->
+<!--X-From-R13: Oyrk Ybtna &#60;nyrk.xbtnaNbenpyr.pbz> -->
+<!--X-Date: Tue, 16 Jul 2019 10:20:27 &#45;0700 -->
+<!--X-Message-Id: 193BBB31&#45;F376&#45;451F&#45;BDE1&#45;D4807140EB51@oracle.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715192536.104548&#45;1&#45;alex.kogan@oracle.com -->
+<!--X-Reference: 20190715192536.104548&#45;4&#45;alex.kogan@oracle.com -->
+<!--X-Reference: 20190716155022.GR3419@hirez.programming.kicks&#45;ass.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</h1>
+[<a href="msg741416.html">Date Prev</a>][<a href="msg741418.html">Date Next</a>][<a href="msg741398.html">Thread Prev</a>][<a href="msg741421.html">Thread Next</a>][<a href="maillist.html#741417">Date Index</a>][<a href="threads.html#741417">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</li>
+<li><em>From</em>: Alex Kogan &lt;alex.kogan@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 16 Jul 2019 13:19:16 -0400</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg741398.html">20190716155022.GR3419@hirez.programming.kicks-ass.net</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Hi, Peter.
+
+Thanks for the review and all the suggestions!
+
+A couple of comments are inlined below.
+
+&gt;<i> On Jul 16, 2019, at 11:50 AM, Peter Zijlstra &lt;peterz@xxxxxxxxxxxxx&gt; wrote:</i>
+&gt;<i> </i>
+&gt;<i> On Mon, Jul 15, 2019 at 03:25:34PM -0400, Alex Kogan wrote:</i>
+&gt;<i>&gt; +static struct cna_node *find_successor(struct mcs_spinlock *me)</i>
+&gt;<i>&gt; +{</i>
+&gt;<i>&gt; +	struct cna_node *me_cna = CNA_NODE(me);</i>
+&gt;<i>&gt; +	struct cna_node *head_other, *tail_other, *cur;</i>
+&gt;<i>&gt; +	struct cna_node *next = CNA_NODE(READ_ONCE(me-&gt;next));</i>
+&gt;<i>&gt; +	int my_node;</i>
+&gt;<i>&gt; +</i>
+&gt;<i>&gt; +	/* @next should be set, else we would not be calling this function. */</i>
+&gt;<i>&gt; +	WARN_ON_ONCE(next == NULL);</i>
+&gt;<i>&gt; +</i>
+&gt;<i>&gt; +	my_node = me_cna-&gt;numa_node;</i>
+&gt;<i>&gt; +</i>
+&gt;<i>&gt; +	/*</i>
+&gt;<i>&gt; +	 * Fast path - check whether the immediate successor runs on</i>
+&gt;<i>&gt; +	 * the same node.</i>
+&gt;<i>&gt; +	 */</i>
+&gt;<i>&gt; +	if (next-&gt;numa_node == my_node)</i>
+&gt;<i>&gt; +		return next;</i>
+&gt;<i>&gt; +</i>
+&gt;<i>&gt; +	head_other = next;</i>
+&gt;<i>&gt; +	tail_other = next;</i>
+&gt;<i>&gt; +</i>
+&gt;<i>&gt; +	/*</i>
+&gt;<i>&gt; +	 * Traverse the main waiting queue starting from the successor of my</i>
+&gt;<i>&gt; +	 * successor, and look for a thread running on the same node.</i>
+&gt;<i>&gt; +	 */</i>
+&gt;<i>&gt; +	cur = CNA_NODE(READ_ONCE(next-&gt;mcs.next));</i>
+&gt;<i>&gt; +	while (cur) {</i>
+&gt;<i>&gt; +		if (cur-&gt;numa_node == my_node) {</i>
+&gt;<i>&gt; +			/*</i>
+&gt;<i>&gt; +			 * Found a thread on the same node. Move threads</i>
+&gt;<i>&gt; +			 * between me and that node into the secondary queue.</i>
+&gt;<i>&gt; +			 */</i>
+&gt;<i>&gt; +			if (me-&gt;locked &gt; 1)</i>
+&gt;<i>&gt; +				CNA_NODE(me-&gt;locked)-&gt;tail-&gt;mcs.next =</i>
+&gt;<i>&gt; +					(struct mcs_spinlock *)head_other;</i>
+&gt;<i>&gt; +			else</i>
+&gt;<i>&gt; +				me-&gt;locked = (uintptr_t)head_other;</i>
+&gt;<i>&gt; +			tail_other-&gt;mcs.next = NULL;</i>
+&gt;<i>&gt; +			CNA_NODE(me-&gt;locked)-&gt;tail = tail_other;</i>
+&gt;<i>&gt; +			return cur;</i>
+&gt;<i>&gt; +		}</i>
+&gt;<i>&gt; +		tail_other = cur;</i>
+&gt;<i>&gt; +		cur = CNA_NODE(READ_ONCE(cur-&gt;mcs.next));</i>
+&gt;<i>&gt; +	}</i>
+&gt;<i>&gt; +	return NULL;</i>
+&gt;<i>&gt; +}</i>
+&gt;<i> </i>
+&gt;<i> static void cna_move(struct cna_node *cn, struct cna_node *cni)</i>
+&gt;<i> {</i>
+&gt;<i> 	struct cna_node *head, *tail;</i>
+&gt;<i> </i>
+&gt;<i> 	/* remove @cni */</i>
+&gt;<i> 	WRITE_ONCE(cn-&gt;mcs.next, cni-&gt;mcs.next);</i>
+&gt;<i> </i>
+&gt;<i> 	/* stick @cni on the 'other' list tail */</i>
+&gt;<i> 	cni-&gt;mcs.next = NULL;</i>
+&gt;<i> </i>
+&gt;<i> 	if (cn-&gt;mcs.locked &lt;= 1) {</i>
+&gt;<i> 		/* head = tail = cni */</i>
+&gt;<i> 		head = cni;</i>
+&gt;<i> 		head-&gt;tail = cni;</i>
+&gt;<i> 		cn-&gt;mcs.locked = head-&gt;encoded_tail;</i>
+&gt;<i> 	} else {</i>
+&gt;<i> 		/* add to tail */</i>
+&gt;<i> 		head = (struct cna_node *)decode_tail(cn-&gt;mcs.locked);</i>
+&gt;<i> 		tail = tail-&gt;tail;</i>
+&gt;<i> 		tail-&gt;next = cni;</i>
+&gt;<i> 	}</i>
+&gt;<i> }</i>
+&gt;<i> </i>
+&gt;<i> static struct cna_node *cna_find_next(struct mcs_spinlock *node)</i>
+&gt;<i> {</i>
+&gt;<i> 	struct cna_node *cni, *cn = (struct cna_node *)node;</i>
+&gt;<i> </i>
+&gt;<i> 	while ((cni = (struct cna_node *)READ_ONCE(cn-&gt;mcs.next))) {</i>
+&gt;<i> 		if (likely(cni-&gt;node == cn-&gt;node))</i>
+&gt;<i> 			break;</i>
+&gt;<i> </i>
+&gt;<i> 		cna_move(cn, cni);</i>
+&gt;<i> 	}</i>
+&gt;<i> </i>
+&gt;<i> 	return cni;</i>
+&gt;<i> }</i>
+But then you move nodes from the main list to the &#x2018;other&#x2019; list one-by-one.
+I&#x2019;m afraid this would be unnecessary expensive.
+Plus, all this extra work is wasted if you do not find a thread on the same 
+NUMA node (you move everyone to the &#x2018;other&#x2019; list only to move them back in 
+cna_mcs_pass_lock()).
+
+&gt;<i> </i>
+&gt;<i>&gt; +static inline bool cna_set_locked_empty_mcs(struct qspinlock *lock, u32 val,</i>
+&gt;<i>&gt; +					struct mcs_spinlock *node)</i>
+&gt;<i>&gt; +{</i>
+&gt;<i>&gt; +	/* Check whether the secondary queue is empty. */</i>
+&gt;<i>&gt; +	if (node-&gt;locked &lt;= 1) {</i>
+&gt;<i>&gt; +		if (atomic_try_cmpxchg_relaxed(&amp;lock-&gt;val, &amp;val,</i>
+&gt;<i>&gt; +				_Q_LOCKED_VAL))</i>
+&gt;<i>&gt; +			return true; /* No contention */</i>
+&gt;<i>&gt; +	} else {</i>
+&gt;<i>&gt; +		/*</i>
+&gt;<i>&gt; +		 * Pass the lock to the first thread in the secondary</i>
+&gt;<i>&gt; +		 * queue, but first try to update the queue's tail to</i>
+&gt;<i>&gt; +		 * point to the last node in the secondary queue.</i>
+&gt;<i> </i>
+&gt;<i> </i>
+&gt;<i> That comment doesn't make sense; there's at least one conditional</i>
+&gt;<i> missing.</i>
+In CNA, we cannot just clear the tail when the MCS chain is empty, as 
+there might be nodes in the &#x2018;other&#x2019; chain. In that case (this is the &#x201C;else&#x201D; part),
+we want to pass the lock to the first node in the &#x2018;other&#x2019; chain, but 
+first we need to put the last node from that chain into the tail. Perhaps the
+comment should read &#x201C;&#x2026;  but first try to update the *primary* queue's tail &#x2026;&#x201D;, 
+if that makes more sense.
+
+&gt;<i> </i>
+&gt;<i>&gt; +		 */</i>
+&gt;<i>&gt; +		struct cna_node *succ = CNA_NODE(node-&gt;locked);</i>
+&gt;<i>&gt; +		u32 new = succ-&gt;tail-&gt;encoded_tail + _Q_LOCKED_VAL;</i>
+&gt;<i>&gt; +</i>
+&gt;<i>&gt; +		if (atomic_try_cmpxchg_relaxed(&amp;lock-&gt;val, &amp;val, new)) {</i>
+&gt;<i>&gt; +			arch_mcs_spin_unlock_contended(&amp;succ-&gt;mcs.locked, 1);</i>
+&gt;<i>&gt; +			return true;</i>
+&gt;<i>&gt; +		}</i>
+&gt;<i>&gt; +	}</i>
+&gt;<i>&gt; +</i>
+&gt;<i>&gt; +	return false;</i>
+&gt;<i>&gt; +}</i>
+&gt;<i> </i>
+&gt;<i> static cna_try_clear_tail(struct qspinlock *lock, u32 val, struct mcs_spinlock *node)</i>
+&gt;<i> {</i>
+&gt;<i> 	if (node-&gt;locked &lt;= 1)</i>
+&gt;<i> 		return __try_clear_tail(lock, val, node);</i>
+&gt;<i> </i>
+&gt;<i> 	/* the other case */</i>
+&gt;<i> }</i>
+Good point, thanks.
+
+&gt;<i> </i>
+&gt;<i>&gt; +static inline void cna_pass_mcs_lock(struct mcs_spinlock *node,</i>
+&gt;<i>&gt; +				     struct mcs_spinlock *next)</i>
+&gt;<i>&gt; +{</i>
+&gt;<i>&gt; +	struct cna_node *succ = NULL;</i>
+&gt;<i>&gt; +	u64 *var = &amp;next-&gt;locked;</i>
+&gt;<i>&gt; +	u64 val = 1;</i>
+&gt;<i>&gt; +</i>
+&gt;<i>&gt; +	succ = find_successor(node);</i>
+&gt;<i> </i>
+&gt;<i> This makes unlock O(n), which is 'funneh' and undocumented.</i>
+I will add a comment above the call to find_successor() / cna_find_next().
+
+&gt;<i> </i>
+&gt;<i>&gt; +</i>
+&gt;<i>&gt; +	if (succ) {</i>
+&gt;<i>&gt; +		var = &amp;succ-&gt;mcs.locked;</i>
+&gt;<i>&gt; +		/*</i>
+&gt;<i>&gt; +		 * We unlock a successor by passing a non-zero value,</i>
+&gt;<i>&gt; +		 * so set @val to 1 iff @locked is 0, which will happen</i>
+&gt;<i>&gt; +		 * if we acquired the MCS lock when its queue was empty</i>
+&gt;<i>&gt; +		 */</i>
+&gt;<i>&gt; +		val = node-&gt;locked + (node-&gt;locked == 0);</i>
+&gt;<i>&gt; +	} else if (node-&gt;locked &gt; 1) { /* if the secondary queue is not empty */</i>
+&gt;<i>&gt; +		/* pass the lock to the first node in that queue */</i>
+&gt;<i>&gt; +		succ = CNA_NODE(node-&gt;locked);</i>
+&gt;<i>&gt; +		succ-&gt;tail-&gt;mcs.next = next;</i>
+&gt;<i>&gt; +		var = &amp;succ-&gt;mcs.locked;</i>
+&gt;<i> </i>
+&gt;<i>&gt; +	}	/*</i>
+&gt;<i>&gt; +		 * Otherwise, pass the lock to the immediate successor</i>
+&gt;<i>&gt; +		 * in the main queue.</i>
+&gt;<i>&gt; +		 */</i>
+&gt;<i> </i>
+&gt;<i> I don't think this mis-indented comment can happen. The call-site</i>
+&gt;<i> guarantees @next is non-null.</i>
+&gt;<i> </i>
+&gt;<i> Therefore, cna_find_next() will either return it, or place it on the</i>
+&gt;<i> secondary list. If it (cna_find_next) returns NULL, we must have a</i>
+&gt;<i> non-empty secondary list.</i>
+&gt;<i> </i>
+&gt;<i> In no case do I see this tertiary condition being possible.</i>
+find_successor() will return NULL if it does not find a thread running on the 
+same NUMA node. And the secondary queue might be empty at that time.
+
+&gt;<i> </i>
+&gt;<i>&gt; +</i>
+&gt;<i>&gt; +	arch_mcs_spin_unlock_contended(var, val);</i>
+&gt;<i>&gt; +}</i>
+&gt;<i> </i>
+&gt;<i> This also renders this @next argument superfluous.</i>
+&gt;<i> </i>
+&gt;<i> static cna_mcs_pass_lock(struct mcs_spinlock *node, struct mcs_spinlock *next)</i>
+&gt;<i> {</i>
+&gt;<i> 	next = cna_find_next(node);</i>
+&gt;<i> 	if (!next) {</i>
+&gt;<i> 		BUG_ON(node-&gt;locked &lt;= 1);</i>
+&gt;<i> 		next = (struct cna_node *)decode_tail(node-&gt;locked);</i>
+&gt;<i> 		node-&gt;locked = 1;</i>
+&gt;<i> 	}</i>
+&gt;<i> </i>
+&gt;<i> 	arch_mcs_pass_lock(&amp;next-&gt;mcs.locked, node-&gt;locked);</i>
+&gt;<i> }</i>
+
+@next is passed to save the load from @node.
+This is probably most important for the native code (__pass_mcs_lock()).
+That function should be inlined, however, and that load should not matter.
+Bottom line, I agree that we can remove the @next argument.
+
+Best regards,
+&#x2014; Alex
+
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="741421" href="msg741421.html">Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</a></strong>
+<ul><li><em>From:</em> Peter Zijlstra</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="741213" href="msg741213.html">[PATCH v3 0/5] Add NUMA-awareness to qspinlock</a></strong>
+<ul><li><em>From:</em> Alex Kogan</li></ul></li>
+<li><strong><a name="741214" href="msg741214.html">[PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</a></strong>
+<ul><li><em>From:</em> Alex Kogan</li></ul></li>
+<li><strong><a name="741398" href="msg741398.html">Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</a></strong>
+<ul><li><em>From:</em> Peter Zijlstra</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741416.html">[PATCH] dmaengine: bcm2835: Print error in case setting DMA mask fails</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741418.html">[PATCH] MAINTAINERS: Update my email address to @kernel.org</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741398.html">Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741421.html">Re: [PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741417"><strong>Date</strong></a></li>
+<li><a href="threads.html#741417"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

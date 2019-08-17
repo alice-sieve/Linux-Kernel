@@ -1,0 +1,367 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re:  [PATCH] Speed up "kmem &#45;[sS]" by optimizing is_page_ptr() -->
+<!--X-From-R13: Ynmhuvgb Vntvb &#60;x&#45;untvbNno.wc.arp.pbz> -->
+<!--X-Date: Tue, 20 Feb 2018 13:08:09 &#45;0800 -->
+<!--X-Message-Id: 584afc3f&#45;d91c&#45;3210&#45;53c4&#45;9399d75dfa18@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1518544323&#45;30278&#45;1&#45;git&#45;send&#45;email&#45;k&#45;hagio@ab.jp.nec.com -->
+<!--X-Reference: 260833146.2200404.1518550403011.JavaMail.zimbra@redhat.com -->
+<!--X-Reference: 49e4a0d5&#45;d12c&#45;602a&#45;2d8e&#45;ff135727281b@redhat.com -->
+<!--X-Reference: 1474464554.2731516.1518713158415.JavaMail.zimbra@redhat.com -->
+<!--X-Reference: 791443527.2749366.1518716280111.JavaMail.zimbra@redhat.com -->
+<!--X-Reference: 3a0a08e5&#45;bb09&#45;07ad&#45;d12c&#45;bf8e993b11d6@redhat.com -->
+<!--X-Reference: 1941058596.3115629.1518815889263.JavaMail.zimbra@redhat.com -->
+<!--X-Reference: 60be328b&#45;0f4d&#45;079d&#45;d45e&#45;f2c6680f2ce7@redhat.com -->
+<!--X-Reference: 1672677649.3774048.1519144364426.JavaMail.zimbra@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr() &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</h1>
+[<a href="msg07331.html">Date Prev</a>][<a href="msg07333.html">Date Next</a>][<a href="msg07331.html">Thread Prev</a>][<a href="msg07333.html">Thread Next</a>][<a href="maillist.html#07332">Date Index</a>][<a href="index.html#07332">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</li>
+<li><em>From</em>: Kazuhito Hagio &lt;k-hagio@xxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 20 Feb 2018 16:08:05 -0500</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg07331.html">1672677649.3774048.1519144364426.JavaMail.zimbra@redhat.com</a>&gt;</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Hi Dave,
+
+On 2/20/2018 11:32 AM, Dave Anderson wrote:
+...
+&gt;<i>&gt;&gt;&gt;&gt; Another suggestion/question -- if is_page_ptr() is called with a NULL</i>
+&gt;<i>&gt;&gt;&gt;&gt; phys</i>
+&gt;<i>&gt;&gt;&gt;&gt; argument (as is done most of the time),  could it skip the &quot;if</i>
+&gt;<i>&gt;&gt;&gt;&gt; IS_SPARSEMEM()&quot;</i>
+&gt;<i>&gt;&gt;&gt;&gt; section at the top, and still utilize the part at the bottom, where it</i>
+&gt;<i>&gt;&gt;&gt;&gt; walks</i>
+&gt;<i>&gt;&gt;&gt;&gt; through the vt-&gt;node_table[x] array?  I'm not sure about the &quot;ppend&quot;</i>
+&gt;<i>&gt;&gt;&gt;&gt; calculation</i>
+&gt;<i>&gt;&gt;&gt;&gt; though -- even if there are holes in the node's address space, is it</i>
+&gt;<i>&gt;&gt;&gt;&gt; still</i>
+&gt;<i>&gt;&gt;&gt;&gt; a</i>
+&gt;<i>&gt;&gt;&gt;&gt; contiguous chunk of page structure addresses per-node?</i>
+&gt;<i>&gt;&gt;&gt;</i>
+&gt;<i>&gt;&gt;&gt; I'm still investigating and not sure yet, but I think that SPASEMEM uses</i>
+&gt;<i>&gt;&gt;&gt; mem_section instead of node_mem_map means page structures could be</i>
+&gt;<i>&gt;&gt;&gt; non-contignuous per-node according to architecture or condition.</i>
+&gt;<i>&gt;&gt;&gt;</i>
+&gt;<i>&gt;&gt;&gt;   typedef struct pglist_data {</i>
+&gt;<i>&gt;&gt;&gt;   ...</i>
+&gt;<i>&gt;&gt;&gt;   #ifdef CONFIG_FLAT_NODE_MEM_MAP /* means !SPARSEMEM */</i>
+&gt;<i>&gt;&gt;&gt;           struct page *node_mem_map;</i>
+&gt;<i>&gt;&gt;&gt;</i>
+&gt;<i>&gt;&gt;&gt; I'll continue to check it.</i>
+&gt;<i>&gt;&gt;</i>
+&gt;<i>&gt;&gt; You are right, but in the case where pglist_data.node_mem_map does *not*</i>
+&gt;<i>&gt;&gt; exist,</i>
+&gt;<i>&gt;&gt; the crash utility initializes each vt-&gt;node_table[node].mem_map with the</i>
+&gt;<i>&gt;&gt; node's</i>
+&gt;<i>&gt;&gt; starting mem_map address by using the return value from phys_to_page() of</i>
+&gt;<i>&gt;&gt; the</i>
+&gt;<i>&gt;&gt; node's starting physical address -- which uses the sparsemem functions.</i>
+&gt;<i>&gt;&gt;  </i>
+&gt;<i>&gt;&gt; The question is whether the current &quot;ppend&quot; calculation is correct for the</i>
+&gt;<i>&gt;&gt; last</i>
+&gt;<i>&gt;&gt; physical page in a node.   If it is not correct, then perhaps an</i>
+&gt;<i>&gt;&gt; &quot;mem_map_end&quot; value</i>
+&gt;<i>&gt;&gt; can be added to the node_table structure, initialized by using</i>
+&gt;<i>&gt;&gt; phys_to_page() to get</i>
+&gt;<i>&gt;&gt; the page address of the last physical address in the node.  And then in</i>
+&gt;<i>&gt;&gt; that case, the</i>
+&gt;<i>&gt;&gt; question is whether the mem_map range of virtual addresses are contiguous</i>
+&gt;<i>&gt;&gt; -- even if</i>
+&gt;<i>&gt;&gt; there are holes in the mem_map virtual address range.</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt; &quot;node_size&quot; is set to pglist_data.node_spanned_pages, which includes holes.</i>
+&gt;<i>&gt; So I think that if VMEMMAP, which a page address is linear against its pfn,</i>
+&gt;<i>&gt; the current &quot;ppend&quot; calculation is correct for the last page in a node.</i>
+&gt;<i>&gt; But if not VMEMMAP, since there is no guarantee of the linearity, the</i>
+&gt;<i>&gt; calculation could be incorrect.</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt; I found an example with RHEL5:</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt; crash&gt; help -o</i>
+&gt;<i>&gt; ...</i>
+&gt;<i>&gt;                     size_table:</i>
+&gt;<i>&gt;                           page: 56</i>
+&gt;<i>&gt; ...</i>
+&gt;<i>&gt; crash&gt; kmem -n</i>
+&gt;<i>&gt; NODE    SIZE      PGLIST_DATA       BOOTMEM_DATA       NODE_ZONES</i>
+&gt;<i>&gt;   0    524279   ffff810000014000  ffffffff804e1900  ffff810000014000</i>
+&gt;<i>&gt;                                                     ffff810000014b00</i>
+&gt;<i>&gt;                                                     ffff810000015600</i>
+&gt;<i>&gt;                                                     ffff810000016100</i>
+&gt;<i>&gt;     MEM_MAP       START_PADDR  START_MAPNR</i>
+&gt;<i>&gt; ffff8100007da000       0            0</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt; ZONE  NAME         SIZE       MEM_MAP      START_PADDR  START_MAPNR</i>
+&gt;<i>&gt;   0   DMA          4096  ffff8100007da000            0            0</i>
+&gt;<i>&gt;   1   DMA32      520183  ffff810000812000      1000000         4096</i>
+&gt;<i>&gt;   2   Normal          0                 0            0            0</i>
+&gt;<i>&gt;   3   HighMem         0                 0            0            0</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt; -------------------------------------------------------------------</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt; NR      SECTION        CODED_MEM_MAP        MEM_MAP       PFN</i>
+&gt;<i>&gt;  0  ffff810009000000  ffff8100007da000  ffff8100007da000  0</i>
+&gt;<i>&gt;  1  ffff810009000008  ffff8100007da000  ffff81000099a000  32768</i>
+&gt;<i>&gt;  2  ffff810009000010  ffff8100007da000  ffff810000b5a000  65536</i>
+&gt;<i>&gt;  3  ffff810009000018  ffff8100007da000  ffff810000d1a000  98304   &lt;= there is a</i>
+&gt;<i>&gt;  4  ffff810009000020  ffff810008901000  ffff810009001000  131072  &lt;= mem_map gap.</i>
+&gt;<i>&gt;  5  ffff810009000028  ffff810008901000  ffff8100091c1000  163840</i>
+&gt;<i>&gt;  :</i>
+&gt;<i>&gt; 14  ffff810009000070  ffff810008901000  ffff81000a181000  458752</i>
+&gt;<i>&gt; 15  ffff810009000078  ffff810008901000  ffff81000a341000  491520</i>
+&gt;<i>&gt; crash&gt;</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt; In this case, the &quot;ppend&quot; will be</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt;   0xffff8100007da000 + (524279 * 56)</i>
+&gt;<i>&gt;   = 0xffff8100023d9e08</i>
+&gt;<i>&gt;</i>
+&gt;<i>&gt; but it looks like the actual value is around 0xffff81000a501000.</i>
+&gt;<i> </i>
+&gt;<i> Right, I understand that the current &quot;ppend&quot; calculation wouldn't work.</i>
+&gt;<i> </i>
+&gt;<i>&gt; And also, we can see the gap between NR=3 and 4.  This means that if the</i>
+&gt;<i>&gt; correct &quot;mem_map_end&quot; is added to the node_table structure, it would be</i>
+&gt;<i>&gt; not enough to check whether an address is a page structure.</i>
+&gt;<i> </i>
+&gt;<i> Why?  Wouldn't it still give us an ascending range of page structure addresses</i>
+&gt;<i> on a per-node basis?  (even if there was a physical and/or virtual memory hole?) </i>
+&gt;<i> AFAICT, for each section NR, the MEM_MAP and PFN values always increment.</i>
+
+Sorry if I misunderstood something..
+First, I assume that we are talking about the case of kernels with SPARSEMEM
+and using the vm-&gt;numnodes loop after skipping the IS_SPARSEMEM() section.
+
+The &quot;mem_map_end&quot; I mean here is the page address of the last physical
+address in the node, and the example system has only one node.  So I think
+that the &quot;kmem -n&quot; output above suggests that it could return TRUE for an
+incoming &quot;addr&quot; between the end of NR=3 and the start of NR=4, but it's
+not a page address.
+
+ NR                 MEM_MAP
+  0 +---------+ ffff8100007da000 = nt-&gt;mem_map
+  : | pages.. |        :
+  2 +---------+ ffff810000b5a000
+  3 +---------+ ffff810000d1a000
+    +---------+ ffff810000eda000 = ffff810000d1a000 + (32768 * 56)
+    |   ???   |            &lt;-- for an &quot;addr&quot; here, it could returns TRUE.
+  4 +---------+ ffff810009001000
+  5 +---------+ ffff8100091c1000
+  : | pages.. |        :
+ 15 +---------+ ffff81000a341000
+    +---------+ ffff81000a501000 = nt-&gt;mem_map_end
+
+Because of such mem_map holes in a node, I don't think that the vm-&gt;numnodes
+loop could be utilized for kernels with SPARSEMEM as it is.
+Is this &quot;mem_map_end&quot; different from the one you assumed?
+
+Thanks,
+Kazuhito Hagio
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07333" href="msg07333.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="07320" href="msg07320.html">[PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing	is_page_ptr()</a></strong>
+<ul><li><em>From:</em> k-hagio</li></ul></li>
+<li><strong><a name="07321" href="msg07321.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by	optimizing	is_page_ptr()</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+<li><strong><a name="07324" href="msg07324.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+<ul><li><em>From:</em> Kazuhito Hagio</li></ul></li>
+<li><strong><a name="07325" href="msg07325.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+<li><strong><a name="07326" href="msg07326.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+<li><strong><a name="07328" href="msg07328.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+<ul><li><em>From:</em> Kazuhito Hagio</li></ul></li>
+<li><strong><a name="07329" href="msg07329.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+<li><strong><a name="07330" href="msg07330.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+<ul><li><em>From:</em> Kazuhito Hagio</li></ul></li>
+<li><strong><a name="07331" href="msg07331.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07331.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07333.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07331.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07333.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07332"><strong>Date</strong></a></li>
+<li><a href="index.html#07332"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

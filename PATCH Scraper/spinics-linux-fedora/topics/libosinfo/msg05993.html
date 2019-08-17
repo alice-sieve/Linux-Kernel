@@ -1,0 +1,1202 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [osinfo&#45;db&#45;tools PATCH v2 12/16] Drop autotools support -->
+<!--X-From-R13: =?GFT&#45;8?d?Tnovnab=20Tvq=Q3=OOapvb?= &#60;svqrapvbNerqung.pbz> -->
+<!--X-Date: Tue, 9 Jul 2019 03:48:17 &#45;0700 -->
+<!--X-Message-Id: 20190709104744.16516&#45;13&#45;fidencio@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190709104744.16516&#45;1&#45;fidencio@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<title>[osinfo-db-tools PATCH v2 12/16] Drop autotools support &mdash; libosinfo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="libosinfo: [osinfo-db-tools PATCH v2 12/16] Drop autotools support">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="libosinfo" href="//feeds.feedburner.com/libosinfo">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[osinfo-db-tools PATCH v2 12/16] Drop autotools support</h1>
+[<a href="msg05992.html">Date Prev</a>][<a href="msg05994.html">Date Next</a>][<a href="msg05992.html">Thread Prev</a>][<a href="msg05994.html">Thread Next</a>][<a href="maillist.html#05993">Date Index</a>][<a href="index.html#05993">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [osinfo-db-tools PATCH v2 12/16] Drop autotools support</li>
+<li><em>From</em>: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue,  9 Jul 2019 12:47:40 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg05980.html">20190709104744.16516-1-fidencio@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg05980.html">20190709104744.16516-1-fidencio@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Let's try to drop autotools support as meson is in place. There are a
+few files that were not dropped though, as:
+- cfg.mk
+- maint.mk
+- GNUmakefile
+- build-aux/bracket-spacing.pl
+- build-aux/gitlog-to-changelog
+- build-aux/useless-if-before-free
+- build-aux/vc-list-files
+
+&gt;From the list above, build-aux/gitlog-to-changelog is currently used by
+meson as part of the `dist`.
+
+All the other files, with a few changes, will be useful for meson as,
+with a few changes, we will be able have `ninja syntax-check` working.
+
+Signed-off-by: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;
+---
+ Makefile.am                      |  48 ------
+ build-aux/mktempd                | 135 -----------------
+ configure.ac                     |  88 -----------
+ docs/Makefile.am                 |   2 -
+ m4/libosinfo-compile-warnings.m4 | 135 -----------------
+ m4/manywarnings.m4               | 245 -------------------------------
+ m4/warnings.m4                   |  79 ----------
+ po/Makevars                      |  78 ----------
+ tests/Makefile.am                |  30 ----
+ tools/Makefile.am                |  53 -------
+ 10 files changed, 893 deletions(-)
+ delete mode 100644 Makefile.am
+ delete mode 100755 build-aux/mktempd
+ delete mode 100644 configure.ac
+ delete mode 100644 docs/Makefile.am
+ delete mode 100644 m4/libosinfo-compile-warnings.m4
+ delete mode 100644 m4/manywarnings.m4
+ delete mode 100644 m4/warnings.m4
+ delete mode 100644 po/Makevars
+ delete mode 100644 tests/Makefile.am
+ delete mode 100644 tools/Makefile.am
+
+diff --git a/Makefile.am b/Makefile.am
+deleted file mode 100644
+index 8c81f5a..0000000
+--- a/Makefile.am
++++ /dev/null
+@@ -1,48 +0,0 @@
+-
+-SUBDIRS = tools docs po tests
+-
+-EXTRA_DIST = \
+-  osinfo-db-tools.spec \
+-  osinfo-db-tools.spec.in \
+-  mingw-osinfo-db-tools.spec.in \
+-  build-aux/mktempd \
+-  cfg.mk \
+-  GNUmakefile \
+-  maint.mk \
+-  AUTHORS.in \
+-  $(NULL)
+-
+-MAINTAINERCLEANFILES =				\
+-	po/Makefile.in.in			\
+-	po/Makevars.template			\
+-	po/Rules-quot				\
+-	po/boldquot.sed				\
+-	po/en@boldquot.header			\
+-	po/en@quot.header			\
+-	po/insert-header.sin			\
+-	po/quot.sed				\
+-	po/remove-potcdate.sin			\
+-	$(NULL)
+-
+-ACLOCAL_AMFLAGS = -I m4
+-
+-dist-hook: gen-ChangeLog gen-AUTHORS
+-
+-# Generate the ChangeLog file (with all entries since the switch to git)
+-# and insert it into the directory we're about to use to create a tarball.
+-.PHONY: gen-ChangeLog gen-AUTHORS
+-gen-ChangeLog:
+-	if test -d $(srcdir)/.git; then				\
+-	  $(top_srcdir)/build-aux/gitlog-to-changelog		\
+-	    &gt; $(distdir)/cl-t;					\
+-	  rm -f $(distdir)/ChangeLog;				\
+-	  mv $(distdir)/cl-t $(distdir)/ChangeLog;		\
+-	fi
+-
+-gen-AUTHORS:
+-	$(AM_V_GEN)if test -d $(srcdir)/.git; then                      \
+-	   out=&quot;`cd $(srcdir) &amp;&amp; git log --pretty=format:'%aN &lt;%aE&gt;' | sort -u`&quot; &amp;&amp; \
+-	  perl -p -e &quot;s/#authorslist#// and print '$$out'&quot;            \
+-	     &lt; $(srcdir)/AUTHORS.in &gt; $(distdir)/AUTHORS-tmp &amp;&amp;        \
+-	   mv -f $(distdir)/AUTHORS-tmp $(distdir)/AUTHORS ;           \
+-	fi
+diff --git a/build-aux/mktempd b/build-aux/mktempd
+deleted file mode 100755
+index ab3cf14..0000000
+--- a/build-aux/mktempd
++++ /dev/null
+@@ -1,135 +0,0 @@
+-#!/bin/sh
+-# Create a temporary directory, much like mktemp -d does.
+-
+-# Copyright (C) 2007-2012 Free Software Foundation, Inc.
+-
+-# This program is free software: you can redistribute it and/or modify
+-# it under the terms of the GNU General Public License as published by
+-# the Free Software Foundation, either version 3 of the License, or
+-# (at your option) any later version.
+-
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-
+-# You should have received a copy of the GNU General Public License
+-# along with this program.  If not, see &lt;<a  rel="nofollow" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.
+-
+-# Written by Jim Meyering.
+-
+-# Usage: mktempd /tmp phoey.XXXXXXXXXX
+-
+-# First, try to use the mktemp program.
+-# Failing that, we'll roll our own mktemp-like function:
+-#  - try to get random bytes from /dev/urandom
+-#  - failing that, generate output from a combination of quickly-varying
+-#      sources and gzip.  Ignore non-varying gzip header, and extract
+-#      &quot;random&quot; bits from there.
+-#  - given those bits, map to file-name bytes using tr, and try to create
+-#      the desired directory.
+-#  - make only $MAX_TRIES attempts
+-
+-ME=`basename &quot;$0&quot;`
+-die() { echo &gt;&amp;2 &quot;$ME: $@&quot;; exit 1; }
+-
+-MAX_TRIES=4
+-
+-rand_bytes()
+-{
+-  n=$1
+-
+-  chars=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+-
+-  dev_rand=/dev/urandom
+-  if test -r &quot;$dev_rand&quot;; then
+-    # Note: 256-length($chars) == 194; 3 copies of $chars is 186 + 8 = 194.
+-    dd ibs=$n count=1 if=&quot;$dev_rand&quot; 2&gt;/dev/null \
+-      | tr -c $chars 01234567$chars$chars$chars
+-    return
+-  fi
+-
+-  cmds='date; date +%N; free; who -a; w; ps auxww; ps ef; netstat -n'
+-  data=` (eval &quot;$cmds&quot;) 2&gt;&amp;1 | gzip `
+-
+-  n_plus_50=`expr $n + 50`
+-
+-  # Ensure that $data has length at least 50+$n
+-  while :; do
+-    len=`echo &quot;$data&quot;|wc -c`
+-    test $n_plus_50 -le $len &amp;&amp; break;
+-    data=` (echo &quot;$data&quot;; eval &quot;$cmds&quot;) 2&gt;&amp;1 | gzip `
+-  done
+-
+-  echo &quot;$data&quot; \
+-    | dd bs=1 skip=50 count=$n 2&gt;/dev/null \
+-    | tr -c $chars 01234567$chars$chars$chars
+-}
+-
+-mktempd()
+-{
+-  case $# in
+-  2);;
+-  *) die &quot;Usage: $ME DIR TEMPLATE&quot;;;
+-  esac
+-
+-  destdir=$1
+-  template=$2
+-
+-  # Disallow any trailing slash on specified destdir:
+-  # it would subvert the post-mktemp &quot;case&quot;-based destdir test.
+-  case $destdir in
+-  /) ;;
+-  */) die &quot;invalid destination dir: remove trailing slash(es)&quot;;;
+-  esac
+-
+-  case $template in
+-  *XXXX) ;;
+-  *) die &quot;invalid template: $template (must have a suffix of at least 4 X's)&quot;;;
+-  esac
+-
+-  fail=0
+-
+-  # First, try to use mktemp.
+-  d=`env -u TMPDIR mktemp -d -t -p &quot;$destdir&quot; &quot;$template&quot; 2&gt;/dev/null` \
+-    || fail=1
+-
+-  # The resulting name must be in the specified directory.
+-  case $d in &quot;$destdir&quot;*);; *) fail=1;; esac
+-
+-  # It must have created the directory.
+-  test -d &quot;$d&quot; || fail=1
+-
+-  # It must have 0700 permissions.  Handle sticky &quot;S&quot; bits.
+-  perms=`ls -dgo &quot;$d&quot; 2&gt;/dev/null|tr S -` || fail=1
+-  case $perms in drwx------*) ;; *) fail=1;; esac
+-
+-  test $fail = 0 &amp;&amp; {
+-    echo &quot;$d&quot;
+-    return
+-  }
+-
+-  # If we reach this point, we'll have to create a directory manually.
+-
+-  # Get a copy of the template without its suffix of X's.
+-  base_template=`echo &quot;$template&quot;|sed 's/XX*$//'`
+-
+-  # Calculate how many X's we've just removed.
+-  template_length=`echo &quot;$template&quot; | wc -c`
+-  nx=`echo &quot;$base_template&quot; | wc -c`
+-  nx=`expr $template_length - $nx`
+-
+-  err=
+-  i=1
+-  while :; do
+-    X=`rand_bytes $nx`
+-    candidate_dir=&quot;$destdir/$base_template$X&quot;
+-    err=`mkdir -m 0700 &quot;$candidate_dir&quot; 2&gt;&amp;1` \
+-      &amp;&amp; { echo &quot;$candidate_dir&quot;; return; }
+-    test $MAX_TRIES -le $i &amp;&amp; break;
+-    i=`expr $i + 1`
+-  done
+-  die &quot;$err&quot;
+-}
+-
+-mktempd &quot;$@&quot;
+diff --git a/configure.ac b/configure.ac
+deleted file mode 100644
+index e32af7f..0000000
+--- a/configure.ac
++++ /dev/null
+@@ -1,88 +0,0 @@
+-AC_INIT([osinfo-db-tools], [1.6.0], [libosinfo@xxxxxxxxxx])
+-AC_CONFIG_AUX_DIR([build-aux])
+-AC_CONFIG_MACRO_DIR([m4])
+-AM_INIT_AUTOMAKE([1.11.1 foreign color-tests tar-ustar])
+-AC_PREREQ([2.61])
+-AC_CONFIG_SRCDIR([tools/osinfo-db-validate.c])
+-AC_PROG_CC
+-AC_PROG_LN_S
+-
+-# Perl is needed for syntax-check
+-AC_PATH_PROG([PERL], [perl])
+-
+-# python3, python3-pytest and python3-requests are needed for our tests
+-AC_CHECK_PROG(HAVE_PYTHON3, python3, yes, no)
+-if test &quot;x$HAVE_PYTHON3&quot; = &quot;xyes&quot;;
+-then
+-    PYTHON=&quot;python3&quot;
+-
+-    $PYTHON -c &quot;import pytest&quot;
+-    if test $? -eq 0;
+-    then
+-        HAVE_PYTEST=&quot;yes&quot;
+-    fi
+-
+-    $PYTHON -c &quot;import requests&quot;
+-    if test $? -eq 0;
+-    then
+-        HAVE_REQUESTS=&quot;yes&quot;
+-    fi
+-else
+-    HAVE_PYTEST=&quot;no&quot;
+-    HAVE_REQUESTS=&quot;no&quot;
+-fi
+-AM_CONDITIONAL([EXECUTE_TESTS], [test &quot;x$HAVE_PYTEST&quot; = &quot;xyes&quot; &amp;&amp; test &quot;x$HAVE_REQUESTS&quot; = &quot;xyes&quot;])
+-
+-LT_INIT([shared disable-static win32-dll])
+-
+-LIBOSINFO_COMPILE_WARNINGS
+-AM_MAINTAINER_MODE([enable])
+-
+-# i18 support
+-AM_GNU_GETTEXT_VERSION([0.19.8])
+-AM_GNU_GETTEXT([external])
+-
+-GETTEXT_PACKAGE=AC_PACKAGE_NAME
+-AC_SUBST(GETTEXT_PACKAGE)
+-AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE],[&quot;$GETTEXT_PACKAGE&quot;],[The name of the gettext domain])
+-
+-# Autoconf 2.61a.99 and earlier don't support linking a file only
+-# in VPATH builds.  But since GNUmakefile is for maintainer use
+-# only, it does not matter if we skip the link with older autoconf.
+-# Automake 1.10.1 and earlier try to remove GNUmakefile in non-VPATH
+-# builds, so use a shell variable to bypass this.
+-GNUmakefile=GNUmakefile
+-m4_if(m4_version_compare([2.61a.100],
+-        m4_defn([m4_PACKAGE_VERSION])), [1], [],
+-      [AC_CONFIG_LINKS([$GNUmakefile:$GNUmakefile], [],
+-        [GNUmakefile=$GNUmakefile])])
+-
+-
+-# Use the silent-rules feature when possible.
+-m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
+-
+-# Keep these two definitions in agreement.
+-GLIB_MINIMUM_VERSION=&quot;2.36&quot;
+-GLIB_ENCODED_VERSION=&quot;GLIB_VERSION_2_36&quot;
+-
+-PKG_CHECK_MODULES([LIBXML], [libxml-2.0 &gt;= 2.6.0])
+-PKG_CHECK_MODULES([LIBXSLT], [libxslt &gt;= 1.0.0])
+-PKG_CHECK_MODULES([LIBARCHIVE], [libarchive &gt;= 3.0.0])
+-PKG_CHECK_MODULES([JSON_GLIB], [json-glib-1.0])
+-
+-PKG_CHECK_MODULES([GLIB], [glib-2.0 &gt;= $GLIB_MINIMUM_VERSION gobject-2.0 gio-2.0])
+-GLIB_CFLAGS=&quot;$GLIB_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=$GLIB_ENCODED_VERSION&quot;
+-GLIB_CFLAGS=&quot;$GLIB_CFLAGS -DGLIB_VERSION_MAX_ALLOWED=$GLIB_ENCODED_VERSION&quot;
+-AC_SUBST(GLIB_CFLAGS)
+-AC_SUBST(GLIB_LIBS)
+-
+-AC_CONFIG_FILES([
+-	Makefile
+-	osinfo-db-tools.spec
+-	mingw-osinfo-db-tools.spec
+-	tools/Makefile
+-	docs/Makefile
+-	tests/Makefile
+-	po/Makefile.in
+-])
+-AC_OUTPUT
+diff --git a/docs/Makefile.am b/docs/Makefile.am
+deleted file mode 100644
+index badb155..0000000
+--- a/docs/Makefile.am
++++ /dev/null
+@@ -1,2 +0,0 @@
+-
+-EXTRA_DIST = database-layout.txt data-sources.txt entity-id-scheme.txt
+diff --git a/m4/libosinfo-compile-warnings.m4 b/m4/libosinfo-compile-warnings.m4
+deleted file mode 100644
+index 9e0469a..0000000
+--- a/m4/libosinfo-compile-warnings.m4
++++ /dev/null
+@@ -1,135 +0,0 @@
+-dnl
+-dnl Enable all known GCC compiler warnings, except for those
+-dnl we can't yet cope with
+-dnl
+-AC_DEFUN([LIBOSINFO_COMPILE_WARNINGS],[
+-    dnl ******************************
+-    dnl More compiler warnings
+-    dnl ******************************
+-
+-    AC_ARG_ENABLE([werror],
+-                  AS_HELP_STRING([--enable-werror], [Use -Werror (if supported)]),
+-                  [set_werror=&quot;$enableval&quot;],
+-                  [if test -d $srcdir/.git; then
+-                     is_git_version=true
+-                     set_werror=yes
+-                   else
+-                     set_werror=no
+-                   fi])
+-
+-    # List of warnings that are not relevant / wanted
+-
+-    # Don't care about C++ compiler compat
+-    dontwarn=&quot;$dontwarn -Wc++-compat&quot;
+-    dontwarn=&quot;$dontwarn -Wabi&quot;
+-    dontwarn=&quot;$dontwarn -Wdeprecated&quot;
+-    # Don't care about ancient C standard compat
+-    dontwarn=&quot;$dontwarn -Wtraditional&quot;
+-    # Don't care about ancient C standard compat
+-    dontwarn=&quot;$dontwarn -Wtraditional-conversion&quot;
+-    # Ignore warnings in /usr/include
+-    dontwarn=&quot;$dontwarn -Wsystem-headers&quot;
+-    # Happy for compiler to add struct padding
+-    dontwarn=&quot;$dontwarn -Wpadded&quot;
+-    # GCC very confused with -O2
+-    dontwarn=&quot;$dontwarn -Wunreachable-code&quot;
+-    # We explicitly need to remove const sometimes
+-    dontwarn=&quot;$dontwarn -Wcast-qual&quot;
+-    # Allow vars decl in the middle of blocks
+-    dontwarn=&quot;$dontwarn -Wdeclaration-after-statement&quot;
+-    # Using long long is fine
+-    dontwarn=&quot;$dontwarn -Wlong-long&quot;
+-    # Unused macros are ok
+-    dontwarn=&quot;$dontwarn -Wunused-macros&quot;
+-
+-
+-    # g_clear_object &amp; G_ATOMIC_OP_USE_GCC_BUILTINS causes
+-    # violations with this. XXX Fix glib ?
+-    dontwarn=&quot;$dontwarn -Wbad-function-cast&quot;
+-
+-    # We want to allow either a defualt, or all cases
+-    # but don't require both
+-    dontwarn=&quot;$dontwarn -Wswitch-default&quot;
+-    dontwarn=&quot;$dontwarn -Wswitch-enum&quot;
+-
+-    # Get all possible GCC warnings
+-    gl_MANYWARN_ALL_GCC([maybewarn])
+-
+-    # Remove the ones we don't want, blacklisted earlier
+-    gl_MANYWARN_COMPLEMENT([wantwarn], [$maybewarn], [$dontwarn])
+-
+-    # Check for $CC support of each warning
+-    for w in $wantwarn; do
+-      gl_WARN_ADD([$w])
+-    done
+-
+-    # GNULIB uses '-W' (aka -Wextra) which includes a bunch of stuff.
+-    # Unfortunately, this means you can't simply use '-Wsign-compare'
+-    # with gl_MANYWARN_COMPLEMENT
+-    # So we have -W enabled, and then have to explicitly turn off...
+-    gl_WARN_ADD([-Wno-sign-compare])
+-
+-    # Due to gutils.h bug in g_bit_storage
+-    gl_WARN_ADD([-Wno-sign-conversion])
+-    gl_WARN_ADD([-Wno-conversion])
+-    gl_WARN_ADD([-Wno-unused-parameter])
+-
+-
+-
+-    # GNULIB expects this to be part of -Wc++-compat, but we turn
+-    # that one off, so we need to manually enable this again
+-    gl_WARN_ADD([-Wjump-misses-init])
+-
+-    # This should be &lt; 256 really. Currently we're down to 4096,
+-    # but using 1024 bytes sized buffers (mostly for virStrerror)
+-    # stops us from going down further
+-    gl_WARN_ADD([-Wframe-larger-than=4096])
+-
+-    # We don't care too much about C90 compliance
+-    gl_WARN_ADD([-Wno-overlength-strings])
+-
+-    # Use improved glibc headers
+-    AH_VERBATIM([FORTIFY_SOURCE],
+-    [/* Enable compile-time and run-time bounds-checking, and some warnings,
+-        without upsetting newer glibc. */
+-     #if !defined _FORTIFY_SOURCE &amp;&amp; defined __OPTIMIZE__ &amp;&amp; __OPTIMIZE__
+-     # define _FORTIFY_SOURCE 2
+-     #endif
+-    ])
+-
+-    # Extra special flags
+-    dnl -fstack-protector stuff passes gl_WARN_ADD with gcc
+-    dnl on Mingw32, but fails when actually used
+-    case $host in
+-       *-*-linux*)
+-       dnl Fedora only uses -fstack-protector, but doesn't seem to
+-       dnl be great overhead in adding -fstack-protector-all instead
+-       dnl gl_WARN_ADD([-fstack-protector])
+-       gl_WARN_ADD([-fstack-protector-all])
+-       gl_WARN_ADD([--param=ssp-buffer-size=4])
+-       ;;
+-    esac
+-    gl_WARN_ADD([-fexceptions])
+-    gl_WARN_ADD([-fasynchronous-unwind-tables])
+-    gl_WARN_ADD([-fdiagnostics-show-option])
+-    gl_WARN_ADD([-funit-at-a-time])
+-
+-    # Need -fipa-pure-const in order to make -Wsuggest-attribute=pure
+-    # fire even without -O.
+-    gl_WARN_ADD([-fipa-pure-const])
+-
+-    # We should eventually enable this, but right now there are at
+-    # least 75 functions triggering warnings.
+-    gl_WARN_ADD([-Wno-suggest-attribute=pure])
+-    gl_WARN_ADD([-Wno-suggest-attribute=const])
+-
+-
+-    if test &quot;$set_werror&quot; = &quot;yes&quot;
+-    then
+-      gl_WARN_ADD([-Werror])
+-    fi
+-
+-    WARN_LDFLAGS=$WARN_CFLAGS
+-    AC_SUBST([WARN_CFLAGS])
+-    AC_SUBST([WARN_LDFLAGS])
+-])
+diff --git a/m4/manywarnings.m4 b/m4/manywarnings.m4
+deleted file mode 100644
+index 3e6dd21..0000000
+--- a/m4/manywarnings.m4
++++ /dev/null
+@@ -1,245 +0,0 @@
+-# manywarnings.m4 serial 7
+-dnl Copyright (C) 2008-2014 Free Software Foundation, Inc.
+-dnl This file is free software; the Free Software Foundation
+-dnl gives unlimited permission to copy and/or distribute it,
+-dnl with or without modifications, as long as this notice is preserved.
+-
+-dnl From Simon Josefsson
+-
+-# gl_MANYWARN_COMPLEMENT(OUTVAR, LISTVAR, REMOVEVAR)
+-# --------------------------------------------------
+-# Copy LISTVAR to OUTVAR except for the entries in REMOVEVAR.
+-# Elements separated by whitespace.  In set logic terms, the function
+-# does OUTVAR = LISTVAR \ REMOVEVAR.
+-AC_DEFUN([gl_MANYWARN_COMPLEMENT],
+-[
+-  gl_warn_set=
+-  set x $2; shift
+-  for gl_warn_item
+-  do
+-    case &quot; $3 &quot; in
+-      *&quot; $gl_warn_item &quot;*)
+-        ;;
+-      *)
+-        gl_warn_set=&quot;$gl_warn_set $gl_warn_item&quot;
+-        ;;
+-    esac
+-  done
+-  $1=$gl_warn_set
+-])
+-
+-# gl_MANYWARN_ALL_GCC(VARIABLE)
+-# -----------------------------
+-# Add all documented GCC warning parameters to variable VARIABLE.
+-# Note that you need to test them using gl_WARN_ADD if you want to
+-# make sure your gcc understands it.
+-AC_DEFUN([gl_MANYWARN_ALL_GCC],
+-[
+-  dnl First, check for some issues that only occur when combining multiple
+-  dnl gcc warning categories.
+-  AC_REQUIRE([AC_PROG_CC])
+-  if test -n &quot;$GCC&quot;; then
+-
+-    dnl Check if -W -Werror -Wno-missing-field-initializers is supported
+-    dnl with the current $CC $CFLAGS $CPPFLAGS.
+-    AC_MSG_CHECKING([whether -Wno-missing-field-initializers is supported])
+-    AC_CACHE_VAL([gl_cv_cc_nomfi_supported], [
+-      gl_save_CFLAGS=&quot;$CFLAGS&quot;
+-      CFLAGS=&quot;$CFLAGS -W -Werror -Wno-missing-field-initializers&quot;
+-      AC_COMPILE_IFELSE(
+-        [AC_LANG_PROGRAM([[]], [[]])],
+-        [gl_cv_cc_nomfi_supported=yes],
+-        [gl_cv_cc_nomfi_supported=no])
+-      CFLAGS=&quot;$gl_save_CFLAGS&quot;])
+-    AC_MSG_RESULT([$gl_cv_cc_nomfi_supported])
+-
+-    if test &quot;$gl_cv_cc_nomfi_supported&quot; = yes; then
+-      dnl Now check whether -Wno-missing-field-initializers is needed
+-      dnl for the { 0, } construct.
+-      AC_MSG_CHECKING([whether -Wno-missing-field-initializers is needed])
+-      AC_CACHE_VAL([gl_cv_cc_nomfi_needed], [
+-        gl_save_CFLAGS=&quot;$CFLAGS&quot;
+-        CFLAGS=&quot;$CFLAGS -W -Werror&quot;
+-        AC_COMPILE_IFELSE(
+-          [AC_LANG_PROGRAM(
+-             [[void f (void)
+-               {
+-                 typedef struct { int a; int b; } s_t;
+-                 s_t s1 = { 0, };
+-               }
+-             ]],
+-             [[]])],
+-          [gl_cv_cc_nomfi_needed=no],
+-          [gl_cv_cc_nomfi_needed=yes])
+-        CFLAGS=&quot;$gl_save_CFLAGS&quot;
+-      ])
+-      AC_MSG_RESULT([$gl_cv_cc_nomfi_needed])
+-    fi
+-
+-    dnl Next, check if -Werror -Wuninitialized is useful with the
+-    dnl user's choice of $CFLAGS; some versions of gcc warn that it
+-    dnl has no effect if -O is not also used
+-    AC_MSG_CHECKING([whether -Wuninitialized is supported])
+-    AC_CACHE_VAL([gl_cv_cc_uninitialized_supported], [
+-      gl_save_CFLAGS=&quot;$CFLAGS&quot;
+-      CFLAGS=&quot;$CFLAGS -Werror -Wuninitialized&quot;
+-      AC_COMPILE_IFELSE(
+-        [AC_LANG_PROGRAM([[]], [[]])],
+-        [gl_cv_cc_uninitialized_supported=yes],
+-        [gl_cv_cc_uninitialized_supported=no])
+-      CFLAGS=&quot;$gl_save_CFLAGS&quot;])
+-    AC_MSG_RESULT([$gl_cv_cc_uninitialized_supported])
+-
+-  fi
+-
+-  # List all gcc warning categories.
+-  # To compare this list to your installed GCC's, run this Bash command:
+-  #
+-  # comm -3 \
+-  #  &lt;(sed -n 's/^  *\(-[^ ]*\) .*/\1/p' manywarnings.m4 | sort) \
+-  #  &lt;(gcc --help=warnings | sed -n 's/^  \(-[^ ]*\) .*/\1/p' | sort |
+-  #      grep -v -x -f &lt;(
+-  #         awk '/^[^#]/ {print $1}' ../build-aux/gcc-warning.spec))
+-
+-  gl_manywarn_set=
+-  for gl_manywarn_item in \
+-    -W \
+-    -Wabi \
+-    -Waddress \
+-    -Waggressive-loop-optimizations \
+-    -Wall \
+-    -Warray-bounds \
+-    -Wattributes \
+-    -Wbad-function-cast \
+-    -Wbuiltin-macro-redefined \
+-    -Wcast-align \
+-    -Wchar-subscripts \
+-    -Wclobbered \
+-    -Wcomment \
+-    -Wcomments \
+-    -Wcoverage-mismatch \
+-    -Wcpp \
+-    -Wdate-time \
+-    -Wdeprecated \
+-    -Wdeprecated-declarations \
+-    -Wdisabled-optimization \
+-    -Wdiv-by-zero \
+-    -Wdouble-promotion \
+-    -Wempty-body \
+-    -Wendif-labels \
+-    -Wenum-compare \
+-    -Wextra \
+-    -Wformat-contains-nul \
+-    -Wformat-extra-args \
+-    -Wformat-nonliteral \
+-    -Wformat-security \
+-    -Wformat-y2k \
+-    -Wformat-zero-length \
+-    -Wfree-nonheap-object \
+-    -Wignored-qualifiers \
+-    -Wimplicit \
+-    -Wimplicit-function-declaration \
+-    -Wimplicit-int \
+-    -Winit-self \
+-    -Winline \
+-    -Wint-to-pointer-cast \
+-    -Winvalid-memory-model \
+-    -Winvalid-pch \
+-    -Wjump-misses-init \
+-    -Wlogical-op \
+-    -Wmain \
+-    -Wmaybe-uninitialized \
+-    -Wmissing-braces \
+-    -Wmissing-declarations \
+-    -Wmissing-field-initializers \
+-    -Wmissing-include-dirs \
+-    -Wmissing-parameter-type \
+-    -Wmissing-prototypes \
+-    -Wmultichar \
+-    -Wnarrowing \
+-    -Wnested-externs \
+-    -Wnonnull \
+-    -Wold-style-declaration \
+-    -Wold-style-definition \
+-    -Wopenmp-simd \
+-    -Woverflow \
+-    -Woverlength-strings \
+-    -Woverride-init \
+-    -Wpacked \
+-    -Wpacked-bitfield-compat \
+-    -Wparentheses \
+-    -Wpointer-arith \
+-    -Wpointer-sign \
+-    -Wpointer-to-int-cast \
+-    -Wpragmas \
+-    -Wreturn-local-addr \
+-    -Wreturn-type \
+-    -Wsequence-point \
+-    -Wshadow \
+-    -Wsizeof-pointer-memaccess \
+-    -Wstack-protector \
+-    -Wstrict-aliasing \
+-    -Wstrict-overflow \
+-    -Wstrict-prototypes \
+-    -Wsuggest-attribute=const \
+-    -Wsuggest-attribute=format \
+-    -Wsuggest-attribute=noreturn \
+-    -Wsuggest-attribute=pure \
+-    -Wswitch \
+-    -Wswitch-default \
+-    -Wsync-nand \
+-    -Wsystem-headers \
+-    -Wtrampolines \
+-    -Wtrigraphs \
+-    -Wtype-limits \
+-    -Wuninitialized \
+-    -Wunknown-pragmas \
+-    -Wunsafe-loop-optimizations \
+-    -Wunused \
+-    -Wunused-but-set-parameter \
+-    -Wunused-but-set-variable \
+-    -Wunused-function \
+-    -Wunused-label \
+-    -Wunused-local-typedefs \
+-    -Wunused-macros \
+-    -Wunused-parameter \
+-    -Wunused-result \
+-    -Wunused-value \
+-    -Wunused-variable \
+-    -Wvarargs \
+-    -Wvariadic-macros \
+-    -Wvector-operation-performance \
+-    -Wvla \
+-    -Wvolatile-register-var \
+-    -Wwrite-strings \
+-    \
+-    ; do
+-    gl_manywarn_set=&quot;$gl_manywarn_set $gl_manywarn_item&quot;
+-  done
+-
+-  # gcc --help=warnings outputs an unusual form for this option; list
+-  # it here so that the above 'comm' command doesn't report a false match.
+-  gl_manywarn_set=&quot;$gl_manywarn_set -Wnormalized=nfc&quot;
+-
+-  # These are needed for older GCC versions.
+-  if test -n &quot;$GCC&quot;; then
+-    case `($CC --version) 2&gt;/dev/null` in
+-      'gcc (GCC) '[[0-3]].* | \
+-      'gcc (GCC) '4.[[0-7]].*)
+-        gl_manywarn_set=&quot;$gl_manywarn_set -fdiagnostics-show-option&quot;
+-        gl_manywarn_set=&quot;$gl_manywarn_set -funit-at-a-time&quot;
+-          ;;
+-    esac
+-  fi
+-
+-  # Disable specific options as needed.
+-  if test &quot;$gl_cv_cc_nomfi_needed&quot; = yes; then
+-    gl_manywarn_set=&quot;$gl_manywarn_set -Wno-missing-field-initializers&quot;
+-  fi
+-
+-  if test &quot;$gl_cv_cc_uninitialized_supported&quot; = no; then
+-    gl_manywarn_set=&quot;$gl_manywarn_set -Wno-uninitialized&quot;
+-  fi
+-
+-  $1=$gl_manywarn_set
+-])
+diff --git a/m4/warnings.m4 b/m4/warnings.m4
+deleted file mode 100644
+index e3d239b..0000000
+--- a/m4/warnings.m4
++++ /dev/null
+@@ -1,79 +0,0 @@
+-# warnings.m4 serial 11
+-dnl Copyright (C) 2008-2013 Free Software Foundation, Inc.
+-dnl This file is free software; the Free Software Foundation
+-dnl gives unlimited permission to copy and/or distribute it,
+-dnl with or without modifications, as long as this notice is preserved.
+-
+-dnl From Simon Josefsson
+-
+-# gl_AS_VAR_APPEND(VAR, VALUE)
+-# ----------------------------
+-# Provide the functionality of AS_VAR_APPEND if Autoconf does not have it.
+-m4_ifdef([AS_VAR_APPEND],
+-[m4_copy([AS_VAR_APPEND], [gl_AS_VAR_APPEND])],
+-[m4_define([gl_AS_VAR_APPEND],
+-[AS_VAR_SET([$1], [AS_VAR_GET([$1])$2])])])
+-
+-
+-# gl_COMPILER_OPTION_IF(OPTION, [IF-SUPPORTED], [IF-NOT-SUPPORTED],
+-#                       [PROGRAM = AC_LANG_PROGRAM()])
+-# -----------------------------------------------------------------
+-# Check if the compiler supports OPTION when compiling PROGRAM.
+-#
+-# FIXME: gl_Warn must be used unquoted until we can assume Autoconf
+-# 2.64 or newer.
+-AC_DEFUN([gl_COMPILER_OPTION_IF],
+-[AS_VAR_PUSHDEF([gl_Warn], [gl_cv_warn_[]_AC_LANG_ABBREV[]_$1])dnl
+-AS_VAR_PUSHDEF([gl_Flags], [_AC_LANG_PREFIX[]FLAGS])dnl
+-AS_LITERAL_IF([$1],
+-  [m4_pushdef([gl_Positive], m4_bpatsubst([$1], [^-Wno-], [-W]))],
+-  [gl_positive=&quot;$1&quot;
+-case $gl_positive in
+-  -Wno-*) gl_positive=-W`expr &quot;X$gl_positive&quot; : 'X-Wno-\(.*\)'` ;;
+-esac
+-m4_pushdef([gl_Positive], [$gl_positive])])dnl
+-AC_CACHE_CHECK([whether _AC_LANG compiler handles $1], m4_defn([gl_Warn]), [
+-  gl_save_compiler_FLAGS=&quot;$gl_Flags&quot;
+-  gl_AS_VAR_APPEND(m4_defn([gl_Flags]),
+-    [&quot; $gl_unknown_warnings_are_errors ]m4_defn([gl_Positive])[&quot;])
+-  AC_LINK_IFELSE([m4_default([$4], [AC_LANG_PROGRAM([])])],
+-                 [AS_VAR_SET(gl_Warn, [yes])],
+-                 [AS_VAR_SET(gl_Warn, [no])])
+-  gl_Flags=&quot;$gl_save_compiler_FLAGS&quot;
+-])
+-AS_VAR_IF(gl_Warn, [yes], [$2], [$3])
+-m4_popdef([gl_Positive])dnl
+-AS_VAR_POPDEF([gl_Flags])dnl
+-AS_VAR_POPDEF([gl_Warn])dnl
+-])
+-
+-# gl_UNKNOWN_WARNINGS_ARE_ERRORS
+-# ------------------------------
+-# Clang doesn't complain about unknown warning options unless one also
+-# specifies -Wunknown-warning-option -Werror.  Detect this.
+-AC_DEFUN([gl_UNKNOWN_WARNINGS_ARE_ERRORS],
+-[gl_COMPILER_OPTION_IF([-Werror -Wunknown-warning-option],
+-   [gl_unknown_warnings_are_errors='-Wunknown-warning-option -Werror'],
+-   [gl_unknown_warnings_are_errors=])])
+-
+-# gl_WARN_ADD(OPTION, [VARIABLE = WARN_CFLAGS],
+-#             [PROGRAM = AC_LANG_PROGRAM()])
+-# ---------------------------------------------
+-# Adds parameter to WARN_CFLAGS if the compiler supports it when
+-# compiling PROGRAM.  For example, gl_WARN_ADD([-Wparentheses]).
+-#
+-# If VARIABLE is a variable name, AC_SUBST it.
+-AC_DEFUN([gl_WARN_ADD],
+-[AC_REQUIRE([gl_UNKNOWN_WARNINGS_ARE_ERRORS])
+-gl_COMPILER_OPTION_IF([$1],
+-  [gl_AS_VAR_APPEND(m4_if([$2], [], [[WARN_CFLAGS]], [[$2]]), [&quot; $1&quot;])],
+-  [],
+-  [$3])
+-m4_ifval([$2],
+-         [AS_LITERAL_IF([$2], [AC_SUBST([$2])])],
+-         [AC_SUBST([WARN_CFLAGS])])dnl
+-])
+-
+-# Local Variables:
+-# mode: autoconf
+-# End:
+diff --git a/po/Makevars b/po/Makevars
+deleted file mode 100644
+index 90d2ad1..0000000
+--- a/po/Makevars
++++ /dev/null
+@@ -1,78 +0,0 @@
+-# Makefile variables for PO directory in any package using GNU gettext.
+-
+-# Usually the message domain is the same as the package name.
+-DOMAIN = $(PACKAGE)
+-
+-# These two variables depend on the location of this directory.
+-subdir = po
+-top_builddir = ..
+-
+-# These options get passed to xgettext.
+-XGETTEXT_OPTIONS = --from-code=UTF-8 --keyword=_ --keyword=N_ --keyword=C_:1c,2 --keyword=NC_:1c,2 --keyword=g_dngettext:2,3 --add-comments
+-
+-# This is the copyright holder that gets inserted into the header of the
+-# $(DOMAIN).pot file.  Set this to the copyright holder of the surrounding
+-# package.  (Note that the msgstr strings, extracted from the package's
+-# sources, belong to the copyright holder of the package.)  Translators are
+-# expected to transfer the copyright for their translations to this person
+-# or entity, or to disclaim their copyright.  The empty string stands for
+-# the public domain; in this case the translators are expected to disclaim
+-# their copyright.
+-COPYRIGHT_HOLDER = The libosinfo Authors.
+-
+-# This tells whether or not to prepend &quot;GNU &quot; prefix to the package
+-# name that gets inserted into the header of the $(DOMAIN).pot file.
+-# Possible values are &quot;yes&quot;, &quot;no&quot;, or empty.  If it is empty, try to
+-# detect it automatically by scanning the files in $(top_srcdir) for
+-# &quot;GNU packagename&quot; string.
+-PACKAGE_GNU = no
+-
+-# This is the email address or URL to which the translators shall report
+-# bugs in the untranslated strings:
+-# - Strings which are not entire sentences, see the maintainer guidelines
+-#   in the GNU gettext documentation, section 'Preparing Strings'.
+-# - Strings which use unclear terms or require additional context to be
+-#   understood.
+-# - Strings which make invalid assumptions about notation of date, time or
+-#   money.
+-# - Pluralisation problems.
+-# - Incorrect English spelling.
+-# - Incorrect formatting.
+-# It can be your email address, or a mailing list address where translators
+-# can write to without being subscribed, or the URL of a web page through
+-# which the translators can contact you.
+-MSGID_BUGS_ADDRESS = <a  rel="nofollow" href="https://gitlab.com/libosinfo/osinfo-db-tools/issues">https://gitlab.com/libosinfo/osinfo-db-tools/issues</a>
+-
+-# This is the list of locale categories, beyond LC_MESSAGES, for which the
+-# message catalogs shall be used.  It is usually empty.
+-EXTRA_LOCALE_CATEGORIES =
+-
+-# This tells whether the $(DOMAIN).pot file contains messages with an 'msgctxt'
+-# context.  Possible values are &quot;yes&quot; and &quot;no&quot;.  Set this to yes if the
+-# package uses functions taking also a message context, like pgettext(), or
+-# if in $(XGETTEXT_OPTIONS) you define keywords with a context argument.
+-USE_MSGCTXT = yes
+-
+-# These options get passed to msgmerge.
+-# Useful options are in particular:
+-#   --previous            to keep previous msgids of translated messages,
+-#   --quiet               to reduce the verbosity.
+-MSGMERGE_OPTIONS =
+-
+-# These options get passed to msginit.
+-# If you want to disable line wrapping when writing PO files, add
+-# --no-wrap to MSGMERGE_OPTIONS, XGETTEXT_OPTIONS, and
+-# MSGINIT_OPTIONS.
+-MSGINIT_OPTIONS =
+-
+-# This tells whether or not to regenerate a PO file when $(DOMAIN).pot
+-# has changed.  Possible values are &quot;yes&quot; and &quot;no&quot;.  Set this to no if
+-# the POT file is checked in the repository and the version control
+-# program ignores timestamps.
+-PO_DEPENDS_ON_POT = no
+-
+-# This tells whether or not to forcibly update $(DOMAIN).pot and
+-# regenerate PO files on &quot;make dist&quot;.  Possible values are &quot;yes&quot; and
+-# &quot;no&quot;.  Set this to no if the POT file and PO files are maintained
+-# externally.
+-DIST_DEPENDS_ON_UPDATE_PO = no
+diff --git a/tests/Makefile.am b/tests/Makefile.am
+deleted file mode 100644
+index efa31df..0000000
+--- a/tests/Makefile.am
++++ /dev/null
+@@ -1,30 +0,0 @@
+-EXTRA_DIST = data
+-
+-test_helpers = \
+-	util.py \
+-	$(NULL)
+-
+-test_programs = \
+-	test_osinfo_db_export_import.py \
+-	test_osinfo_db_path.py \
+-	test_osinfo_db_validate.py \
+-	$(NULL)
+-
+-EXTRA_DIST += \
+-	$(test_helpers) \
+-	$(test_programs) \
+-	$(NULL)
+-
+-TESTS =
+-
+-if EXECUTE_TESTS
+-TESTS += \
+-	$(test_programs) \
+-	$(NULL)
+-
+-TESTS_ENVIRONMENT = \
+-	abs_top_builddir=&quot;$(abs_top_builddir)&quot; \
+-	abs_top_srcdir=&quot;$(abs_top_srcdir)&quot; \
+-	datadir=&quot;$(datadir)&quot; \
+-	sysconfdir=&quot;$(sysconfdir)&quot;
+-endif
+diff --git a/tools/Makefile.am b/tools/Makefile.am
+deleted file mode 100644
+index e43e85d..0000000
+--- a/tools/Makefile.am
++++ /dev/null
+@@ -1,53 +0,0 @@
+-AM_CFLAGS = $(GOBJECT_CFLAGS) \
+-	    $(GIO_CFLAGS)     \
+-	    $(GLIB_CFLAGS)    \
+-	    $(LIBXML_CFLAGS)  \
+-	    -DPKGDATADIR=&quot;\&quot;$(pkgdatadir)\&quot;&quot; \
+-	    -DDATA_DIR=&quot;\&quot;$(datadir)\&quot;&quot; \
+-	    -DSYSCONFDIR=&quot;\&quot;$(sysconfdir)\&quot;&quot; \
+-	    -DLOCALEDIR=&quot;\&quot;$(datadir)/locale\&quot;&quot; \
+-	    $(WARN_CFLAGS) \
+-	    -I$(top_srcdir) \
+-            $(NULL)
+-
+-bin_PROGRAMS = osinfo-db-validate osinfo-db-import osinfo-db-export osinfo-db-path
+-
+-man1_MANS = osinfo-db-validate.1 osinfo-db-import.1 osinfo-db-export.1 osinfo-db-path.1
+-
+-CLEANFILES = $(man1_MANS)
+-
+-POD2MAN = pod2man -c &quot;Virtualization Support&quot; -r &quot;$(PACKAGE)-$(VERSION)&quot;
+-
+-%.1: %.c Makefile
+-	$(AM_V_GEN)$(POD2MAN) $&lt; $@
+-
+-COMMON_SOURCES = \
+-		osinfo-db-util.c \
+-		osinfo-db-util.h \
+-		$(NULL)
+-
+-osinfo_db_validate_SOURCES = osinfo-db-validate.c $(COMMON_SOURCES)
+-osinfo_db_validate_LDADD = $(GOBJECT_LIBS)	\
+-		      $(GIO_LIBS)		\
+-		      $(GLIB_LIBS)		\
+-		      $(LIBXML_LIBS)
+-
+-osinfo_db_import_SOURCES = osinfo-db-import.c $(COMMON_SOURCES)
+-osinfo_db_import_LDADD = $(GOBJECT_LIBS)	\
+-		      $(GIO_LIBS)		\
+-		      $(GLIB_LIBS)		\
+-		      $(JSON_GLIB_LIBS)	\
+-		      $(LIBARCHIVE_LIBS)
+-osinfo_db_import_CFLAGS = $(AM_CFLAGS)		\
+-		      $(JSON_GLIB_CFLAGS)
+-
+-osinfo_db_export_SOURCES = osinfo-db-export.c $(COMMON_SOURCES)
+-osinfo_db_export_LDADD = $(GOBJECT_LIBS)	\
+-		      $(GIO_LIBS)		\
+-		      $(GLIB_LIBS)		\
+-		      $(LIBARCHIVE_LIBS)
+-
+-osinfo_db_path_SOURCES = osinfo-db-path.c $(COMMON_SOURCES)
+-osinfo_db_path_LDADD = $(GOBJECT_LIBS)	\
+-		      $(GIO_LIBS)		\
+-		      $(GLIB_LIBS)
+-- 
+2.21.0
+
+_______________________________________________
+Libosinfo mailing list
+Libosinfo@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libosinfo">https://www.redhat.com/mailman/listinfo/libosinfo</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05992.html">[osinfo-db-tools PATCH v2 11/16] prepare-release: Adapt	to use meson</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05994.html">[osinfo-db-tools PATCH v2 16/16] prepare-release: Add	`ninja syntax-check`</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05992.html">[osinfo-db-tools PATCH v2 11/16] prepare-release: Adapt	to use meson</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05994.html">[osinfo-db-tools PATCH v2 16/16] prepare-release: Add	`ninja syntax-check`</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05993"><strong>Date</strong></a></li>
+<li><a href="index.html#05993"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

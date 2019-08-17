@@ -1,0 +1,355 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 20/27] autofs&#45;5.1.3 &#45; add function umount_amd_ext_mount() -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Mon, 11 Dec 2017 00:59:42 &#45;0800 -->
+<!--X-Message-Id: 151298277649.19722.1143397865585189410.stgit@pluto.themaw.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 151298256987.19722.18421086447160152668.stgit@pluto.themaw.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 20/27] autofs-5.1.3 - add function umount_amd_ext_mount() &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 20/27] autofs-5.1.3 - add function umount_amd_ext_mount() &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 20/27] autofs-5.1.3 - add function umount_amd_ext_mount()</h1>
+[<a href="msg01814.html">Date Prev</a>][<a href="msg01816.html">Date Next</a>][<a href="msg01814.html">Thread Prev</a>][<a href="msg01816.html">Thread Next</a>][<a href="maillist.html#01815">Date Index</a>][<a href="index.html#01815">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 20/27] autofs-5.1.3 - add function umount_amd_ext_mount()</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 11 Dec 2017 16:59:36 +0800</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg01795.html">151298256987.19722.18421086447160152668.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg01795.html">151298256987.19722.18421086447160152668.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>User-agent</em>: StGit/0.17.1-dirty</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Refactor amd external umount code, move the code into its own
+function.
+
+Later amd umounting of program mounts with a custom command will
+be added.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ CHANGELOG           |    1 +
+ daemon/automount.c  |   22 ++--------------------
+ include/mounts.h    |    1 +
+ lib/mounts.c        |   17 +++++++++++++++++
+ modules/parse_amd.c |    3 +--
+ 5 files changed, 22 insertions(+), 22 deletions(-)
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 22949785..66b82074 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -53,6 +53,7 @@ xx/xx/2017 autofs-5.1.4
+ - fix expandamdent() quote handling.
+ - fix possible memory leak during amd parse.
+ - remove path restriction of amd external mount.
++- add function umount_amd_ext_mount().
+ 
+ 24/05/2017 autofs-5.1.3
+ =======================
+diff --git a/daemon/automount.c b/daemon/automount.c
+index d60a3d7b..6ae44475 100644
+--- a/daemon/automount.c
++++ b/daemon/automount.c
+@@ -610,16 +610,7 @@ static int umount_subtree_mounts(struct autofs_point *ap, const char *path, unsi
+ 		}
+ 		list_del(&amp;entry-&gt;entries);
+ 		mounts_mutex_unlock(ap);
+-		if (ext_mount_remove(&amp;entry-&gt;ext_mount, entry-&gt;fs)) {
+-			if (umount_ent(ap, entry-&gt;fs))
+-				debug(ap-&gt;logopt,
+-				      &quot;failed to umount external mount %s&quot;,
+-				      entry-&gt;fs);
+-			else
+-				debug(ap-&gt;logopt,
+-				      &quot;umounted external mount %s&quot;,
+-				      entry-&gt;fs);
+-		}
++		umount_amd_ext_mount(ap, entry);
+ 		free_amd_entry(entry);
+ 	}
+ done:
+@@ -666,16 +657,7 @@ int umount_multi(struct autofs_point *ap, const char *path, int incl)
+ 		}
+ 		list_del(&amp;entry-&gt;entries);
+ 		mounts_mutex_unlock(ap);
+-		if (ext_mount_remove(&amp;entry-&gt;ext_mount, entry-&gt;fs)) {
+-			if (umount_ent(ap, entry-&gt;fs))
+-				debug(ap-&gt;logopt,
+-				      &quot;failed to umount external mount %s&quot;,
+-				      entry-&gt;fs);
+-			else
+-				debug(ap-&gt;logopt,
+-				      &quot;umounted external mount %s&quot;,
+-				      entry-&gt;fs);
+-		}
++		umount_amd_ext_mount(ap, entry);
+ 		free_amd_entry(entry);
+ 		return 0;
+ 	}
+diff --git a/include/mounts.h b/include/mounts.h
+index 031e2a3b..d6ddc0e1 100644
+--- a/include/mounts.h
++++ b/include/mounts.h
+@@ -118,6 +118,7 @@ int try_remount(struct autofs_point *, struct mapent *, unsigned int);
+ void set_indirect_mount_tree_catatonic(struct autofs_point *);
+ void set_direct_mount_tree_catatonic(struct autofs_point *, struct mapent *);
+ int umount_ent(struct autofs_point *, const char *);
++int umount_amd_ext_mount(struct autofs_point *, struct amd_entry *);
+ int mount_multi_triggers(struct autofs_point *, struct mapent *, const char *, unsigned int, const char *);
+ int umount_multi_triggers(struct autofs_point *, struct mapent *, char *, const char *);
+ int clean_stale_multi_triggers(struct autofs_point *, struct mapent *, char *, const char *);
+diff --git a/lib/mounts.c b/lib/mounts.c
+index fdd35984..0ca86962 100644
+--- a/lib/mounts.c
++++ b/lib/mounts.c
+@@ -2043,6 +2043,23 @@ int umount_ent(struct autofs_point *ap, const char *path)
+ 	return rv;
+ }
+ 
++int umount_amd_ext_mount(struct autofs_point *ap, struct amd_entry *entry)
++{
++	int rv = 1;
++
++	if (ext_mount_remove(&amp;entry-&gt;ext_mount, entry-&gt;fs)) {
++		rv = umount_ent(ap, entry-&gt;fs);
++		if (rv)
++			error(ap-&gt;logopt,
++			      &quot;failed to umount external mount %s&quot;, entry-&gt;fs);
++		else
++			debug(ap-&gt;logopt,
++			      &quot;umounted external mount %s&quot;, entry-&gt;fs);
++	}
++
++	return rv;
++}
++
+ static int do_mount_autofs_offset(struct autofs_point *ap,
+ 				  struct mapent *oe, const char *root,
+ 				  char *offset)
+diff --git a/modules/parse_amd.c b/modules/parse_amd.c
+index 8030b271..eeb74d41 100644
+--- a/modules/parse_amd.c
++++ b/modules/parse_amd.c
+@@ -980,8 +980,7 @@ symlink:
+ 
+ 	if (entry-&gt;sublink) {
+ 		/* failed to complete sublink mount */
+-		if (ext_mount_remove(&amp;entry-&gt;ext_mount, entry-&gt;fs))
+-			umount_ent(ap, entry-&gt;fs);
++		umount_amd_ext_mount(ap, entry);
+ 	}
+ out:
+ 	return ret;
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01795" href="msg01795.html">[PATCH 00/27] Still trying to get 5.1.4 released</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01814.html">[PATCH 19/27] autofs-5.1.3 - remove path restriction of amd external mount</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01816.html">[PATCH 21/27] autofs-5.1.3 - add function ext_mount_inuse()</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01814.html">[PATCH 19/27] autofs-5.1.3 - remove path restriction of amd external mount</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01816.html">[PATCH 21/27] autofs-5.1.3 - add function ext_mount_inuse()</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01815"><strong>Date</strong></a></li>
+<li><a href="index.html#01815"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

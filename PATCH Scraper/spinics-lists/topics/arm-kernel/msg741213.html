@@ -1,0 +1,429 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v3 0/5] Add NUMA&#45;awareness to qspinlock -->
+<!--X-From-R13: Oyrk Ybtna &#60;nyrk.xbtnaNbenpyr.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 12:27:53 &#45;0700 -->
+<!--X-Message-Id: 20190715192536.104548&#45;1&#45;alex.kogan@oracle.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH v3 0/5] Add NUMA-awareness to qspinlock">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH v3 0/5] Add NUMA-awareness to qspinlock &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH v3 0/5] Add NUMA-awareness to qspinlock</h1>
+[<a href="msg741212.html">Date Prev</a>][<a href="msg741214.html">Date Next</a>][<a href="msg741192.html">Thread Prev</a>][<a href="msg741210.html">Thread Next</a>][<a href="maillist.html#741213">Date Index</a>][<a href="threads.html#741213">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v3 0/5] Add NUMA-awareness to qspinlock</li>
+<li><em>From</em>: Alex Kogan &lt;alex.kogan@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 15:25:31 -0400</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Changes from v2:
+----------------
+- Patch the NUMA-aware qspinlock at the boot time on machines with
+multiple NUMA nodes and a kernel compiled with NUMA_AWARE_SPINLOCKS,
+as suggested by Peter and Longman.
+
+- CNA queue nodes encapsulate MCS queue nodes, similarly to paravirt nodes,
+as suggested by Peter. MCS queue node size has been increased by 4 bytes.
+
+- Use the existing next_pseudo_random32() instead of a custom xorshift
+pseudo-random number generator, as suggested by Peter.
+
+- Use cpu_to_node() to lookup the NUMA node of a thread, as suggested
+by Hanjun.
+
+&#x2014; Rewrote cna_pass_mcs_lock(), as suggested by Peter.
+
+- We evaluated the patch on a single-node machine as well as in a paravirt 
+environment (with virtme/qemu), as suggested by Peter and Longman.
+Details are below.
+
+&#x2014; Our evaluation shows that CNA also improves performance of user 
+applications that have hot pthread mutexes, as the latter create contention
+on spin locks protecting futex chains in the kernel when waiting threads
+park and unpark. Details are below.
+
+
+Summary
+-------
+
+Lock throughput can be increased by handing a lock to a waiter on the
+same NUMA node as the lock holder, provided care is taken to avoid
+starvation of waiters on other NUMA nodes. This patch introduces CNA
+(compact NUMA-aware lock) as the slow path for qspinlock. It is
+enabled through a configuration option (NUMA_AWARE_SPINLOCKS).
+
+CNA is a NUMA-aware version of the MCS spin-lock. Spinning threads are
+organized in two queues, a main queue for threads running on the same
+node as the current lock holder, and a secondary queue for threads
+running on other nodes. Threads store the ID of the node on which
+they are running in their queue nodes. At the unlock time, the lock
+holder scans the main queue looking for a thread running on the same
+node. If found (call it thread T), all threads in the main queue
+between the current lock holder and T are moved to the end of the
+secondary queue, and the lock is passed to T. If such T is not found, the
+lock is passed to the first node in the secondary queue. Finally, if the
+secondary queue is empty, the lock is passed to the next thread in the
+main queue. To avoid starvation of threads in the secondary queue,
+those threads are moved back to the head of the main queue
+after a certain expected number of intra-node lock hand-offs.
+
+More details are available at <a  rel="nofollow" href="https://arxiv.org/abs/1810.05600">https://arxiv.org/abs/1810.05600</a>.
+
+We have done some performance evaluation with the locktorture module
+as well as with several benchmarks from the will-it-scale repo.
+The following locktorture results are from an Oracle X5-4 server
+(four Intel Xeon E7-8895 v3 @ 2.60GHz sockets with 18 hyperthreaded
+cores each). Each number represents an average (over 25 runs) of the
+total number of ops (x10^7) reported at the end of each run. The 
+standard deviation is also reported in (), and in general is about 3%
+from the average. The 'stock' kernel is v5.2.0-rc2,
+commit f782099a96a0 (&quot;Merge branch 'perf/core'&quot;),
+compiled in the default configuration. 'patch' is the modified
+kernel compiled with NUMA_AWARE_SPINLOCKS not set; it is included to show
+that any performance changes to the existing qspinlock implementation are
+essentially noise. 'patch-CNA' is the modified kernel with 
+NUMA_AWARE_SPINLOCKS set; the speedup is calculated dividing 
+'patch-CNA' by 'stock'.
+
+#thr  	 stock  	patch	     patch-CNA 	 speedup (patch-CNA/stock)
+  1  2.687 (0.104)  2.655 (0.099)   2.706 (0.119)  1.007
+  2  3.085 (0.104)  3.140 (0.128)   3.111 (0.147)  1.009
+  4  4.230 (0.125)  4.217 (0.129)   4.482 (0.121)  1.060
+  8  5.480 (0.159)  5.411 (0.183)   7.064 (0.218)  1.289
+ 16  6.733 (0.196)  6.764 (0.155)   8.666 (0.161)  1.287
+ 32  7.557 (0.148)  7.488 (0.133)   9.519 (0.253)  1.260
+ 36  7.667 (0.222)  7.654 (0.211)   9.530 (0.218)  1.243
+ 72  6.931 (0.172)  6.931 (0.187)  10.030 (0.217)  1.447
+108  6.478 (0.098)  6.423 (0.107)  10.157 (0.250)  1.568
+142  6.041 (0.102)  6.058 (0.111)  10.102 (0.260)  1.672
+
+The following tables contain throughput results (ops/us) from the same
+setup for will-it-scale/open1_threads: 
+
+#thr  	 stock  	patch	     patch-CNA 	 speedup (patch-CNA/stock)
+  1  0.536 (0.001)  0.540 (0.003)  0.538 (0.001)  1.002
+  2  0.833 (0.020)  0.842 (0.028)  0.827 (0.025)  0.993
+  4  1.464 (0.031)  1.473 (0.025)  1.465 (0.033)  1.001
+  8  1.685 (0.087)  1.707 (0.078)  1.708 (0.104)  1.013
+ 16  1.715 (0.091)  1.777 (0.100)  1.766 (0.070)  1.029
+ 32  0.937 (0.065)  0.930 (0.078)  1.752 (0.072)  1.869
+ 36  0.930 (0.079)  0.927 (0.092)  1.731 (0.068)  1.862
+ 72  0.871 (0.037)  0.855 (0.038)  1.758 (0.071)  2.019
+108  0.856 (0.044)  0.865 (0.042)  1.747 (0.063)  2.040
+142  0.810 (0.051)  0.815 (0.041)  1.776 (0.064)  2.193
+
+and will-it-scale/lock2_threads:
+
+#thr  	 stock  	patch	     patch-CNA 	 speedup (patch-CNA/stock)
+  1  1.631 (0.002)  1.638 (0.002)  1.637 (0.002)  1.004
+  2  2.756 (0.076)  2.761 (0.063)  2.778 (0.081)  1.008
+  4  5.119 (0.411)  5.256 (0.331)  5.138 (0.388)  1.004
+  8  4.147 (0.215)  4.299 (0.264)  4.126 (0.322)  0.995
+ 16  4.214 (0.111)  4.234 (0.133)  4.133 (0.128)  0.981
+ 32  2.485 (0.095)  2.473 (0.117)  4.015 (0.115)  1.616
+ 36  2.423 (0.099)  2.451 (0.117)  3.963 (0.129)  1.636
+ 72  2.026 (0.102)  1.983 (0.108)  4.000 (0.122)  1.975
+108  2.102 (0.088)  2.145 (0.080)  3.927 (0.108)  1.868
+142  1.923 (0.128)  1.894 (0.100)  3.879 (0.081)  2.018
+
+We also evaluated the patch on a single-node machine (Intel i7-4770 with 
+4 hyperthreaded cores) with will-it-scale, and observed no meaningful
+performance impact, as expected. For instance, below are results for 
+will-it-scale/open1_threads:
+
+#thr  	 stock        patch-CNA   speedup (patch-CNA/stock)
+  1  0.861 (0.006)  0.867 (0.005)  1.007
+  2  1.481 (0.015)  1.511 (0.017)  1.020
+  4  2.671 (0.041)  2.697 (0.049)  1.010
+  6  2.889 (0.064)  2.910 (0.060)  1.007
+
+Furthermore, we evaluated the patch in the paravirt setup, booting the 
+kernel with virtme (qemu) and $(nproc) cores on the same Oracle X5-4 server
+as above. We run will-it-scale benchmarks, and once again observed 
+no meaningful performance impact. For instance, below are results for
+will-it-scale/open1_threads:
+
+#thr  	 stock 	      patch-CNA   speedup (patch-CNA/stock)
+  1  0.761 (0.009)  0.763 (0.009)  1.003
+  2  0.652 (0.043)  0.666 (0.033)  1.022
+  4  0.591 (0.036)  0.596 (0.033)  1.008
+  8  0.582 (0.019)  0.575 (0.020)  0.989
+ 16  0.680 (0.021)  0.685 (0.018)  1.007
+ 32  0.566 (0.031)  0.548 (0.049)  0.968
+ 36  0.549 (0.053)  0.531 (0.053)  0.966
+ 72  0.363 (0.012)  0.364 (0.008)  1.002
+108  0.359 (0.010)  0.361 (0.009)  1.004
+142  0.355 (0.011)  0.362 (0.011)  1.020
+
+Our evaluation shows that CNA also improves performance of user 
+applications that have hot pthread mutexes. Those mutexes are 
+blocking, and waiting threads park and unpark via the futex 
+mechanism in the kernel. Given that kernel futex chains, which
+are hashed by the mutex address, are each protected by a 
+chain-specific spin lock, the contention on a user-mode mutex 
+translates into contention on a kernel level spinlock. 
+
+Here are the results for the leveldb &#x2018;readrandom&#x2019; benchmark:
+
+#thr  	 stock        patch-CNA    speedup (patch-CNA/stock)
+  1  0.479 (0.036)  0.533 (0.010)   1.113
+  2  0.653 (0.022)  0.680 (0.027)   1.042
+  4  0.705 (0.016)  0.701 (0.019)   0.995
+  8  0.686 (0.021)  0.690 (0.024)   1.006
+ 16  0.708 (0.025)  0.719 (0.020)   1.016
+ 32  0.728 (0.023)  1.011 (0.117)   1.389
+ 36  0.720 (0.038)  1.073 (0.127)   1.491
+ 72  0.652 (0.018)  1.195 (0.017)   1.833
+108  0.624 (0.016)  1.178 (0.028)   1.888
+142  0.604 (0.015)  1.163 (0.024)   1.925
+
+Further comments are welcome and appreciated.
+
+Alex Kogan (5):
+  locking/qspinlock: Make arch_mcs_spin_unlock_contended more generic
+  locking/qspinlock: Refactor the qspinlock slow path
+  locking/qspinlock: Introduce CNA into the slow path of qspinlock
+  locking/qspinlock: Introduce starvation avoidance into CNA
+  locking/qspinlock: Introduce the shuffle reduction optimization into
+    CNA
+
+ arch/arm/include/asm/mcs_spinlock.h |   4 +-
+ arch/x86/Kconfig                    |  18 +++
+ arch/x86/include/asm/qspinlock.h    |   4 +
+ arch/x86/kernel/alternative.c       |  12 ++
+ kernel/locking/mcs_spinlock.h       |   8 +-
+ kernel/locking/qspinlock.c          |  81 +++++++++++---
+ kernel/locking/qspinlock_cna.h      | 218 ++++++++++++++++++++++++++++++++++++
+ 7 files changed, 326 insertions(+), 19 deletions(-)
+ create mode 100644 kernel/locking/qspinlock_cna.h
+
+-- 
+2.11.0 (Apple Git-81)
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="741322" href="msg741322.html">Re: [PATCH v3 0/5] Add NUMA-awareness to qspinlock</a></strong>
+<ul><li><em>From:</em> Nicholas Piggin</li></ul></li>
+<li><strong><a name="741215" href="msg741215.html">[PATCH v3 5/5] locking/qspinlock: Introduce the shuffle reduction optimization into CNA</a></strong>
+<ul><li><em>From:</em> Alex Kogan</li></ul></li>
+<li><strong><a name="741214" href="msg741214.html">[PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</a></strong>
+<ul><li><em>From:</em> Alex Kogan</li></ul></li>
+<li><strong><a name="741212" href="msg741212.html">[PATCH v3 1/5] locking/qspinlock: Make arch_mcs_spin_unlock_contended more generic</a></strong>
+<ul><li><em>From:</em> Alex Kogan</li></ul></li>
+<li><strong><a name="741211" href="msg741211.html">[PATCH v3 4/5] locking/qspinlock: Introduce starvation avoidance into CNA</a></strong>
+<ul><li><em>From:</em> Alex Kogan</li></ul></li>
+<li><strong><a name="741210" href="msg741210.html">[PATCH v3 2/5] locking/qspinlock: Refactor the qspinlock slow path</a></strong>
+<ul><li><em>From:</em> Alex Kogan</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741212.html">[PATCH v3 1/5] locking/qspinlock: Make arch_mcs_spin_unlock_contended more generic</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741214.html">[PATCH v3 3/5] locking/qspinlock: Introduce CNA into the slow path of qspinlock</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741192.html">[PATCH v3 00/13] Consolidate and improve NVIDIA Tegra CPUIDLE driver(s)</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741210.html">[PATCH v3 2/5] locking/qspinlock: Refactor the qspinlock slow path</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741213"><strong>Date</strong></a></li>
+<li><a href="threads.html#741213"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

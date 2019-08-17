@@ -1,0 +1,314 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] ASoC: max98383: fix i2c probe failure -->
+<!--X-From-R13: puhathb srat &#60;puhathb.sratNnzybtvp.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 23:03:30 &#45;0700 -->
+<!--X-Message-Id: 20190715095556.1614&#45;1&#45;chunguo.feng@amlogic.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH] ASoC: max98383: fix i2c probe failure &mdash; ALSA Devel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH] ASoC: max98383: fix i2c probe failure &mdash; ALSA Devel</title>
+<link rel="alternate" type="application/rss+xml" title="ALSA Devel" href="//feedproxy.google.com/AlsaDevel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] ASoC: max98383: fix i2c probe failure</h1>
+[<a href="msg93803.html">Date Prev</a>][<a href="msg93805.html">Date Next</a>][<a href="msg93797.html">Thread Prev</a>][<a href="msg93805.html">Thread Next</a>][<a href="maillist.html#93804">Date Index</a>][<a href="threads.html#93804">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: &lt;lgirdwood@xxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH] ASoC: max98383: fix i2c probe failure</li>
+<li><em>From</em>: chunguo feng &lt;chunguo.feng@xxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 17:55:56 +0800</li>
+<li><em>Cc</em>: alsa-devel@xxxxxxxxxxxxxxxx, RyanS.Lee@xxxxxxxxxxxxxxxxxxx,        grundler@xxxxxxxxxxxx, linux-kernel@xxxxxxxxxxxxxxx,        pierre-louis.bossart@xxxxxxxxxxxxxxx, tiwai@xxxxxxxx,        chunguo.feng@xxxxxxxxxxx, broonie@xxxxxxxxxx, bleung@xxxxxxxxxxxx</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: fengchunguo &lt;chunguo.feng@xxxxxxxxxxx&gt;
+
+Added reset_gpio configuration for i2c probe successfully.
+If not,i2c address can't be found rightly.
+
+Error information:
+max98373 3-0031: Failed to read: 0x21FF
+
+Fixed:
+[3.761299@3] max98373 3-0031: MAX98373 revisionID: 0x43
+[3.828911@3] asoc-aml-card auge_sound: max98373-aif1 &lt;-&gt; TDM-B mapping ok
+
+Signed-off-by: fengchunguo &lt;chunguo.feng@xxxxxxxxxxx&gt;
+---
+ sound/soc/codecs/max98373.c | 34 ++++++++++++++++++++++++++++++----
+ sound/soc/codecs/max98373.h |  1 +
+ 2 files changed, 31 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
+index 528695cd6a1c..9a1eb7222357 100644
+--- a/sound/soc/codecs/max98373.c
++++ b/sound/soc/codecs/max98373.c
+@@ -12,6 +12,7 @@
+ #include &lt;sound/pcm_params.h&gt;
+ #include &lt;sound/soc.h&gt;
+ #include &lt;linux/gpio.h&gt;
++#include &lt;linux/of.h&gt;
+ #include &lt;linux/of_gpio.h&gt;
+ #include &lt;sound/tlv.h&gt;
+ #include &quot;max98373.h&quot;
+@@ -895,6 +896,17 @@ static void max98373_slot_config(struct i2c_client *i2c,
+ 	else
+ 		max98373-&gt;i_slot = 1;
+ 
++	max98373-&gt;reset_gpio = of_get_named_gpio(dev-&gt;of_node,
++						&quot;maxim,reset-gpio&quot;, 0);
++	if (!gpio_is_valid(max98373-&gt;reset_gpio)) {
++		dev_err(dev, &quot;Looking up %s property in node %s failed %d\n&quot;,
++			&quot;maxim,reset-gpio&quot;, dev-&gt;of_node-&gt;full_name,
++			max98373-&gt;reset_gpio);
++	} else {
++		dev_dbg(dev, &quot;maxim,reset-gpio=%d&quot;,
++			max98373-&gt;reset_gpio);
++	}
++
+ 	if (!device_property_read_u32(dev, &quot;maxim,spkfb-slot-no&quot;, &amp;value))
+ 		max98373-&gt;spkfb_slot = value &amp; 0xF;
+ 	else
+@@ -923,7 +935,6 @@ static int max98373_i2c_probe(struct i2c_client *i2c,
+ 	else
+ 		max98373-&gt;interleave_mode = false;
+ 
+-
+ 	/* regmap initialization */
+ 	max98373-&gt;regmap
+ 		= devm_regmap_init_i2c(i2c, &amp;max98373_regmap);
+@@ -934,6 +945,24 @@ static int max98373_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
+ 
++	/* voltage/current slot &amp; gpio configuration */
++	max98373_slot_config(i2c, max98373);
++
++	/* Power on device */
++	if (gpio_is_valid(max98373-&gt;reset_gpio)) {
++		ret = gpio_request(max98373-&gt;reset_gpio, &quot;MAX98373_RESET&quot;);
++		if (ret) {
++			dev_err(&amp;i2c-&gt;dev, &quot;%s: Failed to request gpio %d\n&quot;,
++				__func__, max98373-&gt;reset_gpio);
++			gpio_free(max98373-&gt;reset_gpio);
++			return -EINVAL;
++		}
++		gpio_direction_output(max98373-&gt;reset_gpio, 0);
++		msleep(50);
++		gpio_direction_output(max98373-&gt;reset_gpio, 1);
++		msleep(20);
++	}
++
+ 	/* Check Revision ID */
+ 	ret = regmap_read(max98373-&gt;regmap,
+ 		MAX98373_R21FF_REV_ID, &amp;reg);
+@@ -944,9 +973,6 @@ static int max98373_i2c_probe(struct i2c_client *i2c,
+ 	}
+ 	dev_info(&amp;i2c-&gt;dev, &quot;MAX98373 revisionID: 0x%02X\n&quot;, reg);
+ 
+-	/* voltage/current slot configuration */
+-	max98373_slot_config(i2c, max98373);
+-
+ 	/* codec registeration */
+ 	ret = devm_snd_soc_register_component(&amp;i2c-&gt;dev, &amp;soc_codec_dev_max98373,
+ 		max98373_dai, ARRAY_SIZE(max98373_dai));
+diff --git a/sound/soc/codecs/max98373.h b/sound/soc/codecs/max98373.h
+index f6a37aa02f26..533d2053f608 100644
+--- a/sound/soc/codecs/max98373.h
++++ b/sound/soc/codecs/max98373.h
+@@ -203,6 +203,7 @@
+ 
+ struct max98373_priv {
+ 	struct regmap *regmap;
++	int reset_gpio;
+ 	unsigned int v_slot;
+ 	unsigned int i_slot;
+ 	unsigned int spkfb_slot;
+-- 
+2.18.0
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@xxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://mailman.alsa-project.org/mailman/listinfo/alsa-devel">https://mailman.alsa-project.org/mailman/listinfo/alsa-devel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg93803.html">Re:  [PATCH 8/8] docs: remove extra conf.py files</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg93805.html">[PATCH] ALSA: hda - Don't resume forcibly i915 HDMI/DP	codec</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg93797.html">[PATCH] ASoC: mediatek: mt8183: make headset codec	optional</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg93805.html">[PATCH] ALSA: hda - Don't resume forcibly i915 HDMI/DP	codec</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#93804"><strong>Date</strong></a></li>
+<li><a href="threads.html#93804"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/alsa-user/>[ALSA&nbsp;User]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/pulse-audio/>[Pulse&nbsp;Audio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=http://yosemitephotos.net/>[Photo&nbsp;Sharing]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/linux-sound/>[Linux&nbsp;Sound]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-media/>[Video&nbsp;4&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gimp/>[Gimp]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

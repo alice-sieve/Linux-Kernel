@@ -1,0 +1,539 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re:  [PATCH v1 11/31] conf: Format and parse NVMe type disk -->
+<!--X-From-R13: Brgre Yerzcn &#60;cxerzcnNerqung.pbz> -->
+<!--X-Date: Tue, 16 Jul 2019 06:00:48 &#45;0700 -->
+<!--X-Message-Id: 20190716130035.GT2061@angien.pipo.sk -->
+<!--X-Content-Type: multipart/mixed -->
+<!--X-Reference: cover.1562859733.git.mprivozn@redhat.com -->
+<!--X-Reference: ff5dbd208442af172c661aa470d828cb11878c50.1562859733.git.mprivozn@redhat.com -->
+<!--X-Derived: pgpZDnFzJm6Kz.pgp -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; Re:  [PATCH v1 11/31] conf: Format and parse NVMe type disk</title>
+<meta name="description" content="libvirt: Re:  [PATCH v1 11/31] conf: Format and parse NVMe type disk">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>Re:  [PATCH v1 11/31] conf: Format and parse NVMe type disk</h1>
+[<a href="msg187472.html">Date Prev</a>][<a href="msg187474.html">Date Next</a>][<a href="msg187536.html">Thread Prev</a>][<a href="msg187585.html">Thread Next</a>][<a href="maillist.html#187473">Date Index</a>][<a href="index.html#187473">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re:  [PATCH v1 11/31] conf: Format and parse NVMe type disk</li>
+<li><em>From</em>: Peter Krempa &lt;pkrempa@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 16 Jul 2019 15:00:35 +0200</li>
+<li><em>Cc</em>: libvir-list@xxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187171.html">ff5dbd208442af172c661aa470d828cb11878c50.1562859733.git.mprivozn@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187163.html">cover.1562859733.git.mprivozn@redhat.com</a>&gt;	&lt;<a href="msg187171.html">ff5dbd208442af172c661aa470d828cb11878c50.1562859733.git.mprivozn@redhat.com</a>&gt;</li>
+<li><em>User-agent</em>: Mutt/1.12.0 (2019-05-25)</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On Thu, Jul 11, 2019 at 17:53:58 +0200, Michal Privoznik wrote:
+&gt; To simplify implementation, some restrictions are added. For
+&gt; instance, an NVMe disk can't go to any bus but virtio and has to
+&gt; be type of 'disk' and can't have startupPolicy set.
+&gt; 
+&gt; Signed-off-by: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;
+&gt; ---
+&gt;  src/conf/domain_conf.c                 | 129 +++++++++++++++++++++++++
+&gt;  src/libvirt_private.syms               |   1 +
+&gt;  src/qemu/qemu_block.c                  |   1 +
+&gt;  src/qemu/qemu_command.c                |   1 +
+&gt;  src/qemu/qemu_driver.c                 |   4 +
+&gt;  src/qemu/qemu_migration.c              |   1 +
+&gt;  src/util/virstoragefile.c              |  59 +++++++++++
+&gt;  src/util/virstoragefile.h              |  15 +++
+&gt;  src/xenconfig/xen_xl.c                 |   1 +
+&gt;  tests/qemuxml2argvdata/disk-nvme.xml   |  12 ++-
+&gt;  tests/qemuxml2xmloutdata/disk-nvme.xml |   1 +
+&gt;  tests/qemuxml2xmltest.c                |   1 +
+&gt;  12 files changed, 224 insertions(+), 2 deletions(-)
+&gt;  create mode 120000 tests/qemuxml2xmloutdata/disk-nvme.xml
+&gt; 
+&gt; diff --git a/src/conf/domain_conf.c b/src/conf/domain_conf.c
+&gt; index 3323c9a5b1..73f5e1fa0f 100644
+&gt; --- a/src/conf/domain_conf.c
+&gt; +++ b/src/conf/domain_conf.c
+
+[...]
+
+&gt; @@ -5938,6 +5943,38 @@ virDomainDiskDefValidate(const virDomainDiskDef *disk)
+&gt;          return -1;
+&gt;      }
+&gt;  
+&gt; +    if (disk-&gt;src-&gt;type == VIR_STORAGE_TYPE_NVME) {
+&gt; +        /* These might not be valid for all hypervisors, but be
+&gt; +         * strict now and possibly refine in the future. */
+&gt; +        if (disk-&gt;device != VIR_DOMAIN_DISK_DEVICE_DISK) {
+&gt; +            virReportError(VIR_ERR_CONFIG_UNSUPPORTED,
+&gt; +                           _(&quot;Unsupported disk type '%s' for NVMe disk&quot;),
+&gt; +                           virDomainDiskDeviceTypeToString(disk-&gt;device));
+&gt; +            return -1;
+&gt; +        }
+&gt; +
+&gt; +        if (disk-&gt;bus != VIR_DOMAIN_DISK_BUS_VIRTIO) {
+&gt; +            virReportError(VIR_ERR_CONFIG_UNSUPPORTED,
+&gt; +                           _(&quot;Unsupported bus '%s' for NVMe disk&quot;),
+&gt; +                           virDomainDiskBusTypeToString(disk-&gt;bus));
+&gt; +            return -1;
+&gt; +        }
+&gt; +
+&gt; +        if (disk-&gt;startupPolicy != VIR_DOMAIN_STARTUP_POLICY_DEFAULT &amp;&amp;
+&gt; +            disk-&gt;startupPolicy != VIR_DOMAIN_STARTUP_POLICY_MANDATORY) {
+&gt; +            virReportError(VIR_ERR_CONFIG_UNSUPPORTED,
+&gt; +                           _(&quot;Unsupported startup policy '%s' for NVMe disk&quot;),
+&gt; +                           virDomainStartupPolicyTypeToString(disk-&gt;startupPolicy));
+&gt; +            return -1;
+&gt; +        }
+&gt; +
+&gt; +        if (disk-&gt;src-&gt;shared) {
+&gt; +            virReportError(VIR_ERR_CONFIG_UNSUPPORTED, &quot;%s&quot;,
+&gt; +                           _(&quot;Unsupported &lt;shareable/&gt; for NVMe disk&quot;));
+&gt; +            return -1;
+&gt; +        }
+&gt; +    }
+&gt; +
+&gt;      return 0;
+&gt;  }
+
+As noted in the other thread, this really should be extracted, placed in
+the validation callback rather than post parse and must iterate the
+backing chain if you want this to keep working with -blockdev.
+
+&gt;  
+&gt; @@ -9184,6 +9221,76 @@ virDomainDiskSourceNetworkParse(xmlNodePtr node,
+&gt;  }
+&gt;  
+&gt;  
+&gt; +static int
+&gt; +virDomainDiskSourceNVMeParse(xmlNodePtr node,
+&gt; +                             xmlXPathContextPtr ctxt,
+&gt; +                             virStorageSourcePtr src)
+&gt; +{
+&gt; +    VIR_AUTOPTR(virStorageSourceNVMeDef) nvme = NULL;
+&gt; +    VIR_AUTOFREE(char *) type = NULL;
+&gt; +    VIR_AUTOFREE(char *) namespace = NULL;
+&gt; +    VIR_AUTOFREE(char *) managed = NULL;
+&gt; +    xmlNodePtr address;
+&gt; +
+&gt; +    if (VIR_ALLOC(nvme) &lt; 0)
+&gt; +        return -1;
+&gt; +
+&gt; +    if (!(type = virXMLPropString(node, &quot;type&quot;))) {
+&gt; +        virReportError(VIR_ERR_XML_ERROR, &quot;%s&quot;,
+&gt; +                       _(&quot;missing 'type' attribute to disk source&quot;));
+&gt; +        return -1;
+&gt; +    }
+&gt; +
+&gt; +    if (STRNEQ(type, &quot;pci&quot;)) {
+&gt; +        virReportError(VIR_ERR_XML_ERROR,
+&gt; +                       _(&quot;unsupported source type '%s'&quot;),
+&gt; +                       type);
+&gt; +        return -1;
+&gt; +    }
+&gt; +
+&gt; +    if (!(namespace = virXMLPropString(node, &quot;namespace&quot;))) {
+&gt; +        virReportError(VIR_ERR_XML_ERROR, &quot;%s&quot;,
+&gt; +                       _(&quot;missing 'namespace' attribute to disk source&quot;));
+&gt; +        return -1;
+&gt; +    }
+&gt; +
+&gt; +    if (virStrToLong_ul(namespace, NULL, 10, &amp;nvme-&gt;namespace) &lt; 0) {
+&gt; +        virReportError(VIR_ERR_XML_ERROR,
+&gt; +                       _(&quot;malformed namespace '%s'&quot;),
+&gt; +                       namespace);
+&gt; +        return -1;
+&gt; +    }
+&gt; +
+&gt; +    /* NVMe namespaces start from 1 */
+&gt; +    if (nvme-&gt;namespace == 0) {
+&gt; +        virReportError(VIR_ERR_XML_ERROR, &quot;%s&quot;,
+&gt; +                       _(&quot;NVMe namespace can't be zero&quot;));
+&gt; +        return -1;
+&gt; +    }
+&gt; +
+&gt; +    if ((managed = virXMLPropString(node, &quot;managed&quot;))) {
+&gt; +        if ((nvme-&gt;managed = virTristateBoolTypeFromString(managed)) &lt;= 0) {
+&gt; +            virReportError(VIR_ERR_XML_ERROR,
+&gt; +                           _(&quot;malformed managed value '%s'&quot;),
+&gt; +                           managed);
+&gt; +            return -1;
+&gt; +        }
+&gt; +    }
+&gt; +
+&gt; +    if (!(address = virXPathNode(&quot;./address&quot;, ctxt))) {
+&gt; +        virReportError(VIR_ERR_XML_ERROR, &quot;%s&quot;,
+&gt; +                       _(&quot;NVMe disk source is missing address&quot;));
+&gt; +        return -1;
+&gt; +    }
+
+I'm displeased that this is yet another function adding validation in
+the parser. You don't make the status quo any worse though so this is
+not a request to change it.
+
+&gt; +
+&gt; +    if (virPCIDeviceAddressParseXML(address, &amp;nvme-&gt;pciAddr) &lt; 0)
+&gt; +        return -1;
+&gt; +
+&gt; +    VIR_STEAL_PTR(src-&gt;nvme, nvme);
+&gt; +    return 0;
+&gt; +}
+&gt; +
+&gt; +
+&gt;  static int
+&gt;  virDomainDiskSourcePRParse(xmlNodePtr node,
+&gt;                             xmlXPathContextPtr ctxt,
+
+[...]
+
+&gt; diff --git a/src/qemu/qemu_migration.c b/src/qemu/qemu_migration.c
+&gt; index 2436f5051b..87adccab3d 100644
+&gt; --- a/src/qemu/qemu_migration.c
+&gt; +++ b/src/qemu/qemu_migration.c
+
+Missing change to 'qemuMigrationSrcIsSafe' to reject VMs containing NVMe
+disks not having shared source.
+
+Plus that function should probably check the full backing chain rather
+than the top element only.
+
+&gt; diff --git a/src/util/virstoragefile.c b/src/util/virstoragefile.c
+&gt; index 269d0050fd..18aa33fe05 100644
+&gt; --- a/src/util/virstoragefile.c
+&gt; +++ b/src/util/virstoragefile.c
+
+[...]
+
+&gt; @@ -2114,6 +2115,48 @@ virStoragePRDefCopy(virStoragePRDefPtr src)
+&gt;  }
+&gt;  
+&gt;  
+&gt; +static virStorageSourceNVMeDefPtr
+&gt; +virStorageSourceNVMeDefCopy(const virStorageSourceNVMeDef *src)
+&gt; +{
+&gt; +    VIR_AUTOPTR(virStorageSourceNVMeDef) ret = NULL;
+&gt; +
+&gt; +    if (VIR_ALLOC(ret) &lt; 0)
+&gt; +        return NULL;
+&gt; +
+&gt; +    *ret = *src;
+
+You opted to use memcpy for the pci address few patches ago.
+
+&gt; +    VIR_RETURN_PTR(ret);
+&gt; +}
+
+[...]
+
+&gt; @@ -2463,6 +2514,7 @@ virStorageSourceIsLocalStorage(const virStorageSource *src)
+&gt;  
+&gt;      case VIR_STORAGE_TYPE_NETWORK:
+&gt;      case VIR_STORAGE_TYPE_VOLUME:
+&gt; +    case VIR_STORAGE_TYPE_NVME:
+
+Welp. While I agree that virStorageSourceIsLocalStorage should return
+false you should really add a documentation comment explaining why NVMe
+is different. (e.g. regular code accessing src-&gt;path would not work).
+
+&gt;      case VIR_STORAGE_TYPE_LAST:
+&gt;      case VIR_STORAGE_TYPE_NONE:
+&gt;          return false;
+&gt; @@ -2493,6 +2545,10 @@ virStorageSourceIsEmpty(virStorageSourcePtr src)
+&gt;          src-&gt;protocol == VIR_STORAGE_NET_PROTOCOL_NONE)
+&gt;          return true;
+&gt;  
+&gt; +    if (src-&gt;type == VIR_STORAGE_TYPE_NVME &amp;&amp;
+&gt; +        !src-&gt;nvme)
+&gt; +        return true;
+
+Formating a disk type='nvme' without any data would not be parseable in
+our parser, so this will never happen.
+
+&gt; +
+&gt;      return false;
+&gt;  }
+&gt;
+
+[...]
+
+&gt; diff --git a/src/util/virstoragefile.h b/src/util/virstoragefile.h
+&gt; index 38ba901858..a1294ea608 100644
+&gt; --- a/src/util/virstoragefile.h
+&gt; +++ b/src/util/virstoragefile.h
+
+[...]
+
+&gt; @@ -231,6 +233,14 @@ struct _virStorageSourceInitiatorDef {
+&gt;      char *iqn; /* Initiator IQN */
+&gt;  };
+&gt;  
+
+Add a comment noting that the copy function needs to be fixed if this is
+ever being updated
+
+&gt; +typedef struct _virStorageSourceNVMeDef virStorageSourceNVMeDef;
+&gt; +typedef virStorageSourceNVMeDef *virStorageSourceNVMeDefPtr;
+&gt; +struct _virStorageSourceNVMeDef {
+&gt; +    unsigned long namespace;
+
+'long' is either 32 or 64 bit depending on the architecture, please use 
+unsigned int or unsigned long long.
+
+&gt; +    int managed; /* enum virTristateBool */
+&gt; +    virPCIDeviceAddress pciAddr;
+&gt; +};
+&gt; +
+&gt;  typedef struct _virStorageDriverData virStorageDriverData;
+&gt;  typedef virStorageDriverData *virStorageDriverDataPtr;
+&gt;  
+
+[...]
+
+&gt; @@ -416,6 +428,9 @@ bool virStoragePRDefIsManaged(virStoragePRDefPtr prd);
+&gt;  bool
+&gt;  virStorageSourceChainHasManagedPR(virStorageSourcePtr src);
+&gt;  
+&gt; +void virStorageSourceNVMeDefFree(virStorageSourceNVMeDefPtr def);
+&gt; +VIR_DEFINE_AUTOPTR_FUNC(virStorageSourceNVMeDef, virStorageSourceNVMeDefFree);
+
+Do these need to be exposed?
+
+&gt; +
+&gt;  virSecurityDeviceLabelDefPtr
+&gt;  virStorageSourceGetSecurityLabelDef(virStorageSourcePtr src,
+&gt;                                      const char *model);
+
+[...]
+
+&gt; diff --git a/tests/qemuxml2argvdata/disk-nvme.xml b/tests/qemuxml2argvdata/disk-nvme.xml
+&gt; index 0b3dbad4eb..fe956d5ab6 100644
+&gt; --- a/tests/qemuxml2argvdata/disk-nvme.xml
+&gt; +++ b/tests/qemuxml2argvdata/disk-nvme.xml
+&gt; @@ -20,6 +20,7 @@
+&gt;          &lt;address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/&gt;
+&gt;        &lt;/source&gt;
+&gt;        &lt;target dev='vda' bus='virtio'/&gt;
+&gt; +      &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/&gt;
+&gt;      &lt;/disk&gt;
+&gt;      &lt;disk type='nvme' device='disk'&gt;
+&gt;        &lt;driver name='qemu' type='raw'/&gt;
+&gt; @@ -27,6 +28,7 @@
+&gt;          &lt;address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/&gt;
+&gt;        &lt;/source&gt;
+&gt;        &lt;target dev='vdb' bus='virtio'/&gt;
+&gt; +      &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/&gt;
+&gt;      &lt;/disk&gt;
+&gt;      &lt;disk type='nvme' device='disk'&gt;
+&gt;        &lt;driver name='qemu' type='raw'/&gt;
+&gt; @@ -34,6 +36,7 @@
+&gt;          &lt;address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/&gt;
+&gt;        &lt;/source&gt;
+&gt;        &lt;target dev='vdc' bus='virtio'/&gt;
+&gt; +      &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/&gt;
+&gt;      &lt;/disk&gt;
+&gt;      &lt;disk type='nvme' device='disk'&gt;
+&gt;        &lt;driver name='qemu' type='raw'/&gt;
+&gt; @@ -44,10 +47,15 @@
+&gt;          &lt;/encryption&gt;
+&gt;        &lt;/source&gt;
+&gt;        &lt;target dev='vdd' bus='virtio'/&gt;
+&gt; +      &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/&gt;
+&gt;      &lt;/disk&gt;
+&gt; -    &lt;controller type='usb' index='0'/&gt;
+&gt; +    &lt;controller type='usb' index='0'&gt;
+&gt; +      &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x2'/&gt;
+&gt; +    &lt;/controller&gt;
+&gt;      &lt;controller type='pci' index='0' model='pci-root'/&gt;
+&gt; -    &lt;controller type='scsi' index='0' model='virtio-scsi'/&gt;
+&gt; +    &lt;controller type='scsi' index='0' model='virtio-scsi'&gt;
+&gt; +      &lt;address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/&gt;
+&gt; +    &lt;/controller&gt;
+&gt;      &lt;input type='mouse' bus='ps2'/&gt;
+&gt;      &lt;input type='keyboard' bus='ps2'/&gt;
+&gt;      &lt;memballoon model='none'/&gt;
+
+All of these belong to the previous patch adding the test file in the
+first place.
+</pre><p><strong>Attachment:
+<a href="attachments/pgpZDnFzJm6Kz.pgp" ><tt>signature.asc</tt></a></strong><br>
+<em>Description:</em> PGP signature</p>
+<pre>--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a></pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187472.html">Re:  [PATCH v1 11/31] conf: Format and parse NVMe type disk</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187474.html">Re:  [PATCH 09/29] remote: conditionalize IP socket config in augeas definitions</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187536.html">Re:  [PATCH v1 11/31] conf: Format and parse NVMe type disk</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187585.html">Re:  [PATCH v1 11/31] conf: Format and parse NVMe type disk</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187473"><strong>Date</strong></a></li>
+<li><a href="index.html#187473"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

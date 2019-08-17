@@ -1,0 +1,667 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH v4 04/23] LSM: Create and manage the lsmblob data structure. -->
+<!--X-From-R13: Xbua Xbunafra &#60;wbua.wbunafraNpnabavpny.pbz> -->
+<!--X-Date: Wed, 26 Jun 2019 16:39:35 &#45;0700 -->
+<!--X-Message-Id: 19468cf8&#45;8702&#45;b391&#45;fae5&#45;197ddbb6da4d@canonical.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190626192234.11725&#45;1&#45;casey@schaufler&#45;ca.com -->
+<!--X-Reference: 20190626192234.11725&#45;5&#45;casey@schaufler&#45;ca.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, Re: [PATCH v4 04/23] LSM: Create and manage the lsmblob data structure.">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- Re: [PATCH v4 04/23] LSM: Create and manage the lsmblob data structure.</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re: [PATCH v4 04/23] LSM: Create and manage the lsmblob data structure.</h1>
+[<a href="msg29421.html">Date Prev</a>][<a href="msg29423.html">Date Next</a>][<a href="msg29372.html">Thread Prev</a>][<a href="msg29476.html">Thread Next</a>][<a href="maillist.html#29422">Date Index</a>][<a href="index.html#29422">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH v4 04/23] LSM: Create and manage the lsmblob data structure.</li>
+<li><em>From</em>: John Johansen &lt;john.johansen@xxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 26 Jun 2019 16:39:20 -0700</li>
+<li><em>Cc</em>: keescook@xxxxxxxxxxxx, penguin-kernel@xxxxxxxxxxxxxxxxxxx,        paul@xxxxxxxxxxxxxx, sds@xxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29372.html">20190626192234.11725-5-casey@schaufler-ca.com</a>&gt;</li>
+<li><em>Openpgp</em>: preference=signencrypt</li>
+<li><em>Organization</em>: Canonical</li>
+<li><em>References</em>: &lt;<a href="msg29370.html">20190626192234.11725-1-casey@schaufler-ca.com</a>&gt; &lt;<a href="msg29372.html">20190626192234.11725-5-casey@schaufler-ca.com</a>&gt;</li>
+<li><em>User-agent</em>: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Thunderbird/60.7.1</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On 6/26/19 12:22 PM, Casey Schaufler wrote:
+&gt; When more than one security module is exporting data to
+&gt; audit and networking sub-systems a single 32 bit integer
+&gt; is no longer sufficient to represent the data. Add a
+&gt; structure to be used instead.
+&gt; 
+&gt; The lsmblob structure is currently an array of
+&gt; u32 &quot;secids&quot;. There is an entry for each of the
+&gt; security modules built into the system that would
+&gt; use secids if active. The system assigns the module
+&gt; a &quot;slot&quot; when it registers hooks. If modules are
+&gt; compiled in but not registered there will be unused
+&gt; slots.
+&gt; 
+&gt; A new lsm_id structure, which contains the name
+&gt; of the LSM and its slot number, is created. There
+&gt; is an instance for each LSM, which assigns the name
+&gt; and passes it to the infrastructure to set the slot.
+&gt; 
+&gt; Signed-off-by: Casey Schaufler &lt;casey@xxxxxxxxxxxxxxxx&gt;
+&gt; ---
+&gt;  include/linux/lsm_hooks.h  | 12 +++++--
+&gt;  include/linux/security.h   | 66 ++++++++++++++++++++++++++++++++++++++
+&gt;  security/apparmor/lsm.c    |  4 ++-
+&gt;  security/commoncap.c       |  7 +++-
+&gt;  security/loadpin/loadpin.c |  8 ++++-
+&gt;  security/safesetid/lsm.c   |  8 ++++-
+&gt;  security/security.c        | 31 ++++++++++++++----
+&gt;  security/selinux/hooks.c   |  5 ++-
+&gt;  security/smack/smack_lsm.c |  4 ++-
+&gt;  security/tomoyo/tomoyo.c   |  8 ++++-
+&gt;  security/yama/yama_lsm.c   |  4 ++-
+&gt;  11 files changed, 140 insertions(+), 17 deletions(-)
+&gt; 
+&gt; diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+&gt; index 3fe39abccc8f..fe1fb7a69ee5 100644
+&gt; --- a/include/linux/lsm_hooks.h
+&gt; +++ b/include/linux/lsm_hooks.h
+&gt; @@ -2029,6 +2029,14 @@ struct security_hook_heads {
+&gt;  #endif /* CONFIG_BPF_SYSCALL */
+&gt;  } __randomize_layout;
+&gt;  
+&gt; +/*
+&gt; + * Information that identifies a security module.
+&gt; + */
+&gt; +struct lsm_id {
+&gt; +	const char	*lsm;	/* Name of the LSM */
+&gt; +	int		slot;	/* Slot in lsmblob if one is allocated */
+&gt; +};
+&gt; +
+&gt;  /*
+&gt;   * Security module hook list structure.
+&gt;   * For use with generic list macros for common operations.
+&gt; @@ -2037,7 +2045,7 @@ struct security_hook_list {
+&gt;  	struct hlist_node		list;
+&gt;  	struct hlist_head		*head;
+&gt;  	union security_list_options	hook;
+&gt; -	char				*lsm;
+&gt; +	struct lsm_id			*lsmid;
+&gt;  } __randomize_layout;
+&gt;  
+&gt;  /*
+&gt; @@ -2068,7 +2076,7 @@ extern struct security_hook_heads security_hook_heads;
+&gt;  extern char *lsm_names;
+&gt;  
+&gt;  extern void security_add_hooks(struct security_hook_list *hooks, int count,
+&gt; -				char *lsm);
+&gt; +			       struct lsm_id *lsmid);
+&gt;  
+&gt;  #define LSM_FLAG_LEGACY_MAJOR	BIT(0)
+&gt;  #define LSM_FLAG_EXCLUSIVE	BIT(1)
+&gt; diff --git a/include/linux/security.h b/include/linux/security.h
+&gt; index 49f2685324b0..5bb8b9a6fa84 100644
+&gt; --- a/include/linux/security.h
+&gt; +++ b/include/linux/security.h
+&gt; @@ -76,6 +76,72 @@ enum lsm_event {
+&gt;  	LSM_POLICY_CHANGE,
+&gt;  };
+&gt;  
+&gt; +/*
+&gt; + * Data exported by the security modules
+&gt; + *
+&gt; + * Any LSM that provides secid or secctx based hooks must be included.
+&gt; + */
+&gt; +#define LSMBLOB_ENTRIES ( \
+&gt; +	(IS_ENABLED(CONFIG_SECURITY_SELINUX) ? 1 : 0) + \
+&gt; +	(IS_ENABLED(CONFIG_SECURITY_SMACK) ? 1 : 0) + \
+&gt; +	(IS_ENABLED(CONFIG_SECURITY_APPARMOR) ? 1 : 0))
+&gt; +
+&gt; +struct lsmblob {
+&gt; +	u32     secid[LSMBLOB_ENTRIES];
+&gt; +};
+&gt; +
+&gt; +#define LSMBLOB_INVALID		-1	/* Not a valid LSM slot number */
+&gt; +#define LSMBLOB_NEEDED		-2	/* Slot requested on initialization */
+&gt; +#define LSMBLOB_NOT_NEEDED	-3	/* Slot not requested */
+&gt; +
+&gt; +/**
+&gt; + * lsmblob_init - initialize an lsmblob structure.
+&gt; + * @blob: Pointer to the data to initialize
+&gt; + * @secid: The initial secid value
+&gt; + *
+&gt; + * Set all secid for all modules to the specified value.
+&gt; + */
+&gt; +static inline void lsmblob_init(struct lsmblob *blob, u32 secid)
+&gt; +{
+&gt; +	int i;
+&gt; +
+&gt; +	for (i = 0; i &lt; LSMBLOB_ENTRIES; i++)
+&gt; +		blob-&gt;secid[i] = secid;
+&gt; +}
+&gt; +
+&gt; +/**
+&gt; + * lsmblob_is_set - report if there is an value in the lsmblob
+&gt; + * @blob: Pointer to the exported LSM data
+&gt; + *
+&gt; + * Returns true if there is a secid set, false otherwise
+&gt; + */
+&gt; +static inline bool lsmblob_is_set(struct lsmblob *blob)
+&gt; +{
+&gt; +	int i;
+&gt; +
+&gt; +	for (i = 0; i &lt; LSMBLOB_ENTRIES; i++)
+&gt; +		if (blob-&gt;secid[i] != 0)
+&gt; +			return true;
+&gt; +	return false;
+&gt; +}
+&gt; +
+&gt; +/**
+&gt; + * lsmblob_equal - report if the two lsmblob's are equal
+&gt; + * @bloba: Pointer to one LSM data
+&gt; + * @blobb: Pointer to the other LSM data
+&gt; + *
+&gt; + * Returns true if all entries in the two are equal, false otherwise
+&gt; + */
+&gt; +static inline bool lsmblob_equal(struct lsmblob *bloba, struct lsmblob *blobb)
+&gt; +{
+&gt; +	int i;
+&gt; +
+&gt; +	for (i = 0; i &lt; LSMBLOB_ENTRIES; i++)
+&gt; +		if (bloba-&gt;secid[i] != blobb-&gt;secid[i])
+&gt; +			return false;
+&gt; +	return true;
+&gt; +}
+&gt; +
+&gt;  /* These functions are in security/commoncap.c */
+&gt;  extern int cap_capable(const struct cred *cred, struct user_namespace *ns,
+&gt;  		       int cap, unsigned int opts);
+&gt; diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
+&gt; index 2716e7731279..6d2eefc9b7c1 100644
+&gt; --- a/security/apparmor/lsm.c
+&gt; +++ b/security/apparmor/lsm.c
+&gt; @@ -1138,6 +1138,8 @@ struct lsm_blob_sizes apparmor_blob_sizes __lsm_ro_after_init = {
+&gt;  	.lbs_sock = sizeof(struct aa_sk_ctx),
+&gt;  };
+&gt;  
+&gt; +static struct lsm_id apparmor_lsmid = { .lsm=&quot;apparmor&quot;, .slot=LSMBLOB_NEEDED };
+
+__lsm_ro_after_init
+
+
+&gt; +
+&gt;  static struct security_hook_list apparmor_hooks[] __lsm_ro_after_init = {
+&gt;  	LSM_HOOK_INIT(ptrace_access_check, apparmor_ptrace_access_check),
+&gt;  	LSM_HOOK_INIT(ptrace_traceme, apparmor_ptrace_traceme),
+&gt; @@ -1679,7 +1681,7 @@ static int __init apparmor_init(void)
+&gt;  		goto buffers_out;
+&gt;  	}
+&gt;  	security_add_hooks(apparmor_hooks, ARRAY_SIZE(apparmor_hooks),
+&gt; -				&quot;apparmor&quot;);
+&gt; +				&amp;apparmor_lsmid);
+&gt;  
+&gt;  	/* Report that AppArmor successfully initialized */
+&gt;  	apparmor_initialized = 1;
+&gt; diff --git a/security/commoncap.c b/security/commoncap.c
+&gt; index afd9679ca866..305a6088c81e 100644
+&gt; --- a/security/commoncap.c
+&gt; +++ b/security/commoncap.c
+&gt; @@ -1344,6 +1344,11 @@ int cap_mmap_file(struct file *file, unsigned long reqprot,
+&gt;  
+&gt;  #ifdef CONFIG_SECURITY
+&gt;  
+&gt; +static struct lsm_id capability_lsmid = {
+
+__lsm_ro_after_init
+
+&gt; +	.lsm=&quot;capability&quot;,
+&gt; +	.slot=LSMBLOB_NOT_NEEDED
+&gt; +};
+&gt; +
+&gt;  static struct security_hook_list capability_hooks[] __lsm_ro_after_init = {
+&gt;  	LSM_HOOK_INIT(capable, cap_capable),
+&gt;  	LSM_HOOK_INIT(settime, cap_settime),
+&gt; @@ -1368,7 +1373,7 @@ static struct security_hook_list capability_hooks[] __lsm_ro_after_init = {
+&gt;  static int __init capability_init(void)
+&gt;  {
+&gt;  	security_add_hooks(capability_hooks, ARRAY_SIZE(capability_hooks),
+&gt; -				&quot;capability&quot;);
+&gt; +			   &amp;capability_lsmid);
+&gt;  	return 0;
+&gt;  }
+&gt;  
+&gt; diff --git a/security/loadpin/loadpin.c b/security/loadpin/loadpin.c
+&gt; index 055fb0a64169..13db59d5327e 100644
+&gt; --- a/security/loadpin/loadpin.c
+&gt; +++ b/security/loadpin/loadpin.c
+&gt; @@ -181,6 +181,11 @@ static int loadpin_load_data(enum kernel_load_data_id id)
+&gt;  	return loadpin_read_file(NULL, (enum kernel_read_file_id) id);
+&gt;  }
+&gt;  
+&gt; +static struct lsm_id loadpin_lsmid = {
+
+__lsm_ro_after_init
+
+
+&gt; +	.lsm=&quot;loadpin&quot;,
+&gt; +	.slot=LSMBLOB_NOT_NEEDED
+&gt; +};
+&gt; +
+&gt;  static struct security_hook_list loadpin_hooks[] __lsm_ro_after_init = {
+&gt;  	LSM_HOOK_INIT(sb_free_security, loadpin_sb_free_security),
+&gt;  	LSM_HOOK_INIT(kernel_read_file, loadpin_read_file),
+&gt; @@ -191,7 +196,8 @@ static int __init loadpin_init(void)
+&gt;  {
+&gt;  	pr_info(&quot;ready to pin (currently %senforcing)\n&quot;,
+&gt;  		enforce ? &quot;&quot; : &quot;not &quot;);
+&gt; -	security_add_hooks(loadpin_hooks, ARRAY_SIZE(loadpin_hooks), &quot;loadpin&quot;);
+&gt; +	security_add_hooks(loadpin_hooks, ARRAY_SIZE(loadpin_hooks),
+&gt; +			   &amp;loadpin_lsmid);
+&gt;  	return 0;
+&gt;  }
+&gt;  
+&gt; diff --git a/security/safesetid/lsm.c b/security/safesetid/lsm.c
+&gt; index cecd38e2ac80..ca34badde4cf 100644
+&gt; --- a/security/safesetid/lsm.c
+&gt; +++ b/security/safesetid/lsm.c
+&gt; @@ -255,6 +255,11 @@ void flush_safesetid_whitelist_entries(void)
+&gt;  	}
+&gt;  }
+&gt;  
+&gt; +static struct lsm_id safesetid_lsmid = {
+
+__lsm_ro_after_init
+
+
+&gt; +	.lsm=&quot;safesetid&quot;,
+&gt; +	.slot=LSMBLOB_NOT_NEEDED
+&gt; +};
+&gt; +
+&gt;  static struct security_hook_list safesetid_security_hooks[] = {
+&gt;  	LSM_HOOK_INIT(task_fix_setuid, safesetid_task_fix_setuid),
+&gt;  	LSM_HOOK_INIT(capable, safesetid_security_capable)
+&gt; @@ -263,7 +268,8 @@ static struct security_hook_list safesetid_security_hooks[] = {
+&gt;  static int __init safesetid_security_init(void)
+&gt;  {
+&gt;  	security_add_hooks(safesetid_security_hooks,
+&gt; -			   ARRAY_SIZE(safesetid_security_hooks), &quot;safesetid&quot;);
+&gt; +			   ARRAY_SIZE(safesetid_security_hooks),
+&gt; +			   &amp;safesetid_lsmid);
+&gt;  
+&gt;  	/* Report that SafeSetID successfully initialized */
+&gt;  	safesetid_initialized = 1;
+&gt; diff --git a/security/security.c b/security/security.c
+&gt; index 7cfedb90210a..27e2db3d6b04 100644
+&gt; --- a/security/security.c
+&gt; +++ b/security/security.c
+&gt; @@ -317,6 +317,7 @@ static void __init ordered_lsm_init(void)
+&gt;  	init_debug(&quot;sock blob size       = %d\n&quot;, blob_sizes.lbs_sock);
+&gt;  	init_debug(&quot;superblock blob size = %d\n&quot;, blob_sizes.lbs_superblock);
+&gt;  	init_debug(&quot;task blob size       = %d\n&quot;, blob_sizes.lbs_task);
+&gt; +	init_debug(&quot;lsmblob size         = %lu\n&quot;, sizeof(struct lsmblob));
+&gt;  
+&gt;  	/*
+&gt;  	 * Create any kmem_caches needed for blobs
+&gt; @@ -399,7 +400,7 @@ static bool match_last_lsm(const char *list, const char *lsm)
+&gt;  	return !strcmp(last, lsm);
+&gt;  }
+&gt;  
+&gt; -static int lsm_append(char *new, char **result)
+&gt; +static int lsm_append(const char *new, char **result)
+&gt;  {
+&gt;  	char *cp;
+&gt;  
+&gt; @@ -420,24 +421,40 @@ static int lsm_append(char *new, char **result)
+&gt;  	return 0;
+&gt;  }
+&gt;  
+&gt; +/*
+&gt; + * Current index to use while initializing the lsmblob secid list.
+&gt; + */
+&gt; +static int lsm_slot __initdata;
+&gt; +
+&gt;  /**
+&gt;   * security_add_hooks - Add a modules hooks to the hook lists.
+&gt;   * @hooks: the hooks to add
+&gt;   * @count: the number of hooks to add
+&gt; - * @lsm: the name of the security module
+&gt; + * @lsmid: the identification information for the security module
+&gt;   *
+&gt;   * Each LSM has to register its hooks with the infrastructure.
+&gt; + * If the LSM is using hooks that export secids allocate a slot
+&gt; + * for it in the lsmblob.
+&gt;   */
+&gt;  void __init security_add_hooks(struct security_hook_list *hooks, int count,
+&gt; -				char *lsm)
+&gt; +			       struct lsm_id *lsmid)
+&gt;  {
+&gt;  	int i;
+&gt;  
+&gt; +	if (lsmid-&gt;slot == LSMBLOB_NEEDED) {
+&gt; +		if (lsm_slot &gt;= LSMBLOB_ENTRIES)
+&gt; +			panic(&quot;%s Too many LSMs registered.\n&quot;, __func__);
+&gt; +		lsmid-&gt;slot = lsm_slot++;
+&gt; +		init_debug(&quot;%s assigned lsmblob slot %d\n&quot;, lsmid-&gt;lsm,
+&gt; +			   lsmid-&gt;slot);
+&gt; +	}
+
+It might be nice (but not required) to add back in the list of hooks that need
+secids as a cross check of LSMLOB_NOT_NEEDED. It would allow us to catch
+bad registrations upfront instead of crashing the kernel when the hook gets
+used.
+
+
+&gt; +
+&gt;  	for (i = 0; i &lt; count; i++) {
+&gt; -		hooks[i].lsm = lsm;
+&gt; +		hooks[i].lsmid = lsmid;
+&gt;  		hlist_add_tail_rcu(&amp;hooks[i].list, hooks[i].head);
+&gt;  	}
+&gt; -	if (lsm_append(lsm, &amp;lsm_names) &lt; 0)
+&gt; +
+&gt; +	if (lsm_append(lsmid-&gt;lsm, &amp;lsm_names) &lt; 0)
+&gt;  		panic(&quot;%s - Cannot get early memory.\n&quot;, __func__);
+&gt;  }
+&gt;  
+&gt; @@ -1917,7 +1934,7 @@ int security_getprocattr(struct task_struct *p, const char *lsm, char *name,
+&gt;  	struct security_hook_list *hp;
+&gt;  
+&gt;  	hlist_for_each_entry(hp, &amp;security_hook_heads.getprocattr, list) {
+&gt; -		if (lsm != NULL &amp;&amp; strcmp(lsm, hp-&gt;lsm))
+&gt; +		if (lsm != NULL &amp;&amp; strcmp(lsm, hp-&gt;lsmid-&gt;lsm))
+&gt;  			continue;
+&gt;  		return hp-&gt;hook.getprocattr(p, name, value);
+&gt;  	}
+&gt; @@ -1930,7 +1947,7 @@ int security_setprocattr(const char *lsm, const char *name, void *value,
+&gt;  	struct security_hook_list *hp;
+&gt;  
+&gt;  	hlist_for_each_entry(hp, &amp;security_hook_heads.setprocattr, list) {
+&gt; -		if (lsm != NULL &amp;&amp; strcmp(lsm, hp-&gt;lsm))
+&gt; +		if (lsm != NULL &amp;&amp; strcmp(lsm, hp-&gt;lsmid-&gt;lsm))
+&gt;  			continue;
+&gt;  		return hp-&gt;hook.setprocattr(name, value, size);
+&gt;  	}
+&gt; diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+&gt; index c83ec2652eda..8c93b07bb353 100644
+&gt; --- a/security/selinux/hooks.c
+&gt; +++ b/security/selinux/hooks.c
+&gt; @@ -6622,6 +6622,8 @@ struct lsm_blob_sizes selinux_blob_sizes __lsm_ro_after_init = {
+&gt;  	.lbs_superblock = sizeof(struct superblock_security_struct),
+&gt;  };
+&gt;  
+&gt; +static struct lsm_id selinux_lsmid = { .lsm=&quot;selinux&quot;, .slot=LSMBLOB_NEEDED };
+&gt; +
+&gt;  static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
+&gt;  	LSM_HOOK_INIT(binder_set_context_mgr, selinux_binder_set_context_mgr),
+&gt;  	LSM_HOOK_INIT(binder_transaction, selinux_binder_transaction),
+&gt; @@ -6877,7 +6879,8 @@ static __init int selinux_init(void)
+&gt;  
+&gt;  	hashtab_cache_init();
+&gt;  
+&gt; -	security_add_hooks(selinux_hooks, ARRAY_SIZE(selinux_hooks), &quot;selinux&quot;);
+&gt; +	security_add_hooks(selinux_hooks, ARRAY_SIZE(selinux_hooks),
+&gt; +			   &amp;selinux_lsmid);
+&gt;  
+&gt;  	if (avc_add_callback(selinux_netcache_avc_callback, AVC_CALLBACK_RESET))
+&gt;  		panic(&quot;SELinux: Unable to register AVC netcache callback\n&quot;);
+&gt; diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+&gt; index e9560b078efe..ad646b865295 100644
+&gt; --- a/security/smack/smack_lsm.c
+&gt; +++ b/security/smack/smack_lsm.c
+&gt; @@ -4553,6 +4553,8 @@ struct lsm_blob_sizes smack_blob_sizes __lsm_ro_after_init = {
+&gt;  	.lbs_superblock = sizeof(struct superblock_smack),
+&gt;  };
+&gt;  
+&gt; +static struct lsm_id smack_lsmid = { .lsm=&quot;smack&quot;, .slot=LSMBLOB_NEEDED };
+
+__lsm_ro_after_init
+
+&gt; +
+&gt;  static struct security_hook_list smack_hooks[] __lsm_ro_after_init = {
+&gt;  	LSM_HOOK_INIT(ptrace_access_check, smack_ptrace_access_check),
+&gt;  	LSM_HOOK_INIT(ptrace_traceme, smack_ptrace_traceme),
+&gt; @@ -4743,7 +4745,7 @@ static __init int smack_init(void)
+&gt;  	/*
+&gt;  	 * Register with LSM
+&gt;  	 */
+&gt; -	security_add_hooks(smack_hooks, ARRAY_SIZE(smack_hooks), &quot;smack&quot;);
+&gt; +	security_add_hooks(smack_hooks, ARRAY_SIZE(smack_hooks), &amp;smack_lsmid);
+&gt;  	smack_enabled = 1;
+&gt;  
+&gt;  	pr_info(&quot;Smack:  Initializing.\n&quot;);
+&gt; diff --git a/security/tomoyo/tomoyo.c b/security/tomoyo/tomoyo.c
+&gt; index 716c92ec941a..57e6b845ea51 100644
+&gt; --- a/security/tomoyo/tomoyo.c
+&gt; +++ b/security/tomoyo/tomoyo.c
+&gt; @@ -529,6 +529,11 @@ static void tomoyo_task_free(struct task_struct *task)
+&gt;  	}
+&gt;  }
+&gt;  
+&gt; +static struct lsm_id tomoyo_lsmid = {
+
+__lsm_ro_after_init
+
+&gt; +	.lsm=&quot;tomoyo&quot;,
+&gt; +	.slot=LSMBLOB_NOT_NEEDED
+&gt; +};
+&gt; +
+&gt;  /*
+&gt;   * tomoyo_security_ops is a &quot;struct security_operations&quot; which is used for
+&gt;   * registering TOMOYO.
+&gt; @@ -581,7 +586,8 @@ static int __init tomoyo_init(void)
+&gt;  	struct tomoyo_task *s = tomoyo_task(current);
+&gt;  
+&gt;  	/* register ourselves with the security framework */
+&gt; -	security_add_hooks(tomoyo_hooks, ARRAY_SIZE(tomoyo_hooks), &quot;tomoyo&quot;);
+&gt; +	security_add_hooks(tomoyo_hooks, ARRAY_SIZE(tomoyo_hooks),
+&gt; +			   &amp;tomoyo_lsmid);
+&gt;  	pr_info(&quot;TOMOYO Linux initialized\n&quot;);
+&gt;  	s-&gt;domain_info = &amp;tomoyo_kernel_domain;
+&gt;  	atomic_inc(&amp;tomoyo_kernel_domain.users);
+&gt; diff --git a/security/yama/yama_lsm.c b/security/yama/yama_lsm.c
+&gt; index efac68556b45..2263822a4af7 100644
+&gt; --- a/security/yama/yama_lsm.c
+&gt; +++ b/security/yama/yama_lsm.c
+&gt; @@ -425,6 +425,8 @@ static int yama_ptrace_traceme(struct task_struct *parent)
+&gt;  	return rc;
+&gt;  }
+&gt;  
+&gt; +static struct lsm_id yama_lsmid = { .lsm=&quot;yama&quot;, .slot=LSMBLOB_NOT_NEEDED };
+
+__lsm_ro_after_init
+
+&gt; +
+&gt;  static struct security_hook_list yama_hooks[] __lsm_ro_after_init = {
+&gt;  	LSM_HOOK_INIT(ptrace_access_check, yama_ptrace_access_check),
+&gt;  	LSM_HOOK_INIT(ptrace_traceme, yama_ptrace_traceme),
+&gt; @@ -482,7 +484,7 @@ static inline void yama_init_sysctl(void) { }
+&gt;  static int __init yama_init(void)
+&gt;  {
+&gt;  	pr_info(&quot;Yama: becoming mindful.\n&quot;);
+&gt; -	security_add_hooks(yama_hooks, ARRAY_SIZE(yama_hooks), &quot;yama&quot;);
+&gt; +	security_add_hooks(yama_hooks, ARRAY_SIZE(yama_hooks), &amp;yama_lsmid);
+&gt;  	yama_init_sysctl();
+&gt;  	return 0;
+&gt;  }
+&gt; 
+
+I like the change,
+
+Reviewed-by: John Johansen &lt;john.johansen@xxxxxxxxxxxxx&gt;
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="29476" href="msg29476.html">Re: [PATCH v4 04/23] LSM: Create and manage the lsmblob data structure.</a></strong>
+<ul><li><em>From:</em> Casey Schaufler</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29370" href="msg29370.html">[PATCH v4 00/23] LSM: Module stacking for AppArmor</a></strong>
+<ul><li><em>From:</em> Casey Schaufler</li></ul></li>
+<li><strong><a name="29372" href="msg29372.html">[PATCH v4 04/23] LSM: Create and manage the lsmblob data structure.</a></strong>
+<ul><li><em>From:</em> Casey Schaufler</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29421.html">Re: [PATCH v8 1/2] mm: security: introduce init_on_alloc=1 and init_on_free=1 boot options</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29423.html">Re: [PATCH v4 05/23] LSM: Use lsmblob in security_audit_rule_match</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29372.html">[PATCH v4 04/23] LSM: Create and manage the lsmblob data structure.</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29476.html">Re: [PATCH v4 04/23] LSM: Create and manage the lsmblob data structure.</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29422"><strong>Date</strong></a></li>
+<li><a href="index.html#29422"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

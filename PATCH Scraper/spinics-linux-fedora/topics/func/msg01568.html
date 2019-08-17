@@ -1,0 +1,396 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] b/c dns names can be cased but b/c we didn't	handle this to begin with by lower()ing everything I've added	a function to return items from our directories	case&#45;insensitively with limited globbing support -->
+<!--X-From-R13: Ergu Hvqny &#60;fxivqnyNsrqbencebwrpg.bet> -->
+<!--X-Date: Tue, 10 Aug 2010 13:53:05 &#45;0700 -->
+<!--X-Message-Id: 1281473493&#45;32616&#45;1&#45;git&#45;send&#45;email&#45;skvidal@fedoraproject.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Universal Network Connector, [PATCH] b/c dns names can be cased but b/c we didn't	handle this to begin with by lower()ing everything I've added	a function to return items from our directories	case-insensitively with limited globbing support">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Fedora Universal Network Connector &mdash; [PATCH] b/c dns names can be cased but b/c we didn't	handle this to begin with by lower()ing everything I've added	a function to return items from our directories	case-insensitively with limited globbing support</title>
+<link rel="alternate" type="application/rss+xml" title="Fedora Universal Network Connector" href="//feeds.feedburner.com/FedoraUniversalNetworkConnector">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] b/c dns names can be cased but b/c we didn't	handle this to begin with by lower()ing everything I've added	a function to return items from our directories	case-insensitively with limited globbing support</h1>
+[<a href="msg01567.html">Date Prev</a>][<a href="msg01569.html">Date Next</a>][<a href="msg01567.html">Thread Prev</a>][<a href="msg01569.html">Thread Next</a>][<a href="maillist.html#01568">Date Index</a>][<a href="index.html#01568">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] b/c dns names can be cased but b/c we didn't	handle this to begin with by lower()ing everything I've added	a function to return items from our directories	case-insensitively with limited globbing support</li>
+<li><em>From</em>: Seth Vidal &lt;<a href="mailto:skvidal@DOMAIN.HIDDEN">skvidal@xxxxxxxxxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Tue, 10 Aug 2010 16:51:33 -0400</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>---
+ func/minion/server.py   |   19 ++++++++++---------
+ func/overlord/client.py |   18 +++++++++---------
+ func/utils.py           |   29 +++++++++++++++++++++++++----
+ 3 files changed, 44 insertions(+), 22 deletions(-)
+
+diff --git a/func/minion/server.py b/func/minion/server.py
+index 5f217d7..28d6fa1 100644
+--- a/func/minion/server.py
++++ b/func/minion/server.py
+@@ -29,14 +29,13 @@ from certmaster.commonconfig import CMConfig
+ from func import logger
+ from certmaster import certs
+ import func.jobthing as jobthing
+-from func import utils as func_utils
+ 
+ # our modules
+ import AuthedXMLRPCServer
+ import codes
+ import func.module_loader as module_loader
+ import func.minion.acls as acls_mod
+-from func import utils as futils
++from func import utils as func_utils
+ 
+ 
+ from certmaster import utils
+@@ -89,6 +88,8 @@ class XmlRpcInterface(object):
+         self.handlers[&quot;system.list_modules&quot;] = self.list_modules
+         self.handlers[&quot;system.inventory&quot;] = self.inventory
+         self.handlers[&quot;system.grep&quot;] = self.grep
++        # ultimately need to add a method here to force the server to reload itself so all NEW connections
++        # get a new RequestHandler
+ 
+     def list_modules(self):
+         modules = self.modules.keys()
+@@ -100,9 +101,6 @@ class XmlRpcInterface(object):
+         methods.sort()
+         return methods
+     
+-    def load_module(self, name):
+-        &quot;&quot;&quot;FIXME load a module and set it up on the running xmlrpc instance&quot;&quot;&quot;
+-        pass
+     
+     import func.minion.modules.func_module as fm
+     def grep(self,word):
+@@ -192,7 +190,7 @@ class FuncApiMethod:
+         self.logger.debug(&quot;(X) -------------------------------------------&quot;)
+ 
+         try:
+-            self.__method = futils.get_fresh_method_instance(self.__method)
++            self.__method = func_utils.get_fresh_method_instance(self.__method)
+             rc = self.__method(*args)
+         except codes.FuncException, e:
+             self.__log_exc()
+@@ -250,12 +248,15 @@ class FuncSSLXMLRPCServer(AuthedXMLRPCServer.AuthedSSLXMLRPCServer,
+         if self.config.key_file != '':
+             self.key = self.config.key_file
+         else:
+-            self.key = &quot;%s/%s.pem&quot; % (self.cm_config.cert_dir, hn)            
++            # search case-insensitively to find the right key - take the first one - if there are
++            # more than one differing only by case then the user is going to get 'unique' behavior :)
++            self.key = func_utils.find_files_by_hostname(hn, self.cm_config.cert_dir, '.pem')[0]
+         
+         if self.config.cert_file != '':
+             self.cert = self.config.cert_file
+         else:
+-            self.cert = &quot;%s/%s.cert&quot; % (self.cm_config.cert_dir, hn)
++            self.cert = func_utils.find_files_by_hostname(hn, self.cm_config.cert_dir, '.cert')[0]
++
+         if self.config.ca_file != '':
+             self.ca = self.config.ca_file
+         else:
+@@ -373,7 +374,7 @@ def main(argv):
+     try:
+         config = read_config(&quot;/etc/func/minion.conf&quot;, FuncdConfig)
+         if config.use_certmaster:
+-            hn = futils.get_hostname_by_route()
++            hn = func_utils.get_hostname_by_route()
+             requester.request_cert(hn)
+         serve()
+     except codes.FuncException, e:
+diff --git a/func/overlord/client.py b/func/overlord/client.py
+index 0931172..12deb49 100644
+--- a/func/overlord/client.py
++++ b/func/overlord/client.py
+@@ -15,7 +15,6 @@
+ from func.jobthing import RETAIN_INTERVAL
+ 
+ import sys
+-import glob
+ import os
+ import time
+ import shlex
+@@ -158,13 +157,14 @@ class Minions(object):
+             else:
+                 each_gloob = shortest_path[0]
+ 
+-        actual_gloob = &quot;%s/%s.%s&quot; % (self.cm_config.certroot, each_gloob, self.cm_config.cert_extension)
+-        certs = glob.glob(actual_gloob)
++        #actual_gloob = &quot;%s/%s.%s&quot; % (self.cm_config.certroot, each_gloob, self.cm_config.cert_extension)
++        certs = func_utils.find_files_by_hostname(each_gloob, self.cm_config.certroot, self.cm_config.cert_extension)
+         
+         # pull in peers if enabled for minion-to-minion
+         if self.cm_config.peering:
+-            peer_gloob = &quot;%s/%s.%s&quot; % (self.cm_config.peerroot, each_gloob, self.cm_config.cert_extension)
+-            certs += glob.glob(peer_gloob)
++            #peer_gloob = &quot;%s/%s.%s&quot; % (self.cm_config.peerroot, each_gloob, self.cm_config.cert_extension)
++            certs += func_utils.find_files_by_hostname(each_gloob, self.cm_config.peeroot, self.cm_config.cert_extension)            
++            
+         
+         # if we can't match this gloob and the gloob is not REALLY a glob
+         # let the gloob be the hostname we try to connect to.
+@@ -173,11 +173,11 @@ class Minions(object):
+             aliases = func_utils.get_all_host_aliases(each_gloob)
+ 
+             for name in aliases:
+-                actual_gloob = &quot;%s/%s.%s&quot; % (self.cm_config.certroot, name, self.cm_config.cert_extension)
+-                certs += glob.glob(actual_gloob)
++                #actual_gloob = &quot;%s/%s.%s&quot; % (self.cm_config.certroot, name, self.cm_config.cert_extension)
++                certs += func_utils.find_files_by_hostname(name, self.cm_config.certroot, self.cm_config.cert_extension)                
+                 if self.cm_config.peering:
+-                    peer_gloob = &quot;%s/%s.%s&quot; % (self.cm_config.peerroot, name, self.cm_config.cert_extension)
+-                    certs += glob.glob(peer_gloob)
++                    #peer_gloob = &quot;%s/%s.%s&quot; % (self.cm_config.peerroot, name, self.cm_config.cert_extension)
++                    certs += func_utils.find_files_by_hostname(name, self.cm_config.peeroot, self.cm_config.cert_extension)
+                     break
+ 
+             if self.overlord_config.allow_unknown_minions and not certs:
+diff --git a/func/utils.py b/func/utils.py
+index fcc5cdc..fe0c9da 100644
+--- a/func/utils.py
++++ b/func/utils.py
+@@ -16,6 +16,7 @@ import socket
+ import string
+ import sys
+ import re
++import fnmatch
+ 
+ from certmaster.config import read_config
+ from certmaster.commonconfig import MinionConfig
+@@ -86,7 +87,7 @@ def get_hostname_by_route():
+ 
+     # don't bother guessing a hostname if they specify it in the config file
+     if minion_config.minion_name:
+-        return minion_config.minion_name
++        return minion_config.minion_name.lower()
+ 
+     # try to find the hostname attached to the ip of the interface that we use
+     # to talk to the certmaster
+@@ -107,7 +108,7 @@ def get_hostname_by_route():
+         # not talking via localhost? good enough...
+         if ip != '127.0.0.1':
+             s.close()
+-            return intf_hostname
++            return intf_hostname.lower()
+     except:
+         s.close()
+         # something failed, reverse dns, etc
+@@ -133,13 +134,33 @@ def get_hostname_by_route():
+ 
+     # non loopback is about as good as we can do for a guess
+     if ip != &quot;127.0.0.1&quot; and hostname is not None:
+-        return hostname
++        return hostname.lower()
+             
+   
+ 
+     # all else has failed to get a good hostname, so just return
+     # an ip address
+-    return socket.gethostbyname(socket.gethostname())
++    return socket.gethostbyname(socket.gethostname()).lower() # yes I know it's an ip but I don't trust anything
++
++def find_files_by_hostname(hostglob, filepath, fileext=''):
++    &quot;&quot;&quot;look for files in the given filepath with the given extension that
++        match our hostname, but case insensitively. This handles the 
++        craziness that is dns names that have mixed case :(&quot;&quot;&quot;
++    
++    # this is a little like a case insensitive glob, except it's just one 
++    # layer deep - not multiple layers
++    
++    if fileext and fileext[0] != '.':
++        fileext = '.' + fileext
++    thisregex = fnmatch.translate('%s%s' % (hostglob, fileext)) 
++    recomp = re.compile(thisregex, re.I) # case insensitive match
++    files = []
++    for potfile in os.listdir(filepath):
++        if recomp.match(potfile):
++            files.append(potfile)
++    
++    return [os.path.normpath(filepath + '/' + file) for file in files]
++
+ 
+ def get_all_host_aliases(hostname):
+     try:
+-- 
+1.7.2
+
+_______________________________________________
+Func-list mailing list
+Func-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/func-list">https://www.redhat.com/mailman/listinfo/func-list</a>
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01567.html">func/commonconfig.py func/overlord func/utils.py</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01569.html">6 commits - func/minion func/overlord func/utils.py</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01567.html">func/commonconfig.py func/overlord func/utils.py</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01569.html">6 commits - func/minion func/overlord func/utils.py</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01568"><strong>Date</strong></a></li>
+<li><a href="index.html#01568"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/netdev/>[Linux&nbsp;Networking]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fll/>[Fedora&nbsp;Legacy&nbsp;List]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z//biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

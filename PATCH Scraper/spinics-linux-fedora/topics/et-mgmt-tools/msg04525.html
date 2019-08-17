@@ -1,0 +1,410 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Add vdisk support -->
+<!--X-From-R13: wbua.yribaNfha.pbz -->
+<!--X-Date: Wed, 10 Dec 2008 11:37:00 &#45;0800 -->
+<!--X-Message-Id: fa56f55633ea7af14af4.1228937671@xenbld.SFBay.Sun.COM -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Management Tools, [PATCH] Add vdisk support">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="Fedora Management Tools" href="//feedproxy.google.com/Fedora/linuxManagementTools">
+<title>Fedora Management Tools -- [PATCH] Add vdisk support</title>
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] Add vdisk support</h1>
+[<a href="msg04524.html">Date Prev</a>][<a href="msg04526.html">Date Next</a>][<a href="msg04513.html">Thread Prev</a>][<a href="msg04559.html">Thread Next</a>][<a href="maillist.html#04525">Date Index</a>][<a href="index.html#04525">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Add vdisk support</li>
+<li><em>From</em>: <a href="mailto:john.levon@DOMAIN.HIDDEN">john.levon@xxxxxxx</a></li>
+<li><em>Date</em>: Wed, 10 Dec 2008 11:34:31 -0800</li>
+<li><em>Reply-to</em>: Fedora/Linux Management Tools &lt;<a href="mailto:et-mgmt-tools@DOMAIN.HIDDEN">et-mgmt-tools@xxxxxxxxxx</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre># HG changeset patch
+# User john.levon@xxxxxxx
+# Date 1228937605 28800
+# Node ID fa56f55633ea7af14af4dd260a00b020a69a2fea
+# Parent  8638073ea45665c7531931515636a862f684c2a5
+Add vdisk support
+
+Add support for the vdisk format used in Solaris.
+
+Signed-off-by: John Levon &lt;john.levon@xxxxxxx&gt;
+
+diff --git a/virtinst/CloneManager.py b/virtinst/CloneManager.py
+--- a/virtinst/CloneManager.py
++++ b/virtinst/CloneManager.py
+@@ -21,6 +21,7 @@ import os
+ import os
+ import libxml2
+ import logging
++import subprocess
+ import urlgrabber.progress as progress
+ import _util
+ import libvirt
+@@ -492,6 +493,15 @@ def start_duplicate(design):
+ 
+     logging.debug(&quot;start_duplicate out&quot;)
+ 
++def _vdisk_clone(path, clone):
++    path = os.path.expanduser(path)
++    clone = os.path.expanduser(clone)
++    try:
++        rc = subprocess.call([ '/usr/sbin/vdiskadm', 'clone', path, clone ])
++        return rc == 0
++    except OSError, e:
++        return False
++
+ #
+ # Now this Cloning method is reading and writing devices.
+ # For future, there are many cloning methods (e.g. fork snapshot cmd).
+@@ -521,6 +531,14 @@ def _do_duplicate(design):
+             if src_dev == &quot;/dev/null&quot; or src_dev == dst_dev:
+                 meter.end(size)
+                 continue
++
++            if _util.is_vdisk(src_dev) or (os.path.exists(dst_dev) and _util.is_vdisk(dst_dev)):
++                if not _util.is_vdisk(src_dev) or os.path.exists(dst_dev):
++                    raise RuntimeError, _(&quot;copying to an existing vdisk is not supported&quot;)
++                if not _vdisk_clone(src_dev, dst_dev):
++                    raise RuntimeError, _(&quot;failed to clone disk&quot;)
++                continue
++
+             #
+             # create sparse file
+             # if a destination file exists and sparse flg is True,
+diff --git a/virtinst/Guest.py b/virtinst/Guest.py
+--- a/virtinst/Guest.py
++++ b/virtinst/Guest.py
+@@ -474,6 +474,9 @@ class Installer(object):
+            or guest.disks[0].device != VirtualDisk.DEVICE_DISK:
+             return True
+ 
++        if _util.is_vdisk(guest.disks[0].path):
++            return True
++
+         # Check for the 0xaa55 signature at the end of the MBR
+         try:
+             fd = os.open(guest.disks[0].path, os.O_RDONLY)
+diff --git a/virtinst/VirtualDisk.py b/virtinst/VirtualDisk.py
+--- a/virtinst/VirtualDisk.py
++++ b/virtinst/VirtualDisk.py
+@@ -20,6 +20,7 @@
+ # MA 02110-1301 USA.
+ 
+ import os, stat, statvfs
++import subprocess
+ import libxml2
+ import logging
+ import libvirt
+@@ -28,6 +29,20 @@ import Storage
+ import Storage
+ from VirtualDevice import VirtualDevice
+ from virtinst import _virtinst as _
++
++def _vdisk_create(path, size, kind, sparse = True):
++    force_fixed = &quot;raw&quot;
++    path = os.path.expanduser(path)
++    if kind in force_fixed or not sparse:
++        type = kind + &quot;:fixed&quot;
++    else:
++        type = kind + &quot;:sparse&quot;
++    try:
++        rc = subprocess.call([ '/usr/sbin/vdiskadm', 'create', '-t', type,
++            '-s', str(size), path ])
++        return rc == 0
++    except OSError, e:
++        return False
+ 
+ class VirtualDisk(VirtualDevice):
+     &quot;&quot;&quot;
+@@ -68,7 +83,9 @@ class VirtualDisk(VirtualDevice):
+     DRIVER_TAP_RAW = &quot;aio&quot;
+     DRIVER_TAP_QCOW = &quot;qcow&quot;
+     DRIVER_TAP_VMDK = &quot;vmdk&quot;
+-    driver_types = [DRIVER_TAP_RAW, DRIVER_TAP_QCOW, DRIVER_TAP_VMDK]
++    DRIVER_TAP_VDISK = &quot;vdisk&quot;
++    driver_types = [DRIVER_TAP_RAW, DRIVER_TAP_QCOW,
++        DRIVER_TAP_VMDK, DRIVER_TAP_VDISK]
+ 
+     DEVICE_DISK = &quot;disk&quot;
+     DEVICE_CDROM = &quot;cdrom&quot;
+@@ -143,6 +160,10 @@ class VirtualDisk(VirtualDevice):
+         if volName:
+             self.__lookup_vol_name(volName)
+ 
++        if self._type == self.TYPE_FILE and _util.is_vdisk(self._path):
++            self._driverName = self.DRIVER_TAP
++            self._driverType = self.DRIVER_TAP_VDISK
++
+         self.__validate_params()
+ 
+ 
+@@ -285,6 +306,9 @@ class VirtualDisk(VirtualDevice):
+                 dtype = self.TYPE_BLOCK
+             else:
+                 dtype = self.TYPE_FILE
++            if _util.is_vdisk(self.path):
++                self._driverName = self.DRIVER_TAP
++                self._driverType = self.DRIVER_TAP_VDISK
+ 
+         logging.debug(&quot;Detected storage as type '%s'&quot; % dtype)
+         if self.type is not None and dtype != self.type:
+@@ -424,7 +448,8 @@ class VirtualDisk(VirtualDevice):
+                         or self.vol_object):
+             logging.debug(&quot;VirtualDisk storage exists.&quot;)
+ 
+-            if using_path and os.path.isdir(self.path):
++            if (using_path and os.path.isdir(self.path) and
++                not _util.is_vdisk(self.path)):
+                 raise ValueError, _(&quot;The path must be a file or a device,&quot;
+                                     &quot; not a directory&quot;)
+             self.__set_dev_type()
+@@ -476,13 +501,24 @@ class VirtualDisk(VirtualDevice):
+             self._set_vol_object(self.vol_install.install(meter=progresscb),
+                                  validate=False)
+             return
+-        elif self.type == VirtualDisk.TYPE_FILE and self.path is not None \
+-             and not os.path.exists(self.path):
++        elif (self.type == VirtualDisk.TYPE_FILE and self.path is not None
++             and not os.path.exists(self.path)):
+             size_bytes = long(self.size * 1024L * 1024L * 1024L)
+ 
+             if progresscb:
+                 progresscb.start(filename=self.path,size=long(size_bytes), \
+                                  text=_(&quot;Creating storage file...&quot;))
++
++            if _util.is_vdisk(self.path):
++                progresscb.update(1024)
++                if (not _vdisk_create(self.path, size_bytes, &quot;vmdk&quot;,
++                    self.sparse)):
++                    raise RuntimeError, _(&quot;Error creating vdisk %s&quot; % self.path)
++                self._driverName = self.DRIVER_TAP
++                self._driverType = self.DRIVER_TAP_VDISK
++                progresscb.end(self.size)
++                return
++
+             fd = None
+             try:
+                 try:
+diff --git a/virtinst/_util.py b/virtinst/_util.py
+--- a/virtinst/_util.py
++++ b/virtinst/_util.py
+@@ -23,15 +23,31 @@
+ # not be used by clients.
+ #
+ 
++import commands
+ import stat
+ import os
+ 
+ from virtinst import util
+ 
++def is_vdisk(path):
++    if not os.path.exists(&quot;/usr/sbin/vdiskadm&quot;):
++        return False
++    if not os.path.exists(path):
++        return True
++    if os.path.isdir(path) and \
++       os.path.exists(path + &quot;/vdisk.xml&quot;):
++        return True
++    return False
++
+ def stat_disk(path):
+     &quot;&quot;&quot;Returns the tuple (isreg, size).&quot;&quot;&quot;
+     if not os.path.exists(path):
+         return True, 0
++
++    if is_vdisk(path):
++        size = int(commands.getoutput(
++            &quot;vdiskadm prop-get -p max-size &quot; + path))
++        return True, size
+ 
+     mode = os.stat(path)[stat.ST_MODE]
+    
+
+_______________________________________________
+et-mgmt-tools mailing list
+et-mgmt-tools@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/et-mgmt-tools">https://www.redhat.com/mailman/listinfo/et-mgmt-tools</a>
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="04559" href="msg04559.html">Re:  [PATCH] Add vdisk support</a></strong>
+<ul><li><em>From:</em> Cole Robinson</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg04524.html">[PATCH] Add utility function for stat() of disks</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg04526.html">[PATCH] Port utility functions to Solaris</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg04513.html">[PATCH] Add vdisk support</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg04559.html">Re:  [PATCH] Add vdisk support</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#04525"><strong>Date</strong></a></li>
+<li><a href="index.html#04525"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fll/>[Fedora&nbsp;Legacy&nbsp;List]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

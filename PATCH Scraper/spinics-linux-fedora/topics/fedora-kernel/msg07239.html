@@ -1,0 +1,1030 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Disable PXA/MMP arches &#45; break suspend -->
+<!--X-From-R13: @vpbynf Qunhirg &#60;xjvmnegNtznvy.pbz> -->
+<!--X-Date: Tue, 21 Aug 2018 07:38:53 &#45;0700 -->
+<!--X-Message-Id: 20180821143837.3701&#45;1&#45;kwizart@gmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description content="[PATCH] Disable PXA/MMP arches - break suspend &mdash; Fedora Linux Kernel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH] Disable PXA/MMP arches - break suspend &mdash; Fedora Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Fedora Linux Kernel" href="//feeds.feedburner.com/FedoraKernel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH] Disable PXA/MMP arches - break suspend</h1>
+[<a href="msg07238.html">Date Prev</a>][<a href="msg07240.html">Date Next</a>][<a href="msg07236.html">Thread Prev</a>][<a href="msg07240.html">Thread Next</a>][<a href="maillist.html#07239">Date Index</a>][<a href="index.html#07239">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Disable PXA/MMP arches - break suspend</li>
+<li><em>From</em>: Nicolas Chauvet &lt;kwizart@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 21 Aug 2018 16:38:37 +0200</li>
+<li><em>Cc</em>: Kernel Fedora &lt;kernel@xxxxxxxxxxxxxxxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Theses arches select pxa_gpio which registers on unrelated hardwares.
+This prevent theses devices to enter suspend.
+(reproduced on trimslice)
+
+Disable theses arches until a proper fix is made upstream
+See rhbz#1619699
+
+Signed-off-by: Nicolas Chauvet &lt;kwizart@xxxxxxxxx&gt;
+---
+ .../fedora/generic/CONFIG_VIDEO_MMP_CAMERA    |  1 -
+ configs/fedora/generic/arm/CONFIG_GPIO_PXA    |  1 +
+ configs/fedora/generic/arm/CONFIG_I2C_PXA     |  2 +-
+ .../fedora/generic/arm/CONFIG_MMC_SDHCI_PXAV3 |  2 +-
+ .../fedora/generic/arm/CONFIG_MTD_NAND_PXA3xx |  2 +-
+ configs/fedora/generic/arm/CONFIG_PLAT_PXA    |  1 +
+ .../generic/arm/armv7/armv7/CONFIG_ARCH_MMP   |  1 -
+ .../arm/armv7/armv7/CONFIG_KEYBOARD_PXA27x    |  2 +-
+ .../arm/armv7/armv7/CONFIG_MACH_MMP2_DT       |  1 -
+ .../arm/armv7/armv7/CONFIG_MMC_SDHCI_PXAV2    |  2 +-
+ .../generic/arm/armv7/armv7/CONFIG_MMP_PDMA   |  1 -
+ .../generic/arm/armv7/armv7/CONFIG_MMP_TDMA   |  1 -
+ .../generic/arm/armv7/armv7/CONFIG_PXA_DMA    |  2 +-
+ .../generic/arm/armv7/armv7/CONFIG_SERIAL_PXA |  2 +-
+ .../arm/armv7/armv7/CONFIG_SERIAL_PXA_CONSOLE |  2 +-
+ .../arm/armv7/armv7/CONFIG_SND_MMP_SOC        |  1 -
+ .../arm/armv7/armv7/CONFIG_SND_PXA910_SOC     |  2 +-
+ kernel-aarch64-debug.config                   |  9 ++++---
+ kernel-aarch64.config                         |  9 ++++---
+ kernel-armv7hl-debug.config                   | 27 +++++++++----------
+ kernel-armv7hl-lpae-debug.config              |  9 ++++---
+ kernel-armv7hl-lpae.config                    |  9 ++++---
+ kernel-armv7hl.config                         | 27 +++++++++----------
+ kernel-i686-PAE.config                        |  1 -
+ kernel-i686-PAEdebug.config                   |  1 -
+ kernel-i686-debug.config                      |  1 -
+ kernel-i686.config                            |  1 -
+ kernel-ppc64le-debug.config                   |  1 -
+ kernel-ppc64le.config                         |  1 -
+ kernel-s390x-debug.config                     |  1 -
+ kernel-s390x.config                           |  1 -
+ kernel-x86_64-debug.config                    |  1 -
+ kernel-x86_64.config                          |  1 -
+ 33 files changed, 55 insertions(+), 71 deletions(-)
+ delete mode 100644 configs/fedora/generic/CONFIG_VIDEO_MMP_CAMERA
+ create mode 100644 configs/fedora/generic/arm/CONFIG_GPIO_PXA
+ create mode 100644 configs/fedora/generic/arm/CONFIG_PLAT_PXA
+ delete mode 100644 configs/fedora/generic/arm/armv7/armv7/CONFIG_ARCH_MMP
+ delete mode 100644 configs/fedora/generic/arm/armv7/armv7/CONFIG_MACH_MMP2_DT
+ delete mode 100644 configs/fedora/generic/arm/armv7/armv7/CONFIG_MMP_PDMA
+ delete mode 100644 configs/fedora/generic/arm/armv7/armv7/CONFIG_MMP_TDMA
+ delete mode 100644 configs/fedora/generic/arm/armv7/armv7/CONFIG_SND_MMP_SOC
+
+diff --git a/configs/fedora/generic/CONFIG_VIDEO_MMP_CAMERA b/configs/fedora/generic/CONFIG_VIDEO_MMP_CAMERA
+deleted file mode 100644
+index 29d87e4f3..000000000
+--- a/configs/fedora/generic/CONFIG_VIDEO_MMP_CAMERA
++++ /dev/null
+@@ -1 +0,0 @@
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+diff --git a/configs/fedora/generic/arm/CONFIG_GPIO_PXA b/configs/fedora/generic/arm/CONFIG_GPIO_PXA
+new file mode 100644
+index 000000000..6eb2a00e0
+--- /dev/null
++++ b/configs/fedora/generic/arm/CONFIG_GPIO_PXA
+@@ -0,0 +1 @@
++# CONFIG_GPIO_PXA is not set
+diff --git a/configs/fedora/generic/arm/CONFIG_I2C_PXA b/configs/fedora/generic/arm/CONFIG_I2C_PXA
+index 59d18f0cb..f2f8c5056 100644
+--- a/configs/fedora/generic/arm/CONFIG_I2C_PXA
++++ b/configs/fedora/generic/arm/CONFIG_I2C_PXA
+@@ -1 +1 @@
+-CONFIG_I2C_PXA=m
++# CONFIG_I2C_PXA is not set
+diff --git a/configs/fedora/generic/arm/CONFIG_MMC_SDHCI_PXAV3 b/configs/fedora/generic/arm/CONFIG_MMC_SDHCI_PXAV3
+index f6e6fdd55..c6361724e 100644
+--- a/configs/fedora/generic/arm/CONFIG_MMC_SDHCI_PXAV3
++++ b/configs/fedora/generic/arm/CONFIG_MMC_SDHCI_PXAV3
+@@ -1 +1 @@
+-CONFIG_MMC_SDHCI_PXAV3=m
++# CONFIG_MMC_SDHCI_PXAV3 is not set
+diff --git a/configs/fedora/generic/arm/CONFIG_MTD_NAND_PXA3xx b/configs/fedora/generic/arm/CONFIG_MTD_NAND_PXA3xx
+index 584b57ea1..b004f397a 100644
+--- a/configs/fedora/generic/arm/CONFIG_MTD_NAND_PXA3xx
++++ b/configs/fedora/generic/arm/CONFIG_MTD_NAND_PXA3xx
+@@ -1 +1 @@
+-CONFIG_MTD_NAND_PXA3xx=m
++# CONFIG_MTD_NAND_PXA3xx is not set
+diff --git a/configs/fedora/generic/arm/CONFIG_PLAT_PXA b/configs/fedora/generic/arm/CONFIG_PLAT_PXA
+new file mode 100644
+index 000000000..376e63960
+--- /dev/null
++++ b/configs/fedora/generic/arm/CONFIG_PLAT_PXA
+@@ -0,0 +1 @@
++# CONFIG_PLAT_PXA is not set
+diff --git a/configs/fedora/generic/arm/armv7/armv7/CONFIG_ARCH_MMP b/configs/fedora/generic/arm/armv7/armv7/CONFIG_ARCH_MMP
+deleted file mode 100644
+index df1b1f323..000000000
+--- a/configs/fedora/generic/arm/armv7/armv7/CONFIG_ARCH_MMP
++++ /dev/null
+@@ -1 +0,0 @@
+-CONFIG_ARCH_MMP=y
+diff --git a/configs/fedora/generic/arm/armv7/armv7/CONFIG_KEYBOARD_PXA27x b/configs/fedora/generic/arm/armv7/armv7/CONFIG_KEYBOARD_PXA27x
+index c7122eaaa..7f13e087d 100644
+--- a/configs/fedora/generic/arm/armv7/armv7/CONFIG_KEYBOARD_PXA27x
++++ b/configs/fedora/generic/arm/armv7/armv7/CONFIG_KEYBOARD_PXA27x
+@@ -1 +1 @@
+-CONFIG_KEYBOARD_PXA27x=y
++# CONFIG_KEYBOARD_PXA27x is not set
+diff --git a/configs/fedora/generic/arm/armv7/armv7/CONFIG_MACH_MMP2_DT b/configs/fedora/generic/arm/armv7/armv7/CONFIG_MACH_MMP2_DT
+deleted file mode 100644
+index 523a4bfcc..000000000
+--- a/configs/fedora/generic/arm/armv7/armv7/CONFIG_MACH_MMP2_DT
++++ /dev/null
+@@ -1 +0,0 @@
+-CONFIG_MACH_MMP2_DT=y
+diff --git a/configs/fedora/generic/arm/armv7/armv7/CONFIG_MMC_SDHCI_PXAV2 b/configs/fedora/generic/arm/armv7/armv7/CONFIG_MMC_SDHCI_PXAV2
+index 0572be193..e2eab0ba6 100644
+--- a/configs/fedora/generic/arm/armv7/armv7/CONFIG_MMC_SDHCI_PXAV2
++++ b/configs/fedora/generic/arm/armv7/armv7/CONFIG_MMC_SDHCI_PXAV2
+@@ -1 +1 @@
+-CONFIG_MMC_SDHCI_PXAV2=m
++# CONFIG_MMC_SDHCI_PXAV2 is not set
+diff --git a/configs/fedora/generic/arm/armv7/armv7/CONFIG_MMP_PDMA b/configs/fedora/generic/arm/armv7/armv7/CONFIG_MMP_PDMA
+deleted file mode 100644
+index 8b95d78fe..000000000
+--- a/configs/fedora/generic/arm/armv7/armv7/CONFIG_MMP_PDMA
++++ /dev/null
+@@ -1 +0,0 @@
+-CONFIG_MMP_PDMA=y
+diff --git a/configs/fedora/generic/arm/armv7/armv7/CONFIG_MMP_TDMA b/configs/fedora/generic/arm/armv7/armv7/CONFIG_MMP_TDMA
+deleted file mode 100644
+index c3ea0d888..000000000
+--- a/configs/fedora/generic/arm/armv7/armv7/CONFIG_MMP_TDMA
++++ /dev/null
+@@ -1 +0,0 @@
+-CONFIG_MMP_TDMA=y
+diff --git a/configs/fedora/generic/arm/armv7/armv7/CONFIG_PXA_DMA b/configs/fedora/generic/arm/armv7/armv7/CONFIG_PXA_DMA
+index 6497f852a..0390ff781 100644
+--- a/configs/fedora/generic/arm/armv7/armv7/CONFIG_PXA_DMA
++++ b/configs/fedora/generic/arm/armv7/armv7/CONFIG_PXA_DMA
+@@ -1 +1 @@
+-CONFIG_PXA_DMA=y
++# CONFIG_PXA_DMA is not set
+diff --git a/configs/fedora/generic/arm/armv7/armv7/CONFIG_SERIAL_PXA b/configs/fedora/generic/arm/armv7/armv7/CONFIG_SERIAL_PXA
+index 9e51d92bb..d9117e04e 100644
+--- a/configs/fedora/generic/arm/armv7/armv7/CONFIG_SERIAL_PXA
++++ b/configs/fedora/generic/arm/armv7/armv7/CONFIG_SERIAL_PXA
+@@ -1 +1 @@
+-CONFIG_SERIAL_PXA=y
++# CONFIG_SERIAL_PXA is not set
+diff --git a/configs/fedora/generic/arm/armv7/armv7/CONFIG_SERIAL_PXA_CONSOLE b/configs/fedora/generic/arm/armv7/armv7/CONFIG_SERIAL_PXA_CONSOLE
+index 66ca5b372..c9afa3553 100644
+--- a/configs/fedora/generic/arm/armv7/armv7/CONFIG_SERIAL_PXA_CONSOLE
++++ b/configs/fedora/generic/arm/armv7/armv7/CONFIG_SERIAL_PXA_CONSOLE
+@@ -1 +1 @@
+-CONFIG_SERIAL_PXA_CONSOLE=y
++# CONFIG_SERIAL_PXA_CONSOLE is not set
+diff --git a/configs/fedora/generic/arm/armv7/armv7/CONFIG_SND_MMP_SOC b/configs/fedora/generic/arm/armv7/armv7/CONFIG_SND_MMP_SOC
+deleted file mode 100644
+index 7efe5db08..000000000
+--- a/configs/fedora/generic/arm/armv7/armv7/CONFIG_SND_MMP_SOC
++++ /dev/null
+@@ -1 +0,0 @@
+-CONFIG_SND_MMP_SOC=y
+diff --git a/configs/fedora/generic/arm/armv7/armv7/CONFIG_SND_PXA910_SOC b/configs/fedora/generic/arm/armv7/armv7/CONFIG_SND_PXA910_SOC
+index 882e1d892..35747f42a 100644
+--- a/configs/fedora/generic/arm/armv7/armv7/CONFIG_SND_PXA910_SOC
++++ b/configs/fedora/generic/arm/armv7/armv7/CONFIG_SND_PXA910_SOC
+@@ -1 +1 @@
+-CONFIG_SND_PXA910_SOC=m
++# CONFIG_SND_PXA910_SOC is not set
+diff --git a/kernel-aarch64-debug.config b/kernel-aarch64-debug.config
+index b3cbea51f..d25a9950b 100644
+--- a/kernel-aarch64-debug.config
++++ b/kernel-aarch64-debug.config
+@@ -1958,6 +1958,7 @@ CONFIG_GPIO_PCF857X=m
+ CONFIG_GPIO_PCI_IDIO_16=m
+ # CONFIG_GPIO_PISOSR is not set
+ CONFIG_GPIO_PL061=y
++# CONFIG_GPIO_PXA is not set
+ CONFIG_GPIO_RASPBERRYPI_EXP=m
+ # CONFIG_GPIO_RDC321X is not set
+ # CONFIG_GPIO_SCH311X is not set
+@@ -2271,7 +2272,7 @@ CONFIG_I2C_NFORCE2=m
+ # CONFIG_I2C_PARPORT_LIGHT is not set
+ CONFIG_I2C_PCA_PLATFORM=m
+ # CONFIG_I2C_PIIX4 is not set
+-CONFIG_I2C_PXA=m
++# CONFIG_I2C_PXA is not set
+ # CONFIG_I2C_PXA_SLAVE is not set
+ CONFIG_I2C_QUP=m
+ CONFIG_I2C_RK3X=y
+@@ -3448,7 +3449,7 @@ CONFIG_MMC_SDHCI_OF_ARASAN=m
+ CONFIG_MMC_SDHCI_OMAP=m
+ CONFIG_MMC_SDHCI_PCI=m
+ CONFIG_MMC_SDHCI_PLTFM=m
+-CONFIG_MMC_SDHCI_PXAV3=m
++# CONFIG_MMC_SDHCI_PXAV3 is not set
+ CONFIG_MMC_SDHCI_TEGRA=m
+ CONFIG_MMC_SDHCI_XENON=m
+ CONFIG_MMC_SDRICOH_CS=m
+@@ -3574,7 +3575,7 @@ CONFIG_MTD_MAP_BANK_WIDTH_4=y
+ CONFIG_MTD_NAND_MARVELL=m
+ # CONFIG_MTD_NAND_OMAP2 is not set
+ # CONFIG_MTD_NAND_OXNAS is not set
+-CONFIG_MTD_NAND_PXA3xx=m
++# CONFIG_MTD_NAND_PXA3xx is not set
+ # CONFIG_MTD_NAND_TEGRA is not set
+ CONFIG_MTD_OF_PARTS=m
+ # CONFIG_MTD_ONENAND is not set
+@@ -4481,6 +4482,7 @@ CONFIG_PKCS7_MESSAGE_PARSER=y
+ CONFIG_PL330_DMA=m
+ CONFIG_PLATFORM_MHU=m
+ # CONFIG_PLATFORM_SI4713 is not set
++# CONFIG_PLAT_PXA is not set
+ # CONFIG_PLIP is not set
+ CONFIG_PLX_HERMES=m
+ CONFIG_PM_ADVANCED_DEBUG=y
+@@ -6873,7 +6875,6 @@ CONFIG_VIDEO_IVTV=m
+ # CONFIG_VIDEO_MEM2MEM_DEINTERLACE is not set
+ CONFIG_VIDEO_MESON_AO_CEC=m
+ CONFIG_VIDEO_MEYE=m
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+ CONFIG_VIDEO_MXB=m
+ CONFIG_VIDEO_NOON010PC30=m
+ # CONFIG_VIDEO_PCI_SKELETON is not set
+diff --git a/kernel-aarch64.config b/kernel-aarch64.config
+index 09cfb244e..4ae462337 100644
+--- a/kernel-aarch64.config
++++ b/kernel-aarch64.config
+@@ -1940,6 +1940,7 @@ CONFIG_GPIO_PCF857X=m
+ CONFIG_GPIO_PCI_IDIO_16=m
+ # CONFIG_GPIO_PISOSR is not set
+ CONFIG_GPIO_PL061=y
++# CONFIG_GPIO_PXA is not set
+ CONFIG_GPIO_RASPBERRYPI_EXP=m
+ # CONFIG_GPIO_RDC321X is not set
+ # CONFIG_GPIO_SCH311X is not set
+@@ -2253,7 +2254,7 @@ CONFIG_I2C_NFORCE2=m
+ # CONFIG_I2C_PARPORT_LIGHT is not set
+ CONFIG_I2C_PCA_PLATFORM=m
+ # CONFIG_I2C_PIIX4 is not set
+-CONFIG_I2C_PXA=m
++# CONFIG_I2C_PXA is not set
+ # CONFIG_I2C_PXA_SLAVE is not set
+ CONFIG_I2C_QUP=m
+ CONFIG_I2C_RK3X=y
+@@ -3427,7 +3428,7 @@ CONFIG_MMC_SDHCI_OF_ARASAN=m
+ CONFIG_MMC_SDHCI_OMAP=m
+ CONFIG_MMC_SDHCI_PCI=m
+ CONFIG_MMC_SDHCI_PLTFM=m
+-CONFIG_MMC_SDHCI_PXAV3=m
++# CONFIG_MMC_SDHCI_PXAV3 is not set
+ CONFIG_MMC_SDHCI_TEGRA=m
+ CONFIG_MMC_SDHCI_XENON=m
+ CONFIG_MMC_SDRICOH_CS=m
+@@ -3552,7 +3553,7 @@ CONFIG_MTD_MAP_BANK_WIDTH_4=y
+ CONFIG_MTD_NAND_MARVELL=m
+ # CONFIG_MTD_NAND_OMAP2 is not set
+ # CONFIG_MTD_NAND_OXNAS is not set
+-CONFIG_MTD_NAND_PXA3xx=m
++# CONFIG_MTD_NAND_PXA3xx is not set
+ # CONFIG_MTD_NAND_TEGRA is not set
+ CONFIG_MTD_OF_PARTS=m
+ # CONFIG_MTD_ONENAND is not set
+@@ -4459,6 +4460,7 @@ CONFIG_PKCS7_MESSAGE_PARSER=y
+ CONFIG_PL330_DMA=m
+ CONFIG_PLATFORM_MHU=m
+ # CONFIG_PLATFORM_SI4713 is not set
++# CONFIG_PLAT_PXA is not set
+ # CONFIG_PLIP is not set
+ CONFIG_PLX_HERMES=m
+ # CONFIG_PM_ADVANCED_DEBUG is not set
+@@ -6849,7 +6851,6 @@ CONFIG_VIDEO_IVTV=m
+ # CONFIG_VIDEO_MEM2MEM_DEINTERLACE is not set
+ CONFIG_VIDEO_MESON_AO_CEC=m
+ CONFIG_VIDEO_MEYE=m
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+ CONFIG_VIDEO_MXB=m
+ CONFIG_VIDEO_NOON010PC30=m
+ # CONFIG_VIDEO_PCI_SKELETON is not set
+diff --git a/kernel-armv7hl-debug.config b/kernel-armv7hl-debug.config
+index b1adcb394..dd81e699a 100644
+--- a/kernel-armv7hl-debug.config
++++ b/kernel-armv7hl-debug.config
+@@ -229,7 +229,7 @@ CONFIG_ARCH_HIGHBANK=y
+ # CONFIG_ARCH_MDM9615 is not set
+ # CONFIG_ARCH_MEDIATEK is not set
+ CONFIG_ARCH_MESON=y
+-CONFIG_ARCH_MMP=y
++# CONFIG_ARCH_MMP is not set
+ CONFIG_ARCH_MSM8960=y
+ CONFIG_ARCH_MSM8974=y
+ CONFIG_ARCH_MSM8X60=y
+@@ -2072,6 +2072,7 @@ CONFIG_GPIO_PCF857X=m
+ CONFIG_GPIO_PCI_IDIO_16=m
+ # CONFIG_GPIO_PISOSR is not set
+ CONFIG_GPIO_PL061=y
++# CONFIG_GPIO_PXA is not set
+ CONFIG_GPIO_RASPBERRYPI_EXP=m
+ # CONFIG_GPIO_RDC321X is not set
+ # CONFIG_GPIO_SCH311X is not set
+@@ -2390,7 +2391,7 @@ CONFIG_I2C_OMAP=y
+ # CONFIG_I2C_PARPORT_LIGHT is not set
+ CONFIG_I2C_PCA_PLATFORM=m
+ # CONFIG_I2C_PIIX4 is not set
+-CONFIG_I2C_PXA=m
++# CONFIG_I2C_PXA is not set
+ # CONFIG_I2C_PXA_SLAVE is not set
+ CONFIG_I2C_QUP=m
+ CONFIG_I2C_RK3X=y
+@@ -3024,7 +3025,7 @@ CONFIG_KEYBOARD_NVEC=y
+ CONFIG_KEYBOARD_OMAP4=m
+ # CONFIG_KEYBOARD_OPENCORES is not set
+ CONFIG_KEYBOARD_PMIC8XXX=m
+-CONFIG_KEYBOARD_PXA27x=y
++# CONFIG_KEYBOARD_PXA27x is not set
+ CONFIG_KEYBOARD_QT1070=m
+ # CONFIG_KEYBOARD_QT2160 is not set
+ CONFIG_KEYBOARD_SAMSUNG=m
+@@ -3269,7 +3270,6 @@ CONFIG_MACH_DOVE=y
+ # CONFIG_MACH_MESON6 is not set
+ CONFIG_MACH_MESON8B=y
+ # CONFIG_MACH_MESON8 is not set
+-CONFIG_MACH_MMP2_DT=y
+ # CONFIG_MACH_OMAP3517EVM is not set
+ # CONFIG_MACH_OMAP3_PANDORA is not set
+ # CONFIG_MACH_OMAP_LDP is not set
+@@ -3623,8 +3623,8 @@ CONFIG_MMC_SDHCI_OF_ESDHC=m
+ CONFIG_MMC_SDHCI_OMAP=m
+ CONFIG_MMC_SDHCI_PCI=m
+ CONFIG_MMC_SDHCI_PLTFM=m
+-CONFIG_MMC_SDHCI_PXAV2=m
+-CONFIG_MMC_SDHCI_PXAV3=m
++# CONFIG_MMC_SDHCI_PXAV2 is not set
++# CONFIG_MMC_SDHCI_PXAV3 is not set
+ CONFIG_MMC_SDHCI_S3C_DMA=y
+ CONFIG_MMC_SDHCI_S3C=m
+ CONFIG_MMC_SDHCI_ST=m
+@@ -3644,8 +3644,6 @@ CONFIG_MMC_VUB300=m
+ CONFIG_MMC_WBSD=m
+ CONFIG_MMC=y
+ CONFIG_MMIOTRACE=y
+-CONFIG_MMP_PDMA=y
+-CONFIG_MMP_TDMA=y
+ CONFIG_MMU=y
+ # CONFIG_MODULE_COMPRESS is not set
+ # CONFIG_MODULE_FORCE_LOAD is not set
+@@ -3775,7 +3773,7 @@ CONFIG_MTD_NAND_OMAP_BCH=y
+ CONFIG_MTD_NAND_ORION=m
+ # CONFIG_MTD_NAND_OXNAS is not set
+ CONFIG_MTD_NAND_PLATFORM=m
+-CONFIG_MTD_NAND_PXA3xx=m
++# CONFIG_MTD_NAND_PXA3xx is not set
+ CONFIG_MTD_NAND_QCOM=m
+ CONFIG_MTD_NAND_RICOH=m
+ CONFIG_MTD_NAND_SUNXI=m
+@@ -4749,6 +4747,7 @@ CONFIG_PL320_MBOX=y
+ CONFIG_PL330_DMA=m
+ CONFIG_PLATFORM_MHU=m
+ # CONFIG_PLATFORM_SI4713 is not set
++# CONFIG_PLAT_PXA is not set
+ # CONFIG_PLAT_SPEAR is not set
+ # CONFIG_PLIP is not set
+ CONFIG_PLX_HERMES=m
+@@ -4882,7 +4881,7 @@ CONFIG_PWM=y
+ CONFIG_PWRSEQ_EMMC=y
+ CONFIG_PWRSEQ_SD8787=m
+ CONFIG_PWRSEQ_SIMPLE=y
+-CONFIG_PXA_DMA=y
++# CONFIG_PXA_DMA is not set
+ # CONFIG_QCA7000 is not set
+ # CONFIG_QCA7000_SPI is not set
+ # CONFIG_QCA7000_UART is not set
+@@ -5765,8 +5764,8 @@ CONFIG_SERIAL_MVEBU_UART=y
+ CONFIG_SERIAL_OF_PLATFORM=y
+ # CONFIG_SERIAL_OMAP is not set
+ # CONFIG_SERIAL_PCH_UART is not set
+-CONFIG_SERIAL_PXA_CONSOLE=y
+-CONFIG_SERIAL_PXA=y
++# CONFIG_SERIAL_PXA_CONSOLE is not set
++# CONFIG_SERIAL_PXA is not set
+ # CONFIG_SERIAL_RP2 is not set
+ CONFIG_SERIAL_SAMSUNG_CONSOLE=y
+ # CONFIG_SERIAL_SAMSUNG_DEBUG is not set
+@@ -5986,7 +5985,6 @@ CONFIG_SND_MAX_CARDS=32
+ CONFIG_SND_MIA=m
+ CONFIG_SND_MIXART=m
+ CONFIG_SND_MIXER_OSS=m
+-CONFIG_SND_MMP_SOC=y
+ CONFIG_SND_MONA=m
+ CONFIG_SND_MPU401=m
+ CONFIG_SND_MTPAV=m
+@@ -6013,7 +6011,7 @@ CONFIG_SND_PCM_XRUN_DEBUG=y
+ CONFIG_SND_PCSP=m
+ CONFIG_SND_PCXHR=m
+ CONFIG_SND_PORTMAN2X4=m
+-CONFIG_SND_PXA910_SOC=m
++# CONFIG_SND_PXA910_SOC is not set
+ # CONFIG_SND_PXA_SOC_SSP is not set
+ CONFIG_SND_RIPTIDE=m
+ CONFIG_SND_RME32=m
+@@ -7359,7 +7357,6 @@ CONFIG_VIDEO_IVTV=m
+ # CONFIG_VIDEO_MEM2MEM_DEINTERLACE is not set
+ CONFIG_VIDEO_MESON_AO_CEC=m
+ CONFIG_VIDEO_MEYE=m
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+ CONFIG_VIDEO_MUX=m
+ CONFIG_VIDEO_MXB=m
+ CONFIG_VIDEO_NOON010PC30=m
+diff --git a/kernel-armv7hl-lpae-debug.config b/kernel-armv7hl-lpae-debug.config
+index c86755f7b..aeaacb9c3 100644
+--- a/kernel-armv7hl-lpae-debug.config
++++ b/kernel-armv7hl-lpae-debug.config
+@@ -1972,6 +1972,7 @@ CONFIG_GPIO_PCF857X=m
+ CONFIG_GPIO_PCI_IDIO_16=m
+ # CONFIG_GPIO_PISOSR is not set
+ CONFIG_GPIO_PL061=y
++# CONFIG_GPIO_PXA is not set
+ CONFIG_GPIO_RASPBERRYPI_EXP=m
+ # CONFIG_GPIO_RDC321X is not set
+ # CONFIG_GPIO_SCH311X is not set
+@@ -2276,7 +2277,7 @@ CONFIG_I2C_NFORCE2=m
+ # CONFIG_I2C_PARPORT_LIGHT is not set
+ CONFIG_I2C_PCA_PLATFORM=m
+ # CONFIG_I2C_PIIX4 is not set
+-CONFIG_I2C_PXA=m
++# CONFIG_I2C_PXA is not set
+ # CONFIG_I2C_PXA_SLAVE is not set
+ CONFIG_I2C_RK3X=y
+ # CONFIG_I2C_ROBOTFUZZ_OSIF is not set
+@@ -3465,7 +3466,7 @@ CONFIG_MMC_SDHCI_OF_ARASAN=m
+ CONFIG_MMC_SDHCI_OMAP=m
+ CONFIG_MMC_SDHCI_PCI=m
+ CONFIG_MMC_SDHCI_PLTFM=m
+-CONFIG_MMC_SDHCI_PXAV3=m
++# CONFIG_MMC_SDHCI_PXAV3 is not set
+ CONFIG_MMC_SDHCI_S3C_DMA=y
+ CONFIG_MMC_SDHCI_S3C=m
+ CONFIG_MMC_SDHCI_TEGRA=m
+@@ -3602,7 +3603,7 @@ CONFIG_MTD_NAND_NANDSIM=m
+ CONFIG_MTD_NAND_ORION=m
+ # CONFIG_MTD_NAND_OXNAS is not set
+ CONFIG_MTD_NAND_PLATFORM=m
+-CONFIG_MTD_NAND_PXA3xx=m
++# CONFIG_MTD_NAND_PXA3xx is not set
+ CONFIG_MTD_NAND_RICOH=m
+ CONFIG_MTD_NAND_SUNXI=m
+ # CONFIG_MTD_NAND_TEGRA is not set
+@@ -4508,6 +4509,7 @@ CONFIG_PL320_MBOX=y
+ CONFIG_PL330_DMA=m
+ CONFIG_PLATFORM_MHU=m
+ # CONFIG_PLATFORM_SI4713 is not set
++# CONFIG_PLAT_PXA is not set
+ # CONFIG_PLAT_SPEAR is not set
+ # CONFIG_PLIP is not set
+ CONFIG_PLX_HERMES=m
+@@ -6921,7 +6923,6 @@ CONFIG_VIDEO_IVTV=m
+ # CONFIG_VIDEO_MEM2MEM_DEINTERLACE is not set
+ CONFIG_VIDEO_MESON_AO_CEC=m
+ CONFIG_VIDEO_MEYE=m
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+ CONFIG_VIDEO_MUX=m
+ CONFIG_VIDEO_MXB=m
+ CONFIG_VIDEO_NOON010PC30=m
+diff --git a/kernel-armv7hl-lpae.config b/kernel-armv7hl-lpae.config
+index 1a64c09a1..25356c221 100644
+--- a/kernel-armv7hl-lpae.config
++++ b/kernel-armv7hl-lpae.config
+@@ -1954,6 +1954,7 @@ CONFIG_GPIO_PCF857X=m
+ CONFIG_GPIO_PCI_IDIO_16=m
+ # CONFIG_GPIO_PISOSR is not set
+ CONFIG_GPIO_PL061=y
++# CONFIG_GPIO_PXA is not set
+ CONFIG_GPIO_RASPBERRYPI_EXP=m
+ # CONFIG_GPIO_RDC321X is not set
+ # CONFIG_GPIO_SCH311X is not set
+@@ -2258,7 +2259,7 @@ CONFIG_I2C_NFORCE2=m
+ # CONFIG_I2C_PARPORT_LIGHT is not set
+ CONFIG_I2C_PCA_PLATFORM=m
+ # CONFIG_I2C_PIIX4 is not set
+-CONFIG_I2C_PXA=m
++# CONFIG_I2C_PXA is not set
+ # CONFIG_I2C_PXA_SLAVE is not set
+ CONFIG_I2C_RK3X=y
+ # CONFIG_I2C_ROBOTFUZZ_OSIF is not set
+@@ -3444,7 +3445,7 @@ CONFIG_MMC_SDHCI_OF_ARASAN=m
+ CONFIG_MMC_SDHCI_OMAP=m
+ CONFIG_MMC_SDHCI_PCI=m
+ CONFIG_MMC_SDHCI_PLTFM=m
+-CONFIG_MMC_SDHCI_PXAV3=m
++# CONFIG_MMC_SDHCI_PXAV3 is not set
+ CONFIG_MMC_SDHCI_S3C_DMA=y
+ CONFIG_MMC_SDHCI_S3C=m
+ CONFIG_MMC_SDHCI_TEGRA=m
+@@ -3580,7 +3581,7 @@ CONFIG_MTD_NAND_NANDSIM=m
+ CONFIG_MTD_NAND_ORION=m
+ # CONFIG_MTD_NAND_OXNAS is not set
+ CONFIG_MTD_NAND_PLATFORM=m
+-CONFIG_MTD_NAND_PXA3xx=m
++# CONFIG_MTD_NAND_PXA3xx is not set
+ CONFIG_MTD_NAND_RICOH=m
+ CONFIG_MTD_NAND_SUNXI=m
+ # CONFIG_MTD_NAND_TEGRA is not set
+@@ -4486,6 +4487,7 @@ CONFIG_PL320_MBOX=y
+ CONFIG_PL330_DMA=m
+ CONFIG_PLATFORM_MHU=m
+ # CONFIG_PLATFORM_SI4713 is not set
++# CONFIG_PLAT_PXA is not set
+ # CONFIG_PLAT_SPEAR is not set
+ # CONFIG_PLIP is not set
+ CONFIG_PLX_HERMES=m
+@@ -6897,7 +6899,6 @@ CONFIG_VIDEO_IVTV=m
+ # CONFIG_VIDEO_MEM2MEM_DEINTERLACE is not set
+ CONFIG_VIDEO_MESON_AO_CEC=m
+ CONFIG_VIDEO_MEYE=m
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+ CONFIG_VIDEO_MUX=m
+ CONFIG_VIDEO_MXB=m
+ CONFIG_VIDEO_NOON010PC30=m
+diff --git a/kernel-armv7hl.config b/kernel-armv7hl.config
+index 4f22cc0c9..bd975081e 100644
+--- a/kernel-armv7hl.config
++++ b/kernel-armv7hl.config
+@@ -229,7 +229,7 @@ CONFIG_ARCH_HIGHBANK=y
+ # CONFIG_ARCH_MDM9615 is not set
+ # CONFIG_ARCH_MEDIATEK is not set
+ CONFIG_ARCH_MESON=y
+-CONFIG_ARCH_MMP=y
++# CONFIG_ARCH_MMP is not set
+ CONFIG_ARCH_MSM8960=y
+ CONFIG_ARCH_MSM8974=y
+ CONFIG_ARCH_MSM8X60=y
+@@ -2054,6 +2054,7 @@ CONFIG_GPIO_PCF857X=m
+ CONFIG_GPIO_PCI_IDIO_16=m
+ # CONFIG_GPIO_PISOSR is not set
+ CONFIG_GPIO_PL061=y
++# CONFIG_GPIO_PXA is not set
+ CONFIG_GPIO_RASPBERRYPI_EXP=m
+ # CONFIG_GPIO_RDC321X is not set
+ # CONFIG_GPIO_SCH311X is not set
+@@ -2372,7 +2373,7 @@ CONFIG_I2C_OMAP=y
+ # CONFIG_I2C_PARPORT_LIGHT is not set
+ CONFIG_I2C_PCA_PLATFORM=m
+ # CONFIG_I2C_PIIX4 is not set
+-CONFIG_I2C_PXA=m
++# CONFIG_I2C_PXA is not set
+ # CONFIG_I2C_PXA_SLAVE is not set
+ CONFIG_I2C_QUP=m
+ CONFIG_I2C_RK3X=y
+@@ -3004,7 +3005,7 @@ CONFIG_KEYBOARD_NVEC=y
+ CONFIG_KEYBOARD_OMAP4=m
+ # CONFIG_KEYBOARD_OPENCORES is not set
+ CONFIG_KEYBOARD_PMIC8XXX=m
+-CONFIG_KEYBOARD_PXA27x=y
++# CONFIG_KEYBOARD_PXA27x is not set
+ CONFIG_KEYBOARD_QT1070=m
+ # CONFIG_KEYBOARD_QT2160 is not set
+ CONFIG_KEYBOARD_SAMSUNG=m
+@@ -3249,7 +3250,6 @@ CONFIG_MACH_DOVE=y
+ # CONFIG_MACH_MESON6 is not set
+ CONFIG_MACH_MESON8B=y
+ # CONFIG_MACH_MESON8 is not set
+-CONFIG_MACH_MMP2_DT=y
+ # CONFIG_MACH_OMAP3517EVM is not set
+ # CONFIG_MACH_OMAP3_PANDORA is not set
+ # CONFIG_MACH_OMAP_LDP is not set
+@@ -3602,8 +3602,8 @@ CONFIG_MMC_SDHCI_OF_ESDHC=m
+ CONFIG_MMC_SDHCI_OMAP=m
+ CONFIG_MMC_SDHCI_PCI=m
+ CONFIG_MMC_SDHCI_PLTFM=m
+-CONFIG_MMC_SDHCI_PXAV2=m
+-CONFIG_MMC_SDHCI_PXAV3=m
++# CONFIG_MMC_SDHCI_PXAV2 is not set
++# CONFIG_MMC_SDHCI_PXAV3 is not set
+ CONFIG_MMC_SDHCI_S3C_DMA=y
+ CONFIG_MMC_SDHCI_S3C=m
+ CONFIG_MMC_SDHCI_ST=m
+@@ -3622,8 +3622,6 @@ CONFIG_MMC_VIA_SDMMC=m
+ CONFIG_MMC_VUB300=m
+ CONFIG_MMC_WBSD=m
+ CONFIG_MMC=y
+-CONFIG_MMP_PDMA=y
+-CONFIG_MMP_TDMA=y
+ CONFIG_MMU=y
+ # CONFIG_MODULE_COMPRESS is not set
+ # CONFIG_MODULE_FORCE_LOAD is not set
+@@ -3753,7 +3751,7 @@ CONFIG_MTD_NAND_OMAP_BCH=y
+ CONFIG_MTD_NAND_ORION=m
+ # CONFIG_MTD_NAND_OXNAS is not set
+ CONFIG_MTD_NAND_PLATFORM=m
+-CONFIG_MTD_NAND_PXA3xx=m
++# CONFIG_MTD_NAND_PXA3xx is not set
+ CONFIG_MTD_NAND_QCOM=m
+ CONFIG_MTD_NAND_RICOH=m
+ CONFIG_MTD_NAND_SUNXI=m
+@@ -4727,6 +4725,7 @@ CONFIG_PL320_MBOX=y
+ CONFIG_PL330_DMA=m
+ CONFIG_PLATFORM_MHU=m
+ # CONFIG_PLATFORM_SI4713 is not set
++# CONFIG_PLAT_PXA is not set
+ # CONFIG_PLAT_SPEAR is not set
+ # CONFIG_PLIP is not set
+ CONFIG_PLX_HERMES=m
+@@ -4859,7 +4858,7 @@ CONFIG_PWM=y
+ CONFIG_PWRSEQ_EMMC=y
+ CONFIG_PWRSEQ_SD8787=m
+ CONFIG_PWRSEQ_SIMPLE=y
+-CONFIG_PXA_DMA=y
++# CONFIG_PXA_DMA is not set
+ # CONFIG_QCA7000 is not set
+ # CONFIG_QCA7000_SPI is not set
+ # CONFIG_QCA7000_UART is not set
+@@ -5742,8 +5741,8 @@ CONFIG_SERIAL_MVEBU_UART=y
+ CONFIG_SERIAL_OF_PLATFORM=y
+ # CONFIG_SERIAL_OMAP is not set
+ # CONFIG_SERIAL_PCH_UART is not set
+-CONFIG_SERIAL_PXA_CONSOLE=y
+-CONFIG_SERIAL_PXA=y
++# CONFIG_SERIAL_PXA_CONSOLE is not set
++# CONFIG_SERIAL_PXA is not set
+ # CONFIG_SERIAL_RP2 is not set
+ CONFIG_SERIAL_SAMSUNG_CONSOLE=y
+ # CONFIG_SERIAL_SAMSUNG_DEBUG is not set
+@@ -5963,7 +5962,6 @@ CONFIG_SND_MAX_CARDS=32
+ CONFIG_SND_MIA=m
+ CONFIG_SND_MIXART=m
+ CONFIG_SND_MIXER_OSS=m
+-CONFIG_SND_MMP_SOC=y
+ CONFIG_SND_MONA=m
+ CONFIG_SND_MPU401=m
+ CONFIG_SND_MTPAV=m
+@@ -5989,7 +5987,7 @@ CONFIG_SND_PCM_OSS_PLUGINS=y
+ CONFIG_SND_PCSP=m
+ CONFIG_SND_PCXHR=m
+ CONFIG_SND_PORTMAN2X4=m
+-CONFIG_SND_PXA910_SOC=m
++# CONFIG_SND_PXA910_SOC is not set
+ # CONFIG_SND_PXA_SOC_SSP is not set
+ CONFIG_SND_RIPTIDE=m
+ CONFIG_SND_RME32=m
+@@ -7335,7 +7333,6 @@ CONFIG_VIDEO_IVTV=m
+ # CONFIG_VIDEO_MEM2MEM_DEINTERLACE is not set
+ CONFIG_VIDEO_MESON_AO_CEC=m
+ CONFIG_VIDEO_MEYE=m
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+ CONFIG_VIDEO_MUX=m
+ CONFIG_VIDEO_MXB=m
+ CONFIG_VIDEO_NOON010PC30=m
+diff --git a/kernel-i686-PAE.config b/kernel-i686-PAE.config
+index 3b89917b4..dbaa0bd3a 100644
+--- a/kernel-i686-PAE.config
++++ b/kernel-i686-PAE.config
+@@ -6437,7 +6437,6 @@ CONFIG_VIDEO_IVTV=m
+ # CONFIG_VIDEO_M5MOLS is not set
+ # CONFIG_VIDEO_MEM2MEM_DEINTERLACE is not set
+ CONFIG_VIDEO_MEYE=m
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+ CONFIG_VIDEO_MXB=m
+ CONFIG_VIDEO_NOON010PC30=m
+ # CONFIG_VIDEO_PCI_SKELETON is not set
+diff --git a/kernel-i686-PAEdebug.config b/kernel-i686-PAEdebug.config
+index 7f4d41d35..10e277f7e 100644
+--- a/kernel-i686-PAEdebug.config
++++ b/kernel-i686-PAEdebug.config
+@@ -6462,7 +6462,6 @@ CONFIG_VIDEO_IVTV=m
+ # CONFIG_VIDEO_M5MOLS is not set
+ # CONFIG_VIDEO_MEM2MEM_DEINTERLACE is not set
+ CONFIG_VIDEO_MEYE=m
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+ CONFIG_VIDEO_MXB=m
+ CONFIG_VIDEO_NOON010PC30=m
+ # CONFIG_VIDEO_PCI_SKELETON is not set
+diff --git a/kernel-i686-debug.config b/kernel-i686-debug.config
+index 239988a91..2d80d11dc 100644
+--- a/kernel-i686-debug.config
++++ b/kernel-i686-debug.config
+@@ -6462,7 +6462,6 @@ CONFIG_VIDEO_IVTV=m
+ # CONFIG_VIDEO_M5MOLS is not set
+ # CONFIG_VIDEO_MEM2MEM_DEINTERLACE is not set
+ CONFIG_VIDEO_MEYE=m
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+ CONFIG_VIDEO_MXB=m
+ CONFIG_VIDEO_NOON010PC30=m
+ # CONFIG_VIDEO_PCI_SKELETON is not set
+diff --git a/kernel-i686.config b/kernel-i686.config
+index 01fe57e86..d1595fad1 100644
+--- a/kernel-i686.config
++++ b/kernel-i686.config
+@@ -6437,7 +6437,6 @@ CONFIG_VIDEO_IVTV=m
+ # CONFIG_VIDEO_M5MOLS is not set
+ # CONFIG_VIDEO_MEM2MEM_DEINTERLACE is not set
+ CONFIG_VIDEO_MEYE=m
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+ CONFIG_VIDEO_MXB=m
+ CONFIG_VIDEO_NOON010PC30=m
+ # CONFIG_VIDEO_PCI_SKELETON is not set
+diff --git a/kernel-ppc64le-debug.config b/kernel-ppc64le-debug.config
+index 64fc13368..90c2ec12b 100644
+--- a/kernel-ppc64le-debug.config
++++ b/kernel-ppc64le-debug.config
+@@ -6137,7 +6137,6 @@ CONFIG_VIDEO_IVTV=m
+ # CONFIG_VIDEO_M5MOLS is not set
+ # CONFIG_VIDEO_MEM2MEM_DEINTERLACE is not set
+ CONFIG_VIDEO_MEYE=m
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+ CONFIG_VIDEO_MXB=m
+ CONFIG_VIDEO_NOON010PC30=m
+ # CONFIG_VIDEO_PCI_SKELETON is not set
+diff --git a/kernel-ppc64le.config b/kernel-ppc64le.config
+index 3b6899e18..b8d8f1e51 100644
+--- a/kernel-ppc64le.config
++++ b/kernel-ppc64le.config
+@@ -6110,7 +6110,6 @@ CONFIG_VIDEO_IVTV=m
+ # CONFIG_VIDEO_M5MOLS is not set
+ # CONFIG_VIDEO_MEM2MEM_DEINTERLACE is not set
+ CONFIG_VIDEO_MEYE=m
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+ CONFIG_VIDEO_MXB=m
+ CONFIG_VIDEO_NOON010PC30=m
+ # CONFIG_VIDEO_PCI_SKELETON is not set
+diff --git a/kernel-s390x-debug.config b/kernel-s390x-debug.config
+index 0891b06f5..186ccc885 100644
+--- a/kernel-s390x-debug.config
++++ b/kernel-s390x-debug.config
+@@ -6029,7 +6029,6 @@ CONFIG_VIDEO_IVTV=m
+ # CONFIG_VIDEO_M5MOLS is not set
+ # CONFIG_VIDEO_MEM2MEM_DEINTERLACE is not set
+ CONFIG_VIDEO_MEYE=m
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+ CONFIG_VIDEO_MXB=m
+ CONFIG_VIDEO_NOON010PC30=m
+ # CONFIG_VIDEO_PCI_SKELETON is not set
+diff --git a/kernel-s390x.config b/kernel-s390x.config
+index 94ee28490..33dd3cf67 100644
+--- a/kernel-s390x.config
++++ b/kernel-s390x.config
+@@ -6002,7 +6002,6 @@ CONFIG_VIDEO_IVTV=m
+ # CONFIG_VIDEO_M5MOLS is not set
+ # CONFIG_VIDEO_MEM2MEM_DEINTERLACE is not set
+ CONFIG_VIDEO_MEYE=m
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+ CONFIG_VIDEO_MXB=m
+ CONFIG_VIDEO_NOON010PC30=m
+ # CONFIG_VIDEO_PCI_SKELETON is not set
+diff --git a/kernel-x86_64-debug.config b/kernel-x86_64-debug.config
+index 9d29cb93d..90f4dc7b1 100644
+--- a/kernel-x86_64-debug.config
++++ b/kernel-x86_64-debug.config
+@@ -6513,7 +6513,6 @@ CONFIG_VIDEO_IVTV=m
+ # CONFIG_VIDEO_M5MOLS is not set
+ # CONFIG_VIDEO_MEM2MEM_DEINTERLACE is not set
+ CONFIG_VIDEO_MEYE=m
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+ CONFIG_VIDEO_MXB=m
+ CONFIG_VIDEO_NOON010PC30=m
+ # CONFIG_VIDEO_PCI_SKELETON is not set
+diff --git a/kernel-x86_64.config b/kernel-x86_64.config
+index 5b01c9591..43302b33a 100644
+--- a/kernel-x86_64.config
++++ b/kernel-x86_64.config
+@@ -6488,7 +6488,6 @@ CONFIG_VIDEO_IVTV=m
+ # CONFIG_VIDEO_M5MOLS is not set
+ # CONFIG_VIDEO_MEM2MEM_DEINTERLACE is not set
+ CONFIG_VIDEO_MEYE=m
+-# CONFIG_VIDEO_MMP_CAMERA is not set
+ CONFIG_VIDEO_MXB=m
+ CONFIG_VIDEO_NOON010PC30=m
+ # CONFIG_VIDEO_PCI_SKELETON is not set
+-- 
+2.17.1
+_______________________________________________
+kernel mailing list -- kernel@xxxxxxxxxxxxxxxxxxxxxxx
+To unsubscribe send an email to kernel-leave@xxxxxxxxxxxxxxxxxxxxxxx
+Fedora Code of Conduct: <a  rel="nofollow" href="https://getfedora.org/code-of-conduct.html">https://getfedora.org/code-of-conduct.html</a>
+List Guidelines: <a  rel="nofollow" href="https://fedoraproject.org/wiki/Mailing_list_guidelines">https://fedoraproject.org/wiki/Mailing_list_guidelines</a>
+List Archives: <a  rel="nofollow" href="https://lists.fedoraproject.org/archives/list/kernel@xxxxxxxxxxxxxxxxxxxxxxx/message/Y2ZVGJCKGHEPDWQS4GMLE4JSK7F6FJM6/">https://lists.fedoraproject.org/archives/list/kernel@xxxxxxxxxxxxxxxxxxxxxxx/message/Y2ZVGJCKGHEPDWQS4GMLE4JSK7F6FJM6/</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07240" href="msg07240.html">Re: [PATCH] Disable PXA/MMP arches - break suspend</a></strong>
+<ul><li><em>From:</em> Peter Robinson</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07238.html">Re: 4.18 Rebase plans</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07240.html">Re: [PATCH] Disable PXA/MMP arches - break suspend</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07236.html">drop kexec-bzimage-verify-pe-signature-fix.patch</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07240.html">Re: [PATCH] Disable PXA/MMP arches - break suspend</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07239"><strong>Date</strong></a></li>
+<li><a href="index.html#07239"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;General&nbsp;Discussion]</a>
+&nbsp;
+&nbsp;
+<a href=http://lists.linuxcoding.com/rhl/>[Older&nbsp;Fedora&nbsp;Users&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-advisory-board/>[Fedora&nbsp;Advisory&nbsp;Board]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-security/>[Fedora&nbsp;Security]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-devel-java/>[Fedora&nbsp;Devel&nbsp;Java]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-legacy/>[Fedora&nbsp;Legacy]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ataraid/>[ATA&nbsp;RAID]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-marketing/>[Fedora&nbsp;Marketing]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-mentors/>[Fedora&nbsp;Mentors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-package-announce/>[Fedora&nbsp;Package&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-package-review/>[Fedora&nbsp;Package&nbsp;Review]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-music/>[Fedora&nbsp;Music]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-packaging/>[Fedora&nbsp;Packaging]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos/>[Centos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/coolkey/>[Coolkey]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/yum/>[Yum&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/tux/>[Tux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-art/>[Fedora&nbsp;Art]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-docs/>[Fedora&nbsp;Docs]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[USB]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

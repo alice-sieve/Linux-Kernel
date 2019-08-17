@@ -1,0 +1,273 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 24/25] qemu: blockjob: Unplug inherited storage	chains when concluding blockjob -->
+<!--X-From-R13: Brgre Yerzcn &#60;cxerzcnNerqung.pbz> -->
+<!--X-Date: Fri, 12 Jul 2019 09:07:42 &#45;0700 -->
+<!--X-Message-Id: 87978b3f15284eb21ab3f92c0c5eb0dcd83e52ab.1562947284.git.pkrempa@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1562947283.git.pkrempa@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 24/25] qemu: blockjob: Unplug inherited storage	chains when concluding blockjob</title>
+<meta name="description" content="libvirt: [PATCH 24/25] qemu: blockjob: Unplug inherited storage	chains when concluding blockjob">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 24/25] qemu: blockjob: Unplug inherited storage	chains when concluding blockjob</h1>
+[<a href="msg187339.html">Date Prev</a>][<a href="msg187338.html">Date Next</a>][<a href="msg187434.html">Thread Prev</a>][<a href="msg187435.html">Thread Next</a>][<a href="maillist.html#187337">Date Index</a>][<a href="index.html#187337">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 24/25] qemu: blockjob: Unplug inherited storage	chains when concluding blockjob</li>
+<li><em>From</em>: Peter Krempa &lt;pkrempa@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 12 Jul 2019 18:06:05 +0200</li>
+<li><em>Cc</em>: Peter Krempa &lt;pkrempa@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187317.html">cover.1562947283.git.pkrempa@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187317.html">cover.1562947283.git.pkrempa@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>In cases when the disk frontend was unplugged while a blockjob was
+running the blockjob inherits the backing chain. When the blockjob is
+then terminated we need to unplug the chain as it will not be used any
+more.
+
+Signed-off-by: Peter Krempa &lt;pkrempa@xxxxxxxxxx&gt;
+---
+ src/qemu/qemu_blockjob.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/src/qemu/qemu_blockjob.c b/src/qemu/qemu_blockjob.c
+index 70b223b29d..8a1cf6893b 100644
+--- a/src/qemu/qemu_blockjob.c
++++ b/src/qemu/qemu_blockjob.c
+@@ -537,6 +537,28 @@ qemuBlockJobEventProcessLegacy(virQEMUDriverPtr driver,
+ }
+
+
++static void
++qemuBlockJobEventProcessConcludedRemoveChain(virQEMUDriverPtr driver,
++                                             virDomainObjPtr vm,
++                                             qemuDomainAsyncJob asyncJob,
++                                             virStorageSourcePtr chain)
++{
++    VIR_AUTOPTR(qemuBlockStorageSourceChainData) data = NULL;
++
++    if (!(data = qemuBlockStorageSourceChainDetachPrepareBlockdev(chain)))
++        return;
++
++    if (qemuDomainObjEnterMonitorAsync(driver, vm, asyncJob) &lt; 0)
++        return;
++
++    qemuBlockStorageSourceChainDetach(qemuDomainGetMonitor(vm), data);
++    if (qemuDomainObjExitMonitor(driver, vm) &lt; 0)
++        return;
++
++    qemuDomainStorageSourceChainAccessRevoke(driver, vm, chain);
++}
++
++
+ static void
+ qemuBlockJobEventProcessConcludedTransition(qemuBlockJobDataPtr job,
+                                             virQEMUDriverPtr driver,
+@@ -653,6 +675,16 @@ qemuBlockJobEventProcessConcluded(qemuBlockJobDataPtr job,
+
+     qemuBlockJobEventProcessConcludedTransition(job, driver, vm, asyncJob);
+
++    /* unplug the backing chains in case the job inherited them */
++    if (!job-&gt;disk) {
++        if (job-&gt;chain)
++            qemuBlockJobEventProcessConcludedRemoveChain(driver, vm, asyncJob,
++                                                         job-&gt;chain);
++        if (job-&gt;mirrorChain)
++            qemuBlockJobEventProcessConcludedRemoveChain(driver, vm, asyncJob,
++                                                         job-&gt;mirrorChain);
++    }
++
+  cleanup:
+     if (dismissed) {
+         qemuBlockJobUnregister(job, vm);
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187339.html">[PATCH 23/25] qemu: Detect managed persistent	reservations in block job orphan chains</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187338.html">[PATCH 25/25] qemu: hotplug: Transfer ownership of	backing chain to block job on disk unplug</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187434.html">Re:  [PATCH 23/25] qemu: Detect managed persistent reservations in block job orphan chains</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187435.html">Re:  [PATCH 24/25] qemu: blockjob: Unplug inherited storage chains when concluding blockjob</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187337"><strong>Date</strong></a></li>
+<li><a href="index.html#187337"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

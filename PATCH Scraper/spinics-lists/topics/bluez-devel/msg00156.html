@@ -1,0 +1,650 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Authorization -->
+<!--X-From-R13: "Qynhqvb Fnxnunfv" &#60;pynhqvb.gnxnunfvNbcraobffn.bet> -->
+<!--X-Date: Wed, 30 Apr 2008 16:48:07 &#45;0700 -->
+<!--X-Message-Id: f9d4bd30804301648k711a31eco97bfc40facbb437a@mail.gmail.com -->
+<!--X-Content-Type: multipart/mixed -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Bluez Devel: [PATCH] Authorization">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH] Authorization &mdash; Bluez Devel</title>
+<link rel="alternate" type="application/rss+xml" title="Bluez Devel" href="maillist.rdf">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] Authorization</h1>
+[<a href="msg00155.html">Date Prev</a>][<a href="msg00157.html">Date Next</a>][<a href="msg00151.html">Thread Prev</a>][<a href="msg00157.html">Thread Next</a>][<a href="maillist.html#00156">Date Index</a>][<a href="index.html#00156">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Authorization</li>
+<li><em>From</em>: &quot;Claudio Takahasi&quot; &lt;<a href="mailto:claudio.takahasi@DOMAIN.HIDDEN">claudio.takahasi@xxxxxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Wed, 30 Apr 2008 20:48:00 -0300</li>
+<li><em>Reply-to</em>: BlueZ development &lt;<a href="mailto:bluez-devel@DOMAIN.HIDDEN">bluez-devel@xxxxxxxxxxxxxxxxxxxxx</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Hi Marcel, Vinicius,
+
+Here is the patch/workaround for service authorization.
+
+Comments?
+
+The next step is implement global trust: SetProperty(&quot;Trusted&quot;, True/False)
+
+Regards,
+Claudio.
+-- 
+--
+Claudio Takahasi
+Instituto Nokia de Tecnologia
+Recife - Pernambuco - Brasil
++55 81 30879999
+</pre><pre>Index: audio/main.c
+===================================================================
+RCS file: /cvsroot/bluez/utils/audio/main.c,v
+retrieving revision 1.33
+diff -u -r1.33 main.c
+--- audio/main.c	28 Mar 2008 20:46:51 -0000	1.33
++++ audio/main.c	30 Apr 2008 23:45:35 -0000
+@@ -41,6 +41,20 @@
+ #include &quot;device.h&quot;
+ #include &quot;manager.h&quot;
+ 
++static const char *uuids[] = {
++	GENERIC_AUDIO_UUID,
++	HSP_HS_UUID,
++	HSP_AG_UUID,
++	HFP_HS_UUID,
++	HFP_AG_UUID,
++	ADVANCED_AUDIO_UUID,
++	A2DP_SOURCE_UUID,
++	A2DP_SINK_UUID,
++	AVRCP_REMOTE_UUID,
++	AVRCP_TARGET_UUID,
++	NULL
++};
++
+ static GKeyFile *load_config_file(const char *file)
+ {
+ 	GError *err = NULL;
+@@ -82,6 +96,8 @@
+ 
+ 	g_key_file_free(config);
+ 
++	register_uuids(&quot;audio&quot;, &amp;uuids);
++
+ 	register_external_service(conn, &quot;audio&quot;, &quot;Audio service&quot;, &quot;&quot;);
+ 
+ 	return 0;
+Index: hcid/dbus-database.c
+===================================================================
+RCS file: /cvsroot/bluez/utils/hcid/dbus-database.c,v
+retrieving revision 1.44
+diff -u -r1.44 dbus-database.c
+--- hcid/dbus-database.c	9 Apr 2008 21:48:30 -0000	1.44
++++ hcid/dbus-database.c	30 Apr 2008 23:45:36 -0000
+@@ -422,7 +422,10 @@
+ 
+ 	sender = dbus_message_get_sender(msg);
+ 
+-	service = search_service(sender);
++	service = search_service_by_uuid(uuid);
++	if (!service)
++		service = search_service(sender);
++
+ 	if (!service) {
+ 		debug(&quot;Got RequestAuthorization from non-service owner %s&quot;,
+ 				sender);
+@@ -458,20 +461,23 @@
+ static DBusHandlerResult cancel_authorization_request(DBusConnection *conn,
+ 						DBusMessage *msg, void *data)
+ {
+-	const char *sender, *address, *path;
++	const char *sender, *address, *uuid;
+ 	struct service *service;
+ 
+ 	if (dbus_message_get_args(msg, NULL, DBUS_TYPE_STRING, &amp;address,
+-			DBUS_TYPE_STRING, &amp;path, DBUS_TYPE_INVALID) == FALSE)
++			DBUS_TYPE_STRING, &amp;uuid, DBUS_TYPE_INVALID) == FALSE)
+ 		return error_invalid_arguments(conn, msg, NULL);
+ 
+ 	sender = dbus_message_get_sender(msg);
+ 
+-	service = search_service(sender);
++	service = search_service_by_uuid(uuid);
++	if (!service)
++		service = search_service(sender);
++
+ 	if (!service)
+ 		return error_not_authorized(conn, msg);
+ 
+-	return cancel_authorize_request_old(conn, msg, service, address, path);
++	return cancel_authorize_request_old(conn, msg, service, address, uuid);
+ }
+ 
+ static DBusMethodVTable database_methods[] = {
+Index: hcid/dbus-security.c
+===================================================================
+RCS file: /cvsroot/bluez/utils/hcid/dbus-security.c,v
+retrieving revision 1.89
+diff -u -r1.89 dbus-security.c
+--- hcid/dbus-security.c	8 Apr 2008 21:28:26 -0000	1.89
++++ hcid/dbus-security.c	30 Apr 2008 23:45:37 -0000
+@@ -766,7 +766,7 @@
+ 					const char *adapter_path,
+ 					struct service *service,
+ 					const char *address,
+-					const char *path)
++					const char *uuid)
+ {
+ 	struct auth_agent_req *req = NULL;
+ 	DBusMessage *message;
+@@ -777,7 +777,7 @@
+ 		if (!strcmp(adapter_path, req-&gt;adapter_path) &amp;&amp;
+ 			!strcmp(address, req-&gt;address) &amp;&amp;
+ 			!strcmp(service-&gt;object_path, req-&gt;service_path) &amp;&amp;
+-			!strcmp(path, req-&gt;uuid))
++			!strcmp(uuid, req-&gt;uuid))
+ 			break;
+ 	}
+ 
+@@ -801,7 +801,7 @@
+ 						DBusMessage *msg,
+ 						struct service *service,
+ 						const char *address,
+-						const char *path)
++						const char *uuid)
+ {
+ 	char adapter_path[PATH_MAX];
+ 	int adapter_id;
+@@ -820,7 +820,7 @@
+ 			adapter_id);
+ 
+ 	return auth_agent_send_cancel(msg, default_auth_agent, adapter_path,
+-						service, address, path);
++						service, address, uuid);
+ }
+ 
+ static DBusMethodVTable security_methods[] = {
+Index: hcid/dbus-service.c
+===================================================================
+RCS file: /cvsroot/bluez/utils/hcid/dbus-service.c,v
+retrieving revision 1.146
+diff -u -r1.146 dbus-service.c
+--- hcid/dbus-service.c	3 Apr 2008 18:01:20 -0000	1.146
++++ hcid/dbus-service.c	30 Apr 2008 23:45:37 -0000
+@@ -65,7 +65,13 @@
+ 
+ #define NAME_MATCH &quot;interface=&quot; DBUS_INTERFACE_DBUS &quot;,member=NameOwnerChanged&quot;
+ 
++struct service_uuids {
++	char *name;
++	char **uuids;
++};
++
+ static GSList *services = NULL;
++static GSList *services_uuids = NULL;
+ static GSList *removed = NULL;
+ 
+ static void service_free(struct service *service)
+@@ -829,6 +835,12 @@
+ struct service *search_service(const char *pattern)
+ {
+ 	GSList *l;
++	const char *bus_id;
++
++	/* Workaround for plugins: share the same bus id */
++	bus_id = dbus_bus_get_unique_name(get_dbus_connection());
++	if (!strcmp(bus_id, pattern))
++		return NULL;
+ 
+ 	for (l = services; l != NULL; l = l-&gt;next) {
+ 		struct service *service = l-&gt;data;
+@@ -1060,22 +1072,25 @@
+ 				const char *name, const char *description)
+ {
+ 	struct service *service;
+-
+-	if (!conn)
+-		return -1;
++	const char *sender;
+ 
+ 	service = create_external_service(ident, name, description);
+ 	if (!service)
+ 		return -1;
+ 
+-	service-&gt;bus_name = g_strdup(bus_name);
++	if (!bus_name) {
++		sender = dbus_bus_get_unique_name(get_dbus_connection());
++		service-&gt;bus_name = g_strdup(sender);
++	} else
++		service-&gt;bus_name = g_strdup(bus_name);
+ 
+ 	if (register_service(service) &lt; 0) {
+ 		service_free(service);
+ 		return -1;
+ 	}
+ 
+-	name_listener_add(conn, bus_name, (name_cb_t) external_service_exit,
++	if (conn &amp;&amp; bus_name)
++		name_listener_add(conn, bus_name, (name_cb_t) external_service_exit,
+ 				service);
+ 
+ 	dbus_connection_emit_signal(get_dbus_connection(), service-&gt;object_path,
+@@ -1089,3 +1104,95 @@
+ {
+ 	return unregister_service_for_connection(conn, service);
+ }
++
++static gint name_cmp(struct service_uuids *su, const char *name)
++{
++	return strcmp(su-&gt;name, name);
++}
++
++static gint uuid_cmp(struct service_uuids *su, const char *uuid)
++{
++	int i;
++
++	for (i = 0; su-&gt;uuids[i]; i++) {
++		if (!strcasecmp(su-&gt;uuids[i], uuid))
++			return 0;
++	}
++
++	return -1;
++}
++
++struct service *search_service_by_uuid(const char *uuid)
++{
++	struct service_uuids *su;
++	struct service *service;
++	GSList *l;
++
++	if (!services_uuids)
++		return NULL;
++
++	l = g_slist_find_custom(services_uuids, uuid, (GCompareFunc) uuid_cmp);
++	if (!l)
++		return NULL;
++
++	su = l-&gt;data;
++	service = search_service(su-&gt;name);
++	if (!service)
++		return NULL;
++
++	return service;
++}
++
++void register_uuids(const char *name, const char **uuids)
++{
++	struct service_uuids *su;
++	int i;
++
++	if (!name)
++		return;
++
++	su = g_new0(struct service_uuids, 1);
++	su-&gt;name = g_strdup(name);
++
++	for (i = 0; uuids[i]; i++);
++
++	su-&gt;uuids = g_new0(char *, i + 1);
++
++	for (i = 0; uuids[i]; i++)
++		su-&gt;uuids[i] = g_strdup(uuids[i]);
++
++	services_uuids = g_slist_append(services_uuids, su);
++}
++
++static void service_uuids_free(struct service_uuids *su)
++{
++	int i;
++
++	if (!su)
++		return;
++
++	g_free(su-&gt;name);
++
++	for (i = 0; su-&gt;uuids[i]; i++)
++		g_free(su-&gt;uuids[i]);
++
++	g_free(su);
++}
++
++void unregister_uuids(const char *name)
++{
++	struct service_uuids *su;
++	GSList *l;
++
++	if (!services_uuids)
++		return;
++
++	l = g_slist_find_custom(services_uuids, name, (GCompareFunc) name_cmp);
++	if (!l)
++		return;
++
++	su = l-&gt;data;
++	services_uuids = g_slist_remove(services_uuids, su);
++
++	service_uuids_free(su);
++}
+Index: hcid/dbus-service.h
+===================================================================
+RCS file: /cvsroot/bluez/utils/hcid/dbus-service.h,v
+retrieving revision 1.34
+diff -u -r1.34 dbus-service.h
+--- hcid/dbus-service.h	3 Apr 2008 18:01:20 -0000	1.34
++++ hcid/dbus-service.h	30 Apr 2008 23:45:38 -0000
+@@ -53,6 +53,8 @@
+ 
+ struct service *search_service(const char *pattern);
+ 
++struct service *search_service_by_uuid(const char *uuid);
++
+ int service_start(struct service *service, DBusConnection *conn);
+ 
+ int init_services(const char *path);
+@@ -61,3 +63,6 @@
+ 				const char *name, const char *description);
+ 
+ int service_unregister(DBusConnection *conn, struct service *service);
++
++void register_uuids(const char *name, const char **uuids);
++void unregister_uuids(const char *name);
+Index: hcid/plugin.c
+===================================================================
+RCS file: /cvsroot/bluez/utils/hcid/plugin.c,v
+retrieving revision 1.12
+diff -u -r1.12 plugin.c
+--- hcid/plugin.c	17 Apr 2008 17:46:50 -0000	1.12
++++ hcid/plugin.c	30 Apr 2008 23:45:38 -0000
+@@ -38,6 +38,7 @@
+ #include &lt;dbus/dbus.h&gt;
+ 
+ #include &quot;dbus-helper.h&quot;
++#include &quot;dbus-service.h&quot;
+ #include &quot;adapter.h&quot;
+ #include &quot;dbus-hci.h&quot;
+ #include &quot;agent.h&quot;
+@@ -210,18 +211,15 @@
+ 				dst, active_conn_find_by_bdaddr))
+ 		return -ENOTCONN;
+ 
+-	/* FIXME: Is there a plugin that exports this service? */
+-
+ 	ba2str(dst, address);
+ 	device = adapter_find_device(adapter, address);
+ 	if (!device)
+ 		return -EPERM;
+ 
+-	/*
+-	 * FIXME: Trusted device? Currently, service are based on a friendly
+-	 * name, it is necessary convert UUID128 to friendly name or store the
+-	 * UUID128 in the trusted file.
+-	 */
++	if (!search_service_by_uuid(uuid))
++		return -EPERM;
++
++	/* FIXME: Missing check trusted file entries */
+ 
+ 	agent = (device-&gt;agent ? : adapter-&gt;agent);
+ 	if (!agent)
+Index: input/main.c
+===================================================================
+RCS file: /cvsroot/bluez/utils/input/main.c,v
+retrieving revision 1.20
+diff -u -r1.20 main.c
+--- input/main.c	9 Apr 2008 22:00:34 -0000	1.20
++++ input/main.c	30 Apr 2008 23:45:38 -0000
+@@ -34,6 +34,13 @@
+ #include &quot;dbus.h&quot;
+ #include &quot;manager.h&quot;
+ 
++#define HID_UUID &quot;00001124-0000-1000-8000-00805f9b34fb&quot;
++
++static const char *uuids[] = {
++	HID_UUID,
++	NULL
++};
++
+ static DBusConnection *conn;
+ 
+ static int input_init(void)
+@@ -47,6 +54,8 @@
+ 		return -EIO;
+ 	}
+ 
++	register_uuids(&quot;input&quot;, &amp;uuids);
++
+ 	register_external_service(conn, &quot;input&quot;, &quot;Input service&quot;, &quot;&quot;);
+ 
+ 	return 0;
+Index: input/server.c
+===================================================================
+RCS file: /cvsroot/bluez/utils/input/server.c,v
+retrieving revision 1.20
+diff -u -r1.20 server.c
+--- input/server.c	17 Apr 2008 14:54:30 -0000	1.20
++++ input/server.c	30 Apr 2008 23:45:38 -0000
+@@ -55,7 +55,6 @@
+ static void cancel_authorization(const char *addr)
+ {
+ 	DBusMessage *msg;
+-	const char *uuid = &quot;&quot;;
+ 
+ 	msg = dbus_message_new_method_call(&quot;org.bluez&quot;, &quot;/org/bluez&quot;,
+ 						&quot;org.bluez.Database&quot;,
+@@ -67,7 +66,7 @@
+ 
+ 	dbus_message_append_args(msg,
+ 			DBUS_TYPE_STRING, &amp;addr,
+-			DBUS_TYPE_STRING, &amp;uuid,
++			DBUS_TYPE_STRING, &amp;HID_UUID,
+ 			DBUS_TYPE_INVALID);
+ 
+ 	send_message_and_unref(connection, msg);
+Index: network/main.c
+===================================================================
+RCS file: /cvsroot/bluez/utils/network/main.c,v
+retrieving revision 1.20
+diff -u -r1.20 main.c
+--- network/main.c	11 Apr 2008 23:04:17 -0000	1.20
++++ network/main.c	30 Apr 2008 23:45:38 -0000
+@@ -41,6 +41,17 @@
+ #define GN_IFACE &quot;pan0&quot;
+ #define NAP_IFACE &quot;pan1&quot;
+ 
++#define PANU_UUID &quot;00001115-0000-1000-8000-00805f9b34fb&quot;
++#define NAP_UUID &quot;00001116-0000-1000-8000-00805f9b34fb&quot;
++#define GN_UUID &quot;00001117-0000-1000-8000-00805f9b34fb&quot;
++
++static const char *uuids[] = {
++	PANU_UUID,
++	NAP_UUID,
++	GN_UUID,
++	NULL
++};
++
+ static struct network_conf conf = {
+ 	.connection_enabled = TRUE,
+ 	.server_enabled = TRUE,
+@@ -170,6 +181,8 @@
+ 		return -EIO;
+ 	}
+ 
++	register_uuids(&quot;network&quot;, &amp;uuids);
++
+ 	register_external_service(conn, &quot;network&quot;, &quot;Network service&quot;, &quot;&quot;);
+ 
+ 	return 0;
+</pre><pre>-------------------------------------------------------------------------
+This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
+Don't miss this year's exciting event. There's still time to save $100. 
+Use priority code J8TL2D2. 
+<a  rel="nofollow" href="http://ad.doubleclick.net/clk;198757673;13503038;p?http://java.sun.com/javaone">http://ad.doubleclick.net/clk;198757673;13503038;p?http://java.sun.com/javaone</a></pre><pre>_______________________________________________
+Bluez-devel mailing list
+Bluez-devel@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.sourceforge.net/lists/listinfo/bluez-devel">https://lists.sourceforge.net/lists/listinfo/bluez-devel</a>
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00155.html">Re:  bluetoothd-service-network fails to execute	ifup	scripts from network.conf after repeated connection	attempts (Patched)</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00157.html">Usage of BondingCreated()</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00151.html">bluez-gnome and OBEX DBus names</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00157.html">Usage of BondingCreated()</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00156"><strong>Date</strong></a></li>
+<li><a href="index.html#00156"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-bluetooth/>[Linux&nbsp;Bluetooth&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/netdev/>[Network&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re:  [PATCH 0/3] qemu: Fix handling of block job data in event handlers (blockdev&#45;add saga fixes) -->
+<!--X-From-R13: =?vfb&#45;8859&#45;1?P?EhTh?= Fbzxb &#60;wgbzxbNerqung.pbz> -->
+<!--X-Date: Fri, 19 Jul 2019 06:40:18 &#45;0700 -->
+<!--X-Message-Id: 20190719134043.GB27354@lpt -->
+<!--X-Content-Type: multipart/mixed -->
+<!--X-Reference: cover.1563466802.git.pkrempa@redhat.com -->
+<!--X-Derived: pgpg9IXm8b2Pi.pgp -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; Re:  [PATCH 0/3] qemu: Fix handling of block job data in event handlers (blockdev-add saga fixes)</title>
+<meta name="description" content="libvirt: Re:  [PATCH 0/3] qemu: Fix handling of block job data in event handlers (blockdev-add saga fixes)">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>Re:  [PATCH 0/3] qemu: Fix handling of block job data in event handlers (blockdev-add saga fixes)</h1>
+[<a href="msg187745.html">Date Prev</a>][<a href="msg187747.html">Date Next</a>][<a href="msg187680.html">Thread Prev</a>][<a href="msg187681.html">Thread Next</a>][<a href="maillist.html#187746">Date Index</a>][<a href="index.html#187746">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re:  [PATCH 0/3] qemu: Fix handling of block job data in event handlers (blockdev-add saga fixes)</li>
+<li><em>From</em>: J&#xE1;n Tomko &lt;jtomko@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 19 Jul 2019 15:40:43 +0200</li>
+<li><em>Cc</em>: libvir-list@xxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187678.html">cover.1563466802.git.pkrempa@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187678.html">cover.1563466802.git.pkrempa@redhat.com</a>&gt;</li>
+<li><em>User-agent</em>: Mutt/1.11.3 (2019-02-01)</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre style="margin: 0em;">
+On Thu, Jul 18, 2019 at 06:22:05PM +0200, Peter Krempa wrote:
+</pre><blockquote style="border-left: #5555EE solid 0.2em; margin: 0em; padding-left: 0.85em"><pre style="margin: 0em;">
+Some of the refactors which allowed carrying more data with blockjobs
+created a race condition when a too-quick job would actually delete the
+data. This is a problem for legacy block jobs only.
+
+Peter Krempa (3):
+ qemu: process: Don't use qemuBlockJobStartupFinalize in
+   qemuProcessHandleBlockJob
+ qemu: driver: Don't use qemuBlockJobStartupFinalize in
+   processBlockJobEvent
+ qemu: driver: Add debug message when we conjure block job data object
+
+src/qemu/qemu_driver.c  | 4 ++--
+src/qemu/qemu_process.c | 3 +--
+2 files changed, 3 insertions(+), 4 deletions(-)
+
+</pre></blockquote><pre style="margin: 0em;">
+
+Reviewed-by: J&#xE1;n Tomko &lt;jtomko@xxxxxxxxxx&gt;
+
+Jano
+</pre><p><strong>Attachment:
+<a href="attachments/pgpg9IXm8b2Pi.pgp" ><tt>signature.asc</tt></a></strong><br>
+<em>Description:</em> PGP signature</p>
+<pre>--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a></pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187745.html">Re:  [RFC PATCH 0/6] Split domain_conf.h</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187747.html">Re:  [PATCH] util: change the return value of virCgroupRemove if failed</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187680.html">[PATCH 2/3] qemu: driver: Don't use	qemuBlockJobStartupFinalize in processBlockJobEvent</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187681.html">[PATCH 0/8] qemu: blockdevize qemuDomainGetBlockJobInfo	and qemuDomainBlockJobAbort (blockdev-add saga)</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187746"><strong>Date</strong></a></li>
+<li><a href="index.html#187746"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

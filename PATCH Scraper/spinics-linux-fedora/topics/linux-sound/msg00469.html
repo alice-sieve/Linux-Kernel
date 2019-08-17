@@ -1,0 +1,1057 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [RFC PATCH] ASoC: tas2552: Support TI TAS2552 Amplifier -->
+<!--X-From-R13: Rna [hecul &#60;qzheculNgv.pbz> -->
+<!--X-Date: Wed, 18 Jun 2014 10:45:58 &#45;0700 -->
+<!--X-Message-Id: 1403113547&#45;15120&#45;1&#45;git&#45;send&#45;email&#45;dmurphy@ti.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Sound: [RFC PATCH] ASoC: tas2552: Support TI TAS2552 Amplifier">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Sound &mdash; [RFC PATCH] ASoC: tas2552: Support TI TAS2552 Amplifier</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Sound" href="//feeds.feedburner.com/LinuxSound">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:6612422167" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[RFC PATCH] ASoC: tas2552: Support TI TAS2552 Amplifier</h1>
+[<a href="msg00468.html">Date Prev</a>][<a href="msg00471.html">Date Next</a>][<a href="msg00468.html">Thread Prev</a>][<a href="msg00471.html">Thread Next</a>][<a href="maillist.html#00469">Date Index</a>][<a href="index.html#00469">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [RFC PATCH] ASoC: tas2552: Support TI TAS2552 Amplifier</li>
+<li><em>From</em>: Dan Murphy &lt;<a href="mailto:dmurphy@DOMAIN.HIDDEN">dmurphy@xxxxxx</a>&gt;</li>
+<li><em>Date</em>: Wed, 18 Jun 2014 12:45:46 -0500</li>
+<li><em>Cc</em>: &lt;<a href="mailto:linux-kernel@DOMAIN.HIDDEN">linux-kernel@xxxxxxxxxxxxxxx</a>&gt;, &lt;<a href="mailto:alsa-devel@DOMAIN.HIDDEN">alsa-devel@xxxxxxxxxxxxxxxx</a>&gt;,        &lt;<a href="mailto:broonie@DOMAIN.HIDDEN">broonie@xxxxxxxxxx</a>&gt;, Dan Murphy &lt;<a href="mailto:dmurphy@DOMAIN.HIDDEN">dmurphy@xxxxxx</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Support the TI TAS2552 Class D amplifier.
+
+The TAS2552 is a high efficiency Class-D audio
+power amplifier with advanced battery current
+management and an integrated Class-G boost
+The device constantly measures the
+current and voltage across the load and provides a
+digital stream of this information.
+
+Signed-off-by: Dan Murphy &lt;dmurphy@xxxxxx&gt;
+---
+ .../devicetree/bindings/sound/tas2552.txt          |   22 +
+ include/sound/tas2552-plat.h                       |   30 +
+ sound/soc/codecs/Kconfig                           |    5 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/tas2552.c                         |  631 ++++++++++++++++++++
+ sound/soc/codecs/tas2552.h                         |   79 +++
+ 6 files changed, 769 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/tas2552.txt
+ create mode 100644 include/sound/tas2552-plat.h
+ create mode 100644 sound/soc/codecs/tas2552.c
+ create mode 100644 sound/soc/codecs/tas2552.h
+
+diff --git a/Documentation/devicetree/bindings/sound/tas2552.txt b/Documentation/devicetree/bindings/sound/tas2552.txt
+new file mode 100644
+index 0000000..58e931b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tas2552.txt
+@@ -0,0 +1,22 @@
++Texas Instruments - tas2552 Codec module
++
++The tas2552 serial control bus communicates through I2C protocols
++
++Required properties:
++
++- compatible - &quot;string&quot; - One of:
++    &quot;ti,tas2552&quot; - TAS2552
++
++- reg - &lt;int&gt; -  I2C slave address
++
++Optional properties:
++
++- power-gpio - gpio pin to enable/disable the device
++
++Example:
++
++tas2552: tas2552@41 {
++	compatible = &quot;ti,tas2552&quot;;
++	reg = &lt;0x41&gt;;
++	power-gpio = &lt;&amp;gpio4 2 GPIO_ACTIVE_HIGH&gt;;
++};
+diff --git a/include/sound/tas2552-plat.h b/include/sound/tas2552-plat.h
+new file mode 100644
+index 0000000..46d2732
+--- /dev/null
++++ b/include/sound/tas2552-plat.h
+@@ -0,0 +1,30 @@
++/*
++ * TAS2552 driver platform header
++ *
++ * Copyright (C) 2014 Texas Instruments Inc.
++ *
++ * Author: Dan Murphy &lt;dmurphy@xxxxxx&gt;
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
++ * 02110-1301 USA
++ */
++
++#ifndef TAS2552_PLAT_H
++#define TAS2552_PLAT_H
++
++struct tas2552_platform_data {
++	int power_gpio;
++};
++
++#endif
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index cbfa1e1..06ff67e 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -99,6 +99,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_TLV320AIC32X4 if I2C
+ 	select SND_SOC_TLV320AIC3X if I2C
+ 	select SND_SOC_TPA6130A2 if I2C
++	select SND_SOC_TAS2552 if I2C
+ 	select SND_SOC_TLV320DAC33 if I2C
+ 	select SND_SOC_TWL4030 if TWL4030_CORE
+ 	select SND_SOC_TWL6040 if TWL6040_CORE
+@@ -746,4 +747,8 @@ config SND_SOC_TPA6130A2
+ 	tristate &quot;Texas Instruments TPA6130A2 headphone amplifier&quot;
+ 	depends on I2C
+ 
++config SND_SOC_TAS2552
++	tristate &quot;Texas Instruments TAS2552 Mono Audio amplifier&quot;
++	depends on I2C
++
+ endmenu
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index be3377b..ab33cd7 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -160,6 +160,7 @@ snd-soc-wm-hubs-objs := wm_hubs.o
+ # Amp
+ snd-soc-max9877-objs := max9877.o
+ snd-soc-tpa6130a2-objs := tpa6130a2.o
++snd-soc-tas2552-objs := tas2552.o
+ 
+ obj-$(CONFIG_SND_SOC_88PM860X)	+= snd-soc-88pm860x.o
+ obj-$(CONFIG_SND_SOC_AB8500_CODEC)	+= snd-soc-ab8500-codec.o
+@@ -321,3 +322,4 @@ obj-$(CONFIG_SND_SOC_WM_HUBS)	+= snd-soc-wm-hubs.o
+ # Amp
+ obj-$(CONFIG_SND_SOC_MAX9877)	+= snd-soc-max9877.o
+ obj-$(CONFIG_SND_SOC_TPA6130A2)	+= snd-soc-tpa6130a2.o
++obj-$(CONFIG_SND_SOC_TAS2552)	+= snd-soc-tas2552.o
+diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
+new file mode 100644
+index 0000000..111eb0e
+--- /dev/null
++++ b/sound/soc/codecs/tas2552.c
+@@ -0,0 +1,631 @@
++/*
++ * ALSA SoC Texas Instruments TAS2552 Mono Audio Amplifier
++ *
++ * Copyright (C) 2014 Texas Instruments Inc.
++ *
++ * Author: Dan Murphy &lt;dmurphy@xxxxxx&gt;
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
++ * 02110-1301 USA
++ */
++
++#include &lt;linux/module.h&gt;
++#include &lt;linux/errno.h&gt;
++#include &lt;linux/device.h&gt;
++#include &lt;linux/i2c.h&gt;
++#include &lt;linux/gpio.h&gt;
++#include &lt;linux/of_gpio.h&gt;
++#include &lt;linux/regmap.h&gt;
++#include &lt;linux/slab.h&gt;
++
++#include &lt;sound/pcm.h&gt;
++#include &lt;sound/pcm_params.h&gt;
++#include &lt;sound/soc.h&gt;
++#include &lt;sound/soc-dapm.h&gt;
++#include &lt;sound/tlv.h&gt;
++#include &lt;sound/tas2552-plat.h&gt;
++
++#include &quot;tas2552.h&quot;
++
++/* Remove this below to disable register debugging */
++#define TAS2552_DEBUG
++
++struct tas2552_data {
++	struct mutex mutex;
++	struct snd_soc_codec *codec;
++	struct regmap *regmap;
++	struct i2c_client *tas2552_client;
++	unsigned char regs[TAS2552_VBAT_DATA];
++	int power_gpio;
++	u8 power_state:1;
++};
++
++static int tas2552_i2c_read(struct tas2552_data *tas_data, int reg)
++{
++	int val;
++
++	if (WARN_ON(!tas_data-&gt;tas2552_client))
++		return -EINVAL;
++
++	/* If powered off, return the cached value */
++	mutex_lock(&amp;tas_data-&gt;mutex);
++	if (tas_data-&gt;power_state) {
++		val = i2c_smbus_read_byte_data(tas_data-&gt;tas2552_client, reg);
++		if (val &lt; 0)
++			dev_err(&amp;tas_data-&gt;tas2552_client-&gt;dev, &quot;Read failed %i\n&quot;, val);
++		else
++			tas_data-&gt;regs[reg] = val;
++	} else {
++		val = tas_data-&gt;regs[reg];
++	}
++
++	mutex_unlock(&amp;tas_data-&gt;mutex);
++	return val;
++}
++
++static int tas2552_i2c_write(struct tas2552_data *tas_data, int reg, u8 value)
++{
++	int val = 0;
++
++	if (WARN_ON(!tas_data-&gt;tas2552_client))
++		return -EINVAL;
++
++	mutex_lock(&amp;tas_data-&gt;mutex);
++	if (tas_data-&gt;power_state) {
++		val = i2c_smbus_write_byte_data(tas_data-&gt;tas2552_client, reg, value);
++		if (val &lt; 0) {
++			dev_err(&amp;tas_data-&gt;tas2552_client-&gt;dev, &quot;Write failed %i\n&quot;, val);
++			goto write_err;
++		}
++	}
++
++	/* Either powered on or off, we save the context */
++	tas_data-&gt;regs[reg] = value;
++
++write_err:
++	mutex_unlock(&amp;tas_data-&gt;mutex);
++	return val;
++}
++
++static int tas2552_power(struct tas2552_data *data, u8 power)
++{
++	int	ret = 0;
++
++	BUG_ON(data-&gt;tas2552_client == NULL);
++
++	mutex_lock(&amp;data-&gt;mutex);
++	if (power == data-&gt;power_state)
++		goto exit;
++
++	if (power) {
++		if (data-&gt;power_gpio &gt;= 0)
++			gpio_set_value(data-&gt;power_gpio, 1);
++
++		data-&gt;power_state = 1;
++	} else {
++		if (data-&gt;power_gpio &gt;= 0)
++			gpio_set_value(data-&gt;power_gpio, 0);
++
++		data-&gt;power_state = 0;
++	}
++
++exit:
++	mutex_unlock(&amp;data-&gt;mutex);
++	return ret;
++}
++
++#ifdef TAS2552_DEBUG
++struct tas2552_reg {
++	const char *name;
++	uint8_t reg;
++	int writeable;
++} tas2552_regs[] = {
++	{ &quot;STATUS&quot;,		TAS2552_DEVICE_STATUS, 1 },
++	{ &quot;CFG1&quot;,		TAS2552_CFG_1, 1 },
++	{ &quot;CFG2&quot;,		TAS2552_CFG_2, 1 },
++	{ &quot;CFG3&quot;,		TAS2552_CFG_3, 1 },
++	{ &quot;DOUT&quot;,		TAS2552_DOUT, 1 },
++	{ &quot;SER_CTRL_1&quot;,	TAS2552_SER_CTRL_1, 1 },
++	{ &quot;SER_CTRL_2&quot;,	TAS2552_SER_CTRL_2, 1 },
++	{ &quot;OUTPUT_DATA&quot;, TAS2552_OUTPUT_DATA, 1 },
++	{ &quot;PLL_CTRL_1&quot;,	TAS2552_PLL_CTRL_1, 1 },
++	{ &quot;PLL_CTRL_2&quot;,	TAS2552_PLL_CTRL_2, 1 },
++	{ &quot;PLL_CTRL_3&quot;,	TAS2552_PLL_CTRL_3, 1 },
++	{ &quot;BTIP&quot;, TAS2552_BTIP, 1 },
++	{ &quot;BTS_CTRL&quot;, TAS2552_BTS_CTRL, 1 },
++	{ &quot;LIMIT_LVL_CTRL&quot;,	TAS2552_LIMIT_LVL_CTRL, 1 },
++	{ &quot;LIMIT_RATE_HYS&quot;,	TAS2552_LIMIT_RATE_HYS, 1 },
++	{ &quot;IMIT_RELEASE&quot;,	TAS2552_LIMIT_RELEASE, 1 },
++	{ &quot;LIMIT_INT_COUNT&quot;, TAS2552_LIMIT_INT_COUNT, 1 },
++	{ &quot;PDM_CFG&quot;,	TAS2552_PDM_CFG, 1 },
++	{ &quot;PGA_GAIN&quot;,	TAS2552_PGA_GAIN, 1 },
++	{ &quot;EDGE_CTRL&quot;,	TAS2552_EDGE_RATE_CTRL, 1 },
++	{ &quot;BOOST_CTRL&quot;,	TAS2552_BOOST_PT_CTRL, 1 },
++	{ &quot;VER_NUM&quot;, TAS2552_VER_NUM, 1 },
++	{ &quot;VBAT_DATA&quot;, TAS2552_VBAT_DATA, 1 },
++};
++
++static ssize_t tas2552_registers_show(struct device *dev,
++			      struct device_attribute *attr, char *buf)
++{
++	unsigned i, n, reg_count;
++	u8 read_buf;
++	struct tas2552_data *data = dev_get_drvdata(dev);
++
++	tas2552_power(data, 1);
++	reg_count = sizeof(tas2552_regs) / sizeof(tas2552_regs[0]);
++	for (i = 0, n = 0; i &lt; reg_count; i++) {
++		read_buf = tas2552_i2c_read(data, tas2552_regs[i].reg);
++		n += scnprintf(buf + n, PAGE_SIZE - n,
++			       &quot;%-20s = 0x%02X\n&quot;,
++			       tas2552_regs[i].name,
++			       read_buf);
++	}
++	tas2552_power(data, 0);
++	return n;
++}
++
++static ssize_t tas2552_registers_store(struct device *dev,
++			       struct device_attribute *attr,
++			       const char *buf, size_t count)
++{
++	unsigned i, reg_count, value;
++	int error = 0;
++	char name[30];
++	struct tas2552_data *data = dev_get_drvdata(dev);
++
++	if (count &gt;= 30) {
++		pr_err(&quot;%s:input too long\n&quot;, __func__);
++		return -1;
++	}
++
++	if (sscanf(buf, &quot;%s %x&quot;, name, &amp;value) != 2) {
++		pr_err(&quot;%s:unable to parse input\n&quot;, __func__);
++		return -1;
++	}
++
++	tas2552_power(data, 1);
++	reg_count = sizeof(tas2552_regs) / sizeof(tas2552_regs[0]);
++	for (i = 0; i &lt; reg_count; i++) {
++		if (!strcmp(name, tas2552_regs[i].name)) {
++			if (tas2552_regs[i].writeable) {
++				error = tas2552_i2c_write(data, tas2552_regs[i].reg, value);
++				if (error) {
++					pr_err(&quot;%s:Failed to write %s\n&quot;,
++						__func__, name);
++					return -1;
++				}
++			} else {
++				pr_err(&quot;%s:Register %s is not writeable\n&quot;,
++						__func__, name);
++					return -1;
++			}
++			return count;
++		}
++	}
++	tas2552_power(data, 0);
++	pr_err(&quot;%s:no such register %s\n&quot;, __func__, name);
++	return -1;
++}
++
++static DEVICE_ATTR(registers, S_IWUSR | S_IRUGO,
++		tas2552_registers_show, tas2552_registers_store);
++
++static struct attribute *tas2552_attrs[] = {
++	&amp;dev_attr_registers.attr,
++	NULL
++};
++
++static const struct attribute_group tas2552_attr_group = {
++	.attrs = tas2552_attrs,
++};
++#endif
++
++static void tas2552_sw_shutdown(struct tas2552_data *tas_data, int sw_shutdown)
++{
++	u8 cfg1_reg;
++
++	cfg1_reg = tas2552_i2c_read(tas_data, TAS2552_CFG_1);
++	if (sw_shutdown)
++		cfg1_reg |= (sw_shutdown &lt;&lt; 1);
++	else
++		cfg1_reg &amp;= TAS2552_SWS_MASK;
++
++	tas2552_i2c_write(tas_data, TAS2552_CFG_1, cfg1_reg);
++}
++
++static void tas2552_init(struct snd_soc_codec *codec)
++{
++	struct tas2552_data *tas2552 = snd_soc_codec_get_drvdata(codec);
++
++	/* BCLK source, MUTE, SW Shutdown */
++	tas2552_i2c_write(tas2552, TAS2552_CFG_1, 0x16);
++
++	tas2552_i2c_write(tas2552, TAS2552_CFG_3, 0x5E);
++	/* DOUT set to logic low when not transmitting data */
++	tas2552_i2c_write(tas2552, TAS2552_DOUT, 0x00);
++
++	tas2552_i2c_write(tas2552, TAS2552_OUTPUT_DATA, 0xC8);
++
++	/* BLCK source for PDM*/
++	tas2552_i2c_write(tas2552, TAS2552_PDM_CFG, 0x02);
++	tas2552_i2c_write(tas2552, TAS2552_PGA_GAIN, 0x10);
++
++	tas2552_i2c_write(tas2552, TAS2552_BOOST_PT_CTRL, 0x0F);
++	tas2552_i2c_write(tas2552, TAS2552_LIMIT_LVL_CTRL, 0x0C);
++	tas2552_i2c_write(tas2552, TAS2552_LIMIT_RATE_HYS, 0x20);
++	tas2552_i2c_write(tas2552, TAS2552_CFG_2, 0xEA);
++
++}
++
++static int tas2552_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params,
++			     struct snd_soc_dai *dai)
++{
++	u8 wclk_reg;
++	u8 cfg3_reg;
++	struct tas2552_data *data = dev_get_drvdata(dai-&gt;dev);
++
++	/* Setting DAC clock dividers based on substream sample rate. */
++	switch (params_rate(params)) {
++	case 8000:
++		wclk_reg = TAS2552_8KHZ;
++		break;
++	case 11025:
++		wclk_reg = TAS2552_11_12KHZ;
++		break;
++	case 16000:
++		wclk_reg = TAS2552_16KHZ;
++		break;
++	case 32000:
++		wclk_reg = TAS2552_32KHZ;
++		break;
++	case 22050:
++	case 24000:
++		wclk_reg = TAS2552_22_24KHZ;
++		break;
++	case 44100:
++	case 48000:
++		wclk_reg = TAS2552_44_48KHZ;
++		break;
++	case 96000:
++		wclk_reg = TAS2552_88_96KHZ;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	cfg3_reg = tas2552_i2c_read(data, TAS2552_CFG_3);
++	cfg3_reg &amp;= ~TAS2552_WCLK_MASK;
++	cfg3_reg |= wclk_reg;
++	tas2552_i2c_write(data, TAS2552_CFG_3, cfg3_reg);
++
++	return 0;
++}
++
++static int tas2552_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
++{
++	u8 serial_format;
++	u8 serial_1_reg;
++	struct tas2552_data *data = dev_get_drvdata(codec_dai-&gt;dev);
++
++	switch (fmt &amp; SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBS_CFS:
++		serial_format = 0x00;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFM:
++		serial_format = TAS2552_WORD_CLK_MASK;
++		break;
++	case SND_SOC_DAIFMT_CBM_CFS:
++		serial_format = TAS2552_BIT_CLK_MASK;
++		break;
++	case SND_SOC_DAIFMT_CBM_CFM:
++		serial_format = (TAS2552_BIT_CLK_MASK | TAS2552_WORD_CLK_MASK);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	serial_1_reg = tas2552_i2c_read(data, TAS2552_SER_CTRL_1);
++	serial_1_reg &amp;= ~(TAS2552_BIT_CLK_MASK | TAS2552_WORD_CLK_MASK);
++	serial_1_reg |= serial_format;
++
++	tas2552_i2c_write(data, TAS2552_SER_CTRL_1, serial_1_reg);
++
++	switch (fmt &amp; SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		serial_format = 0x0;
++		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		serial_format = TAS2552_DAIFMT_DSP;
++		break;
++	case SND_SOC_DAIFMT_RIGHT_J:
++		serial_format = TAS2552_DAIFMT_RIGHT_J;
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		serial_format = TAS2552_DAIFMT_LEFT_J;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	serial_1_reg = tas2552_i2c_read(data, TAS2552_SER_CTRL_1);
++	serial_1_reg &amp;= ~TAS2552_DATA_FORMAT_MASK;
++	serial_1_reg |= serial_format;
++
++	tas2552_i2c_write(data, TAS2552_SER_CTRL_1, serial_1_reg);
++
++	return 0;
++}
++
++static int tas2552_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
++				  unsigned int freq, int dir)
++{
++	u8 cfg2_reg;
++	struct tas2552_data *data = dev_get_drvdata(dai-&gt;dev);
++
++	switch (freq) {
++	case 12288000:
++	case 26000000:
++	case 19200000:
++	case 24576000:
++		break;
++	case 48000:
++	case 32576:
++		break;
++	default:
++		break;
++	}
++
++	tas2552_sw_shutdown(data, 1);
++	cfg2_reg = tas2552_i2c_read(data, TAS2552_CFG_2);
++	tas2552_i2c_write(data, TAS2552_CFG_2, cfg2_reg &amp; ~TAS2552_PLL_ENABLE);
++
++	tas2552_i2c_write(data, TAS2552_PLL_CTRL_1, 0x10);
++	tas2552_i2c_write(data, TAS2552_PLL_CTRL_2, 0x00);
++	tas2552_i2c_write(data, TAS2552_PLL_CTRL_3, 0x00);
++
++	cfg2_reg = tas2552_i2c_read(data, TAS2552_CFG_2);
++	tas2552_i2c_write(data, TAS2552_CFG_2, cfg2_reg | TAS2552_PLL_ENABLE);
++
++	tas2552_sw_shutdown(data, 0);
++
++	return 0;
++}
++
++static int tas2552_mute(struct snd_soc_dai *dai, int mute)
++{
++	u8 cfg1_reg;
++
++	struct tas2552_data *data = dev_get_drvdata(dai-&gt;dev);
++
++	cfg1_reg = tas2552_i2c_read(data, TAS2552_CFG_1);
++	if (mute)
++		cfg1_reg |= (mute &lt;&lt; 2);
++	else
++		cfg1_reg &amp;= TAS2552_MUTE_MASK;
++
++	tas2552_i2c_write(data, TAS2552_CFG_1, cfg1_reg);
++
++	return 0;
++}
++
++static int tas2552_startup(struct snd_pcm_substream *substream,
++			   struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai-&gt;codec;
++	struct tas2552_data *tas2552 = snd_soc_codec_get_drvdata(codec);
++
++	tas2552_sw_shutdown(tas2552, 1);
++	tas2552_power(tas2552, 1);
++	/* Turn on Class D amplifier */
++	tas2552_i2c_write(tas2552, TAS2552_CFG_2, 0x80);
++	tas2552_sw_shutdown(tas2552, 0);
++
++	return 0;
++}
++
++static void tas2552_shutdown(struct snd_pcm_substream *substream,
++			   struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai-&gt;codec;
++	struct tas2552_data *tas2552 = snd_soc_codec_get_drvdata(codec);
++
++	tas2552_sw_shutdown(tas2552, 1);
++	tas2552_power(tas2552, 0);
++}
++
++static struct snd_soc_dai_ops tas2552_speaker_dai_ops = {
++	.hw_params	= tas2552_hw_params,
++	.set_sysclk	= tas2552_set_dai_sysclk,
++	.set_fmt	= tas2552_set_dai_fmt,
++	.startup	= tas2552_startup,
++	.shutdown	= tas2552_shutdown,
++	.digital_mute = tas2552_mute,
++};
++
++/* Formats supported by TAS2552 driver. */
++#define TAS2552_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
++			 SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
++
++/* TAS2552 dai structure. */
++static struct snd_soc_dai_driver tas2552_dai[] = {
++	{
++		.name = &quot;tas2552-amplifier&quot;,
++		.playback = {
++			.stream_name = &quot;Speaker&quot;,
++			.channels_min = 2,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_8000_192000,
++			.formats = TAS2552_FORMATS,
++		},
++		.ops = &amp;tas2552_speaker_dai_ops,
++	},
++};
++
++/*
++ * DAC digital volumes. From -7 to 24 dB in 1 dB steps
++ */
++static DECLARE_TLV_DB_SCALE(dac_tlv, -7, 100, 24);
++
++static const struct snd_kcontrol_new tas2552_snd_controls[] = {
++	SOC_SINGLE_TLV(&quot;Speaker Driver Playback Volume&quot;,
++			 TAS2552_PGA_GAIN, 0, 0x1f, 1, dac_tlv),
++};
++
++static int tas2552_codec_probe(struct snd_soc_codec *codec)
++{
++	struct tas2552_data *tas2552 = snd_soc_codec_get_drvdata(codec);
++
++	tas2552-&gt;codec = codec;
++	tas2552_power(tas2552, 1);
++	tas2552_init(codec);
++
++	return 0;
++}
++
++static int tas2552_codec_remove(struct snd_soc_codec *codec)
++{
++	struct tas2552_data *tas2552 = snd_soc_codec_get_drvdata(codec);
++
++	tas2552_power(tas2552, 0);
++
++	return 0;
++};
++
++static struct snd_soc_codec_driver soc_codec_dev_tas2552 = {
++	.probe = tas2552_codec_probe,
++	.remove = tas2552_codec_remove,
++	.controls = tas2552_snd_controls,
++	.num_controls = ARRAY_SIZE(tas2552_snd_controls),
++};
++
++static const struct regmap_config tas2552_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++
++	.max_register = TAS2552_MAX_REG,
++	.reg_defaults = NULL,
++	.num_reg_defaults = 0,
++	.cache_type = REGCACHE_RBTREE,
++};
++
++static int tas2552_probe(struct i2c_client *client,
++			   const struct i2c_device_id *id)
++{
++	struct device *dev;
++	struct tas2552_data *data;
++	struct tas2552_platform_data *pdata = client-&gt;dev.platform_data;
++	struct device_node *np = client-&gt;dev.of_node;
++	int ret;
++
++	dev = &amp;client-&gt;dev;
++	data = devm_kzalloc(&amp;client-&gt;dev, sizeof(*data), GFP_KERNEL);
++	if (data == NULL) {
++		dev_err(dev, &quot;Can not allocate memory\n&quot;);
++		return -ENOMEM;
++	}
++
++	if (pdata) {
++		data-&gt;power_gpio = pdata-&gt;power_gpio;
++	} else if (np) {
++		data-&gt;power_gpio = of_get_named_gpio(np, &quot;enable-gpio&quot;, 0);
++	} else {
++		dev_err(dev, &quot;Platform data not set\n&quot;);
++		return -ENODEV;
++	}
++
++	data-&gt;regmap = devm_regmap_init_i2c(client, &amp;tas2552_regmap_config);
++	if (IS_ERR(data-&gt;regmap)) {
++		ret = PTR_ERR(data-&gt;regmap);
++		dev_err(&amp;client-&gt;dev, &quot;Failed to allocate register map: %d\n&quot;,
++			ret);
++		return ret;
++	}
++
++	data-&gt;tas2552_client = client;
++	dev_set_drvdata(&amp;client-&gt;dev, data);
++
++	mutex_init(&amp;data-&gt;mutex);
++
++	if (data-&gt;power_gpio &gt;= 0) {
++		ret = devm_gpio_request(dev, data-&gt;power_gpio, &quot;tas2552 enable&quot;);
++		if (ret &lt; 0) {
++			dev_err(dev, &quot;Failed to request power GPIO (%d)\n&quot;,
++				data-&gt;power_gpio);
++			goto err_gpio;
++		}
++		gpio_direction_output(data-&gt;power_gpio, 0);
++	}
++
++	ret = snd_soc_register_codec(&amp;client-&gt;dev,
++				      &amp;soc_codec_dev_tas2552,
++				      tas2552_dai, ARRAY_SIZE(tas2552_dai));
++	if (ret &lt; 0)
++		dev_err(&amp;client-&gt;dev, &quot;Failed to register codec: %d\n&quot;, ret);
++
++#ifdef TAS2552_DEBUG
++	ret = sysfs_create_group(&amp;client-&gt;dev.kobj, &amp;tas2552_attr_group);
++	if (ret) {
++		pr_err(&quot;%s:Cannot create sysfs group\n&quot;, __func__);
++		goto err_sysfs;
++	}
++#endif
++	return 0;
++#ifdef TAS2552_DEBUG
++err_sysfs:
++	snd_soc_unregister_codec(&amp;client-&gt;dev);
++#endif
++err_gpio:
++	data-&gt;tas2552_client = NULL;
++	return ret;
++}
++
++static int tas2552_i2c_remove(struct i2c_client *client)
++{
++	snd_soc_unregister_codec(&amp;client-&gt;dev);
++	return 0;
++}
++
++static const struct i2c_device_id tas2552_id[] = {
++	{ &quot;tas2552-codec&quot;, 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, tas2552_id);
++
++#if IS_ENABLED(CONFIG_OF)
++static const struct of_device_id tas2552_of_match[] = {
++	{ .compatible = &quot;ti,tas2552&quot;, },
++	{},
++};
++MODULE_DEVICE_TABLE(of, tas2552_of_match);
++#endif
++
++static struct i2c_driver tas2552_i2c_driver = {
++	.driver = {
++		.name = &quot;tas2552-codec&quot;,
++		.owner = THIS_MODULE,
++		.of_match_table = of_match_ptr(tas2552_of_match),
++	},
++	.probe = tas2552_probe,
++	.remove = tas2552_i2c_remove,
++	.id_table = tas2552_id,
++};
++
++module_i2c_driver(tas2552_i2c_driver);
++
++MODULE_AUTHOR(&quot;Dan Muprhy &lt;dmurphy@xxxxxx&gt;&quot;);
++MODULE_DESCRIPTION(&quot;TAS2552 Audio amplifier driver&quot;);
++MODULE_LICENSE(&quot;GPL&quot;);
+diff --git a/sound/soc/codecs/tas2552.h b/sound/soc/codecs/tas2552.h
+new file mode 100644
+index 0000000..5ba583a
+--- /dev/null
++++ b/sound/soc/codecs/tas2552.h
+@@ -0,0 +1,79 @@
++/*
++ * ALSA SoC Texas Instruments TAS2552 Mono Audio Amplifier
++ *
++ * Copyright (C) 2014 Texas Instruments Inc.
++ *
++ * Author: Dan Murphy &lt;dmurphy@xxxxxx&gt;
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
++ * 02110-1301 USA
++ *
++ */
++
++#ifndef __TAS2552_H__
++#define __TAS2552_H__
++
++/* Register Address Map */
++#define TAS2552_DEVICE_STATUS	0x00
++#define TAS2552_CFG_1			0x01
++#define TAS2552_CFG_2			0x02
++#define TAS2552_CFG_3			0x03
++#define TAS2552_DOUT			0x04
++#define TAS2552_SER_CTRL_1		0x05
++#define TAS2552_SER_CTRL_2		0x06
++#define TAS2552_OUTPUT_DATA		0x07
++#define TAS2552_PLL_CTRL_1		0x08
++#define TAS2552_PLL_CTRL_2		0x09
++#define TAS2552_PLL_CTRL_3		0x0a
++#define TAS2552_BTIP			0x0b
++#define TAS2552_BTS_CTRL		0x0c
++#define TAS2552_LIMIT_LVL_CTRL	0x0d
++#define TAS2552_LIMIT_RATE_HYS	0x0e
++#define TAS2552_LIMIT_RELEASE	0x0f
++#define TAS2552_LIMIT_INT_COUNT	0x10
++#define TAS2552_PDM_CFG			0x11
++#define TAS2552_PGA_GAIN		0x12
++#define TAS2552_EDGE_RATE_CTRL	0x13
++#define TAS2552_BOOST_PT_CTRL	0x14
++#define TAS2552_VER_NUM			0x16
++#define TAS2552_VBAT_DATA		0x19
++#define TAS2552_MAX_REG			0x20
++
++/* CFG1 Register Masks */
++#define TAS2552_MUTE_MASK		0xfb
++#define TAS2552_SWS_MASK		0xfd
++#define TAS2552_WCLK_MASK		0x07
++
++#define TAS2552_PLL_ENABLE		0x08
++
++/* CFG3 Register Masks */
++#define TAS2552_WORD_CLK_MASK		0x80
++#define TAS2552_BIT_CLK_MASK		0x40
++#define TAS2552_DATA_FORMAT_MASK	0x0c
++
++#define TAS2552_DAIFMT_DSP			0x04
++#define TAS2552_DAIFMT_RIGHT_J		0x08
++#define TAS2552_DAIFMT_LEFT_J		0x0c
++
++/* WCLK Dividers */
++#define TAS2552_8KHZ		0x00
++#define TAS2552_11_12KHZ	0x01
++#define TAS2552_16KHZ		0x02
++#define TAS2552_22_24KHZ	0x03
++#define TAS2552_32KHZ		0x04
++#define TAS2552_44_48KHZ	0x05
++#define TAS2552_88_96KHZ	0x06
++#define TAS2552_176_192KHZ	0x07
++
++#endif
+-- 
+1.7.9.5
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe linux-sound&quot; in
+the body of a message to majordomo@xxxxxxxxxxxxxxx
+More majordomo info at  <a  rel="nofollow" href="http://vger.kernel.org/majordomo-info.html">http://vger.kernel.org/majordomo-info.html</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="00471" href="msg00471.html">Re: [RFC PATCH] ASoC: tas2552: Support TI TAS2552 Amplifier</a></strong>
+<ul><li><em>From:</em> Mark Brown</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00468.html">PROBLEM: Audigy front-panel UART fails to initialize (with solution)</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00471.html">Re: [RFC PATCH] ASoC: tas2552: Support TI TAS2552 Amplifier</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00468.html">PROBLEM: Audigy front-panel UART fails to initialize (with solution)</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00471.html">Re: [RFC PATCH] ASoC: tas2552: Support TI TAS2552 Amplifier</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00469"><strong>Date</strong></a></li>
+<li><a href="index.html#00469"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/Pulseaudio/>[Pulseaudio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/alsa-devel/>[ALSA&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td valign=top align=left>&nbsp;</td>
+<td valign=top align=right>
+<a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

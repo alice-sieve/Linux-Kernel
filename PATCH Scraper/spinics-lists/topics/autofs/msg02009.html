@@ -1,0 +1,426 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2 4/5] autofs &#45; change catatonic setting to a bit flag -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Fri, 23 Nov 2018 02:42:19 &#45;0800 -->
+<!--X-Message-Id: 154296973142.9889.17275721668508589639.stgit@pluto&#45;themaw&#45;net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 154296962626.9889.644199825100770992.stgit@pluto&#45;themaw&#45;net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH v2 4/5] autofs - change catatonic setting to a bit flag &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH v2 4/5] autofs - change catatonic setting to a bit flag &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v2 4/5] autofs - change catatonic setting to a bit flag</h1>
+[<a href="msg02008.html">Date Prev</a>][<a href="msg02010.html">Date Next</a>][<a href="msg02008.html">Thread Prev</a>][<a href="msg02010.html">Thread Next</a>][<a href="maillist.html#02009">Date Index</a>][<a href="index.html#02009">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: Andrew Morton &lt;akpm@xxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH v2 4/5] autofs - change catatonic setting to a bit flag</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 23 Nov 2018 18:42:12 +0800</li>
+<li><em>Cc</em>: Al Viro &lt;viro@xxxxxxxxxxxxxxxxxx&gt;,        autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;,        linux-fsdevel &lt;linux-fsdevel@xxxxxxxxxxxxxxx&gt;,        Kernel Mailing List &lt;linux-kernel@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;154296962626.9889.644199825100770992.stgit@pluto-themaw-net&gt;</li>
+<li><em>References</em>: &lt;154296962626.9889.644199825100770992.stgit@pluto-themaw-net&gt;</li>
+<li><em>User-agent</em>: StGit/unknown-version</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Change the super block info. catatonic setting to be part of a
+flags bit field.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ fs/autofs/autofs_i.h  |    7 +++++--
+ fs/autofs/dev-ioctl.c |    4 ++--
+ fs/autofs/inode.c     |    4 ++--
+ fs/autofs/root.c      |   11 ++++++-----
+ fs/autofs/waitq.c     |   10 +++++-----
+ 5 files changed, 20 insertions(+), 16 deletions(-)
+
+diff --git a/fs/autofs/autofs_i.h b/fs/autofs/autofs_i.h
+index c4301e33c027..032cbb12531a 100644
+--- a/fs/autofs/autofs_i.h
++++ b/fs/autofs/autofs_i.h
+@@ -101,16 +101,18 @@ struct autofs_wait_queue {
+ 
+ #define AUTOFS_SBI_MAGIC 0x6d4a556d
+ 
++#define AUTOFS_SBI_CATATONIC	0x0001
++
+ struct autofs_sb_info {
+ 	u32 magic;
+ 	int pipefd;
+ 	struct file *pipe;
+ 	struct pid *oz_pgrp;
+-	int catatonic;
+ 	int version;
+ 	int sub_version;
+ 	int min_proto;
+ 	int max_proto;
++	unsigned int flags;
+ 	unsigned long exp_timeout;
+ 	unsigned int type;
+ 	struct super_block *sb;
+@@ -140,7 +142,8 @@ static inline struct autofs_info *autofs_dentry_ino(struct dentry *dentry)
+  */
+ static inline int autofs_oz_mode(struct autofs_sb_info *sbi)
+ {
+-	return sbi-&gt;catatonic || task_pgrp(current) == sbi-&gt;oz_pgrp;
++	return ((sbi-&gt;flags &amp; AUTOFS_SBI_CATATONIC) ||
++		 task_pgrp(current) == sbi-&gt;oz_pgrp);
+ }
+ 
+ struct inode *autofs_get_inode(struct super_block *, umode_t);
+diff --git a/fs/autofs/dev-ioctl.c b/fs/autofs/dev-ioctl.c
+index 3de4f5e61caf..fc1caf449fa3 100644
+--- a/fs/autofs/dev-ioctl.c
++++ b/fs/autofs/dev-ioctl.c
+@@ -352,7 +352,7 @@ static int autofs_dev_ioctl_setpipefd(struct file *fp,
+ 	pipefd = param-&gt;setpipefd.pipefd;
+ 
+ 	mutex_lock(&amp;sbi-&gt;wq_mutex);
+-	if (!sbi-&gt;catatonic) {
++	if (!(sbi-&gt;flags &amp; AUTOFS_SBI_CATATONIC)) {
+ 		mutex_unlock(&amp;sbi-&gt;wq_mutex);
+ 		return -EBUSY;
+ 	} else {
+@@ -379,7 +379,7 @@ static int autofs_dev_ioctl_setpipefd(struct file *fp,
+ 		swap(sbi-&gt;oz_pgrp, new_pid);
+ 		sbi-&gt;pipefd = pipefd;
+ 		sbi-&gt;pipe = pipe;
+-		sbi-&gt;catatonic = 0;
++		sbi-&gt;flags &amp;= ~AUTOFS_SBI_CATATONIC;
+ 	}
+ out:
+ 	put_pid(new_pid);
+diff --git a/fs/autofs/inode.c b/fs/autofs/inode.c
+index ccedd12c1ac5..8cfd3f67af57 100644
+--- a/fs/autofs/inode.c
++++ b/fs/autofs/inode.c
+@@ -227,12 +227,12 @@ int autofs_fill_super(struct super_block *s, void *data, int silent)
+ 	sbi-&gt;magic = AUTOFS_SBI_MAGIC;
+ 	sbi-&gt;pipefd = -1;
+ 	sbi-&gt;pipe = NULL;
+-	sbi-&gt;catatonic = 1;
+ 	sbi-&gt;exp_timeout = 0;
+ 	sbi-&gt;oz_pgrp = NULL;
+ 	sbi-&gt;sb = s;
+ 	sbi-&gt;version = 0;
+ 	sbi-&gt;sub_version = 0;
++	sbi-&gt;flags = AUTOFS_SBI_CATATONIC;
+ 	set_autofs_type_indirect(&amp;sbi-&gt;type);
+ 	sbi-&gt;min_proto = 0;
+ 	sbi-&gt;max_proto = 0;
+@@ -322,7 +322,7 @@ int autofs_fill_super(struct super_block *s, void *data, int silent)
+ 	if (ret &lt; 0)
+ 		goto fail_fput;
+ 	sbi-&gt;pipe = pipe;
+-	sbi-&gt;catatonic = 0;
++	sbi-&gt;flags &amp;= ~AUTOFS_SBI_CATATONIC;
+ 
+ 	/*
+ 	 * Success! Install the root dentry now to indicate completion.
+diff --git a/fs/autofs/root.c b/fs/autofs/root.c
+index 782e57b911ab..164ccd3402cf 100644
+--- a/fs/autofs/root.c
++++ b/fs/autofs/root.c
+@@ -510,7 +510,8 @@ static struct dentry *autofs_lookup(struct inode *dir,
+ 	sbi = autofs_sbi(dir-&gt;i_sb);
+ 
+ 	pr_debug(&quot;pid = %u, pgrp = %u, catatonic = %d, oz_mode = %d\n&quot;,
+-		 current-&gt;pid, task_pgrp_nr(current), sbi-&gt;catatonic,
++		 current-&gt;pid, task_pgrp_nr(current),
++		 sbi-&gt;flags &amp; AUTOFS_SBI_CATATONIC,
+ 		 autofs_oz_mode(sbi));
+ 
+ 	active = autofs_lookup_active(dentry);
+@@ -563,7 +564,7 @@ static int autofs_dir_symlink(struct inode *dir,
+ 	 * autofs mount is catatonic but the state of an autofs
+ 	 * file system needs to be preserved over restarts.
+ 	 */
+-	if (sbi-&gt;catatonic)
++	if (sbi-&gt;flags &amp; AUTOFS_SBI_CATATONIC)
+ 		return -EACCES;
+ 
+ 	BUG_ON(!ino);
+@@ -626,7 +627,7 @@ static int autofs_dir_unlink(struct inode *dir, struct dentry *dentry)
+ 	 * autofs mount is catatonic but the state of an autofs
+ 	 * file system needs to be preserved over restarts.
+ 	 */
+-	if (sbi-&gt;catatonic)
++	if (sbi-&gt;flags &amp; AUTOFS_SBI_CATATONIC)
+ 		return -EACCES;
+ 
+ 	if (atomic_dec_and_test(&amp;ino-&gt;count)) {
+@@ -714,7 +715,7 @@ static int autofs_dir_rmdir(struct inode *dir, struct dentry *dentry)
+ 	 * autofs mount is catatonic but the state of an autofs
+ 	 * file system needs to be preserved over restarts.
+ 	 */
+-	if (sbi-&gt;catatonic)
++	if (sbi-&gt;flags &amp; AUTOFS_SBI_CATATONIC)
+ 		return -EACCES;
+ 
+ 	spin_lock(&amp;sbi-&gt;lookup_lock);
+@@ -759,7 +760,7 @@ static int autofs_dir_mkdir(struct inode *dir,
+ 	 * autofs mount is catatonic but the state of an autofs
+ 	 * file system needs to be preserved over restarts.
+ 	 */
+-	if (sbi-&gt;catatonic)
++	if (sbi-&gt;flags &amp; AUTOFS_SBI_CATATONIC)
+ 		return -EACCES;
+ 
+ 	pr_debug(&quot;dentry %p, creating %pd\n&quot;, dentry, dentry);
+diff --git a/fs/autofs/waitq.c b/fs/autofs/waitq.c
+index f6385c6ef0a5..15a3e31d0904 100644
+--- a/fs/autofs/waitq.c
++++ b/fs/autofs/waitq.c
+@@ -20,14 +20,14 @@ void autofs_catatonic_mode(struct autofs_sb_info *sbi)
+ 	struct autofs_wait_queue *wq, *nwq;
+ 
+ 	mutex_lock(&amp;sbi-&gt;wq_mutex);
+-	if (sbi-&gt;catatonic) {
++	if (sbi-&gt;flags &amp; AUTOFS_SBI_CATATONIC) {
+ 		mutex_unlock(&amp;sbi-&gt;wq_mutex);
+ 		return;
+ 	}
+ 
+ 	pr_debug(&quot;entering catatonic mode\n&quot;);
+ 
+-	sbi-&gt;catatonic = 1;
++	sbi-&gt;flags |= AUTOFS_SBI_CATATONIC;
+ 	wq = sbi-&gt;queues;
+ 	sbi-&gt;queues = NULL;	/* Erase all wait queues */
+ 	while (wq) {
+@@ -255,7 +255,7 @@ static int validate_request(struct autofs_wait_queue **wait,
+ 	struct autofs_wait_queue *wq;
+ 	struct autofs_info *ino;
+ 
+-	if (sbi-&gt;catatonic)
++	if (sbi-&gt;flags &amp; AUTOFS_SBI_CATATONIC)
+ 		return -ENOENT;
+ 
+ 	/* Wait in progress, continue; */
+@@ -290,7 +290,7 @@ static int validate_request(struct autofs_wait_queue **wait,
+ 			if (mutex_lock_interruptible(&amp;sbi-&gt;wq_mutex))
+ 				return -EINTR;
+ 
+-			if (sbi-&gt;catatonic)
++			if (sbi-&gt;flags &amp; AUTOFS_SBI_CATATONIC)
+ 				return -ENOENT;
+ 
+ 			wq = autofs_find_wait(sbi, qstr);
+@@ -359,7 +359,7 @@ int autofs_wait(struct autofs_sb_info *sbi,
+ 	pid_t tgid;
+ 
+ 	/* In catatonic mode, we don't wait for nobody */
+-	if (sbi-&gt;catatonic)
++	if (sbi-&gt;flags &amp; AUTOFS_SBI_CATATONIC)
+ 		return -ENOENT;
+ 
+ 	/*
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="02005" href="msg02005.html">[PATCH v2 0/5] autofs updates</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg02008.html">[PATCH v2 3/5] autofs - simplify parse_options() function call</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg02010.html">[PATCH v2 5/5] autofs - add strictexpire mount option</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg02008.html">[PATCH v2 3/5] autofs - simplify parse_options() function call</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg02010.html">[PATCH v2 5/5] autofs - add strictexpire mount option</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#02009"><strong>Date</strong></a></li>
+<li><a href="index.html#02009"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

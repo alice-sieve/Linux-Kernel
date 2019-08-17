@@ -1,0 +1,306 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH] PCI: aardvark: fix big endian support -->
+<!--X-From-R13: Uemrtbem Xnfmpmlx &#60;wnmNfrzvunys.pbz> -->
+<!--X-Date: Tue, 16 Jul 2019 01:32:19 &#45;0700 -->
+<!--X-Message-Id: CAH76GKNXnBaR+3N14yMNoTbMtXD2fU17ZvrCA+W19q21jt9Osg@mail.gmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1563200122&#45;8323&#45;1&#45;git&#45;send&#45;email&#45;jaz@semihalf.com -->
+<!--X-Reference: 20190715170840.326acd73@windsurf -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: Re: [PATCH] PCI: aardvark: fix big endian support">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Re: [PATCH] PCI: aardvark: fix big endian support &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">Re: [PATCH] PCI: aardvark: fix big endian support</h1>
+[<a href="msg741273.html">Date Prev</a>][<a href="msg741275.html">Date Next</a>][<a href="msg741281.html">Thread Prev</a>][<a href="msg741164.html">Thread Next</a>][<a href="maillist.html#741274">Date Index</a>][<a href="threads.html#741274">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH] PCI: aardvark: fix big endian support</li>
+<li><em>From</em>: Grzegorz Jaszczyk &lt;jaz@xxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 16 Jul 2019 10:31:52 +0200</li>
+<li><em>In-reply-to</em>: &lt;20190715170840.326acd73@windsurf&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Hi Thomas,
+
+pon., 15 lip 2019 o 17:08 Thomas Petazzoni
+&lt;thomas.petazzoni@xxxxxxxxxxx&gt; napisa&#x142;(a):
+&gt;<i></i>
+&gt;<i></i>
+&gt;<i> &gt; -     bridge-&gt;conf.vendor = advk_readl(pcie, PCIE_CORE_DEV_ID_REG) &amp; 0xffff;</i>
+&gt;<i> &gt; -     bridge-&gt;conf.device = advk_readl(pcie, PCIE_CORE_DEV_ID_REG) &gt;&gt; 16;</i>
+&gt;<i> &gt; +     bridge-&gt;conf.vendor =</i>
+&gt;<i> &gt; +             cpu_to_le16(advk_readl(pcie, PCIE_CORE_DEV_ID_REG) &amp; 0xffff);</i>
+&gt;<i> &gt; +     bridge-&gt;conf.device =</i>
+&gt;<i> &gt; +             cpu_to_le16(advk_readl(pcie, PCIE_CORE_DEV_ID_REG) &gt;&gt; 16);</i>
+&gt;<i> &gt;       bridge-&gt;conf.class_revision =</i>
+&gt;<i> &gt;               advk_readl(pcie, PCIE_CORE_DEV_REV_REG) &amp; 0xff;</i>
+&gt;<i></i>
+&gt;<i> So conf.vendor and conf.device and stored as little-endian in the</i>
+&gt;<i> emulated config address space, but conf.class_revision is stored in the</i>
+&gt;<i> CPU endianness ?</i>
+
+Thank you it seems it slip over - after my change I dump whole config
+space in big and little endian and compere to be sure that there are
+no more fields that Iam missing and everything seemed ok - so it is
+probably '0' therefore the bug wasn't caught.
+In bridge emulation the conversion is done correctly:
+bridge-&gt;conf.class_revision |= cpu_to_le32(PCI_CLASS_BRIDGE_PCI &lt;&lt; 16);
+
+&gt;<i></i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt; @@ -489,8 +491,8 @@ static void advk_sw_pci_bridge_init(struct advk_pcie *pcie)</i>
+&gt;<i> &gt;       bridge-&gt;conf.iolimit = PCI_IO_RANGE_TYPE_32;</i>
+&gt;<i></i>
+&gt;<i> &gt;</i>
+&gt;<i> &gt;       /* Support 64 bits memory pref */</i>
+&gt;<i> &gt; -     bridge-&gt;conf.pref_mem_base = PCI_PREF_RANGE_TYPE_64;</i>
+&gt;<i> &gt; -     bridge-&gt;conf.pref_mem_limit = PCI_PREF_RANGE_TYPE_64;</i>
+&gt;<i> &gt; +     bridge-&gt;conf.pref_mem_base = cpu_to_le16(PCI_PREF_RANGE_TYPE_64);</i>
+&gt;<i> &gt; +     bridge-&gt;conf.pref_mem_limit = cpu_to_le16(PCI_PREF_RANGE_TYPE_64);</i>
+&gt;<i></i>
+&gt;<i> Same here: why are conf.pref_mem_{base,limit} converted to LE, but not</i>
+&gt;<i> conf.iolimit ?</i>
+
+Here we are ok, since iobase and iolimit are 1byte wide.
+
+&gt;<i></i>
+&gt;<i></i>
+&gt;<i> Also, the advk_pci_bridge_emul_pcie_conf_read() and</i>
+&gt;<i> advk_pci_bridge_emul_pcie_conf_write() return values that are in the</i>
+&gt;<i> CPU endianness.</i>
+&gt;<i></i>
+&gt;<i> Am I missing something ?</i>
+
+Yes because we are mixing the 4byte accesses in
+advk_pci_bridge_emul_pcie_conf_read/write with u16 and u8 accesses
+when referring to structure fields directly.
+E.g. please see what will happen when in BE e.g. device id and vendor
+id are set via conf-&gt;vendor and conf-&gt;device and then read via
+advk_pci_bridge_emul_pcie_conf_read which first read whole 32bit value
+and then shift it. The same with other not u32 fields.
+
+Before my changes PCIe didn't work in BE mode at all - I've tested it
+on a3700. Nevertheless Russell advice about Sparse validation is
+really good - it helps to detect some bugs which slip over - I will
+send v2 soon.
+
+Best regards,
+Grzegorz
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="741163" href="msg741163.html">[PATCH] PCI: aardvark: fix big endian support</a></strong>
+<ul><li><em>From:</em> Grzegorz Jaszczyk</li></ul></li>
+<li><strong><a name="741176" href="msg741176.html">Re: [PATCH] PCI: aardvark: fix big endian support</a></strong>
+<ul><li><em>From:</em> Thomas Petazzoni</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741273.html">Re: [PATCH v2 05/19] drm/sun4i: drop use of drmP.h</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741275.html">Re: [RFC PATCH v2 0/3] Support CPU hotplug for ARM64</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741281.html">Re: [PATCH] PCI: aardvark: fix big endian support</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741164.html">[PATCH AUTOSEL 4.9 31/73] perf cs-etm: Properly set the value of 'old' and 'head' in snapshot mode</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741274"><strong>Date</strong></a></li>
+<li><a href="threads.html#741274"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

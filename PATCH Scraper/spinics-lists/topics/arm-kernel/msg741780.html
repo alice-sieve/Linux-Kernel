@@ -1,0 +1,320 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH 3/3] arm64: debug: Remove rcu_read_lock from debug exception -->
+<!--X-From-R13: [nfnzv Vvenzngfh &#60;zuvenzngNxreary.bet> -->
+<!--X-Date: Thu, 18 Jul 2019 07:34:49 &#45;0700 -->
+<!--X-Message-Id: 20190718233133.146065f668da6297e57e52ef@kernel.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 156342860634.8565.14804606041960884732.stgit@devnote2 -->
+<!--X-Reference: 156342863822.8565.7624877983728871995.stgit@devnote2 -->
+<!--X-Reference: 20190718062215.GG14271@linux.ibm.com -->
+<!--X-Reference: 20190718092022.GA3625@blommer -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: Re: [PATCH 3/3] arm64: debug: Remove rcu_read_lock from debug exception">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Re: [PATCH 3/3] arm64: debug: Remove rcu_read_lock from debug exception &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">Re: [PATCH 3/3] arm64: debug: Remove rcu_read_lock from debug exception</h1>
+[<a href="msg741779.html">Date Prev</a>][<a href="msg741781.html">Date Next</a>][<a href="msg741738.html">Thread Prev</a>][<a href="msg741912.html">Thread Next</a>][<a href="maillist.html#741780">Date Index</a>][<a href="threads.html#741780">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH 3/3] arm64: debug: Remove rcu_read_lock from debug exception</li>
+<li><em>From</em>: Masami Hiramatsu &lt;mhiramat@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 18 Jul 2019 23:31:33 +0900</li>
+<li><em>In-reply-to</em>: &lt;20190718092022.GA3625@blommer&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On Thu, 18 Jul 2019 10:20:23 +0100
+Mark Rutland &lt;mark.rutland@xxxxxxx&gt; wrote:
+
+&gt;<i> On Wed, Jul 17, 2019 at 11:22:15PM -0700, Paul E. McKenney wrote:</i>
+&gt;<i> &gt; On Thu, Jul 18, 2019 at 02:43:58PM +0900, Masami Hiramatsu wrote:</i>
+&gt;<i> &gt; &gt; Remove rcu_read_lock()/rcu_read_unlock() from debug exception</i>
+&gt;<i> &gt; &gt; handlers since the software breakpoint can be hit on idle task.</i>
+&gt;<i> </i>
+&gt;<i> Why precisely do we need to elide these? Are we seeing warnings today?</i>
+
+Yes, unfortunately, or fortunately. Naresh reported that warns when
+ftracetest ran. I confirmed that happens if I probe on default_idle_call too.
+
+/sys/kernel/debug/tracing # echo p default_idle_call &gt;&gt; kprobe_events 
+/sys/kernel/debug/tracing # echo 1 &gt; events/kprobes/enable 
+/sys/kernel/debug/tracing # [  135.122237] 
+[  135.125035] =============================
+[  135.125310] WARNING: suspicious RCU usage
+[  135.125581] 5.2.0-08445-g9187c508bdc7 #20 Not tainted
+[  135.125904] -----------------------------
+[  135.126205] include/linux/rcupdate.h:594 rcu_read_lock() used illegally while idle!
+[  135.126839] 
+[  135.126839] other info that might help us debug this:
+[  135.126839] 
+[  135.127410] 
+[  135.127410] RCU used illegally from idle CPU!
+[  135.127410] rcu_scheduler_active = 2, debug_locks = 1
+[  135.128114] RCU used illegally from extended quiescent state!
+[  135.128555] 1 lock held by swapper/0/0:
+[  135.128944]  #0: (____ptrval____) (rcu_read_lock){....}, at: call_break_hook+0x0/0x178
+[  135.130499] 
+[  135.130499] stack backtrace:
+[  135.131192] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.2.0-08445-g9187c508bdc7 #20
+[  135.131841] Hardware name: linux,dummy-virt (DT)
+[  135.132224] Call trace:
+[  135.132491]  dump_backtrace+0x0/0x140
+[  135.132806]  show_stack+0x24/0x30
+[  135.133133]  dump_stack+0xc4/0x10c
+[  135.133726]  lockdep_rcu_suspicious+0xf8/0x108
+[  135.134171]  call_break_hook+0x170/0x178
+[  135.134486]  brk_handler+0x28/0x68
+[  135.134792]  do_debug_exception+0x90/0x150
+[  135.135051]  el1_dbg+0x18/0x8c
+[  135.135260]  default_idle_call+0x0/0x44
+[  135.135516]  cpu_startup_entry+0x2c/0x30
+[  135.135815]  rest_init+0x1b0/0x280
+[  135.136044]  arch_call_rest_init+0x14/0x1c
+[  135.136305]  start_kernel+0x4d4/0x500
+[  135.136597] 
+
+
+&gt;<i> </i>
+&gt;<i> &gt; The exception entry and exit use irq_enter() and irq_exit(), in this</i>
+&gt;<i> &gt; case, correct?  Otherwise RCU will be ignoring this CPU.</i>
+&gt;<i> </i>
+&gt;<i> This is missing today, which sounds like the underlying bug.</i>
+
+Agreed. I'm not so familier with how debug exception is handled on arm64,
+would it be a kind of NMI or IRQ?
+
+Anyway, it seems that normal irqs are also not calling irq_enter/exit
+except for arch/arm64/kernel/smp.c. We need to fix that too for avoiding
+unexpected RCU issues.
+
+Thank you,
+
+-- 
+Masami Hiramatsu &lt;mhiramat@xxxxxxxxxx&gt;
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="741923" href="msg741923.html">Re: [PATCH 3/3] arm64: debug: Remove rcu_read_lock from debug exception</a></strong>
+<ul><li><em>From:</em> Mark Rutland</li></ul></li>
+<li><strong><a name="741912" href="msg741912.html">Re: [PATCH 3/3] arm64: debug: Remove rcu_read_lock from debug exception</a></strong>
+<ul><li><em>From:</em> James Morse</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="741699" href="msg741699.html">[PATCH 0/3] arm64: kprobes: Fix some bugs in arm64 kprobes</a></strong>
+<ul><li><em>From:</em> Masami Hiramatsu</li></ul></li>
+<li><strong><a name="741702" href="msg741702.html">[PATCH 3/3] arm64: debug: Remove rcu_read_lock from debug exception</a></strong>
+<ul><li><em>From:</em> Masami Hiramatsu</li></ul></li>
+<li><strong><a name="741710" href="msg741710.html">Re: [PATCH 3/3] arm64: debug: Remove rcu_read_lock from debug exception</a></strong>
+<ul><li><em>From:</em> Paul E. McKenney</li></ul></li>
+<li><strong><a name="741738" href="msg741738.html">Re: [PATCH 3/3] arm64: debug: Remove rcu_read_lock from debug exception</a></strong>
+<ul><li><em>From:</em> Mark Rutland</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741779.html">[PATCH v2 7/9] soc: samsung: Update the CHIP ID DT binding documentation</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741781.html">[PATCH v2 9/9] ARM: dts: Add samsung,asv-bin property for odroidxu3-lite</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741738.html">Re: [PATCH 3/3] arm64: debug: Remove rcu_read_lock from debug exception</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741912.html">Re: [PATCH 3/3] arm64: debug: Remove rcu_read_lock from debug exception</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741780"><strong>Date</strong></a></li>
+<li><a href="threads.html#741780"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 3/4] ASoC: audio&#45;graph&#45;card: fix use&#45;after&#45;free	in graph_dai_link_of_dpcm() -->
+<!--X-From-R13: Ira Knat &#60;jra.lnat99Nmgr.pbz.pa> -->
+<!--X-Date: Wed, 10 Jul 2019 00:31:54 &#45;0700 -->
+<!--X-Message-Id: 1562743509&#45;30496&#45;4&#45;git&#45;send&#45;email&#45;wen.yang99@zte.com.cn -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1562743509&#45;30496&#45;1&#45;git&#45;send&#45;email&#45;wen.yang99@zte.com.cn -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 3/4] ASoC: audio-graph-card: fix use-after-free	in graph_dai_link_of_dpcm() &mdash; ALSA Devel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 3/4] ASoC: audio-graph-card: fix use-after-free	in graph_dai_link_of_dpcm() &mdash; ALSA Devel</title>
+<link rel="alternate" type="application/rss+xml" title="ALSA Devel" href="//feedproxy.google.com/AlsaDevel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 3/4] ASoC: audio-graph-card: fix use-after-free	in graph_dai_link_of_dpcm()</h1>
+[<a href="msg93671.html">Date Prev</a>][<a href="msg93673.html">Date Next</a>][<a href="msg93692.html">Thread Prev</a>][<a href="msg93690.html">Thread Next</a>][<a href="maillist.html#93672">Date Index</a>][<a href="threads.html#93672">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: lgirdwood@xxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH 3/4] ASoC: audio-graph-card: fix use-after-free	in graph_dai_link_of_dpcm()</li>
+<li><em>From</em>: Wen Yang &lt;wen.yang99@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 10 Jul 2019 15:25:08 +0800</li>
+<li><em>Cc</em>: jonathanh@xxxxxxxxxx, wang.yi59@xxxxxxxxxx, alsa-devel@xxxxxxxxxxxxxxxx,        kuninori.morimoto.gx@xxxxxxxxxxx, linux-kernel@xxxxxxxxxxxxxxx,        tiwai@xxxxxxxx, broonie@xxxxxxxxxx, xue.zhihong@xxxxxxxxxx,        cheng.shengyu@xxxxxxxxxx, Wen Yang &lt;wen.yang99@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg93670.html">1562743509-30496-1-git-send-email-wen.yang99@zte.com.cn</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg93670.html">1562743509-30496-1-git-send-email-wen.yang99@zte.com.cn</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>After calling of_node_put() on the ports, port, and node variables,
+they are still being used, which may result in use-after-free.
+Fix this issue by calling of_node_put() after the last usage.
+
+Fixes: dd98fbc558a0 (&quot;ASoC: audio-graph-card: cleanup DAI link loop method - step1&quot;)
+Signed-off-by: Wen Yang &lt;wen.yang99@xxxxxxxxxx&gt;
+Cc: Liam Girdwood &lt;lgirdwood@xxxxxxxxx&gt;
+Cc: Mark Brown &lt;broonie@xxxxxxxxxx&gt;
+Cc: Jaroslav Kysela &lt;perex@xxxxxxxx&gt;
+Cc: Takashi Iwai &lt;tiwai@xxxxxxxx&gt;
+Cc: Kuninori Morimoto &lt;kuninori.morimoto.gx@xxxxxxxxxxx&gt;
+Cc: alsa-devel@xxxxxxxxxxxxxxxx
+Cc: linux-kernel@xxxxxxxxxxxxxxx
+---
+ sound/soc/generic/audio-graph-card.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index 30a4e83..31fc83d 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -208,10 +208,6 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 
+ 	dev_dbg(dev, &quot;link_of DPCM (%pOF)\n&quot;, ep);
+ 
+-	of_node_put(ports);
+-	of_node_put(port);
+-	of_node_put(node);
+-
+ 	if (li-&gt;cpu) {
+ 		int is_single_links = 0;
+ 
+@@ -229,17 +225,17 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 
+ 		ret = asoc_simple_parse_cpu(ep, dai_link, &amp;is_single_links);
+ 		if (ret)
+-			return ret;
++			goto out_put_node;
+ 
+ 		ret = asoc_simple_parse_clk_cpu(dev, ep, dai_link, dai);
+ 		if (ret &lt; 0)
+-			return ret;
++			goto out_put_node;
+ 
+ 		ret = asoc_simple_set_dailink_name(dev, dai_link,
+ 						   &quot;fe.%s&quot;,
+ 						   cpus-&gt;dai_name);
+ 		if (ret &lt; 0)
+-			return ret;
++			goto out_put_node;
+ 
+ 		/* card-&gt;num_links includes Codec */
+ 		asoc_simple_canonicalize_cpu(dai_link, is_single_links);
+@@ -263,17 +259,17 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 
+ 		ret = asoc_simple_parse_codec(ep, dai_link);
+ 		if (ret &lt; 0)
+-			return ret;
++			goto out_put_node;
+ 
+ 		ret = asoc_simple_parse_clk_codec(dev, ep, dai_link, dai);
+ 		if (ret &lt; 0)
+-			return ret;
++			goto out_put_node;
+ 
+ 		ret = asoc_simple_set_dailink_name(dev, dai_link,
+ 						   &quot;be.%s&quot;,
+ 						   codecs-&gt;dai_name);
+ 		if (ret &lt; 0)
+-			return ret;
++			goto out_put_node;
+ 
+ 		/* check &quot;prefix&quot; from top node */
+ 		snd_soc_of_parse_node_prefix(top, cconf, codecs-&gt;of_node,
+@@ -293,19 +289,23 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 
+ 	ret = asoc_simple_parse_tdm(ep, dai);
+ 	if (ret)
+-		return ret;
++		goto out_put_node;
+ 
+ 	ret = asoc_simple_parse_daifmt(dev, cpu_ep, codec_ep,
+ 				       NULL, &amp;dai_link-&gt;dai_fmt);
+ 	if (ret &lt; 0)
+-		return ret;
++		goto out_put_node;
+ 
+ 	dai_link-&gt;dpcm_playback		= 1;
+ 	dai_link-&gt;dpcm_capture		= 1;
+ 	dai_link-&gt;ops			= &amp;graph_ops;
+ 	dai_link-&gt;init			= asoc_simple_dai_init;
+ 
+-	return 0;
++out_put_node:
++	of_node_put(ports);
++	of_node_put(port);
++	of_node_put(node);
++	return ret;
+ }
+ 
+ static int graph_dai_link_of(struct asoc_simple_priv *priv,
+-- 
+2.9.5
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@xxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://mailman.alsa-project.org/mailman/listinfo/alsa-devel">https://mailman.alsa-project.org/mailman/listinfo/alsa-devel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="93690" href="msg93690.html">Applied &quot;ASoC: audio-graph-card: fix use-after-free in	graph_dai_link_of_dpcm()&quot; to the asoc tree</a></strong>
+<ul><li><em>From:</em> Mark Brown</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="93670" href="msg93670.html">[PATCH 0/4] Fix some use-after-free problems in	sound/soc/generic</a></strong>
+<ul><li><em>From:</em> Wen Yang</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg93671.html">[PATCH 2/4] ASoC: simple-card: fix an use-after-free	in simple_for_each_link()</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg93673.html">[PATCH 4/4] ASoC: audio-graph-card: fix an	use-after-free in graph_get_dai_id()</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg93692.html">Applied &quot;ASoC: simple-card: fix an use-after-free in	simple_for_each_link()&quot; to the asoc tree</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg93690.html">Applied &quot;ASoC: audio-graph-card: fix use-after-free in	graph_dai_link_of_dpcm()&quot; to the asoc tree</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#93672"><strong>Date</strong></a></li>
+<li><a href="threads.html#93672"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/alsa-user/>[ALSA&nbsp;User]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/pulse-audio/>[Pulse&nbsp;Audio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=http://yosemitephotos.net/>[Photo&nbsp;Sharing]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/linux-sound/>[Linux&nbsp;Sound]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-media/>[Video&nbsp;4&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gimp/>[Gimp]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 1/3] autofs &#45; fix AT_NO_AUTOMOUNT not being honored -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Mon, 7 Aug 2017 21:26:58 &#45;0700 -->
+<!--X-Message-Id: 150216641255.11652.4204561328197919771.stgit@pluto.themaw.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 1/3] autofs - fix AT_NO_AUTOMOUNT not being honored &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 1/3] autofs - fix AT_NO_AUTOMOUNT not being honored &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 1/3] autofs - fix AT_NO_AUTOMOUNT not being honored</h1>
+[<a href="msg01655.html">Date Prev</a>][<a href="msg01657.html">Date Next</a>][<a href="msg01637.html">Thread Prev</a>][<a href="msg01657.html">Thread Next</a>][<a href="maillist.html#01656">Date Index</a>][<a href="index.html#01656">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: Andrew Morton &lt;akpm@xxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 1/3] autofs - fix AT_NO_AUTOMOUNT not being honored</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 08 Aug 2017 12:26:52 +0800</li>
+<li><em>Cc</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;,        Ondrej Holy &lt;oholy@xxxxxxxxxx&gt;, Colin Walters &lt;walters@xxxxxxxxxx&gt;,        Kernel Mailing List &lt;linux-kernel@xxxxxxxxxxxxxxx&gt;,        David Howells &lt;dhowells@xxxxxxxxxx&gt;,        linux-fsdevel &lt;linux-fsdevel@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>User-agent</em>: StGit/0.17.1-dirty</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The fstatat(2) and statx() calls can pass the flag AT_NO_AUTOMOUNT
+which is meant to clear the LOOKUP_AUTOMOUNT flag and prevent triggering
+of an automount by the call. But this flag is unconditionally cleared
+for all stat family system calls except statx().
+
+stat family system calls have always triggered mount requests for the
+negative dentry case in follow_automount() which is intended but prevents
+the fstatat(2) and statx() AT_NO_AUTOMOUNT case from being handled.
+
+In order to handle the AT_NO_AUTOMOUNT for both system calls the
+negative dentry case in follow_automount() needs to be changed to
+return ENOENT when the LOOKUP_AUTOMOUNT flag is clear (and the other
+required flags are clear).
+
+AFAICT this change doesn't have any noticable side effects and may,
+in some use cases (although I didn't see it in testing) prevent
+unnecessary callbacks to the automount daemon.
+
+It's also possible that a stat family call has been made with a
+path that is in the process of being mounted by some other process.
+But stat family calls should return the automount state of the path
+as it is &quot;now&quot; so it shouldn't wait for mount completion.
+
+This is the same semantic as the positive dentry case already
+handled.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+Cc: David Howells &lt;dhowells@xxxxxxxxxx&gt;
+Cc: Colin Walters &lt;walters@xxxxxxxxxx&gt;
+Cc: Ondrej Holy &lt;oholy@xxxxxxxxxx&gt;
+---
+ fs/namei.c         |   15 ++++++++++++---
+ include/linux/fs.h |    3 +--
+ 2 files changed, 13 insertions(+), 5 deletions(-)
+
+diff --git a/fs/namei.c b/fs/namei.c
+index ddb6a7c2b3d4..1180f9c58093 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -1129,9 +1129,18 @@ static int follow_automount(struct path *path, struct nameidata *nd,
+ 	 * of the daemon to instantiate them before they can be used.
+ 	 */
+ 	if (!(nd-&gt;flags &amp; (LOOKUP_PARENT | LOOKUP_DIRECTORY |
+-			   LOOKUP_OPEN | LOOKUP_CREATE | LOOKUP_AUTOMOUNT)) &amp;&amp;
+-	    path-&gt;dentry-&gt;d_inode)
+-		return -EISDIR;
++			   LOOKUP_OPEN | LOOKUP_CREATE |
++			   LOOKUP_AUTOMOUNT))) {
++		/* Positive dentry that isn't meant to trigger an
++		 * automount, EISDIR will allow it to be used,
++		 * otherwise there's no mount here &quot;now&quot; so return
++		 * ENOENT.
++		 */
++		if (path-&gt;dentry-&gt;d_inode)
++			return -EISDIR;
++		else
++			return -ENOENT;
++	}
+ 
+ 	if (path-&gt;dentry-&gt;d_sb-&gt;s_user_ns != &amp;init_user_ns)
+ 		return -EACCES;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 6e1fd5d21248..37c96f52e48e 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3022,8 +3022,7 @@ static inline int vfs_lstat(const char __user *name, struct kstat *stat)
+ static inline int vfs_fstatat(int dfd, const char __user *filename,
+ 			      struct kstat *stat, int flags)
+ {
+-	return vfs_statx(dfd, filename, flags | AT_NO_AUTOMOUNT,
+-			 stat, STATX_BASIC_STATS);
++	return vfs_statx(dfd, filename, flags, stat, STATX_BASIC_STATS);
+ }
+ static inline int vfs_fstat(int fd, struct kstat *stat)
+ {
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="01661" href="msg01661.html">Re: [PATCH 1/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+<ul><li><em>From:</em> David Howells</li></ul></li>
+<li><strong><a name="01659" href="msg01659.html">Re: [PATCH 1/3] autofs - fix AT_NO_AUTOMOUNT not being honored</a></strong>
+<ul><li><em>From:</em> Colin Walters</li></ul></li>
+<li><strong><a name="01658" href="msg01658.html">[PATCH 3/3] autofs - make dev ioctl version and ismountpoint user accessible</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+<li><strong><a name="01657" href="msg01657.html">[PATCH 2/3] autofs - make disc device user accessible</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01655.html">[PATCH 19/19] autofs-5.1.3 - also check flag file exe name</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01657.html">[PATCH 2/3] autofs - make disc device user accessible</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01637.html">[PATCH 00/19] Current autofs patch queue</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01657.html">[PATCH 2/3] autofs - make disc device user accessible</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01656"><strong>Date</strong></a></li>
+<li><a href="index.html#01656"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,650 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: RE: [PATCH 1/2] drm/amd/powerplay: correct SW SMU valid mapping check -->
+<!--X-From-R13: "Chna, Sina" &#60;Sina.ChnaNnzq.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 20:00:55 &#45;0700 -->
+<!--X-Message-Id: MN2PR12MB33449CDB77296DA6FC8DAAECE4CE0@MN2PR12MB3344.namprd12.prod.outlook.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190712073505.17563&#45;1&#45;evan.quan@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: RE: [PATCH 1/2] drm/amd/powerplay: correct SW SMU valid mapping check">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>RE: [PATCH 1/2] drm/amd/powerplay: correct SW SMU valid mapping check &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">RE: [PATCH 1/2] drm/amd/powerplay: correct SW SMU valid mapping check</h1>
+[<a href="msg36040.html">Date Prev</a>][<a href="msg36042.html">Date Next</a>][<a href="msg36052.html">Thread Prev</a>][<a href="msg36055.html">Thread Next</a>][<a href="maillist.html#36041">Date Index</a>][<a href="index.html#36041">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: &quot;Quan, Evan&quot; &lt;Evan.Quan@xxxxxxx&gt;,        &quot;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&quot; &lt;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: RE: [PATCH 1/2] drm/amd/powerplay: correct SW SMU valid mapping check</li>
+<li><em>From</em>: &quot;Quan, Evan&quot; &lt;Evan.Quan@xxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 16 Jul 2019 03:00:48 +0000</li>
+<li><em>Accept-language</em>: en-US, zh-CN</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg35769.html">20190712073505.17563-1-evan.quan@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg35769.html">20190712073505.17563-1-evan.quan@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Ping..
+
+&gt;<i> -----Original Message-----</i>
+&gt;<i> From: Evan Quan &lt;evan.quan@xxxxxxx&gt;</i>
+&gt;<i> Sent: Friday, July 12, 2019 3:35 PM</i>
+&gt;<i> To: amd-gfx@xxxxxxxxxxxxxxxxxxxxx</i>
+&gt;<i> Cc: Quan, Evan &lt;Evan.Quan@xxxxxxx&gt;</i>
+&gt;<i> Subject: [PATCH 1/2] drm/amd/powerplay: correct SW SMU valid mapping</i>
+&gt;<i> check</i>
+&gt;<i> </i>
+&gt;<i> Current implementation is not actually able to detect invalid</i>
+&gt;<i> message/table/workload mapping.</i>
+&gt;<i> </i>
+&gt;<i> Change-Id: I66588f20dc2c39dfeb8aefb66757812589eab812</i>
+&gt;<i> Signed-off-by: Evan Quan &lt;evan.quan@xxxxxxx&gt;</i>
+&gt;<i> ---</i>
+&gt;<i>  .../gpu/drm/amd/include/kgd_pp_interface.h    |  1 +</i>
+&gt;<i>  drivers/gpu/drm/amd/powerplay/inc/smu_v11_0.h | 15 ++--</i>
+&gt;<i>  drivers/gpu/drm/amd/powerplay/navi10_ppt.c    | 68 +++++++++++--------</i>
+&gt;<i>  drivers/gpu/drm/amd/powerplay/vega20_ppt.c    | 67 ++++++++++--------</i>
+&gt;<i>  4 files changed, 86 insertions(+), 65 deletions(-)</i>
+&gt;<i> </i>
+&gt;<i> diff --git a/drivers/gpu/drm/amd/include/kgd_pp_interface.h</i>
+&gt;<i> b/drivers/gpu/drm/amd/include/kgd_pp_interface.h</i>
+&gt;<i> index 9f661bf96ed0..9733bbf9bc72 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/amd/include/kgd_pp_interface.h</i>
+&gt;<i> +++ b/drivers/gpu/drm/amd/include/kgd_pp_interface.h</i>
+&gt;<i> @@ -141,6 +141,7 @@ enum PP_SMC_POWER_PROFILE {</i>
+&gt;<i>  	PP_SMC_POWER_PROFILE_VR           = 0x4,</i>
+&gt;<i>  	PP_SMC_POWER_PROFILE_COMPUTE      = 0x5,</i>
+&gt;<i>  	PP_SMC_POWER_PROFILE_CUSTOM       = 0x6,</i>
+&gt;<i> +	PP_SMC_POWER_PROFILE_COUNT,</i>
+&gt;<i>  };</i>
+&gt;<i> </i>
+&gt;<i>  enum {</i>
+&gt;<i> diff --git a/drivers/gpu/drm/amd/powerplay/inc/smu_v11_0.h</i>
+&gt;<i> b/drivers/gpu/drm/amd/powerplay/inc/smu_v11_0.h</i>
+&gt;<i> index 2fff4b16cb4e..fcb58012170f 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/amd/powerplay/inc/smu_v11_0.h</i>
+&gt;<i> +++ b/drivers/gpu/drm/amd/powerplay/inc/smu_v11_0.h</i>
+&gt;<i> @@ -43,19 +43,24 @@</i>
+&gt;<i>  #define SMU11_TOOL_SIZE			0x19000</i>
+&gt;<i> </i>
+&gt;<i>  #define CLK_MAP(clk, index) \</i>
+&gt;<i> -	[SMU_##clk] = index</i>
+&gt;<i> +	[SMU_##clk] = {1, (index)}</i>
+&gt;<i> </i>
+&gt;<i>  #define FEA_MAP(fea) \</i>
+&gt;<i> -	[SMU_FEATURE_##fea##_BIT] = FEATURE_##fea##_BIT</i>
+&gt;<i> +	[SMU_FEATURE_##fea##_BIT] = {1, FEATURE_##fea##_BIT}</i>
+&gt;<i> </i>
+&gt;<i>  #define TAB_MAP(tab) \</i>
+&gt;<i> -	[SMU_TABLE_##tab] = TABLE_##tab</i>
+&gt;<i> +	[SMU_TABLE_##tab] = {1, TABLE_##tab}</i>
+&gt;<i> </i>
+&gt;<i>  #define PWR_MAP(tab) \</i>
+&gt;<i> -	[SMU_POWER_SOURCE_##tab] = POWER_SOURCE_##tab</i>
+&gt;<i> +	[SMU_POWER_SOURCE_##tab] = {1, POWER_SOURCE_##tab}</i>
+&gt;<i> </i>
+&gt;<i>  #define WORKLOAD_MAP(profile, workload) \</i>
+&gt;<i> -	[profile] = workload</i>
+&gt;<i> +	[profile] = {1, (workload)}</i>
+&gt;<i> +</i>
+&gt;<i> +struct smu_11_0_cmn2aisc_mapping {</i>
+&gt;<i> +	int	valid_mapping;</i>
+&gt;<i> +	int	map_to;</i>
+&gt;<i> +};</i>
+&gt;<i> </i>
+&gt;<i>  struct smu_11_0_max_sustainable_clocks {</i>
+&gt;<i>  	uint32_t display_clock;</i>
+&gt;<i> diff --git a/drivers/gpu/drm/amd/powerplay/navi10_ppt.c</i>
+&gt;<i> b/drivers/gpu/drm/amd/powerplay/navi10_ppt.c</i>
+&gt;<i> index 5ee6508f1d13..e5fa82e10535 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/amd/powerplay/navi10_ppt.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/amd/powerplay/navi10_ppt.c</i>
+&gt;<i> @@ -49,9 +49,9 @@</i>
+&gt;<i>  	FEATURE_MASK(FEATURE_DPM_DCEFCLK_BIT))</i>
+&gt;<i> </i>
+&gt;<i>  #define MSG_MAP(msg, index) \</i>
+&gt;<i> -	[SMU_MSG_##msg] = index</i>
+&gt;<i> +	[SMU_MSG_##msg] = {1, (index)}</i>
+&gt;<i> </i>
+&gt;<i> -static int navi10_message_map[SMU_MSG_MAX_COUNT] = {</i>
+&gt;<i> +static struct smu_11_0_cmn2aisc_mapping</i>
+&gt;<i> +navi10_message_map[SMU_MSG_MAX_COUNT] = {</i>
+&gt;<i>  	MSG_MAP(TestMessage,</i>
+&gt;<i> 	PPSMC_MSG_TestMessage),</i>
+&gt;<i>  	MSG_MAP(GetSmuVersion,</i>
+&gt;<i> 	PPSMC_MSG_GetSmuVersion),</i>
+&gt;<i>  	MSG_MAP(GetDriverIfVersion,</i>
+&gt;<i> 	PPSMC_MSG_GetDriverIfVersion),</i>
+&gt;<i> @@ -118,7 +118,7 @@ static int</i>
+&gt;<i> navi10_message_map[SMU_MSG_MAX_COUNT] = {</i>
+&gt;<i>  	MSG_MAP(ArmD3,			PPSMC_MSG_ArmD3),</i>
+&gt;<i>  };</i>
+&gt;<i> </i>
+&gt;<i> -static int navi10_clk_map[SMU_CLK_COUNT] = {</i>
+&gt;<i> +static struct smu_11_0_cmn2aisc_mapping</i>
+&gt;<i> navi10_clk_map[SMU_CLK_COUNT] =</i>
+&gt;<i> +{</i>
+&gt;<i>  	CLK_MAP(GFXCLK, PPCLK_GFXCLK),</i>
+&gt;<i>  	CLK_MAP(SCLK,	PPCLK_GFXCLK),</i>
+&gt;<i>  	CLK_MAP(SOCCLK, PPCLK_SOCCLK),</i>
+&gt;<i> @@ -133,7 +133,7 @@ static int navi10_clk_map[SMU_CLK_COUNT] = {</i>
+&gt;<i>  	CLK_MAP(PHYCLK, PPCLK_PHYCLK),</i>
+&gt;<i>  };</i>
+&gt;<i> </i>
+&gt;<i> -static int navi10_feature_mask_map[SMU_FEATURE_COUNT] = {</i>
+&gt;<i> +static struct smu_11_0_cmn2aisc_mapping</i>
+&gt;<i> +navi10_feature_mask_map[SMU_FEATURE_COUNT] = {</i>
+&gt;<i>  	FEA_MAP(DPM_PREFETCHER),</i>
+&gt;<i>  	FEA_MAP(DPM_GFXCLK),</i>
+&gt;<i>  	FEA_MAP(DPM_GFX_PACE),</i>
+&gt;<i> @@ -178,7 +178,7 @@ static int</i>
+&gt;<i> navi10_feature_mask_map[SMU_FEATURE_COUNT] = {</i>
+&gt;<i>  	FEA_MAP(ATHUB_PG),</i>
+&gt;<i>  };</i>
+&gt;<i> </i>
+&gt;<i> -static int navi10_table_map[SMU_TABLE_COUNT] = {</i>
+&gt;<i> +static struct smu_11_0_cmn2aisc_mapping</i>
+&gt;<i> +navi10_table_map[SMU_TABLE_COUNT] = {</i>
+&gt;<i>  	TAB_MAP(PPTABLE),</i>
+&gt;<i>  	TAB_MAP(WATERMARKS),</i>
+&gt;<i>  	TAB_MAP(AVFS),</i>
+&gt;<i> @@ -193,12 +193,12 @@ static int navi10_table_map[SMU_TABLE_COUNT]</i>
+&gt;<i> = {</i>
+&gt;<i>  	TAB_MAP(PACE),</i>
+&gt;<i>  };</i>
+&gt;<i> </i>
+&gt;<i> -static int navi10_pwr_src_map[SMU_POWER_SOURCE_COUNT] = {</i>
+&gt;<i> +static struct smu_11_0_cmn2aisc_mapping</i>
+&gt;<i> +navi10_pwr_src_map[SMU_POWER_SOURCE_COUNT] = {</i>
+&gt;<i>  	PWR_MAP(AC),</i>
+&gt;<i>  	PWR_MAP(DC),</i>
+&gt;<i>  };</i>
+&gt;<i> </i>
+&gt;<i> -static int navi10_workload_map[] = {</i>
+&gt;<i> +static struct smu_11_0_cmn2aisc_mapping</i>
+&gt;<i> +navi10_workload_map[PP_SMC_POWER_PROFILE_COUNT] = {</i>
+&gt;<i>  	WORKLOAD_MAP(PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT,</i>
+&gt;<i> 	WORKLOAD_PPLIB_DEFAULT_BIT),</i>
+&gt;<i>  	WORKLOAD_MAP(PP_SMC_POWER_PROFILE_FULLSCREEN3D,</i>
+&gt;<i> 		WORKLOAD_PPLIB_FULL_SCREEN_3D_BIT),</i>
+&gt;<i>  	WORKLOAD_MAP(PP_SMC_POWER_PROFILE_POWERSAVING,</i>
+&gt;<i> 		WORKLOAD_PPLIB_POWER_SAVING_BIT),</i>
+&gt;<i> @@ -210,79 +210,87 @@ static int navi10_workload_map[] = {</i>
+&gt;<i> </i>
+&gt;<i>  static int navi10_get_smu_msg_index(struct smu_context *smc, uint32_t</i>
+&gt;<i> index)  {</i>
+&gt;<i> -	int val;</i>
+&gt;<i> +	struct smu_11_0_cmn2aisc_mapping mapping;</i>
+&gt;<i> +</i>
+&gt;<i>  	if (index &gt; SMU_MSG_MAX_COUNT)</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	val = navi10_message_map[index];</i>
+&gt;<i> -	if (val &gt; PPSMC_Message_Count)</i>
+&gt;<i> +	mapping = navi10_message_map[index];</i>
+&gt;<i> +	if (!(mapping.valid_mapping))</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	return val;</i>
+&gt;<i> +	return mapping.map_to;</i>
+&gt;<i>  }</i>
+&gt;<i> </i>
+&gt;<i>  static int navi10_get_smu_clk_index(struct smu_context *smc, uint32_t</i>
+&gt;<i> index)  {</i>
+&gt;<i> -	int val;</i>
+&gt;<i> +	struct smu_11_0_cmn2aisc_mapping mapping;</i>
+&gt;<i> +</i>
+&gt;<i>  	if (index &gt;= SMU_CLK_COUNT)</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	val = navi10_clk_map[index];</i>
+&gt;<i> -	if (val &gt;= PPCLK_COUNT)</i>
+&gt;<i> +	mapping = navi10_clk_map[index];</i>
+&gt;<i> +	if (!(mapping.valid_mapping))</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	return val;</i>
+&gt;<i> +	return mapping.map_to;</i>
+&gt;<i>  }</i>
+&gt;<i> </i>
+&gt;<i>  static int navi10_get_smu_feature_index(struct smu_context *smc,</i>
+&gt;<i> uint32_t index)  {</i>
+&gt;<i> -	int val;</i>
+&gt;<i> +	struct smu_11_0_cmn2aisc_mapping mapping;</i>
+&gt;<i> +</i>
+&gt;<i>  	if (index &gt;= SMU_FEATURE_COUNT)</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	val = navi10_feature_mask_map[index];</i>
+&gt;<i> -	if (val &gt; 64)</i>
+&gt;<i> +	mapping = navi10_feature_mask_map[index];</i>
+&gt;<i> +	if (!(mapping.valid_mapping))</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	return val;</i>
+&gt;<i> +	return mapping.map_to;</i>
+&gt;<i>  }</i>
+&gt;<i> </i>
+&gt;<i>  static int navi10_get_smu_table_index(struct smu_context *smc, uint32_t</i>
+&gt;<i> index)  {</i>
+&gt;<i> -	int val;</i>
+&gt;<i> +	struct smu_11_0_cmn2aisc_mapping mapping;</i>
+&gt;<i> +</i>
+&gt;<i>  	if (index &gt;= SMU_TABLE_COUNT)</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	val = navi10_table_map[index];</i>
+&gt;<i> -	if (val &gt;= TABLE_COUNT)</i>
+&gt;<i> +	mapping = navi10_table_map[index];</i>
+&gt;<i> +	if (!(mapping.valid_mapping))</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	return val;</i>
+&gt;<i> +	return mapping.map_to;</i>
+&gt;<i>  }</i>
+&gt;<i> </i>
+&gt;<i>  static int navi10_get_pwr_src_index(struct smu_context *smc, uint32_t</i>
+&gt;<i> index)  {</i>
+&gt;<i> -	int val;</i>
+&gt;<i> +	struct smu_11_0_cmn2aisc_mapping mapping;</i>
+&gt;<i> +</i>
+&gt;<i>  	if (index &gt;= SMU_POWER_SOURCE_COUNT)</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	val = navi10_pwr_src_map[index];</i>
+&gt;<i> -	if (val &gt;= POWER_SOURCE_COUNT)</i>
+&gt;<i> +	mapping = navi10_pwr_src_map[index];</i>
+&gt;<i> +	if (!(mapping.valid_mapping))</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	return val;</i>
+&gt;<i> +	return mapping.map_to;</i>
+&gt;<i>  }</i>
+&gt;<i> </i>
+&gt;<i> </i>
+&gt;<i>  static int navi10_get_workload_type(struct smu_context *smu, enum</i>
+&gt;<i> PP_SMC_POWER_PROFILE profile)  {</i>
+&gt;<i> -	int val;</i>
+&gt;<i> +	struct smu_11_0_cmn2aisc_mapping mapping;</i>
+&gt;<i> +</i>
+&gt;<i>  	if (profile &gt; PP_SMC_POWER_PROFILE_CUSTOM)</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	val = navi10_workload_map[profile];</i>
+&gt;<i> +	mapping = navi10_workload_map[profile];</i>
+&gt;<i> +	if (!(mapping.valid_mapping))</i>
+&gt;<i> +		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	return val;</i>
+&gt;<i> +	return mapping.map_to;</i>
+&gt;<i>  }</i>
+&gt;<i> </i>
+&gt;<i>  static bool is_asic_secure(struct smu_context *smu) diff --git</i>
+&gt;<i> a/drivers/gpu/drm/amd/powerplay/vega20_ppt.c</i>
+&gt;<i> b/drivers/gpu/drm/amd/powerplay/vega20_ppt.c</i>
+&gt;<i> index d9740384a08e..4685791a65da 100644</i>
+&gt;<i> --- a/drivers/gpu/drm/amd/powerplay/vega20_ppt.c</i>
+&gt;<i> +++ b/drivers/gpu/drm/amd/powerplay/vega20_ppt.c</i>
+&gt;<i> @@ -47,7 +47,7 @@</i>
+&gt;<i>  #define CTF_OFFSET_HBM			5</i>
+&gt;<i> </i>
+&gt;<i>  #define MSG_MAP(msg) \</i>
+&gt;<i> -	[SMU_MSG_##msg] = PPSMC_MSG_##msg</i>
+&gt;<i> +	[SMU_MSG_##msg] = {1, PPSMC_MSG_##msg}</i>
+&gt;<i> </i>
+&gt;<i>  #define SMC_DPM_FEATURE (FEATURE_DPM_PREFETCHER_MASK | \</i>
+&gt;<i>  			 FEATURE_DPM_GFXCLK_MASK | \</i>
+&gt;<i> @@ -59,7 +59,7 @@</i>
+&gt;<i>  			 FEATURE_DPM_LINK_MASK | \</i>
+&gt;<i>  			 FEATURE_DPM_DCEFCLK_MASK)</i>
+&gt;<i> </i>
+&gt;<i> -static int vega20_message_map[SMU_MSG_MAX_COUNT] = {</i>
+&gt;<i> +static struct smu_11_0_cmn2aisc_mapping</i>
+&gt;<i> +vega20_message_map[SMU_MSG_MAX_COUNT] = {</i>
+&gt;<i>  	MSG_MAP(TestMessage),</i>
+&gt;<i>  	MSG_MAP(GetSmuVersion),</i>
+&gt;<i>  	MSG_MAP(GetDriverIfVersion),</i>
+&gt;<i> @@ -145,7 +145,7 @@ static int</i>
+&gt;<i> vega20_message_map[SMU_MSG_MAX_COUNT] = {</i>
+&gt;<i>  	MSG_MAP(GetAVFSVoltageByDpm),</i>
+&gt;<i>  };</i>
+&gt;<i> </i>
+&gt;<i> -static int vega20_clk_map[SMU_CLK_COUNT] = {</i>
+&gt;<i> +static struct smu_11_0_cmn2aisc_mapping</i>
+&gt;<i> vega20_clk_map[SMU_CLK_COUNT] =</i>
+&gt;<i> +{</i>
+&gt;<i>  	CLK_MAP(GFXCLK, PPCLK_GFXCLK),</i>
+&gt;<i>  	CLK_MAP(VCLK, PPCLK_VCLK),</i>
+&gt;<i>  	CLK_MAP(DCLK, PPCLK_DCLK),</i>
+&gt;<i> @@ -159,7 +159,7 @@ static int vega20_clk_map[SMU_CLK_COUNT] = {</i>
+&gt;<i>  	CLK_MAP(FCLK, PPCLK_FCLK),</i>
+&gt;<i>  };</i>
+&gt;<i> </i>
+&gt;<i> -static int vega20_feature_mask_map[SMU_FEATURE_COUNT] = {</i>
+&gt;<i> +static struct smu_11_0_cmn2aisc_mapping</i>
+&gt;<i> +vega20_feature_mask_map[SMU_FEATURE_COUNT] = {</i>
+&gt;<i>  	FEA_MAP(DPM_PREFETCHER),</i>
+&gt;<i>  	FEA_MAP(DPM_GFXCLK),</i>
+&gt;<i>  	FEA_MAP(DPM_UCLK),</i>
+&gt;<i> @@ -195,7 +195,7 @@ static int</i>
+&gt;<i> vega20_feature_mask_map[SMU_FEATURE_COUNT] = {</i>
+&gt;<i>  	FEA_MAP(XGMI),</i>
+&gt;<i>  };</i>
+&gt;<i> </i>
+&gt;<i> -static int vega20_table_map[SMU_TABLE_COUNT] = {</i>
+&gt;<i> +static struct smu_11_0_cmn2aisc_mapping</i>
+&gt;<i> +vega20_table_map[SMU_TABLE_COUNT] = {</i>
+&gt;<i>  	TAB_MAP(PPTABLE),</i>
+&gt;<i>  	TAB_MAP(WATERMARKS),</i>
+&gt;<i>  	TAB_MAP(AVFS),</i>
+&gt;<i> @@ -208,12 +208,12 @@ static int vega20_table_map[SMU_TABLE_COUNT]</i>
+&gt;<i> = {</i>
+&gt;<i>  	TAB_MAP(OVERDRIVE),</i>
+&gt;<i>  };</i>
+&gt;<i> </i>
+&gt;<i> -static int vega20_pwr_src_map[SMU_POWER_SOURCE_COUNT] = {</i>
+&gt;<i> +static struct smu_11_0_cmn2aisc_mapping</i>
+&gt;<i> +vega20_pwr_src_map[SMU_POWER_SOURCE_COUNT] = {</i>
+&gt;<i>  	PWR_MAP(AC),</i>
+&gt;<i>  	PWR_MAP(DC),</i>
+&gt;<i>  };</i>
+&gt;<i> </i>
+&gt;<i> -static int vega20_workload_map[] = {</i>
+&gt;<i> +static struct smu_11_0_cmn2aisc_mapping</i>
+&gt;<i> +vega20_workload_map[PP_SMC_POWER_PROFILE_COUNT] = {</i>
+&gt;<i>  	WORKLOAD_MAP(PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT,</i>
+&gt;<i> 	WORKLOAD_DEFAULT_BIT),</i>
+&gt;<i>  	WORKLOAD_MAP(PP_SMC_POWER_PROFILE_FULLSCREEN3D,</i>
+&gt;<i> 		WORKLOAD_PPLIB_FULL_SCREEN_3D_BIT),</i>
+&gt;<i>  	WORKLOAD_MAP(PP_SMC_POWER_PROFILE_POWERSAVING,</i>
+&gt;<i> 		WORKLOAD_PPLIB_POWER_SAVING_BIT),</i>
+&gt;<i> @@ -225,79 +225,86 @@ static int vega20_workload_map[] = {</i>
+&gt;<i> </i>
+&gt;<i>  static int vega20_get_smu_table_index(struct smu_context *smc, uint32_t</i>
+&gt;<i> index)  {</i>
+&gt;<i> -	int val;</i>
+&gt;<i> +	struct smu_11_0_cmn2aisc_mapping mapping;</i>
+&gt;<i> +</i>
+&gt;<i>  	if (index &gt;= SMU_TABLE_COUNT)</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	val = vega20_table_map[index];</i>
+&gt;<i> -	if (val &gt;= TABLE_COUNT)</i>
+&gt;<i> +	mapping = vega20_table_map[index];</i>
+&gt;<i> +	if (!(mapping.valid_mapping))</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	return val;</i>
+&gt;<i> +	return mapping.map_to;</i>
+&gt;<i>  }</i>
+&gt;<i> </i>
+&gt;<i>  static int vega20_get_pwr_src_index(struct smu_context *smc, uint32_t</i>
+&gt;<i> index)  {</i>
+&gt;<i> -	int val;</i>
+&gt;<i> +	struct smu_11_0_cmn2aisc_mapping mapping;</i>
+&gt;<i> +</i>
+&gt;<i>  	if (index &gt;= SMU_POWER_SOURCE_COUNT)</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	val = vega20_pwr_src_map[index];</i>
+&gt;<i> -	if (val &gt;= POWER_SOURCE_COUNT)</i>
+&gt;<i> +	mapping = vega20_pwr_src_map[index];</i>
+&gt;<i> +	if (!(mapping.valid_mapping))</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	return val;</i>
+&gt;<i> +	return mapping.map_to;</i>
+&gt;<i>  }</i>
+&gt;<i> </i>
+&gt;<i>  static int vega20_get_smu_feature_index(struct smu_context *smc,</i>
+&gt;<i> uint32_t index)  {</i>
+&gt;<i> -	int val;</i>
+&gt;<i> +	struct smu_11_0_cmn2aisc_mapping mapping;</i>
+&gt;<i> +</i>
+&gt;<i>  	if (index &gt;= SMU_FEATURE_COUNT)</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	val = vega20_feature_mask_map[index];</i>
+&gt;<i> -	if (val &gt; 64)</i>
+&gt;<i> +	mapping = vega20_feature_mask_map[index];</i>
+&gt;<i> +	if (!(mapping.valid_mapping))</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	return val;</i>
+&gt;<i> +	return mapping.map_to;</i>
+&gt;<i>  }</i>
+&gt;<i> </i>
+&gt;<i>  static int vega20_get_smu_clk_index(struct smu_context *smc, uint32_t</i>
+&gt;<i> index)  {</i>
+&gt;<i> -	int val;</i>
+&gt;<i> +	struct smu_11_0_cmn2aisc_mapping mapping;</i>
+&gt;<i> +</i>
+&gt;<i>  	if (index &gt;= SMU_CLK_COUNT)</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	val = vega20_clk_map[index];</i>
+&gt;<i> -	if (val &gt;= PPCLK_COUNT)</i>
+&gt;<i> +	mapping = vega20_clk_map[index];</i>
+&gt;<i> +	if (!(mapping.valid_mapping))</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	return val;</i>
+&gt;<i> +	return mapping.map_to;</i>
+&gt;<i>  }</i>
+&gt;<i> </i>
+&gt;<i>  static int vega20_get_smu_msg_index(struct smu_context *smc, uint32_t</i>
+&gt;<i> index)  {</i>
+&gt;<i> -	int val;</i>
+&gt;<i> +	struct smu_11_0_cmn2aisc_mapping mapping;</i>
+&gt;<i> </i>
+&gt;<i>  	if (index &gt;= SMU_MSG_MAX_COUNT)</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	val = vega20_message_map[index];</i>
+&gt;<i> -	if (val &gt; PPSMC_Message_Count)</i>
+&gt;<i> +	mapping = vega20_message_map[index];</i>
+&gt;<i> +	if (!(mapping.valid_mapping))</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	return val;</i>
+&gt;<i> +	return mapping.map_to;</i>
+&gt;<i>  }</i>
+&gt;<i> </i>
+&gt;<i>  static int vega20_get_workload_type(struct smu_context *smu, enum</i>
+&gt;<i> PP_SMC_POWER_PROFILE profile)  {</i>
+&gt;<i> -	int val;</i>
+&gt;<i> +	struct smu_11_0_cmn2aisc_mapping mapping;</i>
+&gt;<i> +</i>
+&gt;<i>  	if (profile &gt; PP_SMC_POWER_PROFILE_CUSTOM)</i>
+&gt;<i>  		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	val = vega20_workload_map[profile];</i>
+&gt;<i> +	mapping = vega20_workload_map[profile];</i>
+&gt;<i> +	if (!(mapping.valid_mapping))</i>
+&gt;<i> +		return -EINVAL;</i>
+&gt;<i> </i>
+&gt;<i> -	return val;</i>
+&gt;<i> +	return mapping.map_to;</i>
+&gt;<i>  }</i>
+&gt;<i> </i>
+&gt;<i>  static int vega20_tables_init(struct smu_context *smu, struct smu_table</i>
+&gt;<i> *tables)</i>
+&gt;<i> --</i>
+&gt;<i> 2.21.0</i>
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="35769" href="msg35769.html">[PATCH 1/2] drm/amd/powerplay: correct SW SMU valid mapping check</a></strong>
+<ul><li><em>From:</em> Evan Quan</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg36040.html">[PATCH 102/102] drm/amdgpu: flag arcturus as experimental for now</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg36042.html">RE: [PATCH 2/2] drm/amd/powerplay: input check for unsupported message/clock index</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg36052.html">RE: [PATCH 2/2] drm/amd/powerplay: input check for unsupported message/clock index</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg36055.html">RE: [PATCH 1/2] drm/amd/powerplay: correct SW SMU valid mapping check</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#36041"><strong>Date</strong></a></li>
+<li><a href="index.html#36041"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

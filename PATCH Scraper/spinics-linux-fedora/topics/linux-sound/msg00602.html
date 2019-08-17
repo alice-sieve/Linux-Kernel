@@ -1,0 +1,302 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] ALSA: usb&#45;audio: Fix double&#45;free in snd_usb_add_audio_stream() -->
+<!--X-From-R13: Hynqvf Rebabi &#60;iqebabiNerqung.pbz> -->
+<!--X-Date: Wed, 30 Mar 2016 12:03:40 &#45;0700 -->
+<!--X-Message-Id: 1459364602&#45;28997&#45;2&#45;git&#45;send&#45;email&#45;vdronov@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1459364602&#45;28997&#45;1&#45;git&#45;send&#45;email&#45;vdronov@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Sound: [PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Sound &mdash; [PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Sound" href="//feeds.feedburner.com/LinuxSound">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:6612422167" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()</h1>
+[<a href="msg00601.html">Date Prev</a>][<a href="msg00603.html">Date Next</a>][<a href="msg00601.html">Thread Prev</a>][<a href="msg00603.html">Thread Next</a>][<a href="maillist.html#00602">Date Index</a>][<a href="index.html#00602">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()</li>
+<li><em>From</em>: Vladis Dronov &lt;vdronov@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 30 Mar 2016 21:03:22 +0200</li>
+<li><em>Cc</em>: Vladis Dronov &lt;vdronov@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg00601.html">1459364602-28997-1-git-send-email-vdronov@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>There is a double-free bug in [snd-usb-audio] module due to alloc/free logic
+flaw in snd_usb_add_audio_stream() function. This leads to kernel structures
+corruption and panic. Fix the code flow and alloc/free logic so there is no
+double-free.
+
+The detailed analysis: <a  rel="nofollow" href="https://bugzilla.redhat.com/show_bug.cgi?id=1283358">https://bugzilla.redhat.com/show_bug.cgi?id=1283358</a>
+
+Reported-by: Ralf Spenneberg &lt;ralf@xxxxxxxxxxxxxx&gt;
+Signed-off-by: Vladis Dronov &lt;vdronov@xxxxxxxxxx&gt;
+---
+ sound/usb/quirks.c | 17 ++++++++++++-----
+ sound/usb/stream.c | 10 ++++++++--
+ 2 files changed, 20 insertions(+), 7 deletions(-)
+
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index fb62bce..1d41b47 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -164,11 +164,6 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+ 		fp-&gt;rate_table = rate_table;
+ 	}
+
+-	stream = (fp-&gt;endpoint &amp; USB_DIR_IN)
+-		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
+-	err = snd_usb_add_audio_stream(chip, stream, fp);
+-	if (err &lt; 0)
+-		goto error;
+ 	if (fp-&gt;iface != get_iface_desc(&amp;iface-&gt;altsetting[0])-&gt;bInterfaceNumber ||
+ 	    fp-&gt;altset_idx &gt;= iface-&gt;num_altsetting) {
+ 		err = -EINVAL;
+@@ -181,6 +176,17 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+ 		goto error;
+ 	}
+
++	stream = (fp-&gt;endpoint &amp; USB_DIR_IN)
++		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
++	err = snd_usb_add_audio_stream(chip, stream, fp);
++	if (err &lt; 0)
++		goto error;
++
++	/* From this point error paths should jump to
++	 * error_after_add_audio_stream: not to error: as fp
++	 * and rate_table will be freed on stream removal
++	 */
++
+ 	fp-&gt;protocol = altsd-&gt;bInterfaceProtocol;
+
+ 	if (fp-&gt;datainterval == 0)
+@@ -195,6 +201,7 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+  error:
+ 	kfree(fp);
+ 	kfree(rate_table);
++ error_after_add_audio_stream:
+ 	return err;
+ }
+
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index 51258a1..f8ed8b49 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -349,7 +349,10 @@ int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
+ 		if (err &lt; 0)
+ 			return err;
+ 		snd_usb_init_substream(as, stream, fp);
+-		return add_chmap(as-&gt;pcm, stream, subs);
++		err = add_chmap(as-&gt;pcm, stream, subs);
++		if (err &lt; 0)
++			list_del_init(&amp;fp-&gt;list);
++		return err;
+ 	}
+
+ 	/* create a new pcm */
+@@ -391,7 +394,10 @@ int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
+
+ 	snd_usb_proc_pcm_format_add(as);
+
+-	return add_chmap(pcm, stream, &amp;as-&gt;substream[stream]);
++	err = add_chmap(pcm, stream, &amp;as-&gt;substream[stream]);
++	if (err &lt; 0)
++		list_del_init(&amp;fp-&gt;list);
++	return err;
+ }
+
+ static int parse_uac_endpoint_attributes(struct snd_usb_audio *chip,
+--
+2.5.5
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe linux-sound&quot; in
+the body of a message to majordomo@xxxxxxxxxxxxxxx
+More majordomo info at  <a  rel="nofollow" href="http://vger.kernel.org/majordomo-info.html">http://vger.kernel.org/majordomo-info.html</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="00604" href="msg00604.html">Re: [PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()</a></strong>
+<ul><li><em>From:</em> Takashi Iwai</li></ul></li>
+<li><strong><a name="00603" href="msg00603.html">Re: [PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()</a></strong>
+<ul><li><em>From:</em> kbuild test robot</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="00601" href="msg00601.html">[PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()</a></strong>
+<ul><li><em>From:</em> Vladis Dronov</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00601.html">[PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00603.html">Re: [PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00601.html">[PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00603.html">Re: [PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00602"><strong>Date</strong></a></li>
+<li><a href="index.html#00602"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/Pulseaudio/>[Pulseaudio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/alsa-devel/>[ALSA&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td valign=top align=left>&nbsp;</td>
+<td valign=top align=right>
+<a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

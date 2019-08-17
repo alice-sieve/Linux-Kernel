@@ -1,0 +1,369 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 6/7] ASoC: Intel: Skylake: Make MCPS and CPS	params obsolete -->
+<!--X-From-R13: Qrmnel Dbwrjfxv &#60;prmnel.ebwrjfxvNvagry.pbz> -->
+<!--X-Date: Thu, 4 Jul 2019 13:07:05 &#45;0700 -->
+<!--X-Message-Id: 20190704200106.11289&#45;7&#45;cezary.rojewski@intel.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190704200106.11289&#45;1&#45;cezary.rojewski@intel.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 6/7] ASoC: Intel: Skylake: Make MCPS and CPS	params obsolete &mdash; ALSA Devel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 6/7] ASoC: Intel: Skylake: Make MCPS and CPS	params obsolete &mdash; ALSA Devel</title>
+<link rel="alternate" type="application/rss+xml" title="ALSA Devel" href="//feedproxy.google.com/AlsaDevel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 6/7] ASoC: Intel: Skylake: Make MCPS and CPS	params obsolete</h1>
+[<a href="msg93540.html">Date Prev</a>][<a href="msg93542.html">Date Next</a>][<a href="msg93540.html">Thread Prev</a>][<a href="msg93542.html">Thread Next</a>][<a href="maillist.html#93541">Date Index</a>][<a href="threads.html#93541">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: alsa-devel@xxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH 6/7] ASoC: Intel: Skylake: Make MCPS and CPS	params obsolete</li>
+<li><em>From</em>: Cezary Rojewski &lt;cezary.rojewski@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu,  4 Jul 2019 22:01:05 +0200</li>
+<li><em>Cc</em>: lgirdwood@xxxxxxxxx, Cezary Rojewski &lt;cezary.rojewski@xxxxxxxxx&gt;,        broonie@xxxxxxxxxx, tiwai@xxxxxxxx,        pierre-louis.bossart@xxxxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg93535.html">20190704200106.11289-1-cezary.rojewski@intel.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg93535.html">20190704200106.11289-1-cezary.rojewski@intel.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>As per FW Interface Modules Configuration, init instance IPC request
+requires base initial module configuration. This configuration structure
+is made of:
+- cpc (chunks per cycle)
+- ibs (input buffer size)
+- obs (output buffer size)
+- is_pages (memory pages required)
+- audio_fmt (self explanatory)
+
+Skylake topology accepts following tokens: MCPS, CPS and CPC. All of
+these are directly connected. Moreover, assigning one of these allows
+to calculate the remaining two. In simplest scenario and assuming 1ms
+scheduling, following is true:
+
+CPS = CPC times 1000
+MCPS = CPS times 1000 000
+Note: these calculations vary depending on scenario and scheduling
+requirements.
+
+Given the current implementation, userspace is allowed to provide
+different values for all three causing informational chaos. On top of
+that, struct skl_base_cfg which represents base module configuration,
+incorrectly takes CPS param instead of CPC.
+
+This ambiguity may lead to user unintentionally providing improper
+values to DSP firmware and thus impacting module scheduling in
+unexpected fashion. Fix by making MCPS and CPS topology params obsolete
+and relying solely on CPC value.
+
+Signed-off-by: Cezary Rojewski &lt;cezary.rojewski@xxxxxxxxx&gt;
+---
+ sound/soc/intel/skylake/skl-debug.c    |  6 ++++--
+ sound/soc/intel/skylake/skl-messages.c |  2 +-
+ sound/soc/intel/skylake/skl-topology.c | 15 ++++++---------
+ sound/soc/intel/skylake/skl-topology.h |  4 +---
+ 4 files changed, 12 insertions(+), 15 deletions(-)
+
+diff --git a/sound/soc/intel/skylake/skl-debug.c b/sound/soc/intel/skylake/skl-debug.c
+index c43aa4081232..fb232428109f 100644
+--- a/sound/soc/intel/skylake/skl-debug.c
++++ b/sound/soc/intel/skylake/skl-debug.c
+@@ -66,6 +66,8 @@ static ssize_t module_read(struct file *file, char __user *user_buf,
+ 			   size_t count, loff_t *ppos)
+ {
+ 	struct skl_module_cfg *mconfig = file-&gt;private_data;
++	struct skl_module *module = mconfig-&gt;module;
++	struct skl_module_res *res = &amp;module-&gt;resources[mconfig-&gt;res_idx];
+ 	char *buf;
+ 	ssize_t ret;
+ 
+@@ -79,8 +81,8 @@ static ssize_t module_read(struct file *file, char __user *user_buf,
+ 			mconfig-&gt;id.pvt_id);
+ 
+ 	ret += snprintf(buf + ret, MOD_BUF - ret,
+-			&quot;Resources:\n\tMCPS %#x\n\tIBS %#x\n\tOBS %#x\t\n&quot;,
+-			mconfig-&gt;mcps, mconfig-&gt;ibs, mconfig-&gt;obs);
++			&quot;Resources:\n\tCPC %#x\n\tIBS %#x\n\tOBS %#x\t\n&quot;,
++			res-&gt;cpc, res-&gt;ibs, res-&gt;obs);
+ 
+ 	ret += snprintf(buf + ret, MOD_BUF - ret,
+ 			&quot;Module data:\n\tCore %d\n\tIn queue %d\n\t&quot;
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 07762543fb13..e8cc710f092b 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -477,7 +477,7 @@ static void skl_set_base_module_format(struct skl_dev *skl,
+ 
+ 	base_cfg-&gt;audio_fmt.interleaving = format-&gt;interleaving_style;
+ 
+-	base_cfg-&gt;cps = res-&gt;cps;
++	base_cfg-&gt;cpc = res-&gt;cpc;
+ 	base_cfg-&gt;ibs = res-&gt;ibs;
+ 	base_cfg-&gt;obs = res-&gt;obs;
+ 	base_cfg-&gt;is_pages = res-&gt;is_pages;
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 53a024c0464d..118866cd5075 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -2205,10 +2205,6 @@ static int skl_tplg_fill_res_tkn(struct device *dev,
+ 		return -EINVAL;
+ 
+ 	switch (tkn_elem-&gt;token) {
+-	case SKL_TKN_MM_U32_CPS:
+-		res-&gt;cps = tkn_elem-&gt;value;
+-		break;
+-
+ 	case SKL_TKN_MM_U32_DMA_SIZE:
+ 		res-&gt;dma_buffer_size = tkn_elem-&gt;value;
+ 		break;
+@@ -2229,10 +2225,6 @@ static int skl_tplg_fill_res_tkn(struct device *dev,
+ 		res-&gt;ibs = tkn_elem-&gt;value;
+ 		break;
+ 
+-	case SKL_TKN_U32_MAX_MCPS:
+-		res-&gt;cps = tkn_elem-&gt;value;
+-		break;
+-
+ 	case SKL_TKN_MM_U32_RES_PIN_ID:
+ 	case SKL_TKN_MM_U32_PIN_BUF:
+ 		ret = skl_tplg_manifest_pin_res_tkn(dev, tkn_elem, res,
+@@ -2241,6 +2233,11 @@ static int skl_tplg_fill_res_tkn(struct device *dev,
+ 			return ret;
+ 		break;
+ 
++	case SKL_TKN_MM_U32_CPS:
++	case SKL_TKN_U32_MAX_MCPS:
++		/* ignore unused tokens */
++		break;
++
+ 	default:
+ 		dev_err(dev, &quot;Not a res type token: %d&quot;, tkn_elem-&gt;token);
+ 		return -EINVAL;
+@@ -2693,7 +2690,7 @@ static int skl_tplg_get_pvt_data_v4(struct snd_soc_tplg_dapm_widget *tplg_w,
+ 		return ret;
+ 	mconfig-&gt;id.module_id = -1;
+ 	mconfig-&gt;id.instance_id = dfw-&gt;instance_id;
+-	mconfig-&gt;module-&gt;resources[0].cps = dfw-&gt;max_mcps;
++	mconfig-&gt;module-&gt;resources[0].cpc = dfw-&gt;max_mcps / 1000;
+ 	mconfig-&gt;module-&gt;resources[0].ibs = dfw-&gt;ibs;
+ 	mconfig-&gt;module-&gt;resources[0].obs = dfw-&gt;obs;
+ 	mconfig-&gt;core_id = dfw-&gt;core_id;
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index e2a2fc5c5545..99a0277191ca 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -101,7 +101,7 @@ struct skl_audio_data_format {
+ } __packed;
+ 
+ struct skl_base_cfg {
+-	u32 cps;
++	u32 cpc;
+ 	u32 ibs;
+ 	u32 obs;
+ 	u32 is_pages;
+@@ -343,7 +343,6 @@ struct skl_module_pin_resources {
+ struct skl_module_res {
+ 	u8 id;
+ 	u32 is_pages;
+-	u32 cps;
+ 	u32 ibs;
+ 	u32 obs;
+ 	u32 dma_buffer_size;
+@@ -384,7 +383,6 @@ struct skl_module_cfg {
+ 	u8 out_queue_mask;
+ 	u8 in_queue;
+ 	u8 out_queue;
+-	u32 mcps;
+ 	u32 ibs;
+ 	u32 obs;
+ 	u8 is_loadable;
+-- 
+2.17.1
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@xxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://mailman.alsa-project.org/mailman/listinfo/alsa-devel">https://mailman.alsa-project.org/mailman/listinfo/alsa-devel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="93535" href="msg93535.html">[PATCH 0/7] ASoC: Intel: Skylake: Driver fundaments	overhaul</a></strong>
+<ul><li><em>From:</em> Cezary Rojewski</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg93540.html">[PATCH 5/7] ASoC: Intel: Skylake: Do not disable FW	notifications</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg93542.html">[PATCH 7/7] ASoC: Intel: Skylake: Cleanup	skl_module_cfg declaration</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg93540.html">[PATCH 5/7] ASoC: Intel: Skylake: Do not disable FW	notifications</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg93542.html">[PATCH 7/7] ASoC: Intel: Skylake: Cleanup	skl_module_cfg declaration</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#93541"><strong>Date</strong></a></li>
+<li><a href="threads.html#93541"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/alsa-user/>[ALSA&nbsp;User]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/pulse-audio/>[Pulse&nbsp;Audio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=http://yosemitephotos.net/>[Photo&nbsp;Sharing]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/linux-sound/>[Linux&nbsp;Sound]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-media/>[Video&nbsp;4&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gimp/>[Gimp]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

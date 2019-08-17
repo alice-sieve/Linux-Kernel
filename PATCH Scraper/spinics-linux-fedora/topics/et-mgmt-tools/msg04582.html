@@ -1,0 +1,665 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] virt&#45;manager: List VM 'hostdev' devices -->
+<!--X-From-R13: Qbyr Dbovafba &#60;pebovafbNerqung.pbz> -->
+<!--X-Date: Tue, 20 Jan 2009 14:43:40 &#45;0800 -->
+<!--X-Message-Id: 4976532C.6010305@redhat.com -->
+<!--X-Content-Type: multipart/mixed -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Management Tools, [PATCH] virt-manager: List VM 'hostdev' devices">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="Fedora Management Tools" href="//feedproxy.google.com/Fedora/linuxManagementTools">
+<title>Fedora Management Tools -- [PATCH] virt-manager: List VM 'hostdev' devices</title>
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] virt-manager: List VM 'hostdev' devices</h1>
+[<a href="msg04581.html">Date Prev</a>][<a href="msg04583.html">Date Next</a>][<a href="msg04580.html">Thread Prev</a>][<a href="msg04583.html">Thread Next</a>][<a href="maillist.html#04582">Date Index</a>][<a href="index.html#04582">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] virt-manager: List VM 'hostdev' devices</li>
+<li><em>From</em>: Cole Robinson &lt;<a href="mailto:crobinso@DOMAIN.HIDDEN">crobinso@xxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Tue, 20 Jan 2009 17:41:48 -0500</li>
+<li><em>Reply-to</em>: Fedora/Linux Management Tools &lt;<a href="mailto:et-mgmt-tools@DOMAIN.HIDDEN">et-mgmt-tools@xxxxxxxxxx</a>&gt;</li>
+<li><em>User-agent</em>: Thunderbird 2.0.0.19 (X11/20090105)</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The attached patch adds support for listing, viewing details of, and
+removing VM 'hostdev' devices. libvirt currently supports usb and pci
+host devices, so I tried to tackle all the variants for each. Some
+example screeenshots:
+
+<a  rel="nofollow" href="http://fedorapeople.org/~crobinso/virt-manager/vmm-show-hostdev1.png">http://fedorapeople.org/~crobinso/virt-manager/vmm-show-hostdev1.png</a>
+<a  rel="nofollow" href="http://fedorapeople.org/~crobinso/virt-manager/vmm-show-hostdev2.png">http://fedorapeople.org/~crobinso/virt-manager/vmm-show-hostdev2.png</a>
+
+A couple particulars:
+
+- There is no icon for a 'hostdev' in the VM's hardware list. We've been
+stretching use of gtk stock icons pretty thin, and there really isn't
+anything available that makes sense. This will be addressed when we
+integrate custom icons (next release).
+
+- The parameter differences between PCI, USB by vendor/product, and USB
+by bus/device number are pretty large. Rather than have 10 different GUI
+fields, populating only what is appropriate and hiding the others, I
+just generate a single line listing for the device details section (ex.
+&quot;Bus: 001, Device: 002&quot;. This is shown in the screenshots. It's a bit
+uglier this way, but much simpler, and conveys all the same information.
+
+Any comments appreciated.
+
+Thanks,
+Cole
+</pre><pre># HG changeset patch
+# User Cole Robinson &lt;crobinso@xxxxxxxxxx&gt;
+# Date 1232490181 18000
+# Node ID 2abd192af9aab074aed323a75cb79c47954f0de8
+# Parent  f3f6a05bf4ae3f1bba6d6fa4a339c530ecb56fa8
+List, display info about, and enable removing VM host devices.
+
+diff -r f3f6a05bf4ae -r 2abd192af9aa src/virtManager/details.py
+--- a/src/virtManager/details.py	Mon Jan 19 15:50:32 2009 -0500
++++ b/src/virtManager/details.py	Tue Jan 20 17:23:01 2009 -0500
+@@ -57,6 +57,7 @@
+ HW_LIST_TYPE_GRAPHICS = 6
+ HW_LIST_TYPE_SOUND = 7
+ HW_LIST_TYPE_CHAR = 8
++HW_LIST_TYPE_HOSTDEV = 9
+ 
+ # Console pages
+ PAGE_UNAVAILABLE = 0
+@@ -293,6 +294,7 @@
+             &quot;on_config_graphics_remove_clicked&quot;: self.remove_xml_dev,
+             &quot;on_config_sound_remove_clicked&quot;: self.remove_xml_dev,
+             &quot;on_config_char_remove_clicked&quot;: self.remove_xml_dev,
++            &quot;on_config_hostdev_remove_clicked&quot;: self.remove_xml_dev,
+             &quot;on_add_hardware_button_clicked&quot;: self.add_hardware,
+ 
+             &quot;on_details_menu_view_fullscreen_activate&quot;: self.toggle_fullscreen,
+@@ -610,6 +612,9 @@
+             elif pagetype == HW_LIST_TYPE_MEMORY:
+                 self.window.get_widget(&quot;config-memory-apply&quot;).set_sensitive(False)
+                 self.refresh_config_memory()
++            elif pagetype == HW_LIST_TYPE_BOOT:
++                self.refresh_boot_page()
++                self.window.get_widget(&quot;config-boot-options-apply&quot;).set_sensitive(False)
+             elif pagetype == HW_LIST_TYPE_DISK:
+                 self.refresh_disk_page()
+             elif pagetype == HW_LIST_TYPE_NIC:
+@@ -622,9 +627,8 @@
+                 self.refresh_sound_page()
+             elif pagetype == HW_LIST_TYPE_CHAR:
+                 self.refresh_char_page()
+-            elif pagetype == HW_LIST_TYPE_BOOT:
+-                self.refresh_boot_page()
+-                self.window.get_widget(&quot;config-boot-options-apply&quot;).set_sensitive(False)
++            elif pagetype == HW_LIST_TYPE_HOSTDEV:
++                self.refresh_hostdev_page()
+             else:
+                 pagenum = -1
+ 
+@@ -822,6 +826,8 @@
+                     self.refresh_sound_page()
+                 elif pagetype == HW_LIST_TYPE_CHAR:
+                     self.refresh_char_page()
++                elif pagetype == HW_LIST_TYPE_HOSTDEV:
++                    self.refresh_hostdev_page()
+ 
+     def refresh_summary(self):
+         def _rx_tx_text(rx, tx, unit):
+@@ -1037,6 +1043,19 @@
+         self.window.get_widget(&quot;char-target-port&quot;).set_text(charinfo[3])
+         self.window.get_widget(&quot;char-source-path&quot;).set_text(charinfo[5] or &quot;-&quot;)
+ 
++    def refresh_hostdev_page(self):
++        hostdevinfo = self.get_hw_selection(HW_LIST_COL_DEVICE)
++        if not hostdevinfo:
++            return
++
++        devlabel = &quot;&lt;b&gt;Physical %s Device&lt;/b&gt;&quot; % hostdevinfo[4].upper()
++
++        self.window.get_widget(&quot;hostdev-title&quot;).set_markup(devlabel)
++        self.window.get_widget(&quot;hostdev-type&quot;).set_text(hostdevinfo[4])
++        self.window.get_widget(&quot;hostdev-mode&quot;).set_text(hostdevinfo[3])
++        self.window.get_widget(&quot;hostdev-source&quot;).set_text(hostdevinfo[5])
++
++
+     def refresh_boot_page(self):
+         # Refresh autostart
+         try:
+@@ -1512,6 +1531,7 @@
+         currentGraphics = {}
+         currentSounds = {}
+         currentChars = {}
++        currentHostdevs = {}
+ 
+         def update_hwlist(hwtype, info):
+             &quot;&quot;&quot;Return (true if we updated an entry,
+@@ -1590,7 +1610,6 @@
+             if missing:
+                 hw_list_model.insert(insertAt, [_(&quot;Sound: %s&quot; % soundinfo[2]), gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_LARGE_TOOLBAR, None, HW_LIST_TYPE_SOUND, soundinfo])
+ 
+-
+         # Populate list of char devices
+         for charinfo in self.vm.get_char_devices():
+             currentChars[charinfo[2]] = 1
+@@ -1604,6 +1623,15 @@
+                     l += &quot; %s&quot; % charinfo[3] # Don't show port for console
+                 hw_list_model.insert(insertAt, [l, gtk.STOCK_CONNECT, gtk.ICON_SIZE_LARGE_TOOLBAR, None, HW_LIST_TYPE_CHAR, charinfo])
+ 
++        # Populate host devices
++        for hostdevinfo in self.vm.get_hostdev_devices():
++            currentHostdevs[hostdevinfo[2]] = 1
++            missing, insertAt = update_hwlist(HW_LIST_TYPE_HOSTDEV,
++                                              hostdevinfo)
++
++            if missing:
++                hw_list_model.insert(insertAt, [hostdevinfo[2], None, gtk.ICON_SIZE_LARGE_TOOLBAR, None, HW_LIST_TYPE_HOSTDEV, hostdevinfo])
++
+ 
+         # Now remove any no longer current devs
+         devs = range(len(hw_list_model))
+@@ -1631,6 +1659,9 @@
+             elif row[HW_LIST_COL_TYPE] == HW_LIST_TYPE_CHAR and not \
+                  currentChars.has_key(row[HW_LIST_COL_DEVICE][2]):
+                 removeIt = True
++            elif row[HW_LIST_COL_TYPE] == HW_LIST_TYPE_HOSTDEV and not \
++                 currentHostdevs.has_key(row[HW_LIST_COL_DEVICE][2]):
++                removeIt = True
+ 
+             if removeIt:
+                 # Re-select the first row, if we're viewing the device
+diff -r f3f6a05bf4ae -r 2abd192af9aa src/virtManager/domain.py
+--- a/src/virtManager/domain.py	Mon Jan 19 15:50:32 2009 -0500
++++ b/src/virtManager/domain.py	Tue Jan 20 17:23:01 2009 -0500
+@@ -805,6 +805,99 @@
+ 
+         return self._parse_device_xml(_parse_char_devs)
+ 
++    def get_hostdev_devices(self):
++        def _parse_hostdev_devs(ctx):
++            hostdevs = []
++            devs = ctx.xpathEval(&quot;/domain/devices/hostdev&quot;)
++
++            for dev in devs:
++                vendor  = None
++                product = None
++                addrbus = None
++                addrdev = None
++                unique = {}
++
++                # String shown in the devices details section
++                srclabel = &quot;&quot;
++                # String shown in the VMs hardware list
++                hwlabel = &quot;&quot;
++
++                def dehex(val):
++                    if val.startswith(&quot;0x&quot;):
++                        val = val[2:]
++                    return val
++
++                def safeint(val, fmt=&quot;%.3d&quot;):
++                    try:
++                        int(val)
++                    except:
++                        return str(val)
++                    return fmt % int(val)
++
++                def set_uniq(baseent, propname, node):
++                    val = node.prop(propname)
++                    if not unique.has_key(baseent):
++                        unique[baseent] = {}
++                    unique[baseent][propname] = val
++                    return val
++
++                mode = dev.prop(&quot;mode&quot;)
++                typ  = dev.prop(&quot;type&quot;)
++                unique[&quot;type&quot;] = typ
++                hwlabel = typ.upper()
++
++                for node in dev.children:
++                    if node.name == &quot;source&quot;:
++                        for child in node.children:
++                            if child.name == &quot;address&quot;:
++                                addrbus = set_uniq(&quot;address&quot;, &quot;bus&quot;, child)
++
++                                # For USB
++                                addrdev = set_uniq(&quot;address&quot;, &quot;device&quot;, child)
++
++                                # For PCI
++                                addrdom = set_uniq(&quot;address&quot;, &quot;domain&quot;, child)
++                                addrslt = set_uniq(&quot;address&quot;, &quot;slot&quot;, child)
++                                addrfun = set_uniq(&quot;address&quot;, &quot;function&quot;, child)
++                            elif child.name == &quot;vendor&quot;:
++                                vendor = set_uniq(&quot;vendor&quot;, &quot;id&quot;, child)
++                            elif child.name == &quot;product&quot;:
++                                product = set_uniq(&quot;product&quot;, &quot;id&quot;, child)
++
++                if vendor and product:
++                    # USB by vendor + product
++                    srclabel += &quot;Vendor: %s, Product: %s&quot; % (vendor, product)
++                    hwlabel += &quot; %s:%s&quot; % (vendor, product)
++
++                elif addrbus and addrdev:
++                    # USB by bus + dev
++                    srclabel += &quot;Bus: %s, Device: %s&quot; % \
++                                (safeint(addrbus), safeint(addrdev))
++                    hwlabel += &quot; %s,%s&quot; % (safeint(addrbus), safeint(addrdev))
++
++                elif addrbus and addrslt and addrfun:
++                    # PCI by bus:slot:function
++                    srclabel += &quot;Bus: %s, Device: %s, Product: %s&quot; % \
++                                (addrbus, addrslt, addrfun)
++                    if addrdom:
++                        srclabel += &quot;, Domain: %s&quot; % addrdom
++                    hwlabel += &quot; %s:%s:%s&quot; % (dehex(addrbus), dehex(addrslt),
++                                              dehex(addrfun))
++
++                else:
++                    # If we can't determine source info, skip these
++                    # device since we have no way to determine uniqueness
++                    continue
++
++                # [device type, unique, hwlist label, hostdev mode,
++                #  hostdev type, source desc label]
++                hostdevs.append([&quot;hostdev&quot;, unique, hwlabel, mode, typ,
++                                 srclabel])
++
++            return hostdevs
++        return self._parse_device_xml(_parse_hostdev_devs)
++
++
+     def _parse_device_xml(self, parse_function):
+         doc = None
+         ctx = None
+@@ -883,6 +976,51 @@
+                 cons_ret = ctx.xpathEval(&quot;/domain/devices/console[target/@port='%s']&quot; % dev_id_info)
+                 if cons_ret and len(cons_ret) &gt; 0:
+                     ret.append(cons_ret[0])
++
++        elif dev_type == &quot;hostdev&quot;:
++            # This whole process is a little funky, since we need a decent
++            # amount of info to determine which specific hostdev to remove
++
++            xmlbase = &quot;/domain/devices/hostdev[@type='%s' and &quot; % \
++                      dev_id_info[&quot;type&quot;]
++            xpath = &quot;&quot;
++            ret = []
++
++            addr = dev_id_info.get(&quot;address&quot;)
++            vend = dev_id_info.get(&quot;vendor&quot;)
++            prod = dev_id_info.get(&quot;product&quot;)
++            if addr:
++                bus = addr.get(&quot;bus&quot;)
++                dev = addr.get(&quot;device&quot;)
++                slot = addr.get(&quot;slot&quot;)
++                funct = addr.get(&quot;function&quot;)
++                dom = addr.get(&quot;domain&quot;)
++
++                if bus and dev:
++                    # USB by bus and dev
++                    xpath = (xmlbase + &quot;source/address/@bus='%s' and &quot;
++                                       &quot;source/address/@device='%s']&quot; %
++                                       (bus, dev))
++                elif bus and slot and funct and dom:
++                    # PCI by bus,slot,funct,dom
++                    xpath = (xmlbase + &quot;source/address/@bus='%s' and &quot;
++                                       &quot;source/address/@slot='%s' and &quot;
++                                       &quot;source/address/@function='%s' and &quot;
++                                       &quot;source/address/@domain='%s']&quot; %
++                                       (bus, slot, funct, dom))
++
++            elif vend.get(&quot;id&quot;) and prod.get(&quot;id&quot;):
++                # USB by vendor and product
++                xpath = (xmlbase + &quot;source/vendor/@id='%s' and &quot;
++                                   &quot;source/product/@id='%s']&quot; %
++                                   (vend.get(&quot;id&quot;), prod.get(&quot;id&quot;)))
++
++            if xpath:
++                # Log this, since we could hit issues with unexpected
++                # xml parameters in the future
++                logging.debug(&quot;Hostdev xpath string: %s&quot; % xpath)
++                ret = ctx.xpathEval(xpath)
++
+         else:
+             raise RuntimeError, _(&quot;Unknown device type '%s'&quot; % dev_type)
+ 
+diff -r f3f6a05bf4ae -r 2abd192af9aa src/vmm-details.glade
+--- a/src/vmm-details.glade	Mon Jan 19 15:50:32 2009 -0500
++++ b/src/vmm-details.glade	Tue Jan 20 17:23:01 2009 -0500
+@@ -412,6 +412,7 @@
+               &lt;/widget&gt;
+               &lt;packing&gt;
+                 &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
++                &lt;property name=&quot;homogeneous&quot;&gt;False&lt;/property&gt;
+               &lt;/packing&gt;
+             &lt;/child&gt;
+             &lt;child&gt;
+@@ -3004,6 +3005,146 @@
+                         &lt;property name=&quot;tab_fill&quot;&gt;False&lt;/property&gt;
+                       &lt;/packing&gt;
+                     &lt;/child&gt;
++                    &lt;child&gt;
++                      &lt;widget class=&quot;GtkVBox&quot; id=&quot;vbox4&quot;&gt;
++                        &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                        &lt;child&gt;
++                          &lt;widget class=&quot;GtkFrame&quot; id=&quot;frame6&quot;&gt;
++                            &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                            &lt;property name=&quot;label_xalign&quot;&gt;0&lt;/property&gt;
++                            &lt;property name=&quot;shadow_type&quot;&gt;GTK_SHADOW_NONE&lt;/property&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkAlignment&quot; id=&quot;alignment5&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;top_padding&quot;&gt;5&lt;/property&gt;
++                                &lt;property name=&quot;left_padding&quot;&gt;12&lt;/property&gt;
++                                &lt;child&gt;
++                                  &lt;widget class=&quot;GtkTable&quot; id=&quot;table50&quot;&gt;
++                                    &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                    &lt;property name=&quot;n_rows&quot;&gt;3&lt;/property&gt;
++                                    &lt;property name=&quot;n_columns&quot;&gt;2&lt;/property&gt;
++                                    &lt;property name=&quot;column_spacing&quot;&gt;8&lt;/property&gt;
++                                    &lt;property name=&quot;row_spacing&quot;&gt;4&lt;/property&gt;
++                                    &lt;child&gt;
++                                      &lt;widget class=&quot;GtkLabel&quot; id=&quot;hostdev-source&quot;&gt;
++                                        &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                        &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
++                                        &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;label&lt;/property&gt;
++                                      &lt;/widget&gt;
++                                      &lt;packing&gt;
++                                        &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
++                                        &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
++                                        &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
++                                        &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++                                      &lt;/packing&gt;
++                                    &lt;/child&gt;
++                                    &lt;child&gt;
++                                      &lt;widget class=&quot;GtkLabel&quot; id=&quot;hostdev-mode&quot;&gt;
++                                        &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                        &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
++                                        &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;label&lt;/property&gt;
++                                      &lt;/widget&gt;
++                                      &lt;packing&gt;
++                                        &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
++                                        &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
++                                        &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
++                                        &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
++                                        &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++                                      &lt;/packing&gt;
++                                    &lt;/child&gt;
++                                    &lt;child&gt;
++                                      &lt;widget class=&quot;GtkLabel&quot; id=&quot;hostdev-type&quot;&gt;
++                                        &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                        &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
++                                        &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;label&lt;/property&gt;
++                                      &lt;/widget&gt;
++                                      &lt;packing&gt;
++                                        &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
++                                        &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
++                                        &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++                                      &lt;/packing&gt;
++                                    &lt;/child&gt;
++                                    &lt;child&gt;
++                                      &lt;widget class=&quot;GtkLabel&quot; id=&quot;label9&quot;&gt;
++                                        &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                        &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
++                                        &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Device Mode:&lt;/property&gt;
++                                      &lt;/widget&gt;
++                                      &lt;packing&gt;
++                                        &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
++                                        &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
++                                        &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
++                                        &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++                                      &lt;/packing&gt;
++                                    &lt;/child&gt;
++                                    &lt;child&gt;
++                                      &lt;widget class=&quot;GtkLabel&quot; id=&quot;label8&quot;&gt;
++                                        &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                        &lt;property name=&quot;xalign&quot;&gt;1&lt;/property&gt;
++                                        &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Device Type:&lt;/property&gt;
++                                      &lt;/widget&gt;
++                                      &lt;packing&gt;
++                                        &lt;property name=&quot;x_options&quot;&gt;GTK_FILL&lt;/property&gt;
++                                        &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++                                      &lt;/packing&gt;
++                                    &lt;/child&gt;
++                                  &lt;/widget&gt;
++                                &lt;/child&gt;
++                              &lt;/widget&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;hostdev-title&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;no&quot;&gt;&amp;lt;b&amp;gt;Physical Host Device&amp;lt;/b&amp;gt;&lt;/property&gt;
++                                &lt;property name=&quot;use_markup&quot;&gt;True&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;type&quot;&gt;label_item&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                          &lt;/widget&gt;
++                          &lt;packing&gt;
++                            &lt;property name=&quot;padding&quot;&gt;15&lt;/property&gt;
++                          &lt;/packing&gt;
++                        &lt;/child&gt;
++                        &lt;child&gt;
++                          &lt;widget class=&quot;GtkHButtonBox&quot; id=&quot;hbuttonbox1&quot;&gt;
++                            &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                            &lt;property name=&quot;border_width&quot;&gt;6&lt;/property&gt;
++                            &lt;property name=&quot;layout_style&quot;&gt;GTK_BUTTONBOX_END&lt;/property&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkButton&quot; id=&quot;config-hostdev-remove&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;can_default&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;label&quot;&gt;gtk-remove&lt;/property&gt;
++                                &lt;property name=&quot;use_stock&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;response_id&quot;&gt;0&lt;/property&gt;
++                                &lt;signal name=&quot;clicked&quot; handler=&quot;on_config_hostdev_remove_clicked&quot;/&gt;
++                              &lt;/widget&gt;
++                            &lt;/child&gt;
++                          &lt;/widget&gt;
++                          &lt;packing&gt;
++                            &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
++                            &lt;property name=&quot;position&quot;&gt;1&lt;/property&gt;
++                          &lt;/packing&gt;
++                        &lt;/child&gt;
++                      &lt;/widget&gt;
++                      &lt;packing&gt;
++                        &lt;property name=&quot;position&quot;&gt;9&lt;/property&gt;
++                      &lt;/packing&gt;
++                    &lt;/child&gt;
++                    &lt;child&gt;
++                      &lt;widget class=&quot;GtkLabel&quot; id=&quot;label6&quot;&gt;
++                        &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;label&quot;&gt;Hostdev&lt;/property&gt;
++                      &lt;/widget&gt;
++                      &lt;packing&gt;
++                        &lt;property name=&quot;type&quot;&gt;tab&lt;/property&gt;
++                        &lt;property name=&quot;position&quot;&gt;9&lt;/property&gt;
++                        &lt;property name=&quot;tab_fill&quot;&gt;False&lt;/property&gt;
++                      &lt;/packing&gt;
++                    &lt;/child&gt;
+                   &lt;/widget&gt;
+                   &lt;packing&gt;
+                     &lt;property name=&quot;resize&quot;&gt;True&lt;/property&gt;
+</pre><pre>_______________________________________________
+et-mgmt-tools mailing list
+et-mgmt-tools@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/et-mgmt-tools">https://www.redhat.com/mailman/listinfo/et-mgmt-tools</a></pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="04583" href="msg04583.html">Re:  [PATCH] virt-manager: List VM 'hostdev' devices</a></strong>
+<ul><li><em>From:</em> Daniel P. Berrange</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg04581.html">Re:  [PATCH] virt-manager: specify 'model' attr	when	adding net device</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg04583.html">Re:  [PATCH] virt-manager: List VM 'hostdev' devices</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg04580.html">No block devices found</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg04583.html">Re:  [PATCH] virt-manager: List VM 'hostdev' devices</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#04582"><strong>Date</strong></a></li>
+<li><a href="index.html#04582"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fll/>[Fedora&nbsp;Legacy&nbsp;List]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

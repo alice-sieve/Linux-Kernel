@@ -1,0 +1,380 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2 15/19] locking: convert lock daemon to use	systemd activation APIs -->
+<!--X-From-R13: =?GFT&#45;8?d?Rnavry=20B=2S=20Preenat=Q3=O9?= &#60;oreenatrNerqung.pbz> -->
+<!--X-Date: Thu, 11 Jul 2019 07:08:13 &#45;0700 -->
+<!--X-Message-Id: 20190711140742.31029&#45;16&#45;berrange@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190711140742.31029&#45;1&#45;berrange@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v2 15/19] locking: convert lock daemon to use	systemd activation APIs</title>
+<meta name="description" content="libvirt: [PATCH v2 15/19] locking: convert lock daemon to use	systemd activation APIs">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v2 15/19] locking: convert lock daemon to use	systemd activation APIs</h1>
+[<a href="msg187146.html">Date Prev</a>][<a href="msg187148.html">Date Next</a>][<a href="msg187277.html">Thread Prev</a>][<a href="msg187148.html">Thread Next</a>][<a href="maillist.html#187147">Date Index</a>][<a href="index.html#187147">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v2 15/19] locking: convert lock daemon to use	systemd activation APIs</li>
+<li><em>From</em>: Daniel P. Berrang&#xE9; &lt;berrange@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 11 Jul 2019 15:07:38 +0100</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187133.html">20190711140742.31029-1-berrange@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187133.html">20190711140742.31029-1-berrange@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Using the new system activation APIs allows for simpler code setting up
+the network services.
+
+Signed-off-by: Daniel P. Berrang&#xE9; &lt;berrange@xxxxxxxxxx&gt;
+---
+ src/locking/lock_daemon.c | 125 +++++++++++---------------------------
+ 1 file changed, 37 insertions(+), 88 deletions(-)
+
+diff --git a/src/locking/lock_daemon.c b/src/locking/lock_daemon.c
+index 0f90606be6..d2a5fce8dc 100644
+--- a/src/locking/lock_daemon.c
++++ b/src/locking/lock_daemon.c
+@@ -582,78 +582,6 @@ virLockDaemonSetupSignals(virNetDaemonPtr dmn)
+ }
+ 
+ 
+-static int
+-virLockDaemonSetupNetworkingSystemD(virNetServerPtr lockSrv, virNetServerPtr adminSrv)
+-{
+-    unsigned int nfds;
+-    size_t i;
+-
+-    if ((nfds = virGetListenFDs()) == 0)
+-        return 0;
+-    if (nfds &gt; 2)
+-        VIR_DEBUG(&quot;Too many (%d) file descriptors from systemd&quot;, nfds);
+-
+-    for (i = 0; i &lt; nfds &amp;&amp; i &lt; 2; i++) {
+-        virNetServerServicePtr svc;
+-        char *path = virGetUNIXSocketPath(3 + i);
+-        virNetServerPtr srv;
+-        int fds[] = { 3 + i };
+-
+-        if (!path)
+-            return -1;
+-
+-        if (strstr(path, &quot;virtlockd-admin-sock&quot;)) {
+-            srv = adminSrv;
+-        } else if (strstr(path, &quot;virtlockd-sock&quot;)) {
+-            srv = lockSrv;
+-        } else {
+-            virReportError(VIR_ERR_INTERNAL_ERROR,
+-                           _(&quot;Unknown UNIX socket %s passed in&quot;),
+-                           path);
+-            VIR_FREE(path);
+-            return -1;
+-        }
+-        VIR_FREE(path);
+-
+-        /* Systemd passes FDs, starting immediately after stderr,
+-         * so the first FD we'll get is '3'. */
+-        if (!(svc = virNetServerServiceNewFDs(fds,
+-                                              ARRAY_CARDINALITY(fds),
+-                                              false,
+-                                              0,
+-                                              NULL,
+-                                              false, 0, 1)))
+-            return -1;
+-
+-        if (virNetServerAddService(srv, svc) &lt; 0) {
+-            virObjectUnref(svc);
+-            return -1;
+-        }
+-    }
+-    return 1;
+-}
+-
+-
+-static int
+-virLockDaemonSetupNetworkingNative(virNetServerPtr srv, const char *sock_path)
+-{
+-    virNetServerServicePtr svc;
+-
+-    VIR_DEBUG(&quot;Setting up networking natively&quot;);
+-
+-    if (!(svc = virNetServerServiceNewUNIX(sock_path, 0700, 0, 0,
+-                                           NULL,
+-                                           false, 0, 1)))
+-        return -1;
+-
+-    if (virNetServerAddService(srv, svc) &lt; 0) {
+-        virObjectUnref(svc);
+-        return -1;
+-    }
+-    return 0;
+-}
+-
+-
+ struct virLockDaemonClientReleaseData {
+     virLockDaemonClientPtr client;
+     bool hadSomeLeases;
+@@ -1356,6 +1284,12 @@ int main(int argc, char **argv) {
+      * (but still need to add @lockProgram into @srv). rv == 0 means that no
+      * saved state is present, therefore initialize from scratch here. */
+     if (rv == 0) {
++        VIR_AUTOPTR(virSystemdActivation) act = NULL;
++        virSystemdActivationMap actmap[] = {
++            { .name = &quot;virtlockd.socket&quot;, .family = AF_UNIX, .path = sock_file },
++            { .name = &quot;virtlockd-admin.socket&quot;, .family = AF_UNIX, .path = admin_sock_file },
++        };
++
+         if (godaemon) {
+             char ebuf[1024];
+ 
+@@ -1383,31 +1317,46 @@ int main(int argc, char **argv) {
+             goto cleanup;
+         }
+ 
++        if (virSystemdGetActivation(actmap,
++                                    ARRAY_CARDINALITY(actmap),
++                                    &amp;act) &lt; 0) {
++            ret = VIR_LOCK_DAEMON_ERR_NETWORK;
++            goto cleanup;
++        }
++
+         lockSrv = virNetDaemonGetServer(lockDaemon-&gt;dmn, &quot;virtlockd&quot;);
+         adminSrv = virNetDaemonGetServer(lockDaemon-&gt;dmn, &quot;admin&quot;);
+-        if ((rv = virLockDaemonSetupNetworkingSystemD(lockSrv, adminSrv)) &lt; 0) {
++
++        if (virNetServerAddServiceUNIX(lockSrv,
++                                       act, &quot;virtlockd.socket&quot;,
++                                       sock_file, 0700, 0, 0,
++                                       NULL,
++                                       false, 0, 1) &lt; 0) {
++            ret = VIR_LOCK_DAEMON_ERR_NETWORK;
++            goto cleanup;
++        }
++        if (virNetServerAddServiceUNIX(adminSrv,
++                                       act, &quot;virtlockd-admin.socket&quot;,
++                                       admin_sock_file, 0700, 0, 0,
++                                       NULL,
++                                       false, 0, 1) &lt; 0) {
+             ret = VIR_LOCK_DAEMON_ERR_NETWORK;
+             goto cleanup;
+         }
+ 
+-        /* Only do this, if systemd did not pass a FD */
+-        if (rv == 0) {
+-            if (virLockDaemonSetupNetworkingNative(lockSrv, sock_file) &lt; 0 ||
+-                virLockDaemonSetupNetworkingNative(adminSrv, admin_sock_file) &lt; 0) {
+-                ret = VIR_LOCK_DAEMON_ERR_NETWORK;
+-                goto cleanup;
+-            }
++        if (act &amp;&amp;
++            virSystemdActivationComplete(act) &lt; 0) {
++            ret = VIR_LOCK_DAEMON_ERR_NETWORK;
++            goto cleanup;
+         }
+-        virObjectUnref(lockSrv);
+-        virObjectUnref(adminSrv);
++    } else {
++        lockSrv = virNetDaemonGetServer(lockDaemon-&gt;dmn, &quot;virtlockd&quot;);
++        /* If exec-restarting from old virtlockd, we won't have an
++         * admin server present */
++        if (virNetDaemonHasServer(lockDaemon-&gt;dmn, &quot;admin&quot;))
++            adminSrv = virNetDaemonGetServer(lockDaemon-&gt;dmn, &quot;admin&quot;);
+     }
+ 
+-    lockSrv = virNetDaemonGetServer(lockDaemon-&gt;dmn, &quot;virtlockd&quot;);
+-    /* If exec-restarting from old virtlockd, we won't have an
+-     * admin server present */
+-    if (virNetDaemonHasServer(lockDaemon-&gt;dmn, &quot;admin&quot;))
+-        adminSrv = virNetDaemonGetServer(lockDaemon-&gt;dmn, &quot;admin&quot;);
+-
+     if (timeout != -1) {
+         VIR_DEBUG(&quot;Registering shutdown timeout %d&quot;, timeout);
+         virNetDaemonAutoShutdown(lockDaemon-&gt;dmn,
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187146.html">[PATCH v2 11/19] remote: add systemd socket units for	UNIX/TCP sockets</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187148.html">[PATCH v2 12/19] remote: make system libvirtd exit when	idle via timeout</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187277.html">Re:  [PATCH v2 11/19] remote: add systemd socket units for UNIX/TCP sockets</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187148.html">[PATCH v2 12/19] remote: make system libvirtd exit when	idle via timeout</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187147"><strong>Date</strong></a></li>
+<li><a href="index.html#187147"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

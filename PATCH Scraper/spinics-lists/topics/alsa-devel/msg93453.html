@@ -1,0 +1,552 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] sound/soc/codecs/tas5720.c: add ACPI support -->
+<!--X-From-R13: @vxbynhf Hbff &#60;avxbynhf.ibffNybrjrafgrvazrqvpny.qr> -->
+<!--X-Date: Tue, 2 Jul 2019 11:33:17 &#45;0700 -->
+<!--X-Message-Id: 20190628123416.16298&#45;1&#45;nikolaus.voss@loewensteinmedical.de -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH] sound/soc/codecs/tas5720.c: add ACPI support &mdash; ALSA Devel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH] sound/soc/codecs/tas5720.c: add ACPI support &mdash; ALSA Devel</title>
+<link rel="alternate" type="application/rss+xml" title="ALSA Devel" href="//feedproxy.google.com/AlsaDevel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] sound/soc/codecs/tas5720.c: add ACPI support</h1>
+[<a href="msg93452.html">Date Prev</a>][<a href="msg93454.html">Date Next</a>][<a href="msg93452.html">Thread Prev</a>][<a href="msg93320.html">Thread Next</a>][<a href="maillist.html#93453">Date Index</a>][<a href="threads.html#93453">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: Liam Girdwood &lt;lgirdwood@xxxxxxxxx&gt;, Mark Brown &lt;broonie@xxxxxxxxxx&gt;,        Jaroslav Kysela &lt;perex@xxxxxxxx&gt;, Takashi Iwai &lt;tiwai@xxxxxxxx&gt;,        Andreas Dannenberg &lt;dannenberg@xxxxxx&gt;, &quot;Andrew F. Davis&quot; &lt;afd@xxxxxx&gt;,        Kate Stewart &lt;kstewart@xxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH] sound/soc/codecs/tas5720.c: add ACPI support</li>
+<li><em>From</em>: Nikolaus Voss &lt;nikolaus.voss@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 28 Jun 2019 14:34:16 +0200</li>
+<li><em>Cc</em>: linux-acpi@xxxxxxxxxxxxxxx, alsa-devel@xxxxxxxxxxxxxxxx, nv@xxxxxxx,        linux-kernel@xxxxxxxxxxxxxxx,        Nikolaus Voss &lt;nikolaus.voss@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Add support for ACPI enumeration for tas5720 and tas5722.
+Use device_match API to unify access to driver data for DT and ACPI.
+Aggregate variant stuff into its own struct and directly reference
+it in variant data for i2c/of/acpi_device_id.
+
+Signed-off-by: Nikolaus Voss &lt;nikolaus.voss@xxxxxxxxxxxxxxxxxxxxx&gt;
+---
+ sound/soc/codecs/tas5720.c | 215 +++++++++++++++++--------------------
+ 1 file changed, 99 insertions(+), 116 deletions(-)
+
+diff --git a/sound/soc/codecs/tas5720.c b/sound/soc/codecs/tas5720.c
+index 37fab8f22800..ea973764c745 100644
+--- a/sound/soc/codecs/tas5720.c
++++ b/sound/soc/codecs/tas5720.c
+@@ -7,6 +7,7 @@
+  * Author: Andreas Dannenberg &lt;dannenberg@xxxxxx&gt;
+  */
+ 
++#include &lt;linux/acpi.h&gt;
+ #include &lt;linux/module.h&gt;
+ #include &lt;linux/errno.h&gt;
+ #include &lt;linux/device.h&gt;
+@@ -28,9 +29,10 @@
+ /* Define how often to check (and clear) the fault status register (in ms) */
+ #define TAS5720_FAULT_CHECK_INTERVAL		200
+ 
+-enum tas572x_type {
+-	TAS5720,
+-	TAS5722,
++struct tas5720_variant {
++	const int device_id;
++	const struct regmap_config reg_config;
++	const struct snd_soc_component_driver comp_drv;
+ };
+ 
+ static const char * const tas5720_supply_names[] = {
+@@ -44,7 +46,7 @@ struct tas5720_data {
+ 	struct snd_soc_component *component;
+ 	struct regmap *regmap;
+ 	struct i2c_client *tas5720_client;
+-	enum tas572x_type devtype;
++	const struct tas5720_variant *variant;
+ 	struct regulator_bulk_data supplies[TAS5720_NUM_SUPPLIES];
+ 	struct delayed_work fault_check_work;
+ 	unsigned int last_fault;
+@@ -179,17 +181,13 @@ static int tas5720_set_dai_tdm_slot(struct snd_soc_dai *dai,
+ 		goto error_snd_soc_component_update_bits;
+ 
+ 	/* Configure TDM slot width. This is only applicable to TAS5722. */
+-	switch (tas5720-&gt;devtype) {
+-	case TAS5722:
++	if (tas5720-&gt;variant-&gt;device_id == TAS5722_DEVICE_ID) {
+ 		ret = snd_soc_component_update_bits(component, TAS5722_DIGITAL_CTRL2_REG,
+ 						    TAS5722_TDM_SLOT_16B,
+ 						    slot_width == 16 ?
+ 						    TAS5722_TDM_SLOT_16B : 0);
+ 		if (ret &lt; 0)
+ 			goto error_snd_soc_component_update_bits;
+-		break;
+-	default:
+-		break;
+ 	}
+ 
+ 	return 0;
+@@ -277,7 +275,7 @@ static void tas5720_fault_check_work(struct work_struct *work)
+ static int tas5720_codec_probe(struct snd_soc_component *component)
+ {
+ 	struct tas5720_data *tas5720 = snd_soc_component_get_drvdata(component);
+-	unsigned int device_id, expected_device_id;
++	unsigned int device_id;
+ 	int ret;
+ 
+ 	tas5720-&gt;component = component;
+@@ -301,21 +299,9 @@ static int tas5720_codec_probe(struct snd_soc_component *component)
+ 		goto probe_fail;
+ 	}
+ 
+-	switch (tas5720-&gt;devtype) {
+-	case TAS5720:
+-		expected_device_id = TAS5720_DEVICE_ID;
+-		break;
+-	case TAS5722:
+-		expected_device_id = TAS5722_DEVICE_ID;
+-		break;
+-	default:
+-		dev_err(component-&gt;dev, &quot;unexpected private driver data\n&quot;);
+-		return -EINVAL;
+-	}
+-
+-	if (device_id != expected_device_id)
++	if (device_id != tas5720-&gt;variant-&gt;device_id)
+ 		dev_warn(component-&gt;dev, &quot;wrong device ID. expected: %u read: %u\n&quot;,
+-			 expected_device_id, device_id);
++			 tas5720-&gt;variant-&gt;device_id, device_id);
+ 
+ 	/* Set device to mute */
+ 	ret = snd_soc_component_update_bits(component, TAS5720_DIGITAL_CTRL2_REG,
+@@ -462,24 +448,6 @@ static bool tas5720_is_volatile_reg(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
+-static const struct regmap_config tas5720_regmap_config = {
+-	.reg_bits = 8,
+-	.val_bits = 8,
+-
+-	.max_register = TAS5720_MAX_REG,
+-	.cache_type = REGCACHE_RBTREE,
+-	.volatile_reg = tas5720_is_volatile_reg,
+-};
+-
+-static const struct regmap_config tas5722_regmap_config = {
+-	.reg_bits = 8,
+-	.val_bits = 8,
+-
+-	.max_register = TAS5722_MAX_REG,
+-	.cache_type = REGCACHE_RBTREE,
+-	.volatile_reg = tas5720_is_volatile_reg,
+-};
+-
+ /*
+  * DAC analog gain. There are four discrete values to select from, ranging
+  * from 19.2 dB to 26.3dB.
+@@ -558,40 +526,6 @@ static const struct snd_soc_dapm_route tas5720_audio_map[] = {
+ 	{ &quot;OUT&quot;, NULL, &quot;DAC&quot; },
+ };
+ 
+-static const struct snd_soc_component_driver soc_component_dev_tas5720 = {
+-	.probe			= tas5720_codec_probe,
+-	.remove			= tas5720_codec_remove,
+-	.suspend		= tas5720_suspend,
+-	.resume			= tas5720_resume,
+-	.controls		= tas5720_snd_controls,
+-	.num_controls		= ARRAY_SIZE(tas5720_snd_controls),
+-	.dapm_widgets		= tas5720_dapm_widgets,
+-	.num_dapm_widgets	= ARRAY_SIZE(tas5720_dapm_widgets),
+-	.dapm_routes		= tas5720_audio_map,
+-	.num_dapm_routes	= ARRAY_SIZE(tas5720_audio_map),
+-	.idle_bias_on		= 1,
+-	.use_pmdown_time	= 1,
+-	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+-};
+-
+-static const struct snd_soc_component_driver soc_component_dev_tas5722 = {
+-	.probe = tas5720_codec_probe,
+-	.remove = tas5720_codec_remove,
+-	.suspend = tas5720_suspend,
+-	.resume = tas5720_resume,
+-	.controls = tas5722_snd_controls,
+-	.num_controls = ARRAY_SIZE(tas5722_snd_controls),
+-	.dapm_widgets = tas5720_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(tas5720_dapm_widgets),
+-	.dapm_routes = tas5720_audio_map,
+-	.num_dapm_routes = ARRAY_SIZE(tas5720_audio_map),
+-	.idle_bias_on		= 1,
+-	.use_pmdown_time	= 1,
+-	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+-};
+-
+ /* PCM rates supported by the TAS5720 driver */
+ #define TAS5720_RATES	(SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |\
+ 			 SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
+@@ -637,29 +571,25 @@ static int tas5720_probe(struct i2c_client *client,
+ {
+ 	struct device *dev = &amp;client-&gt;dev;
+ 	struct tas5720_data *data;
+-	const struct regmap_config *regmap_config;
++	const struct tas5720_variant *type;
+ 	int ret;
+ 	int i;
+ 
++	type = device_get_match_data(&amp;client-&gt;dev);
++	if (!type &amp;&amp; id)
++		type = (const struct tas5720_variant *)id-&gt;driver_data;
++
++	if (!type)
++		return -EINVAL;
++
+ 	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+ 	if (!data)
+ 		return -ENOMEM;
+ 
+ 	data-&gt;tas5720_client = client;
+-	data-&gt;devtype = id-&gt;driver_data;
++	data-&gt;variant = type;
+ 
+-	switch (id-&gt;driver_data) {
+-	case TAS5720:
+-		regmap_config = &amp;tas5720_regmap_config;
+-		break;
+-	case TAS5722:
+-		regmap_config = &amp;tas5722_regmap_config;
+-		break;
+-	default:
+-		dev_err(dev, &quot;unexpected private driver data\n&quot;);
+-		return -EINVAL;
+-	}
+-	data-&gt;regmap = devm_regmap_init_i2c(client, regmap_config);
++	data-&gt;regmap = devm_regmap_init_i2c(client, &amp;type-&gt;reg_config);
+ 	if (IS_ERR(data-&gt;regmap)) {
+ 		ret = PTR_ERR(data-&gt;regmap);
+ 		dev_err(dev, &quot;failed to allocate register map: %d\n&quot;, ret);
+@@ -678,51 +608,104 @@ static int tas5720_probe(struct i2c_client *client,
+ 
+ 	dev_set_drvdata(dev, data);
+ 
+-	switch (id-&gt;driver_data) {
+-	case TAS5720:
+-		ret = devm_snd_soc_register_component(&amp;client-&gt;dev,
+-					&amp;soc_component_dev_tas5720,
+-					tas5720_dai,
+-					ARRAY_SIZE(tas5720_dai));
+-		break;
+-	case TAS5722:
+-		ret = devm_snd_soc_register_component(&amp;client-&gt;dev,
+-					&amp;soc_component_dev_tas5722,
+-					tas5720_dai,
+-					ARRAY_SIZE(tas5720_dai));
+-		break;
+-	default:
+-		dev_err(dev, &quot;unexpected private driver data\n&quot;);
+-		return -EINVAL;
+-	}
+-	if (ret &lt; 0) {
+-		dev_err(dev, &quot;failed to register component: %d\n&quot;, ret);
+-		return ret;
+-	}
++	ret = devm_snd_soc_register_component(&amp;client-&gt;dev,
++					      &amp;type-&gt;comp_drv,
++					      tas5720_dai,
++					      ARRAY_SIZE(tas5720_dai));
+ 
+-	return 0;
++	if (ret &lt; 0)
++		dev_err(dev, &quot;failed to register component: %d\n&quot;, ret);
++
++	return ret;
+ }
+ 
++static const struct tas5720_variant variant[] = {
++	{
++		.device_id = TAS5720_DEVICE_ID,
++		.reg_config = {
++			.reg_bits = 8,
++			.val_bits = 8,
++
++			.max_register = TAS5720_MAX_REG,
++			.cache_type = REGCACHE_RBTREE,
++			.volatile_reg = tas5720_is_volatile_reg,
++		},
++		.comp_drv = {
++			.probe = tas5720_codec_probe,
++			.remove = tas5720_codec_remove,
++			.suspend = tas5720_suspend,
++			.resume = tas5720_resume,
++			.controls = tas5720_snd_controls,
++			.num_controls = ARRAY_SIZE(tas5720_snd_controls),
++			.dapm_widgets = tas5720_dapm_widgets,
++			.num_dapm_widgets = ARRAY_SIZE(tas5720_dapm_widgets),
++			.dapm_routes = tas5720_audio_map,
++			.num_dapm_routes = ARRAY_SIZE(tas5720_audio_map),
++			.idle_bias_on = 1,
++			.use_pmdown_time = 1,
++			.endianness = 1,
++			.non_legacy_dai_naming = 1
++		},
++	},
++	{
++		.device_id = TAS5722_DEVICE_ID,
++		.reg_config = {
++			.reg_bits = 8,
++			.val_bits = 8,
++
++			.max_register = TAS5722_MAX_REG,
++			.cache_type = REGCACHE_RBTREE,
++			.volatile_reg = tas5720_is_volatile_reg,
++		},
++		.comp_drv = {
++			.probe = tas5720_codec_probe,
++			.remove = tas5720_codec_remove,
++			.suspend = tas5720_suspend,
++			.resume = tas5720_resume,
++			.controls = tas5722_snd_controls,
++			.num_controls = ARRAY_SIZE(tas5722_snd_controls),
++			.dapm_widgets = tas5720_dapm_widgets,
++			.num_dapm_widgets = ARRAY_SIZE(tas5720_dapm_widgets),
++			.dapm_routes = tas5720_audio_map,
++			.num_dapm_routes = ARRAY_SIZE(tas5720_audio_map),
++			.idle_bias_on = 1,
++			.use_pmdown_time = 1,
++			.endianness = 1,
++			.non_legacy_dai_naming = 1,
++		},
++	},
++};
++
+ static const struct i2c_device_id tas5720_id[] = {
+-	{ &quot;tas5720&quot;, TAS5720 },
+-	{ &quot;tas5722&quot;, TAS5722 },
++	{ &quot;tas5720&quot;, (kernel_ulong_t)&amp;variant[0] },
++	{ &quot;tas5722&quot;, (kernel_ulong_t)&amp;variant[1] },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, tas5720_id);
+ 
+ #if IS_ENABLED(CONFIG_OF)
+ static const struct of_device_id tas5720_of_match[] = {
+-	{ .compatible = &quot;ti,tas5720&quot;, },
+-	{ .compatible = &quot;ti,tas5722&quot;, },
++	{ .compatible = &quot;ti,tas5720&quot;, .data = &amp;variant[0], },
++	{ .compatible = &quot;ti,tas5722&quot;, .data = &amp;variant[1], },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(of, tas5720_of_match);
+ #endif
+ 
++#if IS_ENABLED(CONFIG_ACPI)
++static const struct acpi_device_id tas5720_acpi_match[] = {
++	{ &quot;10TI5720&quot;, (kernel_ulong_t)&amp;variant[0] },
++	{ &quot;10TI5722&quot;, (kernel_ulong_t)&amp;variant[1] },
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, tas5720_acpi_match);
++#endif
++
+ static struct i2c_driver tas5720_i2c_driver = {
+ 	.driver = {
+ 		.name = &quot;tas5720&quot;,
+ 		.of_match_table = of_match_ptr(tas5720_of_match),
++		.acpi_match_table = ACPI_PTR(tas5720_acpi_match),
+ 	},
+ 	.probe = tas5720_probe,
+ 	.id_table = tas5720_id,
+-- 
+2.17.1
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@xxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://mailman.alsa-project.org/mailman/listinfo/alsa-devel">https://mailman.alsa-project.org/mailman/listinfo/alsa-devel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="93322" href="msg93322.html">Re:  [PATCH] sound/soc/codecs/tas5720.c: add ACPI	support</a></strong>
+<ul><li><em>From:</em> Mark Brown</li></ul></li>
+<li><strong><a name="93320" href="msg93320.html">Re:  [PATCH] sound/soc/codecs/tas5720.c: add ACPI	support</a></strong>
+<ul><li><em>From:</em> Andrew F. Davis</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg93452.html">[PATCH] ALSA: line6: Fix write on zero-sized buffer</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg93454.html">[PATCH - use build platform compiler while cross compilation 1/1] use build compilers in cross compilation setup</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg93452.html">[PATCH] ALSA: line6: Fix write on zero-sized buffer</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg93320.html">Re:  [PATCH] sound/soc/codecs/tas5720.c: add ACPI	support</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#93453"><strong>Date</strong></a></li>
+<li><a href="threads.html#93453"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/alsa-user/>[ALSA&nbsp;User]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/pulse-audio/>[Pulse&nbsp;Audio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=http://yosemitephotos.net/>[Photo&nbsp;Sharing]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/linux-sound/>[Linux&nbsp;Sound]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-media/>[Video&nbsp;4&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gimp/>[Gimp]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

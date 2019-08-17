@@ -1,0 +1,461 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2 11/19] remote: add systemd socket units for	UNIX/TCP sockets -->
+<!--X-From-R13: =?GFT&#45;8?d?Rnavry=20B=2S=20Preenat=Q3=O9?= &#60;oreenatrNerqung.pbz> -->
+<!--X-Date: Thu, 11 Jul 2019 07:08:10 &#45;0700 -->
+<!--X-Message-Id: 20190711140742.31029&#45;12&#45;berrange@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190711140742.31029&#45;1&#45;berrange@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v2 11/19] remote: add systemd socket units for	UNIX/TCP sockets</title>
+<meta name="description" content="libvirt: [PATCH v2 11/19] remote: add systemd socket units for	UNIX/TCP sockets">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v2 11/19] remote: add systemd socket units for	UNIX/TCP sockets</h1>
+[<a href="msg187145.html">Date Prev</a>][<a href="msg187147.html">Date Next</a>][<a href="msg187145.html">Thread Prev</a>][<a href="msg187277.html">Thread Next</a>][<a href="maillist.html#187146">Date Index</a>][<a href="index.html#187146">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v2 11/19] remote: add systemd socket units for	UNIX/TCP sockets</li>
+<li><em>From</em>: Daniel P. Berrang&#xE9; &lt;berrange@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 11 Jul 2019 15:07:34 +0100</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187133.html">20190711140742.31029-1-berrange@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187133.html">20190711140742.31029-1-berrange@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>We don't do socket activation of libvirtd, since we need to
+unconditionally start libvirtd in order to perform autostart. This
+doesn't mean we can't have systemd socket units. Some use cases will
+not need libvirt's autostart &amp; are thus free to use activation.
+
+Signed-off-by: Daniel P. Berrang&#xE9; &lt;berrange@xxxxxxxxxx&gt;
+---
+ libvirt.spec.in                     | 24 +++++++++++++++++++-
+ src/remote/Makefile.inc.am          | 35 +++++++++++++++++++++++++++++
+ src/remote/libvirtd-admin.socket.in | 13 +++++++++++
+ src/remote/libvirtd-ro.socket.in    | 13 +++++++++++
+ src/remote/libvirtd-tcp.socket.in   | 12 ++++++++++
+ src/remote/libvirtd-tls.socket.in   | 12 ++++++++++
+ src/remote/libvirtd.service.in      | 10 ++++-----
+ src/remote/libvirtd.socket.in       | 11 +++++++++
+ 8 files changed, 124 insertions(+), 6 deletions(-)
+ create mode 100644 src/remote/libvirtd-admin.socket.in
+ create mode 100644 src/remote/libvirtd-ro.socket.in
+ create mode 100644 src/remote/libvirtd-tcp.socket.in
+ create mode 100644 src/remote/libvirtd-tls.socket.in
+ create mode 100644 src/remote/libvirtd.socket.in
+
+diff --git a/libvirt.spec.in b/libvirt.spec.in
+index d54f58f1d4..ec562d5f7a 100644
+--- a/libvirt.spec.in
++++ b/libvirt.spec.in
+@@ -1342,6 +1342,8 @@ exit 0
+ 
+ %systemd_post virtlockd.socket virtlockd-admin.socket
+ %systemd_post virtlogd.socket virtlogd-admin.socket
++%systemd_post libvirtd.socket libvirtd-ro.socket libvirtd-admin.socket
++%systemd_post libvirtd-tcp.socket libvirtd-tls.socket
+ %systemd_post libvirtd.service
+ 
+ # request daemon restart in posttrans
+@@ -1350,6 +1352,8 @@ touch %{_localstatedir}/lib/rpm-state/libvirt/restart || :
+ 
+ %preun daemon
+ %systemd_preun libvirtd.service
++%systemd_preun libvirtd-tcp.socket libvirtd-tls.socket
++%systemd_preun libvirtd.socket libvirtd-ro.socket libvirtd-admin.socket
+ %systemd_preun virtlogd.socket virtlogd-admin.socket virtlogd.service
+ %systemd_preun virtlockd.socket virtlockd-admin.socket virtlockd.service
+ 
+@@ -1374,7 +1378,20 @@ fi
+ 
+ %posttrans daemon
+ if [ -f %{_localstatedir}/lib/rpm-state/libvirt/restart ]; then
+-    /bin/systemctl try-restart libvirtd.service &gt;/dev/null 2&gt;&amp;1 || :
++    /bin/systemctl is-active libvirtd.service 1&gt;/dev/null 2&gt;&amp;1
++    # Old libvirtd owns the sockets and will delete them on
++    # shutdown. Can't use a try-restart as libvirtd will simply
++    # own the sockets again when it comes back up. Thus we must
++    # do this particular ordering
++    if test $? == 0 ; then
++        /bin/systemctl stop libvirtd.service &gt;/dev/null 2&gt;&amp;1 || :
++
++        /bin/systemctl try-restart libvirtd.socket &gt;/dev/null 2&gt;&amp;1 || :
++        /bin/systemctl try-restart libvirtd-ro.socket &gt;/dev/null 2&gt;&amp;1 || :
++        /bin/systemctl try-restart libvirtd-admin.socket &gt;/dev/null 2&gt;&amp;1 || :
++
++        /bin/systemctl start libvirtd.service &gt;/dev/null 2&gt;&amp;1 || :
++    fi
+ fi
+ rm -rf %{_localstatedir}/lib/rpm-state/libvirt || :
+ 
+@@ -1505,6 +1522,11 @@ exit 0
+ %dir %attr(0700, root, root) %{_sysconfdir}/libvirt/
+ 
+ %{_unitdir}/libvirtd.service
++%{_unitdir}/libvirtd.socket
++%{_unitdir}/libvirtd-ro.socket
++%{_unitdir}/libvirtd-admin.socket
++%{_unitdir}/libvirtd-tcp.socket
++%{_unitdir}/libvirtd-tls.socket
+ %{_unitdir}/virt-guest-shutdown.target
+ %{_unitdir}/virtlogd.service
+ %{_unitdir}/virtlogd.socket
+diff --git a/src/remote/Makefile.inc.am b/src/remote/Makefile.inc.am
+index 851ab903fd..0cf00cb902 100644
+--- a/src/remote/Makefile.inc.am
++++ b/src/remote/Makefile.inc.am
+@@ -51,6 +51,11 @@ MANINFILES += libvirtd.8.in
+ 
+ SYSTEMD_UNIT_FILES_IN += \
+ 	remote/libvirtd.service.in \
++	remote/libvirtd.socket.in \
++	remote/libvirtd-ro.socket.in \
++	remote/libvirtd-admin.socket.in \
++	remote/libvirtd-tcp.socket.in \
++	remote/libvirtd-tls.socket.in \
+ 	remote/virt-guest-shutdown.target.in \
+ 	$(NULL)
+ 
+@@ -267,6 +272,36 @@ libvirtd.service: remote/libvirtd.service.in $(top_builddir)/config.status
+ 	    &lt; $&lt; &gt; $@-t &amp;&amp; \
+ 	    mv $@-t $@
+ 
++libvirtd.socket: remote/libvirtd.socket.in $(top_builddir)/config.status
++	$(AM_V_GEN)sed \
++	    -e 's|[@]localstatedir[@]|$(localstatedir)|g' \
++	    &lt; $&lt; &gt; $@-t &amp;&amp; \
++	    mv $@-t $@
++
++libvirtd-ro.socket: remote/libvirtd-ro.socket.in $(top_builddir)/config.status
++	$(AM_V_GEN)sed \
++	    -e 's|[@]localstatedir[@]|$(localstatedir)|g' \
++	    &lt; $&lt; &gt; $@-t &amp;&amp; \
++	    mv $@-t $@
++
++libvirtd-admin.socket: remote/libvirtd-admin.socket.in $(top_builddir)/config.status
++	$(AM_V_GEN)sed \
++	    -e 's|[@]localstatedir[@]|$(localstatedir)|g' \
++	    &lt; $&lt; &gt; $@-t &amp;&amp; \
++	    mv $@-t $@
++
++libvirtd-tcp.socket: remote/libvirtd-tcp.socket.in $(top_builddir)/config.status
++	$(AM_V_GEN)sed \
++	    -e 's|[@]localstatedir[@]|$(localstatedir)|g' \
++	    &lt; $&lt; &gt; $@-t &amp;&amp; \
++	    mv $@-t $@
++
++libvirtd-tls.socket: remote/libvirtd-tls.socket.in $(top_builddir)/config.status
++	$(AM_V_GEN)sed \
++	    -e 's|[@]localstatedir[@]|$(localstatedir)|g' \
++	    &lt; $&lt; &gt; $@-t &amp;&amp; \
++	    mv $@-t $@
++
+ virt-guest-shutdown.target: remote/virt-guest-shutdown.target.in \
+ 			$(top_builddir)/config.status
+ 	$(AM_V_GEN)cp $&lt; $@
+diff --git a/src/remote/libvirtd-admin.socket.in b/src/remote/libvirtd-admin.socket.in
+new file mode 100644
+index 0000000000..b791a2eb1b
+--- /dev/null
++++ b/src/remote/libvirtd-admin.socket.in
+@@ -0,0 +1,13 @@
++[Unit]
++Description=Libvirt admin socket
++Before=libvirtd.service
++BindsTo=libvirtd.socket
++After=libvirtd.socket
++
++[Socket]
++ListenStream=@localstatedir@/run/libvirt/libvirt-admin-sock
++Service=libvirtd.service
++SocketMode=0600
++
++[Install]
++WantedBy=sockets.target
+diff --git a/src/remote/libvirtd-ro.socket.in b/src/remote/libvirtd-ro.socket.in
+new file mode 100644
+index 0000000000..55c44944b4
+--- /dev/null
++++ b/src/remote/libvirtd-ro.socket.in
+@@ -0,0 +1,13 @@
++[Unit]
++Description=Libvirt local read-only socket
++Before=libvirtd.service
++BindsTo=libvirtd.socket
++After=libvirtd.socket
++
++[Socket]
++ListenStream=@localstatedir@/run/libvirt/libvirt-sock-ro
++Service=libvirtd.service
++SocketMode=0666
++
++[Install]
++WantedBy=sockets.target
+diff --git a/src/remote/libvirtd-tcp.socket.in b/src/remote/libvirtd-tcp.socket.in
+new file mode 100644
+index 0000000000..09d5d3d67a
+--- /dev/null
++++ b/src/remote/libvirtd-tcp.socket.in
+@@ -0,0 +1,12 @@
++[Unit]
++Description=Libvirt non-TLS IP socket
++Before=libvirtd.service
++BindsTo=libvirtd.socket
++After=libvirtd.socket
++
++[Socket]
++ListenStream=16509
++Service=libvirtd.service
++
++[Install]
++WantedBy=sockets.target
+diff --git a/src/remote/libvirtd-tls.socket.in b/src/remote/libvirtd-tls.socket.in
+new file mode 100644
+index 0000000000..c60f0c9c77
+--- /dev/null
++++ b/src/remote/libvirtd-tls.socket.in
+@@ -0,0 +1,12 @@
++[Unit]
++Description=Libvirt TLS IP socket
++Before=libvirtd.service
++BindsTo=libvirtd.socket
++After=libvirtd.socket
++
++[Socket]
++ListenStream=16514
++Service=libvirtd.service
++
++[Install]
++WantedBy=sockets.target
+diff --git a/src/remote/libvirtd.service.in b/src/remote/libvirtd.service.in
+index 7f689e08a8..047620f79b 100644
+--- a/src/remote/libvirtd.service.in
++++ b/src/remote/libvirtd.service.in
+@@ -1,12 +1,10 @@
+-# NB we don't use socket activation. When libvirtd starts it will
+-# spawn any virtual machines registered for autostart. We want this
+-# to occur on every boot, regardless of whether any client connects
+-# to a socket. Thus socket activation doesn't have any benefit
+-
+ [Unit]
+ Description=Virtualization daemon
+ Requires=virtlogd.socket
+ Requires=virtlockd.socket
++Requires=libvirtd.socket
++Requires=libvirtd-ro.socket
++Requires=libvirtd-admin.socket
+ Wants=systemd-machined.service
+ Before=libvirt-guests.service
+ After=network.target
+@@ -42,3 +40,5 @@ TasksMax=32768
+ WantedBy=multi-user.target
+ Also=virtlockd.socket
+ Also=virtlogd.socket
++Also=libvirtd.socket
++Also=libvirtd-ro.socket
+diff --git a/src/remote/libvirtd.socket.in b/src/remote/libvirtd.socket.in
+new file mode 100644
+index 0000000000..e194c6e76e
+--- /dev/null
++++ b/src/remote/libvirtd.socket.in
+@@ -0,0 +1,11 @@
++[Unit]
++Description=Libvirt local socket
++Before=libvirtd.service
++
++[Socket]
++ListenStream=@localstatedir@/run/libvirt/libvirt-sock
++Service=libvirtd.service
++SocketMode=0666
++
++[Install]
++WantedBy=sockets.target
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187145.html">[PATCH v2 14/19] util: remove code spawning with systemd	activation env vars</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187147.html">[PATCH v2 15/19] locking: convert lock daemon to use	systemd activation APIs</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187145.html">[PATCH v2 14/19] util: remove code spawning with systemd	activation env vars</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187277.html">Re:  [PATCH v2 11/19] remote: add systemd socket units for UNIX/TCP sockets</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187146"><strong>Date</strong></a></li>
+<li><a href="index.html#187146"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

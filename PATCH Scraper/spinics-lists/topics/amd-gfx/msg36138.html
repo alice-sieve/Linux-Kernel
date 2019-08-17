@@ -1,0 +1,531 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 24/26] drm/dp_mst: Add basic topology reprobing when resuming -->
+<!--X-From-R13: Zlhqr Bnhy &#60;ylhqrNerqung.pbz> -->
+<!--X-Date: Wed, 17 Jul 2019 18:45:40 &#45;0700 -->
+<!--X-Message-Id: 20190718014329.8107&#45;25&#45;lyude@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190718014329.8107&#45;1&#45;lyude@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 24/26] drm/dp_mst: Add basic topology reprobing when resuming">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 24/26] drm/dp_mst: Add basic topology reprobing when resuming &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 24/26] drm/dp_mst: Add basic topology reprobing when resuming</h1>
+[<a href="msg36137.html">Date Prev</a>][<a href="msg36139.html">Date Next</a>][<a href="msg36137.html">Thread Prev</a>][<a href="msg36139.html">Thread Next</a>][<a href="maillist.html#36138">Date Index</a>][<a href="index.html#36138">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: dri-devel@xxxxxxxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH 24/26] drm/dp_mst: Add basic topology reprobing when resuming</li>
+<li><em>From</em>: Lyude Paul &lt;lyude@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 17 Jul 2019 21:42:47 -0400</li>
+<li><em>Cc</em>: Maxime Ripard &lt;maxime.ripard@xxxxxxxxxxx&gt;, nouveau@xxxxxxxxxxxxxxxxxxxxx,        Imre Deak &lt;imre.deak@xxxxxxxxx&gt;,        Joonas Lahtinen &lt;joonas.lahtinen@xxxxxxxxxxxxxxx&gt;,        Chris Wilson &lt;chris@xxxxxxxxxxxxxxxxxx&gt;,        Bhawanpreet Lakha &lt;Bhawanpreet.Lakha@xxxxxxx&gt;,        Dhinakaran Pandiyan &lt;dhinakaran.pandiyan@xxxxxxxxx&gt;,        Anthony Koo &lt;Anthony.Koo@xxxxxxx&gt;,        Ville Syrj&#xE4;l&#xE4; &lt;ville.syrjala@xxxxxxxxxxxxxxx&gt;,        &quot;David \(ChunMing\) Zhou&quot; &lt;David1.Zhou@xxxxxxx&gt;,        Mario Kleiner &lt;mario.kleiner.de@xxxxxxxxx&gt;,        Harry Wentland &lt;hwentlan@xxxxxxx&gt;,        David Francis &lt;David.Francis@xxxxxxx&gt;, amd-gfx@xxxxxxxxxxxxxxxxxxxxx,        David Airlie &lt;airlied@xxxxxxxx&gt;, Ben Skeggs &lt;bskeggs@xxxxxxxxxx&gt;,        Harry Wentland &lt;harry.wentland@xxxxxxx&gt;,        Juston Li &lt;juston.li@xxxxxxxxx&gt;, Leo Li &lt;sunpeng.li@xxxxxxx&gt;,        linux-kernel@xxxxxxxxxxxxxxx, intel-gfx@xxxxxxxxxxxxxxxxxxxxx,        Maarten Lankhorst &lt;maarten.lankhorst@xxxxxxxxxxxxxxx&gt;,        Jani Nikula &lt;jani.nikula@xxxxxxxxxxxxxxx&gt;,        Rodrigo Vivi &lt;rodrigo.vivi@xxxxxxxxx&gt;, Sean Paul &lt;sean@xxxxxxxxxx&gt;,        Karol Herbst &lt;karolherbst@xxxxxxxxx&gt;,        Christian K&#xF6;nig &lt;christian.koenig@xxxxxxx&gt;,        Ilia Mirkin &lt;imirkin@xxxxxxxxxxxx&gt;, Daniel Vetter &lt;daniel@xxxxxxxx&gt;,        Alex Deucher &lt;alexander.deucher@xxxxxxx&gt;,        Nicholas Kazlauskas &lt;nicholas.kazlauskas@xxxxxxx&gt;,        Laurent Pinchart &lt;laurent.pinchart@xxxxxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg36135.html">20190718014329.8107-1-lyude@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg36135.html">20190718014329.8107-1-lyude@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Finally! For a very long time, our MST helpers have had one very
+annoying issue: They don't know how to reprobe the topology state when
+coming out of suspend. This means that if a user has a machine connected
+to an MST topology and decides to suspend their machine, we lose all
+topology changes that happened during that period. That can be a big
+problem if the machine was connected to a different topology on the same
+port before resuming, as we won't bother reprobing any of the ports and
+likely cause the user's monitors not to come back up as expected.
+
+So, we start fixing this by teaching our MST helpers how to reprobe the
+link addresses of each connected topology when resuming. As it turns
+out, the behavior that we want here is identical to the behavior we want
+when initially probing a newly connected MST topology, with a couple of
+important differences:
+
+- We need to be more careful about handling the potential races between
+  events from the MST hub that could change the topology state as we're
+  performing the link address reprobe
+- We need to be more careful about handling unlikely state changes on
+  ports - such as an input port turning into an output port, something
+  that would be far more likely to happen in situations like the MST hub
+  we're connected to being changed while we're suspend
+
+Both of which have been solved by previous commits. That leaves one
+requirement:
+
+- We need to prune any MST ports in our in-memory topology state that
+  were present when suspending, but have not appeared in the post-resume
+  link address response from their parent branch device
+
+Which we can now handle in this commit by modifying
+drm_dp_send_link_address(). We then introduce suspend/resume reprobing
+by introducing drm_dp_mst_topology_mgr_invalidate_mstb(), which we call
+in drm_dp_mst_topology_mgr_suspend() to traverse the in-memory topology
+state to indicate that each mstb needs it's link address resent and PBN
+resources reprobed.
+
+On resume, we start back up &amp;mgr-&gt;work and have it reprobe the topology
+in the same way we would on a hotplug, removing any leftover ports that
+no longer appear in the topology state.
+
+Cc: Juston Li &lt;juston.li@xxxxxxxxx&gt;
+Cc: Imre Deak &lt;imre.deak@xxxxxxxxx&gt;
+Cc: Ville Syrj&#xE4;l&#xE4; &lt;ville.syrjala@xxxxxxxxxxxxxxx&gt;
+Cc: Harry Wentland &lt;hwentlan@xxxxxxx&gt;
+Signed-off-by: Lyude Paul &lt;lyude@xxxxxxxxxx&gt;
+---
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |   2 +-
+ drivers/gpu/drm/drm_dp_mst_topology.c         | 138 +++++++++++++-----
+ drivers/gpu/drm/i915/display/intel_dp.c       |   3 +-
+ drivers/gpu/drm/nouveau/dispnv50/disp.c       |   6 +-
+ include/drm/drm_dp_mst_helper.h               |   3 +-
+ 5 files changed, 112 insertions(+), 40 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index e33e080cf16d..2ebd4811ff40 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -829,7 +829,7 @@ static void s3_handle_mst(struct drm_device *dev, bool suspend)
+ 		if (suspend) {
+ 			drm_dp_mst_topology_mgr_suspend(mgr);
+ 		} else {
+-			ret = drm_dp_mst_topology_mgr_resume(mgr);
++			ret = drm_dp_mst_topology_mgr_resume(mgr, true);
+ 			if (ret &lt; 0) {
+ 				drm_dp_mst_topology_mgr_set_mst(mgr, false);
+ 				need_hotplug = true;
+diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+index 126db36c9337..320158970e25 100644
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -1931,6 +1931,14 @@ drm_dp_mst_handle_link_address_port(struct drm_dp_mst_branch *mstb,
+ 		goto fail_unlock;
+ 	}
+ 
++	/*
++	 * If this port wasn't just created, then we're reprobing because
++	 * we're coming out of suspend. In this case, always resend the link
++	 * address if there's an MSTB on this port
++	 */
++	if (!created &amp;&amp; port-&gt;pdt == DP_PEER_DEVICE_MST_BRANCHING)
++		send_link_addr = true;
++
+ 	if (send_link_addr) {
+ 		mutex_lock(&amp;mgr-&gt;lock);
+ 		if (port-&gt;mstb) {
+@@ -2443,7 +2451,8 @@ static void drm_dp_send_link_address(struct drm_dp_mst_topology_mgr *mgr,
+ {
+ 	struct drm_dp_sideband_msg_tx *txmsg;
+ 	struct drm_dp_link_address_ack_reply *reply;
+-	int i, len, ret;
++	struct drm_dp_mst_port *port, *tmp;
++	int i, len, ret, port_mask = 0;
+ 
+ 	txmsg = kzalloc(sizeof(*txmsg), GFP_KERNEL);
+ 	if (!txmsg)
+@@ -2473,9 +2482,28 @@ static void drm_dp_send_link_address(struct drm_dp_mst_topology_mgr *mgr,
+ 
+ 	drm_dp_check_mstb_guid(mstb, reply-&gt;guid);
+ 
+-	for (i = 0; i &lt; reply-&gt;nports; i++)
++	for (i = 0; i &lt; reply-&gt;nports; i++) {
++		port_mask |= BIT(reply-&gt;ports[i].port_number);
+ 		drm_dp_mst_handle_link_address_port(mstb, mgr-&gt;dev,
+ 						    &amp;reply-&gt;ports[i]);
++	}
++
++	/* Prune any ports that are currently a part of mstb in our in-memory
++	 * topology, but were not seen in this link address. Usually this
++	 * means that they were removed while the topology was out of sync,
++	 * e.g. during suspend/resume
++	 */
++	mutex_lock(&amp;mgr-&gt;lock);
++	list_for_each_entry_safe(port, tmp, &amp;mstb-&gt;ports, next) {
++		if (port_mask &amp; BIT(port-&gt;port_num))
++			continue;
++
++		DRM_DEBUG_KMS(&quot;port %d was not in link address, removing\n&quot;,
++			      port-&gt;port_num);
++		list_del(&amp;port-&gt;next);
++		drm_dp_mst_topology_put_port(port);
++	}
++	mutex_unlock(&amp;mgr-&gt;lock);
+ 
+ 	drm_kms_helper_hotplug_event(mgr-&gt;dev);
+ 
+@@ -3072,6 +3100,23 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
+ }
+ EXPORT_SYMBOL(drm_dp_mst_topology_mgr_set_mst);
+ 
++static void
++drm_dp_mst_topology_mgr_invalidate_mstb(struct drm_dp_mst_branch *mstb)
++{
++	struct drm_dp_mst_port *port;
++
++	/* The link address will need to be re-sent on resume */
++	mstb-&gt;link_address_sent = false;
++
++	list_for_each_entry(port, &amp;mstb-&gt;ports, next) {
++		/* The PBN for each port will also need to be re-probed */
++		port-&gt;available_pbn = 0;
++
++		if (port-&gt;mstb)
++			drm_dp_mst_topology_mgr_invalidate_mstb(port-&gt;mstb);
++	}
++}
++
+ /**
+  * drm_dp_mst_topology_mgr_suspend() - suspend the MST manager
+  * @mgr: manager to suspend
+@@ -3088,60 +3133,85 @@ void drm_dp_mst_topology_mgr_suspend(struct drm_dp_mst_topology_mgr *mgr)
+ 	flush_work(&amp;mgr-&gt;up_req_work);
+ 	flush_work(&amp;mgr-&gt;work);
+ 	flush_work(&amp;mgr-&gt;destroy_connector_work);
++
++	mutex_lock(&amp;mgr-&gt;lock);
++	if (mgr-&gt;mst_state &amp;&amp; mgr-&gt;mst_primary)
++		drm_dp_mst_topology_mgr_invalidate_mstb(mgr-&gt;mst_primary);
++	mutex_unlock(&amp;mgr-&gt;lock);
+ }
+ EXPORT_SYMBOL(drm_dp_mst_topology_mgr_suspend);
+ 
+ /**
+  * drm_dp_mst_topology_mgr_resume() - resume the MST manager
+  * @mgr: manager to resume
++ * @sync: whether or not to perform topology reprobing synchronously
+  *
+  * This will fetch DPCD and see if the device is still there,
+  * if it is, it will rewrite the MSTM control bits, and return.
+  *
+- * if the device fails this returns -1, and the driver should do
++ * If the device fails this returns -1, and the driver should do
+  * a full MST reprobe, in case we were undocked.
++ *
++ * During system resume (where it is assumed that the driver will be calling
++ * drm_atomic_helper_resume()) this function should be called beforehand with
++ * @sync set to true. In contexts like runtime resume where the driver is not
++ * expected to be calling drm_atomic_helper_resume(), this function should be
++ * called with @sync set to false in order to avoid deadlocking.
++ *
++ * Returns: -1 if the MST topology was removed while we were suspended, 0
++ * otherwise.
+  */
+-int drm_dp_mst_topology_mgr_resume(struct drm_dp_mst_topology_mgr *mgr)
++int drm_dp_mst_topology_mgr_resume(struct drm_dp_mst_topology_mgr *mgr,
++				   bool sync)
+ {
+-	int ret = 0;
++	int ret;
++	u8 guid[16];
+ 
+ 	mutex_lock(&amp;mgr-&gt;lock);
++	if (!mgr-&gt;mst_primary)
++		goto out_fail;
+ 
+-	if (mgr-&gt;mst_primary) {
+-		int sret;
+-		u8 guid[16];
++	ret = drm_dp_dpcd_read(mgr-&gt;aux, DP_DPCD_REV, mgr-&gt;dpcd,
++			       DP_RECEIVER_CAP_SIZE);
++	if (ret != DP_RECEIVER_CAP_SIZE) {
++		DRM_DEBUG_KMS(&quot;dpcd read failed - undocked during suspend?\n&quot;);
++		goto out_fail;
++	}
+ 
+-		sret = drm_dp_dpcd_read(mgr-&gt;aux, DP_DPCD_REV, mgr-&gt;dpcd, DP_RECEIVER_CAP_SIZE);
+-		if (sret != DP_RECEIVER_CAP_SIZE) {
+-			DRM_DEBUG_KMS(&quot;dpcd read failed - undocked during suspend?\n&quot;);
+-			ret = -1;
+-			goto out_unlock;
+-		}
++	ret = drm_dp_dpcd_writeb(mgr-&gt;aux, DP_MSTM_CTRL,
++				 DP_MST_EN |
++				 DP_UP_REQ_EN |
++				 DP_UPSTREAM_IS_SRC);
++	if (ret &lt; 0) {
++		DRM_DEBUG_KMS(&quot;mst write failed - undocked during suspend?\n&quot;);
++		goto out_fail;
++	}
+ 
+-		ret = drm_dp_dpcd_writeb(mgr-&gt;aux, DP_MSTM_CTRL,
+-					 DP_MST_EN | DP_UP_REQ_EN | DP_UPSTREAM_IS_SRC);
+-		if (ret &lt; 0) {
+-			DRM_DEBUG_KMS(&quot;mst write failed - undocked during suspend?\n&quot;);
+-			ret = -1;
+-			goto out_unlock;
+-		}
++	/* Some hubs forget their guids after they resume */
++	ret = drm_dp_dpcd_read(mgr-&gt;aux, DP_GUID, guid, 16);
++	if (ret != 16) {
++		DRM_DEBUG_KMS(&quot;dpcd read failed - undocked during suspend?\n&quot;);
++		goto out_fail;
++	}
++	drm_dp_check_mstb_guid(mgr-&gt;mst_primary, guid);
+ 
+-		/* Some hubs forget their guids after they resume */
+-		sret = drm_dp_dpcd_read(mgr-&gt;aux, DP_GUID, guid, 16);
+-		if (sret != 16) {
+-			DRM_DEBUG_KMS(&quot;dpcd read failed - undocked during suspend?\n&quot;);
+-			ret = -1;
+-			goto out_unlock;
+-		}
+-		drm_dp_check_mstb_guid(mgr-&gt;mst_primary, guid);
++	/* For the final step of resuming the topology, we need to bring the
++	 * state of our in-memory topology back into sync with reality. So,
++	 * restart the probing process as if we're probing a new hub
++	 */
++	queue_work(system_long_wq, &amp;mgr-&gt;work);
++	mutex_unlock(&amp;mgr-&gt;lock);
+ 
+-		ret = 0;
+-	} else
+-		ret = -1;
++	if (sync) {
++		DRM_DEBUG_KMS(&quot;Waiting for link probe work to finish re-syncing topology...\n&quot;);
++		flush_work(&amp;mgr-&gt;work);
++	}
+ 
+-out_unlock:
++	return 0;
++
++out_fail:
+ 	mutex_unlock(&amp;mgr-&gt;lock);
+-	return ret;
++	return -1;
+ }
+ EXPORT_SYMBOL(drm_dp_mst_topology_mgr_resume);
+ 
+diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+index 0eb5d66f87a7..7190ff5c3649 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp.c
++++ b/drivers/gpu/drm/i915/display/intel_dp.c
+@@ -7366,7 +7366,8 @@ void intel_dp_mst_resume(struct drm_i915_private *dev_priv)
+ 		if (!intel_dp-&gt;can_mst)
+ 			continue;
+ 
+-		ret = drm_dp_mst_topology_mgr_resume(&amp;intel_dp-&gt;mst_mgr);
++		ret = drm_dp_mst_topology_mgr_resume(&amp;intel_dp-&gt;mst_mgr,
++						     true);
+ 		if (ret) {
+ 			intel_dp-&gt;is_mst = false;
+ 			drm_dp_mst_topology_mgr_set_mst(&amp;intel_dp-&gt;mst_mgr,
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+index 7ba373f493b2..c44b54eeddce 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+@@ -1300,14 +1300,14 @@ nv50_mstm_fini(struct nv50_mstm *mstm)
+ }
+ 
+ static void
+-nv50_mstm_init(struct nv50_mstm *mstm)
++nv50_mstm_init(struct nv50_mstm *mstm, bool runtime)
+ {
+ 	int ret;
+ 
+ 	if (!mstm || !mstm-&gt;mgr.mst_state)
+ 		return;
+ 
+-	ret = drm_dp_mst_topology_mgr_resume(&amp;mstm-&gt;mgr);
++	ret = drm_dp_mst_topology_mgr_resume(&amp;mstm-&gt;mgr, !runtime);
+ 	if (ret == -1) {
+ 		drm_dp_mst_topology_mgr_set_mst(&amp;mstm-&gt;mgr, false);
+ 		drm_kms_helper_hotplug_event(mstm-&gt;mgr.dev);
+@@ -2257,7 +2257,7 @@ nv50_display_init(struct drm_device *dev, bool resume, bool runtime)
+ 		if (encoder-&gt;encoder_type != DRM_MODE_ENCODER_DPMST) {
+ 			struct nouveau_encoder *nv_encoder =
+ 				nouveau_encoder(encoder);
+-			nv50_mstm_init(nv_encoder-&gt;dp.mstm);
++			nv50_mstm_init(nv_encoder-&gt;dp.mstm, runtime);
+ 		}
+ 	}
+ 
+diff --git a/include/drm/drm_dp_mst_helper.h b/include/drm/drm_dp_mst_helper.h
+index aed68d7e6492..eece28525d52 100644
+--- a/include/drm/drm_dp_mst_helper.h
++++ b/include/drm/drm_dp_mst_helper.h
+@@ -683,7 +683,8 @@ void drm_dp_mst_dump_topology(struct seq_file *m,
+ 
+ void drm_dp_mst_topology_mgr_suspend(struct drm_dp_mst_topology_mgr *mgr);
+ int __must_check
+-drm_dp_mst_topology_mgr_resume(struct drm_dp_mst_topology_mgr *mgr);
++drm_dp_mst_topology_mgr_resume(struct drm_dp_mst_topology_mgr *mgr,
++			       bool sync);
+ struct drm_dp_mst_topology_state *drm_atomic_get_mst_topology_state(struct drm_atomic_state *state,
+ 								    struct drm_dp_mst_topology_mgr *mgr);
+ int __must_check
+-- 
+2.21.0
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="36135" href="msg36135.html">[PATCH 00/26] DP MST Refactors + debugging tools + suspend/resume reprobing</a></strong>
+<ul><li><em>From:</em> Lyude Paul</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg36137.html">[PATCH 23/26] drm/amdgpu/dm: Resume short HPD IRQs before resuming MST topology</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg36139.html">[PATCH] drm/amdgpu/dm: Remove unneeded hotplug event in s3_handle_mst()</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg36137.html">[PATCH 23/26] drm/amdgpu/dm: Resume short HPD IRQs before resuming MST topology</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg36139.html">[PATCH] drm/amdgpu/dm: Remove unneeded hotplug event in s3_handle_mst()</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#36138"><strong>Date</strong></a></li>
+<li><a href="index.html#36138"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

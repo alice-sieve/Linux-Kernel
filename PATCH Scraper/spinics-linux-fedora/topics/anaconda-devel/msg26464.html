@@ -1,0 +1,306 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Perform recursive copying of driver disk RPM repo contents -->
+<!--X-From-R13: Shtrar Elebzvngavxbi &#60;rfleNerqung.pbz> -->
+<!--X-Date: Fri, 24 Feb 2017 12:39:00 &#45;0800 -->
+<!--X-Message-Id: 20170224203658.GA30943@asgard.redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<title>Anaconda Devel &mdash; [PATCH] Perform recursive copying of driver disk RPM repo contents</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Anaconda Devel, kickstart, install, [PATCH] Perform recursive copying of driver disk RPM repo contents">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="Anaconda Devel" href="//feedproxy.google.com/AnacondaDevel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] Perform recursive copying of driver disk RPM repo contents</h1>
+[<a href="msg26463.html">Date Prev</a>][<a href="msg26465.html">Date Next</a>][<a href="msg26463.html">Thread Prev</a>][<a href="msg26465.html">Thread Next</a>][<a href="maillist.html#26464">Date Index</a>][<a href="index.html#26464">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Perform recursive copying of driver disk RPM repo contents</li>
+<li><em>From</em>: Eugene Syromiatnikov &lt;esyr@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 24 Feb 2017 21:36:58 +0100</li>
+<li><em>Reply-to</em>: Discussion of Development and Customization of the Red Hat Linux	Installer &lt;anaconda-devel-list@xxxxxxxxxx&gt;</li>
+<li><em>User-agent</em>: Mutt/1.5.23 (2014-03-12)</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Commit anaconda-25.20-1-100-ge0e86f4 introduced a new way of copying RPM
+repository data from a driver disk, which apparently is not recursive.
+Since repository metadata is stored in a separate directory &quot;repodata&quot;,
+this now produces a warning like this:
+
+    DD: WARNING: DD repo content not a file: /media/DD-1/rpms/x86_64/repodata
+
+and skips repodata directory entirely. Luckily, it is generated later by
+the code in pyanaconda.packaging,PackagePayload.addDriverRepos().
+
+Unfortunately, test case was also written in assumption that repodata is
+just a file and not a directory, so it hasn't caught it.
+
+Resolves: #rhbz1425760
+
+* dracut/driver_updates.py (save_repo): Implement recursive copying.
+* tests/dracut_tests/test_driver_updates.py (makerepodata): New function
+for populating fake repo metadata.
+(TestSaveRepo.test_folder_repo): Update test in order to check for the
+case of repodata being a directory.
+---
+ dracut/driver_updates.py                  | 17 ++++++++++-------
+ tests/dracut_tests/test_driver_updates.py | 16 ++++++++++++++--
+ 2 files changed, 24 insertions(+), 9 deletions(-)
+
+diff --git a/dracut/driver_updates.py b/dracut/driver_updates.py
+index 3c0b714..488fe29 100755
+--- a/dracut/driver_updates.py
++++ b/dracut/driver_updates.py
+@@ -272,13 +272,16 @@ def save_repo(repo, target=&quot;/run/install&quot;):
+     if os.path.isfile(repo):
+         shutil.copy2(repo, newdir)
+     elif os.path.isdir(repo):
+-        for item in os.listdir(repo):
+-            item_path = os.path.join(repo, item)
+-            if os.path.isfile(item_path):
+-                log.debug(&quot;copying %s to %s&quot;, item_path, newdir)
+-                shutil.copy2(item_path, newdir)
+-            else:
+-                log.warning(&quot;DD repo content not a file: %s&quot;, item_path)
++        for root, dirs, files in os.walk(repo):
++            dest_path = os.path.join(newdir, os.path.relpath(root, repo))
++            for file in files:
++                item_path = os.path.join(repo, root, file)
++                log.debug(&quot;copying %s to %s&quot;, item_path, dest_path)
++                shutil.copy2(item_path, dest_path)
++            for dir in dirs:
++                item_path = os.path.join(dest_path, dir)
++                log.debug(&quot;creating %s&quot;, item_path)
++                os.mkdir(item_path)
+     else:
+         log.error(&quot;ERROR: DD repository needs to be a file or a directory: %s&quot;,
+                   repo)
+diff --git a/tests/dracut_tests/test_driver_updates.py b/tests/dracut_tests/test_driver_updates.py
+index 55120c9..3f1fb30 100644
+--- a/tests/dracut_tests/test_driver_updates.py
++++ b/tests/dracut_tests/test_driver_updates.py
+@@ -250,6 +250,14 @@ def makerepo(topdir, desc=None):
+     makedir(topdir+'/rpms/'+ARCH)
+ 
+ 
++def makerepodata(topdir):
++    makedir(topdir + '/repodata/')
++    makefile(topdir + '/repodata/repomd.xml')
++    makefile(topdir + '/repodata/filelists.xml.gz')
++    makefile(topdir + '/repodata/primary.xml.gz')
++    makefile(topdir + '/repodata/other.xml.gz')
++
++
+ class TestFindRepos(FileTestCaseBase):
+     def test_basic(self):
+         &quot;&quot;&quot;find_repos: return RPM dir if a valid repo is found&quot;&quot;&quot;
+@@ -272,12 +280,16 @@ class TestSaveRepo(FileTestCaseBase):
+         &quot;&quot;&quot;save_repo: copies directory contents to /run/install/DD-X&quot;&quot;&quot;
+         makerepo(self.srcdir)
+         repo = find_repos(self.srcdir)[0]
+-        makefile(repo + '/repodata')
++        makerepodata(repo)
+         makefile(repo + '/fake-something1.rpm')
+         makefile(repo + '/fake-something2.rpm')
+         makefile(repo + '/fake-something3.rpm')
+         saved = save_repo(repo, target=self.destdir)
+-        expected_files = set([&quot;fake-something1.rpm&quot;, &quot;fake-something2.rpm&quot;, &quot;fake-something3.rpm&quot;, &quot;repodata&quot;])
++        expected_files = set([&quot;fake-something1.rpm&quot;, &quot;fake-something2.rpm&quot;,
++                              &quot;fake-something3.rpm&quot;, &quot;repodata/repomd.xml&quot;,
++                              &quot;repodata/filelists.xml.gz&quot;,
++                              &quot;repodata/primary.xml.gz&quot;,
++                              &quot;repodata/other.xml.gz&quot;])
+         self.assertEqual(set(listfiles(saved)), expected_files)
+         self.assertEqual(saved, os.path.join(self.destdir, &quot;DD-1&quot;))
+ 
+-- 
+2.1.4
+
+_______________________________________________
+Anaconda-devel-list mailing list
+Anaconda-devel-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/anaconda-devel-list">https://www.redhat.com/mailman/listinfo/anaconda-devel-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg26463.html">[PATCH] Fix a typo in an error message</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg26465.html">Re: [PATCH] Perform recursive copying of driver disk RPM repo contents</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg26463.html">[PATCH] Fix a typo in an error message</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg26465.html">Re: [PATCH] Perform recursive copying of driver disk RPM repo contents</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#26464"><strong>Date</strong></a></li>
+<li><a href="index.html#26464"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/kickstart/>[Kickstart]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fll/>[Fedora&nbsp;Legacy&nbsp;List]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=//www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/yosemite/>[Yosemite&nbsp;Photos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

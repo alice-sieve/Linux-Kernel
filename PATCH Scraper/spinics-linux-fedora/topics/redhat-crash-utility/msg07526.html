@@ -1,0 +1,427 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 1/6] Add do_list_no_hash() function similar	to do_list() but without hash. -->
+<!--X-From-R13: Rnir Ilfbpunafxv &#60;qjlfbpunNerqung.pbz> -->
+<!--X-Date: Tue, 10 Jul 2018 15:24:43 &#45;0700 -->
+<!--X-Message-Id: 1531261479&#45;23412&#45;2&#45;git&#45;send&#45;email&#45;dwysocha@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1531261479&#45;23412&#45;1&#45;git&#45;send&#45;email&#45;dwysocha@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 1/6] Add do_list_no_hash() function similar	to do_list() but without hash. &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  [PATCH 1/6] Add do_list_no_hash() function similar	to do_list() but without hash.</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 1/6] Add do_list_no_hash() function similar	to do_list() but without hash.</h1>
+[<a href="msg07525.html">Date Prev</a>][<a href="msg07529.html">Date Next</a>][<a href="msg07525.html">Thread Prev</a>][<a href="msg07529.html">Thread Next</a>][<a href="maillist.html#07526">Date Index</a>][<a href="index.html#07526">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 1/6] Add do_list_no_hash() function similar	to do_list() but without hash.</li>
+<li><em>From</em>: Dave Wysochanski &lt;dwysocha@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 10 Jul 2018 18:24:34 -0400</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg07525.html">1531261479-23412-1-git-send-email-dwysocha@redhat.com</a>&gt;</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Add a new do_list_no_hash() function which is similar to do_list() but
+without the hash_table overhead and without the LIST_ALLOCATE.
+This function will be useful for faster and lower overhead list
+enumeration, especially for the &quot;list&quot; command.
+
+Signed-off-by: Dave Wysochanski &lt;dwysocha@xxxxxxxxxx&gt;
+---
+ defs.h  |   1 +
+ tools.c | 189 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 190 insertions(+)
+
+diff --git a/defs.h b/defs.h
+index b05aecc..3ab295a 100644
+--- a/defs.h
++++ b/defs.h
+@@ -4944,6 +4944,7 @@ char *shift_string_right(char *, int);
+ int bracketed(char *, char *, int);
+ void backspace(int);
+ int do_list(struct list_data *);
++int do_list_no_hash(struct list_data *);
+ struct radix_tree_ops {
+ 	void (*entry)(ulong node, ulong slot, const char *path,
+ 		      ulong index, void *private);
+diff --git a/tools.c b/tools.c
+index 1a83643..a642d60 100644
+--- a/tools.c
++++ b/tools.c
+@@ -3863,6 +3863,195 @@ do_list(struct list_data *ld)
+ }
+ 
+ /*
++ * Similar to do_list() but without the hash_table or LIST_ALLOCATE.
++ * Useful for the 'list' command and other callers needing faster list
++ * enumeration.
++ */
++int
++do_list_no_hash(struct list_data *ld)
++{
++	ulong next, last, first, offset;
++	ulong searchfor, readflag;
++	int i, count, others;
++	unsigned int radix;
++	struct req_entry **e = NULL;
++
++	if (CRASHDEBUG(1)) {
++		others = 0;
++		console(&quot;             flags: %lx (&quot;, ld-&gt;flags);
++		if (ld-&gt;flags &amp; VERBOSE)
++			console(&quot;%sVERBOSE&quot;, others++ ? &quot;|&quot; : &quot;&quot;);
++		if (ld-&gt;flags &amp; LIST_OFFSET_ENTERED)
++			console(&quot;%sLIST_OFFSET_ENTERED&quot;, others++ ? &quot;|&quot; : &quot;&quot;);
++		if (ld-&gt;flags &amp; LIST_START_ENTERED)
++			console(&quot;%sLIST_START_ENTERED&quot;, others++ ? &quot;|&quot; : &quot;&quot;);
++		if (ld-&gt;flags &amp; LIST_HEAD_FORMAT)
++			console(&quot;%sLIST_HEAD_FORMAT&quot;, others++ ? &quot;|&quot; : &quot;&quot;);
++		if (ld-&gt;flags &amp; LIST_HEAD_POINTER)
++			console(&quot;%sLIST_HEAD_POINTER&quot;, others++ ? &quot;|&quot; : &quot;&quot;);
++		if (ld-&gt;flags &amp; RETURN_ON_DUPLICATE)
++			console(&quot;%sRETURN_ON_DUPLICATE&quot;, others++ ? &quot;|&quot; : &quot;&quot;);
++		if (ld-&gt;flags &amp; RETURN_ON_LIST_ERROR)
++			console(&quot;%sRETURN_ON_LIST_ERROR&quot;, others++ ? &quot;|&quot; : &quot;&quot;);
++		if (ld-&gt;flags &amp; RETURN_ON_LIST_ERROR)
++			console(&quot;%sRETURN_ON_LIST_ERROR&quot;, others++ ? &quot;|&quot; : &quot;&quot;);
++		if (ld-&gt;flags &amp; LIST_STRUCT_RADIX_10)
++			console(&quot;%sLIST_STRUCT_RADIX_10&quot;, others++ ? &quot;|&quot; : &quot;&quot;);
++		if (ld-&gt;flags &amp; LIST_STRUCT_RADIX_16)
++			console(&quot;%sLIST_STRUCT_RADIX_16&quot;, others++ ? &quot;|&quot; : &quot;&quot;);
++		if (ld-&gt;flags &amp; LIST_ALLOCATE)
++			console(&quot;%sLIST_ALLOCATE&quot;, others++ ? &quot;|&quot; : &quot;&quot;);
++		if (ld-&gt;flags &amp; LIST_CALLBACK)
++			console(&quot;%sLIST_CALLBACK&quot;, others++ ? &quot;|&quot; : &quot;&quot;);
++		if (ld-&gt;flags &amp; CALLBACK_RETURN)
++			console(&quot;%sCALLBACK_RETURN&quot;, others++ ? &quot;|&quot; : &quot;&quot;);
++		console(&quot;)\n&quot;);
++		console(&quot;             start: %lx\n&quot;, ld-&gt;start);
++		console(&quot;     member_offset: %ld\n&quot;, ld-&gt;member_offset);
++		console(&quot;  list_head_offset: %ld\n&quot;, ld-&gt;list_head_offset);
++		console(&quot;               end: %lx\n&quot;, ld-&gt;end);
++		console(&quot;         searchfor: %lx\n&quot;, ld-&gt;searchfor);
++		console(&quot;   structname_args: %lx\n&quot;, ld-&gt;structname_args);
++		if (!ld-&gt;structname_args)
++			console(&quot;        structname: (unused)\n&quot;);
++		for (i = 0; i &lt; ld-&gt;structname_args; i++)
++			console(&quot;     structname[%d]: %s\n&quot;, i, ld-&gt;structname[i]);
++		console(&quot;            header: %s\n&quot;, ld-&gt;header);
++		console(&quot;          list_ptr: %lx\n&quot;, (ulong)ld-&gt;list_ptr);
++		console(&quot;     callback_func: %lx\n&quot;, (ulong)ld-&gt;callback_func);
++		console(&quot;     callback_data: %lx\n&quot;, (ulong)ld-&gt;callback_data);
++		console(&quot;struct_list_offset: %lx\n&quot;, ld-&gt;struct_list_offset);
++	}
++
++	count = 0;
++	searchfor = ld-&gt;searchfor;
++	ld-&gt;searchfor = 0;
++	if (ld-&gt;flags &amp; LIST_STRUCT_RADIX_10)
++		radix = 10;
++	else if (ld-&gt;flags &amp; LIST_STRUCT_RADIX_16)
++		radix = 16;
++	else
++		radix = 0;
++	next = ld-&gt;start;
++
++	readflag = ld-&gt;flags &amp; RETURN_ON_LIST_ERROR ?
++		(RETURN_ON_ERROR|QUIET) : FAULT_ON_ERROR;
++
++	if (!readmem(next + ld-&gt;member_offset, KVADDR, &amp;first, sizeof(void *),
++            &quot;first list entry&quot;, readflag)) {
++                error(INFO, &quot;\ninvalid list entry: %lx\n&quot;, next);
++		return -1;
++	}
++
++	if (ld-&gt;header)
++		fprintf(fp, &quot;%s&quot;, ld-&gt;header);
++
++	offset = ld-&gt;list_head_offset + ld-&gt;struct_list_offset;
++
++	if (ld-&gt;structname &amp;&amp; (ld-&gt;flags &amp; LIST_READ_MEMBER)) {
++		e = (struct req_entry **)GETBUF(sizeof(*e) * ld-&gt;structname_args);
++		for (i = 0; i &lt; ld-&gt;structname_args; i++)
++			e[i] = fill_member_offsets(ld-&gt;structname[i]);
++	}
++
++	while (1) {
++		if (ld-&gt;flags &amp; VERBOSE) {
++			fprintf(fp, &quot;%lx\n&quot;, next - ld-&gt;list_head_offset);
++
++			if (ld-&gt;structname) {
++				for (i = 0; i &lt; ld-&gt;structname_args; i++) {
++					switch (count_chars(ld-&gt;structname[i], '.'))
++					{
++					case 0:
++						dump_struct(ld-&gt;structname[i],
++							next - offset, radix);
++						break;
++					default:
++						if (ld-&gt;flags &amp; LIST_PARSE_MEMBER)
++							dump_struct_members(ld, i, next);
++						else if (ld-&gt;flags &amp; LIST_READ_MEMBER)
++							dump_struct_members_fast(e[i],
++								radix, next - offset);
++						break;
++					}
++				}
++			}
++		}
++
++                if (next &amp;&amp; 0) { /* FIXME - duplicate detection */
++			if (ld-&gt;flags &amp;
++			    (RETURN_ON_DUPLICATE|RETURN_ON_LIST_ERROR)) {
++				error(INFO, &quot;\nduplicate list entry: %lx\n&quot;,
++					next);
++				return -1;
++			}
++                        error(FATAL, &quot;\nduplicate list entry: %lx\n&quot;, next);
++		}
++
++		if ((searchfor == next) ||
++		    (searchfor == (next - ld-&gt;list_head_offset)))
++			ld-&gt;searchfor = searchfor;
++
++		count++;
++                last = next;
++
++		if ((ld-&gt;flags &amp; LIST_CALLBACK) &amp;&amp;
++		    ld-&gt;callback_func((void *)(next - ld-&gt;list_head_offset),
++		    ld-&gt;callback_data) &amp;&amp; (ld-&gt;flags &amp; CALLBACK_RETURN))
++			break;
++
++                if (!readmem(next + ld-&gt;member_offset, KVADDR, &amp;next,
++		    sizeof(void *), &quot;list entry&quot;, readflag)) {
++			error(INFO, &quot;\ninvalid list entry: %lx\n&quot;, next);
++			return -1;
++		}
++
++		if (next == 0) {
++			if (ld-&gt;flags &amp; LIST_HEAD_FORMAT) {
++				error(INFO, &quot;\ninvalid list entry: 0\n&quot;);
++				return -1;
++			}
++			if (CRASHDEBUG(1))
++				console(&quot;do_list end: next:%lx\n&quot;, next);
++			break;
++		}
++
++		if (next == ld-&gt;end) {
++			if (CRASHDEBUG(1))
++				console(&quot;do_list end: next:%lx == end:%lx\n&quot;,
++					next, ld-&gt;end);
++			break;
++		}
++
++		if (next == ld-&gt;start) {
++			if (CRASHDEBUG(1))
++				console(&quot;do_list end: next:%lx == start:%lx\n&quot;,
++					next, ld-&gt;start);
++			break;
++		}
++
++		if (next == last) {
++			if (CRASHDEBUG(1))
++				console(&quot;do_list end: next:%lx == last:%lx\n&quot;,
++					next, last);
++			break;
++		}
++
++		if ((next == first) &amp;&amp; (count != 1)) {
++			if (CRASHDEBUG(1))
++		      console(&quot;do_list end: next:%lx == first:%lx (count %d)\n&quot;,
++				next, last, count);
++			break;
++		}
++	}
++
++	if (CRASHDEBUG(1))
++		console(&quot;do_list count: %d\n&quot;, count);
++
++	return count;
++}
++
++/*
+  *  Issue a dump_struct_member() call for one or more structure
+  *  members.  Multiple members are passed in a comma-separated
+  *  list using the the format:  
+-- 
+1.8.3.1
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="07525" href="msg07525.html">[PATCH 0/5] Add Brent algorithm as an option for	the 'list' command</a></strong>
+<ul><li><em>From:</em> Dave Wysochanski</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07525.html">[PATCH 0/5] Add Brent algorithm as an option for	the 'list' command</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07529.html">[PATCH 2/6] do_list_no_hash: factor out all the	debug statements at entry into do_list_debug_entry</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07525.html">[PATCH 0/5] Add Brent algorithm as an option for	the 'list' command</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07529.html">[PATCH 2/6] do_list_no_hash: factor out all the	debug statements at entry into do_list_debug_entry</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07526"><strong>Date</strong></a></li>
+<li><a href="index.html#07526"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

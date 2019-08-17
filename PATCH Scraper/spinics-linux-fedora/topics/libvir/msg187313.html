@@ -1,0 +1,234 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] storage: rbd: do not attempt to dereference a	non&#45;pointer -->
+<!--X-From-R13: =?GFT&#45;8?d?X=Q3=O1a=20Fbzxb?= &#60;wgbzxbNerqung.pbz> -->
+<!--X-Date: Fri, 12 Jul 2019 08:52:39 &#45;0700 -->
+<!--X-Message-Id: b632e00ffbfee7b11074bf4ca5f4399e929bbe53.1562946727.git.jtomko@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH] storage: rbd: do not attempt to dereference a	non-pointer</title>
+<meta name="description" content="libvirt: [PATCH] storage: rbd: do not attempt to dereference a	non-pointer">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH] storage: rbd: do not attempt to dereference a	non-pointer</h1>
+[<a href="msg187312.html">Date Prev</a>][<a href="msg187314.html">Date Next</a>][<a href="msg187299.html">Thread Prev</a>][<a href="msg187317.html">Thread Next</a>][<a href="maillist.html#187313">Date Index</a>][<a href="index.html#187313">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] storage: rbd: do not attempt to dereference a	non-pointer</li>
+<li><em>From</em>: J&#xE1;n Tomko &lt;jtomko@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 12 Jul 2019 17:53:06 +0200</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>My commit 9b7c4048fa0559fd81d57b7f7d13b1dccd6a99b2 was too blind
+and my librbd was not new enough to actually compile this part.
+
+Signed-off-by: J&#xE1;n Tomko &lt;jtomko@xxxxxxxxxx&gt;
+---
+Pushed under the 'build breaker fix' rule whilst violating the
+'do not push patches on a Friday afternoon' rule.
+
+ src/storage/storage_backend_rbd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/storage/storage_backend_rbd.c b/src/storage/storage_backend_rbd.c
+index 1cb447c55a..f3104ba310 100644
+--- a/src/storage/storage_backend_rbd.c
++++ b/src/storage/storage_backend_rbd.c
+@@ -637,7 +637,7 @@ virStorageBackendRBDGetVolNames(virStorageBackendRBDStatePtr ptr)
+     nnames = nimages;
+ 
+     for (i = 0; i &lt; nimages; i++)
+-        VIR_STEAL_PTR(names[i], images[i]-&gt;name);
++        VIR_STEAL_PTR(names[i], images[i].name);
+ 
+     return names;
+ 
+-- 
+2.20.1
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187312.html">Re:  [libvirt-php PATCH 0/2] Add binding for virDomainInterfaceAddresses</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187314.html">[PATCH 02/25] qemu: domain: Add helper for saving config	XML</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187299.html">[PATCH 0/4] Blind rbd driver fixes</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187317.html">[PATCH 00/25] qemu: Properly track blockjobs	(blockdev-add saga)</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187313"><strong>Date</strong></a></li>
+<li><a href="index.html#187313"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

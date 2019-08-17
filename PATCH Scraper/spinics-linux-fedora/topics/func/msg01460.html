@@ -1,0 +1,294 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] if we do not find a match in the minions list,	then if the glob we're passed is NOT a glob,	assume it's a hostname &#45; and just allow it. -->
+<!--X-From-R13: Ergu Hvqny &#60;fxivqnyNsrqbencebwrpg.bet> -->
+<!--X-Date: Fri, 7 May 2010 12:27:50 &#45;0700 -->
+<!--X-Message-Id: 1273260385&#45;13975&#45;1&#45;git&#45;send&#45;email&#45;skvidal@fedoraproject.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Universal Network Connector, [PATCH] if we do not find a match in the minions list,	then if the glob we're passed is NOT a glob,	assume it's a hostname - and just allow it.">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Fedora Universal Network Connector &mdash; [PATCH] if we do not find a match in the minions list,	then if the glob we're passed is NOT a glob,	assume it's a hostname - and just allow it.</title>
+<link rel="alternate" type="application/rss+xml" title="Fedora Universal Network Connector" href="//feeds.feedburner.com/FedoraUniversalNetworkConnector">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] if we do not find a match in the minions list,	then if the glob we're passed is NOT a glob,	assume it's a hostname - and just allow it.</h1>
+[<a href="msg01459.html">Date Prev</a>][<a href="msg01461.html">Date Next</a>][<a href="msg01459.html">Thread Prev</a>][<a href="msg01462.html">Thread Next</a>][<a href="maillist.html#01460">Date Index</a>][<a href="index.html#01460">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] if we do not find a match in the minions list,	then if the glob we're passed is NOT a glob,	assume it's a hostname - and just allow it.</li>
+<li><em>From</em>: Seth Vidal &lt;<a href="mailto:skvidal@DOMAIN.HIDDEN">skvidal@xxxxxxxxxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Fri,  7 May 2010 15:26:25 -0400</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>add re_glob function from yum to utils.
+---
+ func/overlord/client.py |   20 ++++++++++++++++++--
+ func/utils.py           |   14 ++++++++++++--
+ 2 files changed, 30 insertions(+), 4 deletions(-)
+
+diff --git a/func/overlord/client.py b/func/overlord/client.py
+index 4e924c6..64622c4 100644
+--- a/func/overlord/client.py
++++ b/func/overlord/client.py
+@@ -155,7 +155,12 @@ class Minions(object):
+         if self.cm_config.peering:
+             peer_gloob = &quot;%s/%s.%s&quot; % (self.cm_config.peerroot, each_gloob, self.cm_config.cert_extension)
+             certs += glob.glob(peer_gloob)
+-            
++        
++        # if we can't match this gloob and the gloob is not REALLY a glob
++        # let the gloob be the hostname we try to connect to.
++        if not certs and not func_utils.re_glob(each_gloob):
++            tmp_hosts.add(each_gloob)
++        
+         for cert in certs:
+             tmp_certs.add(cert)
+             # use basename to trim off any excess /'s, fix
+@@ -290,7 +295,10 @@ class PuppetMinions(Minions):
+             for line in fo.readlines():
+                 if re.match('\s*(#|$)', line):
+                     continue
+-                (serial, before, after, cn) = line.split()
++                try:
++                    (serial, before, after, cn) = line.split()
++                except ValueError:
++                    continue
+                 before = time.strftime('%s', time.strptime(before, time_format))
+                 if now &lt; int(before):
+                     continue
+@@ -314,8 +322,15 @@ class PuppetMinions(Minions):
+                 pempath = '%s/%s.pem' % (self.overlord_config.puppet_signed_certs_dir, hostname)
+                 if not os.path.exists(pempath):
+                     continue
++                matched_gloob = False
+                 if fnmatch.fnmatch(hostname, each_gloob):
++                    matched_gloob = True
+                     tmp_hosts.add(hostname)
++                
++                # if we can't match this gloob and the gloob is not REALLY a glob
++                # let the gloob be the hostname we try to connect to.
++                if not matched_gloob and not func_utils.re_glob(each_gloob):
++                    tmp_hosts.add(each_gloob)
+                     # don't return certs path - just hosts
+ 
+         return tmp_hosts,tmp_certs
+@@ -345,6 +360,7 @@ class PuppetMinions(Minions):
+             return serials
+ 
+ 
++
+ # does the hostnamegoo actually expand to anything?
+ def is_minion(minion_string):
+     minions = Minions(minion_string)
+diff --git a/func/utils.py b/func/utils.py
+index 1c4d94c..a9f302b 100644
+--- a/func/utils.py
++++ b/func/utils.py
+@@ -165,9 +165,9 @@ def get_fresh_method_instance(function_ref):
+         except Exception,e:
+             #something went wrong so we return the normal reference value
+             return function_ref
+-       	try:
++        try:
+             return getattr(fresh_instance,function_ref.__name__)
+-	except AttributeError:
++        except AttributeError:
+             return getattr(fresh_instance,function_ref._name_)
+ 
+ def should_log(args):
+@@ -210,6 +210,16 @@ def deep_base64(ds, mode = 0):
+ 
+     return ds
+ 
++_re_compiled_glob_match = None
++def re_glob(s):
++    &quot;&quot;&quot; Tests if a string is a shell wildcard. &quot;&quot;&quot;
++    # TODO/FIXME maybe consider checking if it is a stringsType before going on - otherwise
++    # returning None
++    global _re_compiled_glob_match
++    if _re_compiled_glob_match is None:
++        _re_compiled_glob_match = re.compile('[*?]|\[.+\]').search
++    return _re_compiled_glob_match(s)
++
+ #################### PROGRESS BAR ##################################
+ # The code below can be used for progress bar purposes as we will do
+ #it is a combination of <a  rel="nofollow" href="http://code.activestate.com/recipes/168639/">http://code.activestate.com/recipes/168639/</a> and
+-- 
+1.7.0.1
+
+_______________________________________________
+Func-list mailing list
+Func-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/func-list">https://www.redhat.com/mailman/listinfo/func-list</a>
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01459.html">certmaster/certs.py</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01461.html">Re:  nolist minions</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01459.html">certmaster/certs.py</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01462.html">[PATCH 2/3] move around the imports of sys and re so	chasing them down isn't as annoying</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01460"><strong>Date</strong></a></li>
+<li><a href="index.html#01460"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/netdev/>[Linux&nbsp;Networking]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fll/>[Fedora&nbsp;Legacy&nbsp;List]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z//biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2 1/3] storage: Add iscsi&#45;direct pool list type	flag -->
+<!--X-From-R13: Vna Vna &#60;uunaNerqung.pbz> -->
+<!--X-Date: Thu, 11 Jul 2019 00:23:54 &#45;0700 -->
+<!--X-Message-Id: 20190711072307.14686&#45;2&#45;hhan@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190711072307.14686&#45;1&#45;hhan@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v2 1/3] storage: Add iscsi-direct pool list type	flag</title>
+<meta name="description" content="libvirt: [PATCH v2 1/3] storage: Add iscsi-direct pool list type	flag">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v2 1/3] storage: Add iscsi-direct pool list type	flag</h1>
+[<a href="msg187094.html">Date Prev</a>][<a href="msg187096.html">Date Next</a>][<a href="msg187094.html">Thread Prev</a>][<a href="msg187096.html">Thread Next</a>][<a href="maillist.html#187095">Date Index</a>][<a href="index.html#187095">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v2 1/3] storage: Add iscsi-direct pool list type	flag</li>
+<li><em>From</em>: Han Han &lt;hhan@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 11 Jul 2019 15:23:05 +0800</li>
+<li><em>Cc</em>: Han Han &lt;hhan@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187093.html">20190711072307.14686-1-hhan@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187093.html">20190711072307.14686-1-hhan@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Add pool list type flag VIR_CONNECT_LIST_STORAGE_POOLS_ISCSI_DIRECT,
+which was forgotten when introducing iscsi-direct pool at f0bf1be3.
+
+<a  rel="nofollow" href="https://bugzilla.redhat.com/show_bug.cgi?id=1726609">https://bugzilla.redhat.com/show_bug.cgi?id=1726609</a>
+
+Signed-off-by: Han Han &lt;hhan@xxxxxxxxxx&gt;
+---
+ include/libvirt/libvirt-storage.h | 1 +
+ src/conf/storage_conf.h           | 3 ++-
+ src/conf/virstorageobj.c          | 4 +++-
+ src/libvirt-storage.c             | 1 +
+ tools/virsh-pool.c                | 2 +-
+ tools/virsh.pod                   | 2 +-
+ 6 files changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/include/libvirt/libvirt-storage.h b/include/libvirt/libvirt-storage.h
+index 5a95b2b139..089e1e0bd1 100644
+--- a/include/libvirt/libvirt-storage.h
++++ b/include/libvirt/libvirt-storage.h
+@@ -244,6 +244,7 @@ typedef enum {
+     VIR_CONNECT_LIST_STORAGE_POOLS_GLUSTER       = 1 &lt;&lt; 16,
+     VIR_CONNECT_LIST_STORAGE_POOLS_ZFS           = 1 &lt;&lt; 17,
+     VIR_CONNECT_LIST_STORAGE_POOLS_VSTORAGE      = 1 &lt;&lt; 18,
++    VIR_CONNECT_LIST_STORAGE_POOLS_ISCSI_DIRECT  = 1 &lt;&lt; 19,
+ } virConnectListAllStoragePoolsFlags;
+ 
+ int                     virConnectListAllStoragePools(virConnectPtr conn,
+diff --git a/src/conf/storage_conf.h b/src/conf/storage_conf.h
+index 338e70244d..f399ac6192 100644
+--- a/src/conf/storage_conf.h
++++ b/src/conf/storage_conf.h
+@@ -484,7 +484,8 @@ VIR_ENUM_DECL(virStoragePartedFs);
+                  VIR_CONNECT_LIST_STORAGE_POOLS_SHEEPDOG | \
+                  VIR_CONNECT_LIST_STORAGE_POOLS_GLUSTER  | \
+                  VIR_CONNECT_LIST_STORAGE_POOLS_ZFS      | \
+-                 VIR_CONNECT_LIST_STORAGE_POOLS_VSTORAGE)
++                 VIR_CONNECT_LIST_STORAGE_POOLS_VSTORAGE | \
++                 VIR_CONNECT_LIST_STORAGE_POOLS_ISCSI_DIRECT)
+ 
+ #define VIR_CONNECT_LIST_STORAGE_POOLS_FILTERS_ALL \
+                 (VIR_CONNECT_LIST_STORAGE_POOLS_FILTERS_ACTIVE     | \
+diff --git a/src/conf/virstorageobj.c b/src/conf/virstorageobj.c
+index 31b5af8e9e..0ac128c4bc 100644
+--- a/src/conf/virstorageobj.c
++++ b/src/conf/virstorageobj.c
+@@ -1967,7 +1967,9 @@ virStoragePoolObjMatch(virStoragePoolObjPtr obj,
+               (MATCH(VIR_CONNECT_LIST_STORAGE_POOLS_ZFS) &amp;&amp;
+                (obj-&gt;def-&gt;type == VIR_STORAGE_POOL_ZFS))     ||
+               (MATCH(VIR_CONNECT_LIST_STORAGE_POOLS_VSTORAGE) &amp;&amp;
+-               (obj-&gt;def-&gt;type == VIR_STORAGE_POOL_VSTORAGE))))
++               (obj-&gt;def-&gt;type == VIR_STORAGE_POOL_VSTORAGE)) ||
++              (MATCH(VIR_CONNECT_LIST_STORAGE_POOLS_ISCSI_DIRECT) &amp;&amp;
++               (obj-&gt;def-&gt;type == VIR_STORAGE_POOL_ISCSI_DIRECT))))
+             return false;
+     }
+ 
+diff --git a/src/libvirt-storage.c b/src/libvirt-storage.c
+index 3bd61dc986..24e28083ed 100644
+--- a/src/libvirt-storage.c
++++ b/src/libvirt-storage.c
+@@ -93,6 +93,7 @@ virStoragePoolGetConnect(virStoragePoolPtr pool)
+  * VIR_CONNECT_LIST_STORAGE_POOLS_MPATH
+  * VIR_CONNECT_LIST_STORAGE_POOLS_RBD
+  * VIR_CONNECT_LIST_STORAGE_POOLS_SHEEPDOG
++ * VIR_CONNECT_LIST_STORAGE_POOLS_ISCSI_DIRECT
+  *
+  * Returns the number of storage pools found or -1 and sets @pools to
+  * NULL in case of error.  On success, the array stored into @pools is
+diff --git a/tools/virsh-pool.c b/tools/virsh-pool.c
+index c56ab2d90a..510d41b508 100644
+--- a/tools/virsh-pool.c
++++ b/tools/virsh-pool.c
+@@ -1205,7 +1205,7 @@ cmdPoolList(vshControl *ctl, const vshCmd *cmd ATTRIBUTE_UNUSED)
+                 flags |= VIR_CONNECT_LIST_STORAGE_POOLS_ISCSI;
+                 break;
+             case VIR_STORAGE_POOL_ISCSI_DIRECT:
+-                flags |= VIR_CONNECT_LIST_STORAGE_POOLS_ISCSI;
++                flags |= VIR_CONNECT_LIST_STORAGE_POOLS_ISCSI_DIRECT;
+                 break;
+             case VIR_STORAGE_POOL_SCSI:
+                 flags |= VIR_CONNECT_LIST_STORAGE_POOLS_SCSI;
+diff --git a/tools/virsh.pod b/tools/virsh.pod
+index dbcac24292..62ffd43ba9 100644
+--- a/tools/virsh.pod
++++ b/tools/virsh.pod
+@@ -4093,7 +4093,7 @@ I&lt;--uuid&gt; and I&lt;--name&gt;.
+ You may also want to list pools with specified types using I&lt;type&gt;, the
+ pool types must be separated by comma, e.g. --type dir,disk. The valid pool
+ types include 'dir', 'fs', 'netfs', 'logical', 'disk', 'iscsi', 'scsi',
+-'mpath', 'rbd', 'sheepdog' and 'gluster'.
++'mpath', 'rbd', 'sheepdog', 'gluster', 'iscsi-direct'.
+ 
+ The I&lt;--details&gt; option instructs virsh to additionally
+ display pool persistence and capacity related information where available.
+-- 
+2.20.1
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187094.html">[PATCH v2 3/3] virsh.pod: Add zfs and vstorage pool types</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187096.html">[PATCH v2 2/3] storage: Add missing pool type flags in	comment</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187094.html">[PATCH v2 3/3] virsh.pod: Add zfs and vstorage pool types</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187096.html">[PATCH v2 2/3] storage: Add missing pool type flags in	comment</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187095"><strong>Date</strong></a></li>
+<li><a href="index.html#187095"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,925 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] Add libvirt storage browser -->
+<!--X-From-R13: Qbyr Dbovafba &#60;pebovafbNerqung.pbz> -->
+<!--X-Date: Sun, 8 Mar 2009 14:12:31 &#45;0700 -->
+<!--X-Message-Id: 49B4343A.4070900@redhat.com -->
+<!--X-Content-Type: multipart/mixed -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Management Tools, [PATCH] Add libvirt storage browser">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="Fedora Management Tools" href="//feedproxy.google.com/Fedora/linuxManagementTools">
+<title>Fedora Management Tools -- [PATCH] Add libvirt storage browser</title>
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] Add libvirt storage browser</h1>
+[<a href="msg04766.html">Date Prev</a>][<a href="msg04768.html">Date Next</a>][<a href="msg04766.html">Thread Prev</a>][<a href="msg04769.html">Thread Next</a>][<a href="maillist.html#04767">Date Index</a>][<a href="index.html#04767">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] Add libvirt storage browser</li>
+<li><em>From</em>: Cole Robinson &lt;<a href="mailto:crobinso@DOMAIN.HIDDEN">crobinso@xxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Sun, 08 Mar 2009 17:10:18 -0400</li>
+<li><em>Reply-to</em>: Fedora/Linux Management Tools &lt;<a href="mailto:et-mgmt-tools@DOMAIN.HIDDEN">et-mgmt-tools@xxxxxxxxxx</a>&gt;</li>
+<li><em>User-agent</em>: Thunderbird 2.0.0.19 (X11/20090105)</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The attached patch adds a libvirt-storage-aware browser, to replace the
+standard file chooser when adding storage on remote connections.
+Screenshot here:
+
+<a  rel="nofollow" href="http://fedorapeople.org/~crobinso/virt-manager/vmm-storage-browse.png">http://fedorapeople.org/~crobinso/virt-manager/vmm-storage-browse.png</a>
+
+(Greyed out pools are inactive.)
+
+In the near future, this will be enabled for local connections as well,
+which will allow provisioning more complex storage on demand, as well as
+encourage all storage to go through the libvirt APIs (while still
+allowing the use of unmanaged storage through the 'Browse local' option,
+or manually entering a path). Before we turn it on in the local case
+though, default pool setup needs to be more configurable and robust.
+
+Questions or comments appreciated.
+
+Thanks,
+Cole
+</pre><pre># HG changeset patch
+# User Cole Robinson &lt;crobinso@xxxxxxxxxx&gt;
+# Node ID 0a90fb21b232139a620112ab474f7e018eff073d
+# Parent  0cda99ffcb16df1ba79ea1420ef1b6aee3fe2de5
+Add libvirt storage aware file browser.
+
+Hook it up to the New VM and Add Hardware wizards for remote connections only.
+
+diff -r 0cda99ffcb16 -r 0a90fb21b232 src/virtManager/addhardware.py
+--- a/src/virtManager/addhardware.py	Sun Mar 08 15:43:52 2009 -0400
++++ b/src/virtManager/addhardware.py	Sun Mar 08 15:44:26 2009 -0400
+@@ -32,6 +32,7 @@
+ from virtManager.asyncjob import vmmAsyncJob
+ from virtManager.error import vmmErrorDialog
+ from virtManager.createmeter import vmmCreateMeter
++from virtManager.storagebrowse import vmmStorageBrowser
+ 
+ VM_STORAGE_PARTITION = 1
+ VM_STORAGE_FILE = 2
+@@ -65,6 +66,8 @@
+         self.install_error = &quot;&quot;
+         self.install_details = &quot;&quot;
+ 
++        self.storage_browser = None
++
+         self.topwin.hide()
+         self.window.signal_autoconnect({
+             &quot;on_create_pages_switch_page&quot; : self.page_changed,
+@@ -402,8 +405,6 @@
+                 self.populate_target_device_model(target.get_model())
+                 target.set_active(0)
+ 
+-            self.window.get_widget(&quot;storage-partition-address-browse&quot;).set_sensitive(not remote)
+-            self.window.get_widget(&quot;storage-file-address-browse&quot;).set_sensitive(not remote)
+ 
+         elif page_number == PAGE_NETWORK:
+             netmodel = self.window.get_widget(&quot;net-model&quot;)
+@@ -632,24 +633,46 @@
+ 
+ 
+     def browse_storage_partition_address(self, src, ignore=None):
+-        part = self._browse_file(_(&quot;Locate Storage Partition&quot;), &quot;/dev&quot;)
++        textent = self.window.get_widget(&quot;storage-partition-address&quot;)
++        part = self._browse_file(_(&quot;Locate Storage Partition&quot;), textent,
++                                 &quot;/dev&quot;)
+         if part != None:
+-            self.window.get_widget(&quot;storage-partition-address&quot;).set_text(part)
++            textent.set_text(part)
+ 
+     def browse_storage_file_address(self, src, ignore=None):
++        textent = self.window.get_widget(&quot;storage-file-address&quot;)
+         folder = self.config.get_default_image_dir(self.vm.get_connection())
+-        filename = self._browse_file(_(&quot;Locate or Create New Storage File&quot;), \
+-                                       folder=folder, confirm_overwrite=True)
++        filename = self._browse_file(_(&quot;Locate or Create New Storage File&quot;),
++                                     textent, folder=folder,
++                                     confirm_overwrite=True)
+         if filename != None:
+-            self.window.get_widget(&quot;storage-file-address&quot;).set_text(filename)
++            textent.set_text(filename)
+ 
+-    def _browse_file(self, dialog_name, folder=None, _type=None,
++    def _browse_file(self, dialog_name, textent, folder=None,
+                      confirm_overwrite=False):
+ 
+         confirm_func = None
+         if confirm_overwrite:
+             confirm_func = self.confirm_overwrite_callback
+-        return vmmutil.browse_local(self.topwin, dialog_name, folder, _type,
++
++        def set_storage_cb(src, path):
++            if path:
++                textent.set_text(path)
++
++        conn = self.vm.get_connection()
++        if conn.is_remote():
++            if self.storage_browser == None:
++                self.storage_browser = vmmStorageBrowser(self.config, conn)
++            self.storage_browser.connect(&quot;storage-browse-finish&quot;,
++                                         set_storage_cb)
++            self.storage_browser.local_args = { &quot;dialog_name&quot;: dialog_name,
++                                                &quot;start_folder&quot;: folder,
++                                                &quot;confirm_func&quot;: confirm_func,
++                                                }
++            self.storage_browser.show(conn)
++            return None
++
++        return vmmutil.browse_local(self.topwin, dialog_name, folder,
+                                     confirm_func=confirm_func)
+ 
+     def toggle_storage_size(self, ignore1=None, ignore2=None):
+diff -r 0cda99ffcb16 -r 0a90fb21b232 src/virtManager/create.py
+--- a/src/virtManager/create.py	Sun Mar 08 15:43:52 2009 -0400
++++ b/src/virtManager/create.py	Sun Mar 08 15:44:26 2009 -0400
+@@ -37,6 +37,7 @@
+ from virtManager.asyncjob import vmmAsyncJob
+ from virtManager.createmeter import vmmCreateMeter
+ from virtManager.opticalhelper import vmmOpticalDriveHelper
++from virtManager.storagebrowse import vmmStorageBrowser
+ 
+ OS_GENERIC = &quot;generic&quot;
+ 
+@@ -379,7 +380,6 @@
+ 
+         # Install local
+         self.window.get_widget(&quot;install-local-cdrom-box&quot;).set_sensitive(is_local)
+-        self.window.get_widget(&quot;install-local-browse&quot;).set_sensitive(is_local)
+         if not is_local:
+             self.window.get_widget(&quot;install-local-iso&quot;).set_active(True)
+ 
+@@ -432,7 +432,6 @@
+ 
+         use_storage = self.window.get_widget(&quot;config-storage-select&quot;)
+         storage_area = self.window.get_widget(&quot;config-storage-area&quot;)
+-        self.window.get_widget(&quot;config-storage-browse&quot;).set_sensitive(is_local)
+ 
+         storage_area.set_sensitive(have_storage)
+         if not have_storage:
+@@ -976,7 +975,7 @@
+         self.window.get_widget(&quot;config-storage-box&quot;).set_sensitive(src.get_active())
+ 
+     def browse_storage(self, ignore1):
+-        f = self._browse_file(_(&quot;Locate existing storage.&quot;))
++        f = self._browse_file(_(&quot;Locate existing storage&quot;))
+         if f != None:
+             self.window.get_widget(&quot;config-storage-entry&quot;).set_text(f)
+ 
+@@ -988,7 +987,12 @@
+         self.window.get_widget(&quot;config-macaddr&quot;).set_sensitive(src.get_active())
+ 
+     def set_storage_path(self, src, path):
+-        self.window.get_widget(&quot;config-storage-entry&quot;).set_text(path)
++        notebook = self.window.get_widget(&quot;create-pages&quot;)
++        curpage = notebook.get_current_page()
++        if curpage == PAGE_INSTALL:
++            self.window.get_widget(&quot;install-local-entry&quot;).set_text(path)
++        elif curpage == PAGE_STORAGE:
++            self.window.get_widget(&quot;config-storage-entry&quot;).set_text(path)
+ 
+     # Navigation methods
+     def set_install_page(self):
+@@ -1636,14 +1640,20 @@
+             logging.exception(&quot;Error detecting distro.&quot;)
+             self.detectedDistro = (None, None)
+ 
+-    def _browse_file(self, dialog_name, folder=None, _type=None):
++    def _browse_file(self, dialog_name, folder=None):
+ 
+-        if self.conn.is_remote() or True:
+-            # FIXME: This will eventually call a special storage browser
+-            pass
++        if self.conn.is_remote():
++            if self.storage_browser == None:
++                self.storage_browser = vmmStorageBrowser(self.config,
++                                                         self.conn)
++                self.storage_browser.connect(&quot;storage-browse-finish&quot;,
++                                             self.set_storage_path)
++            self.storage_browser.local_args = { &quot;dialog_name&quot;: dialog_name,
++                                                &quot;start_folder&quot;: folder}
++            self.storage_browser.show(self.conn)
++            return None
+ 
+-        # FIXME: Pass local browse fun to storage_browser
+-        return util.browse_local(self.topwin, dialog_name, folder, _type)
++        return util.browse_local(self.topwin, dialog_name, folder)
+ 
+     def show_help(self, ignore):
+         # No help available yet.
+diff -r 0cda99ffcb16 -r 0a90fb21b232 src/virtManager/storagebrowse.py
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/src/virtManager/storagebrowse.py	Sun Mar 08 15:44:26 2009 -0400
+@@ -0,0 +1,282 @@
++#
++# Copyright (C) 2009 Red Hat, Inc.
++# Copyright (C) 2009 Cole Robinson &lt;crobinso@xxxxxxxxxx&gt;
++#
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
++# MA 02110-1301 USA.
++#
++
++import gobject
++import gtk.glade
++
++import traceback
++import logging
++
++import virtinst
++
++import virtManager.host
++import virtManager.util as util
++from virtManager.createvol import vmmCreateVolume
++from virtManager.error import vmmErrorDialog
++
++class vmmStorageBrowser(gobject.GObject):
++    __gsignals__ = {
++        #&quot;vol-created&quot;: (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, [])
++        &quot;storage-browse-finish&quot;: (gobject.SIGNAL_RUN_FIRST,
++                                  gobject.TYPE_NONE, [str]),
++    }
++
++    def __init__(self, config, conn):
++        self.__gobject_init__()
++        self.window = gtk.glade.XML(config.get_glade_dir() + \
++                                    &quot;/vmm-storage-browse.glade&quot;,
++                                    &quot;vmm-storage-browse&quot;,
++                                    domain=&quot;virt-manager&quot;)
++        self.config = config
++        self.conn = conn
++        self.conn_signal_ids = []
++
++        self.topwin = self.window.get_widget(&quot;vmm-storage-browse&quot;)
++        self.err = vmmErrorDialog(self.topwin,
++                                  0, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE,
++                                  _(&quot;Unexpected Error&quot;),
++                                  _(&quot;An unexpected error occurred&quot;))
++        self.topwin.hide()
++
++        # Add Volume wizard
++        self.addvol = None
++
++        # Arguments to pass to util.browse_local for local storage
++        self.local_args = {&quot;dialog_name&quot;: _(&quot;Choose local storage&quot;)}
++
++        self.window.signal_autoconnect({
++            &quot;on_vmm_storage_browse_delete_event&quot; : self.close,
++            &quot;on_browse_cancel_clicked&quot; : self.close,
++            &quot;on_browse_local_clicked&quot; : self.browse_local,
++            &quot;on_new_volume_clicked&quot; : self.new_volume,
++            &quot;on_choose_volume_clicked&quot; : self.finish,
++            &quot;on_vol_list_row_activated&quot; : self.finish,
++        })
++
++        self.set_initial_state()
++
++    def show(self, conn=None):
++        self.reset_state(conn)
++        self.topwin.show()
++        self.topwin.present()
++
++    def close(self, ignore1=None, ignore2=None):
++        self.topwin.hide()
++        if self.addvol:
++            self.addvol.close()
++        return 1
++
++    def set_initial_state(self):
++        pool_list = self.window.get_widget(&quot;pool-list&quot;)
++        virtManager.host.init_pool_list(pool_list, self.pool_selected)
++
++        # (Key, Name, Cap, Format, Used By)
++        vol_list = self.window.get_widget(&quot;vol-list&quot;)
++        volListModel = gtk.ListStore(str, str, str, str, str)
++        vol_list.set_model(volListModel)
++
++        vol_list.get_selection().connect(&quot;changed&quot;, self.vol_selected)
++        volCol = gtk.TreeViewColumn(_(&quot;Name&quot;))
++        vol_txt1 = gtk.CellRendererText()
++        volCol.pack_start(vol_txt1, True)
++        volCol.add_attribute(vol_txt1, 'text', 1)
++        volCol.set_sort_column_id(1)
++        vol_list.append_column(volCol)
++
++        volSizeCol = gtk.TreeViewColumn(_(&quot;Size&quot;))
++        vol_txt2 = gtk.CellRendererText()
++        volSizeCol.pack_start(vol_txt2, False)
++        volSizeCol.add_attribute(vol_txt2, 'text', 2)
++        volSizeCol.set_sort_column_id(2)
++        vol_list.append_column(volSizeCol)
++
++        volPathCol = gtk.TreeViewColumn(_(&quot;Format&quot;))
++        vol_txt4 = gtk.CellRendererText()
++        volPathCol.pack_start(vol_txt4, False)
++        volPathCol.add_attribute(vol_txt4, 'text', 3)
++        volPathCol.set_sort_column_id(3)
++        vol_list.append_column(volPathCol)
++
++        volUseCol = gtk.TreeViewColumn(_(&quot;Used By&quot;))
++        vol_txt5 = gtk.CellRendererText()
++        volUseCol.pack_start(vol_txt5, False)
++        volUseCol.add_attribute(vol_txt5, 'text', 4)
++        volUseCol.set_sort_column_id(4)
++        vol_list.append_column(volUseCol)
++
++        volListModel.set_sort_column_id(1, gtk.SORT_ASCENDING)
++
++
++    def reset_state(self, conn=None):
++        if conn and conn != self.conn:
++            for i in self.conn_signal_ids:
++                self.conn.disconnect(i)
++            self.conn = conn
++
++        pool_list = self.window.get_widget(&quot;pool-list&quot;)
++        virtManager.host.populate_storage_pools(pool_list, self.conn)
++
++        ids = []
++        ids.append(self.conn.connect(&quot;pool-added&quot;,
++                                     self.repopulate_storage_pools))
++        ids.append(self.conn.connect(&quot;pool-removed&quot;,
++                                     self.repopulate_storage_pools))
++        ids.append(self.conn.connect(&quot;pool-started&quot;,
++                                     self.refresh_storage_pool))
++        ids.append(self.conn.connect(&quot;pool-stopped&quot;,
++                                     self.refresh_storage_pool))
++        self.conn_signal_ids = ids
++
++        # FIXME: Need a connection specific &quot;vol-added&quot; function?
++        #        Won't be able to pick that change up from outside?
++
++        # Manually trigger vol_selected, so buttons are in the correct state
++        self.vol_selected()
++
++        tooltip = None
++        is_remote = self.conn.is_remote()
++        self.window.get_widget(&quot;browse-local&quot;).set_sensitive(not is_remote)
++        if is_remote:
++            tooltip = _(&quot;Cannot use local storage on remote connection.&quot;)
++        util.tooltip_wrapper(self.window.get_widget(&quot;browse-local&quot;),
++                             tooltip)
++
++    # Convenience helpers
++    def current_pool(self):
++        sel = self.window.get_widget(&quot;pool-list&quot;).get_selection()
++        active = sel.get_selected()
++        if active[1] != None:
++            curruuid = active[0].get_value(active[1], 0)
++            return self.conn.get_pool(curruuid)
++        return None
++
++    def current_vol(self):
++        pool = self.current_pool()
++        if not pool:
++            return None
++        sel = self.window.get_widget(&quot;vol-list&quot;).get_selection()
++        active = sel.get_selected()
++        if active[1] != None:
++            curruuid = active[0].get_value(active[1], 0)
++            return pool.get_volume(curruuid)
++        return None
++
++    def refresh_storage_pool(self, src, uri, uuid):
++        pool_list = self.window.get_widget(&quot;pool-list&quot;)
++        virtManager.host.refresh_pool_in_list(pool_list, self.conn, uuid)
++        curpool = self.current_pool()
++        if curpool.uuid != uuid:
++            return
++
++        # Currently selected pool changed state: force a 'pool_selected' to
++        # update vol list
++        self.pool_selected(self.window.get_widget(&quot;pool-list&quot;).get_selection())
++
++    def repopulate_storage_pools(self, src, uri, uuid):
++        pool_list = self.window.get_widget(&quot;pool-list&quot;)
++        virtManager.host.populate_storage_pools(pool_list, self.conn)
++
++
++    # Listeners
++
++    def pool_selected(self, src):
++        pool = self.current_pool()
++        self.window.get_widget(&quot;new-volume&quot;).set_sensitive(bool(pool))
++        if pool:
++            self.window.get_widget(&quot;new-volume&quot;).set_sensitive(pool.is_active())
++        self.populate_storage_volumes()
++
++    def vol_selected(self, ignore=None):
++        vol = self.current_vol()
++        self.window.get_widget(&quot;choose-volume&quot;).set_sensitive(bool(vol))
++
++    def refresh_current_pool(self, ignore):
++        cp = self.current_pool()
++        if cp is None:
++            return
++        cp.refresh()
++        self.refresh_storage_pool(None, None, cp.get_uuid())
++
++    def new_volume(self, src):
++        pool = self.current_pool()
++        if pool is None:
++            return
++
++        try:
++            if self.addvol is None:
++                self.addvol = vmmCreateVolume(self.config, self.conn, pool)
++                self.addvol.connect(&quot;vol-created&quot;, self.refresh_current_pool)
++            else:
++                self.addvol.set_parent_pool(pool)
++            self.addvol.set_modal(True)
++            self.addvol.show()
++        except Exception, e:
++            self.show_err(_(&quot;Error launching volume wizard: %s&quot;) % str(e),
++                          &quot;&quot;.join(traceback.format_exc()))
++
++    def browse_local(self, src):
++        filename = util.browse_local(parent=self.topwin, **self.local_args)
++        if filename:
++            self._do_finish(path=filename)
++
++    def finish(self, ignore=None, ignore1=None, ignore2=None):
++        self._do_finish()
++
++    def _do_finish(self, path=None):
++        if not path:
++            path = self.current_vol().get_path()
++        self.emit(&quot;storage-browse-finish&quot;, path)
++        self.close()
++
++    # Do stuff!
++    def populate_storage_volumes(self):
++        model = self.window.get_widget(&quot;vol-list&quot;).get_model()
++        model.clear()
++
++        pool = self.current_pool()
++        if not pool:
++            return
++
++        vols = pool.get_volumes()
++        for key in vols.keys():
++            vol = vols[key]
++
++            path = vol.get_target_path()
++            namestr = None
++            try:
++                if path:
++                    disk = virtinst.VirtualDisk(conn=self.conn.vmm, path=path,
++                                                size=.001)
++                    names = disk.is_conflict_disk(self.conn.vmm,
++                                                  return_names=True)
++                    namestr = &quot;, &quot;.join(names)
++                    if not namestr:
++                        namestr = None
++            except:
++                logging.exception(&quot;Failed to determine if storage volume in &quot;
++                                  &quot;use.&quot;)
++
++            model.append([key, vol.get_name(), vol.get_pretty_capacity(),
++                          vol.get_format() or &quot;&quot;, namestr])
++
++    def show_err(self, info, details):
++        self.show_err(info, details, async=False)
++
++gobject.type_register(vmmStorageBrowser)
+diff -r 0cda99ffcb16 -r 0a90fb21b232 src/vmm-storage-browse.glade
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/src/vmm-storage-browse.glade	Sun Mar 08 15:44:26 2009 -0400
+@@ -0,0 +1,241 @@
++&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;
++&lt;!DOCTYPE glade-interface SYSTEM &quot;glade-2.0.dtd&quot;&gt;
++&lt;!--Generated with glade3 3.4.5 on Sat Mar  7 19:17:19 2009 --&gt;
++&lt;glade-interface&gt;
++  &lt;widget class=&quot;GtkWindow&quot; id=&quot;vmm-storage-browse&quot;&gt;
++    &lt;property name=&quot;border_width&quot;&gt;10&lt;/property&gt;
++    &lt;property name=&quot;title&quot; translatable=&quot;yes&quot;&gt;Choose Volume&lt;/property&gt;
++    &lt;property name=&quot;modal&quot;&gt;True&lt;/property&gt;
++    &lt;property name=&quot;default_width&quot;&gt;750&lt;/property&gt;
++    &lt;property name=&quot;default_height&quot;&gt;500&lt;/property&gt;
++    &lt;property name=&quot;destroy_with_parent&quot;&gt;True&lt;/property&gt;
++    &lt;signal name=&quot;delete_event&quot; handler=&quot;on_vmm_storage_browse_delete_event&quot;/&gt;
++    &lt;child&gt;
++      &lt;widget class=&quot;GtkAlignment&quot; id=&quot;alignment1&quot;&gt;
++        &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++        &lt;property name=&quot;top_padding&quot;&gt;15&lt;/property&gt;
++        &lt;child&gt;
++          &lt;widget class=&quot;GtkHBox&quot; id=&quot;hbox2&quot;&gt;
++            &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++            &lt;property name=&quot;spacing&quot;&gt;10&lt;/property&gt;
++            &lt;child&gt;
++              &lt;widget class=&quot;GtkVBox&quot; id=&quot;vbox3&quot;&gt;
++                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                &lt;property name=&quot;spacing&quot;&gt;10&lt;/property&gt;
++                &lt;child&gt;
++                  &lt;widget class=&quot;GtkScrolledWindow&quot; id=&quot;scrolledwindow1&quot;&gt;
++                    &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                    &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
++                    &lt;property name=&quot;hscrollbar_policy&quot;&gt;GTK_POLICY_NEVER&lt;/property&gt;
++                    &lt;property name=&quot;vscrollbar_policy&quot;&gt;GTK_POLICY_AUTOMATIC&lt;/property&gt;
++                    &lt;property name=&quot;shadow_type&quot;&gt;GTK_SHADOW_IN&lt;/property&gt;
++                    &lt;child&gt;
++                      &lt;widget class=&quot;GtkTreeView&quot; id=&quot;pool-list&quot;&gt;
++                        &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;headers_clickable&quot;&gt;True&lt;/property&gt;
++                      &lt;/widget&gt;
++                    &lt;/child&gt;
++                  &lt;/widget&gt;
++                &lt;/child&gt;
++                &lt;child&gt;
++                  &lt;widget class=&quot;GtkHBox&quot; id=&quot;hbox3&quot;&gt;
++                    &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                    &lt;property name=&quot;spacing&quot;&gt;3&lt;/property&gt;
++                    &lt;child&gt;
++                      &lt;widget class=&quot;GtkButton&quot; id=&quot;browse-local&quot;&gt;
++                        &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;receives_default&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;response_id&quot;&gt;0&lt;/property&gt;
++                        &lt;signal name=&quot;clicked&quot; handler=&quot;on_browse_local_clicked&quot;/&gt;
++                        &lt;child&gt;
++                          &lt;widget class=&quot;GtkAlignment&quot; id=&quot;alignment4&quot;&gt;
++                            &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                            &lt;property name=&quot;top_padding&quot;&gt;2&lt;/property&gt;
++                            &lt;property name=&quot;bottom_padding&quot;&gt;2&lt;/property&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label2&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;_Browse Local&lt;/property&gt;
++                                &lt;property name=&quot;use_underline&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;mnemonic_widget&quot;&gt;browse-local&lt;/property&gt;
++                              &lt;/widget&gt;
++                            &lt;/child&gt;
++                          &lt;/widget&gt;
++                        &lt;/child&gt;
++                      &lt;/widget&gt;
++                      &lt;packing&gt;
++                        &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
++                      &lt;/packing&gt;
++                    &lt;/child&gt;
++                    &lt;child&gt;
++                      &lt;widget class=&quot;GtkAlignment&quot; id=&quot;alignment2&quot;&gt;
++                        &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                        &lt;child&gt;
++                          &lt;placeholder/&gt;
++                        &lt;/child&gt;
++                      &lt;/widget&gt;
++                      &lt;packing&gt;
++                        &lt;property name=&quot;position&quot;&gt;1&lt;/property&gt;
++                      &lt;/packing&gt;
++                    &lt;/child&gt;
++                  &lt;/widget&gt;
++                  &lt;packing&gt;
++                    &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
++                    &lt;property name=&quot;position&quot;&gt;1&lt;/property&gt;
++                  &lt;/packing&gt;
++                &lt;/child&gt;
++              &lt;/widget&gt;
++              &lt;packing&gt;
++                &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
++              &lt;/packing&gt;
++            &lt;/child&gt;
++            &lt;child&gt;
++              &lt;widget class=&quot;GtkVBox&quot; id=&quot;vbox2&quot;&gt;
++                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                &lt;property name=&quot;spacing&quot;&gt;10&lt;/property&gt;
++                &lt;child&gt;
++                  &lt;widget class=&quot;GtkScrolledWindow&quot; id=&quot;scrolledwindow2&quot;&gt;
++                    &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                    &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
++                    &lt;property name=&quot;hscrollbar_policy&quot;&gt;GTK_POLICY_AUTOMATIC&lt;/property&gt;
++                    &lt;property name=&quot;vscrollbar_policy&quot;&gt;GTK_POLICY_AUTOMATIC&lt;/property&gt;
++                    &lt;property name=&quot;shadow_type&quot;&gt;GTK_SHADOW_IN&lt;/property&gt;
++                    &lt;child&gt;
++                      &lt;widget class=&quot;GtkTreeView&quot; id=&quot;vol-list&quot;&gt;
++                        &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;headers_clickable&quot;&gt;True&lt;/property&gt;
++                        &lt;signal name=&quot;row_activated&quot; handler=&quot;on_vol_list_row_activated&quot;/&gt;
++                      &lt;/widget&gt;
++                    &lt;/child&gt;
++                  &lt;/widget&gt;
++                &lt;/child&gt;
++                &lt;child&gt;
++                  &lt;widget class=&quot;GtkHBox&quot; id=&quot;hbox4&quot;&gt;
++                    &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                    &lt;property name=&quot;spacing&quot;&gt;6&lt;/property&gt;
++                    &lt;child&gt;
++                      &lt;widget class=&quot;GtkButton&quot; id=&quot;new-volume&quot;&gt;
++                        &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;receives_default&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;response_id&quot;&gt;0&lt;/property&gt;
++                        &lt;signal name=&quot;clicked&quot; handler=&quot;on_new_volume_clicked&quot;/&gt;
++                        &lt;child&gt;
++                          &lt;widget class=&quot;GtkHBox&quot; id=&quot;hbox6&quot;&gt;
++                            &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                            &lt;property name=&quot;spacing&quot;&gt;3&lt;/property&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkImage&quot; id=&quot;image2&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;stock&quot;&gt;gtk-new&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
++                                &lt;property name=&quot;fill&quot;&gt;False&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label1234&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;_New Volume&lt;/property&gt;
++                                &lt;property name=&quot;use_underline&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;mnemonic_widget&quot;&gt;new-volume&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
++                                &lt;property name=&quot;position&quot;&gt;1&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                          &lt;/widget&gt;
++                        &lt;/child&gt;
++                      &lt;/widget&gt;
++                      &lt;packing&gt;
++                        &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
++                      &lt;/packing&gt;
++                    &lt;/child&gt;
++                    &lt;child&gt;
++                      &lt;widget class=&quot;GtkAlignment&quot; id=&quot;alignment3&quot;&gt;
++                        &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                        &lt;child&gt;
++                          &lt;placeholder/&gt;
++                        &lt;/child&gt;
++                      &lt;/widget&gt;
++                      &lt;packing&gt;
++                        &lt;property name=&quot;position&quot;&gt;1&lt;/property&gt;
++                      &lt;/packing&gt;
++                    &lt;/child&gt;
++                    &lt;child&gt;
++                      &lt;widget class=&quot;GtkButton&quot; id=&quot;browse-cancel&quot;&gt;
++                        &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;receives_default&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;gtk-cancel&lt;/property&gt;
++                        &lt;property name=&quot;use_stock&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;response_id&quot;&gt;0&lt;/property&gt;
++                        &lt;signal name=&quot;clicked&quot; handler=&quot;on_browse_cancel_clicked&quot;/&gt;
++                      &lt;/widget&gt;
++                      &lt;packing&gt;
++                        &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
++                        &lt;property name=&quot;position&quot;&gt;2&lt;/property&gt;
++                      &lt;/packing&gt;
++                    &lt;/child&gt;
++                    &lt;child&gt;
++                      &lt;widget class=&quot;GtkButton&quot; id=&quot;choose-volume&quot;&gt;
++                        &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;receives_default&quot;&gt;True&lt;/property&gt;
++                        &lt;property name=&quot;response_id&quot;&gt;0&lt;/property&gt;
++                        &lt;signal name=&quot;clicked&quot; handler=&quot;on_choose_volume_clicked&quot;/&gt;
++                        &lt;child&gt;
++                          &lt;widget class=&quot;GtkHBox&quot; id=&quot;hbox5&quot;&gt;
++                            &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                            &lt;property name=&quot;spacing&quot;&gt;4&lt;/property&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkImage&quot; id=&quot;image1&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;stock&quot;&gt;gtk-open&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                            &lt;child&gt;
++                              &lt;widget class=&quot;GtkLabel&quot; id=&quot;label1&quot;&gt;
++                                &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Choose _Volume&lt;/property&gt;
++                                &lt;property name=&quot;use_underline&quot;&gt;True&lt;/property&gt;
++                                &lt;property name=&quot;mnemonic_widget&quot;&gt;choose-volume&lt;/property&gt;
++                              &lt;/widget&gt;
++                              &lt;packing&gt;
++                                &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
++                                &lt;property name=&quot;position&quot;&gt;1&lt;/property&gt;
++                              &lt;/packing&gt;
++                            &lt;/child&gt;
++                          &lt;/widget&gt;
++                        &lt;/child&gt;
++                      &lt;/widget&gt;
++                      &lt;packing&gt;
++                        &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
++                        &lt;property name=&quot;position&quot;&gt;3&lt;/property&gt;
++                      &lt;/packing&gt;
++                    &lt;/child&gt;
++                  &lt;/widget&gt;
++                  &lt;packing&gt;
++                    &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
++                    &lt;property name=&quot;position&quot;&gt;1&lt;/property&gt;
++                  &lt;/packing&gt;
++                &lt;/child&gt;
++              &lt;/widget&gt;
++              &lt;packing&gt;
++                &lt;property name=&quot;position&quot;&gt;1&lt;/property&gt;
++              &lt;/packing&gt;
++            &lt;/child&gt;
++          &lt;/widget&gt;
++        &lt;/child&gt;
++      &lt;/widget&gt;
++    &lt;/child&gt;
++  &lt;/widget&gt;
++&lt;/glade-interface&gt;
+</pre><pre>_______________________________________________
+et-mgmt-tools mailing list
+et-mgmt-tools@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/et-mgmt-tools">https://www.redhat.com/mailman/listinfo/et-mgmt-tools</a></pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="04769" href="msg04769.html">Re:  [PATCH] Add libvirt storage browser</a></strong>
+<ul><li><em>From:</em> Daniel P. Berrange</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg04766.html">latest virt-manager and virtinst on centos-5</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg04768.html">[PATCH] virt-manager: 'Add Physical Host Device'	wizard</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg04766.html">latest virt-manager and virtinst on centos-5</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg04769.html">Re:  [PATCH] Add libvirt storage browser</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#04767"><strong>Date</strong></a></li>
+<li><a href="index.html#04767"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fll/>[Fedora&nbsp;Legacy&nbsp;List]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

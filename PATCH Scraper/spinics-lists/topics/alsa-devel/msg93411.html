@@ -1,0 +1,292 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v3] ALSA: hda: Fix widget_mutex incomplete	protection -->
+<!--X-From-R13: Sina Uerra &#60;riterraNpuebzvhz.bet> -->
+<!--X-Date: Mon, 1 Jul 2019 10:31:48 &#45;0700 -->
+<!--X-Message-Id: 20190701173030.168346&#45;1&#45;evgreen@chromium.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH v3] ALSA: hda: Fix widget_mutex incomplete	protection &mdash; ALSA Devel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH v3] ALSA: hda: Fix widget_mutex incomplete	protection &mdash; ALSA Devel</title>
+<link rel="alternate" type="application/rss+xml" title="ALSA Devel" href="//feedproxy.google.com/AlsaDevel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v3] ALSA: hda: Fix widget_mutex incomplete	protection</h1>
+[<a href="msg93410.html">Date Prev</a>][<a href="msg93412.html">Date Next</a>][<a href="msg93407.html">Thread Prev</a>][<a href="msg93412.html">Thread Next</a>][<a href="maillist.html#93411">Date Index</a>][<a href="threads.html#93411">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: Takashi Iwai &lt;tiwai@xxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH v3] ALSA: hda: Fix widget_mutex incomplete	protection</li>
+<li><em>From</em>: Evan Green &lt;evgreen@xxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon,  1 Jul 2019 10:30:30 -0700</li>
+<li><em>Cc</em>: alsa-devel@xxxxxxxxxxxxxxxx,        Greg Kroah-Hartman &lt;gregkh@xxxxxxxxxxxxxxxxxxx&gt;,        linux-kernel@xxxxxxxxxxxxxxx, Evan Green &lt;evgreen@xxxxxxxxxxxx&gt;,        Amadeusz S&#x142;awi&#x144;ski &lt;amadeuszx.slawinski@xxxxxxxxxxxxxxx&gt;,        Thomas Gleixner &lt;tglx@xxxxxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The widget_mutex was introduced to serialize callers to
+hda_widget_sysfs_{re}init. However, its protection of the sysfs widget array
+is incomplete. For example, it is acquired around the call to
+hda_widget_sysfs_reinit(), which actually creates the new array, but isn't
+still acquired when codec-&gt;num_nodes and codec-&gt;start_nid is updated. So
+the lock ensures one thread sets up the new array at a time, but doesn't
+ensure which thread's value will end up in codec-&gt;num_nodes. If a larger
+num_nodes wins but a smaller array was set up, the next call to
+refresh_widgets() will touch free memory as it iterates over codec-&gt;num_nodes
+that aren't there.
+
+The widget_lock really protects both the tree as well as codec-&gt;num_nodes,
+start_nid, and end_nid, so make sure it's held across that update. It should
+also be held during snd_hdac_get_sub_nodes(), so that a very old read from that
+function doesn't end up clobbering a later update.
+
+Fixes: ed180abba7f1 (&quot;ALSA: hda: Fix race between creating and refreshing sysfs entries&quot;)
+
+Signed-off-by: Evan Green &lt;evgreen@xxxxxxxxxxxx&gt;
+
+---
+
+Changes in v3:
+- Moved locking back into callers (Takashi)
+- Combined update_widgets exit flow (Takashi)
+
+Changes in v2:
+- Introduced widget_mutex relocation
+
+ sound/hda/hdac_device.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
+index 6907dbefd08c..3842f9d34b7c 100644
+--- a/sound/hda/hdac_device.c
++++ b/sound/hda/hdac_device.c
+@@ -400,27 +400,33 @@ static void setup_fg_nodes(struct hdac_device *codec)
+ int snd_hdac_refresh_widgets(struct hdac_device *codec, bool sysfs)
+ {
+ 	hda_nid_t start_nid;
+-	int nums, err;
++	int nums, err = 0;
+ 
++	/*
++	 * Serialize against multiple threads trying to update the sysfs
++	 * widgets array.
++	 */
++	mutex_lock(&amp;codec-&gt;widget_lock);
+ 	nums = snd_hdac_get_sub_nodes(codec, codec-&gt;afg, &amp;start_nid);
+ 	if (!start_nid || nums &lt;= 0 || nums &gt;= 0xff) {
+ 		dev_err(&amp;codec-&gt;dev, &quot;cannot read sub nodes for FG 0x%02x\n&quot;,
+ 			codec-&gt;afg);
+-		return -EINVAL;
++		err = -EINVAL;
++		goto unlock;
+ 	}
+ 
+ 	if (sysfs) {
+-		mutex_lock(&amp;codec-&gt;widget_lock);
+ 		err = hda_widget_sysfs_reinit(codec, start_nid, nums);
+-		mutex_unlock(&amp;codec-&gt;widget_lock);
+ 		if (err &lt; 0)
+-			return err;
++			goto unlock;
+ 	}
+ 
+ 	codec-&gt;num_nodes = nums;
+ 	codec-&gt;start_nid = start_nid;
+ 	codec-&gt;end_nid = start_nid + nums;
+-	return 0;
++unlock:
++	mutex_unlock(&amp;codec-&gt;widget_lock);
++	return err;
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_refresh_widgets);
+ 
+-- 
+2.20.1
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@xxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://mailman.alsa-project.org/mailman/listinfo/alsa-devel">https://mailman.alsa-project.org/mailman/listinfo/alsa-devel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="93412" href="msg93412.html">Re:  [PATCH v3] ALSA: hda: Fix widget_mutex incomplete	protection</a></strong>
+<ul><li><em>From:</em> Takashi Iwai</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg93410.html">Re:  [PATCH v2 1/2] ASoC: tas5720.c: cleanup variant	management</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg93412.html">Re:  [PATCH v3] ALSA: hda: Fix widget_mutex incomplete	protection</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg93407.html">[PATCH v2] ALSA: firewire-lib/fireworks: fix miss	detection of received MIDI messages</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg93412.html">Re:  [PATCH v3] ALSA: hda: Fix widget_mutex incomplete	protection</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#93411"><strong>Date</strong></a></li>
+<li><a href="threads.html#93411"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/alsa-user/>[ALSA&nbsp;User]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/pulse-audio/>[Pulse&nbsp;Audio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=http://yosemitephotos.net/>[Photo&nbsp;Sharing]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/linux-sound/>[Linux&nbsp;Sound]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-media/>[Video&nbsp;4&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gimp/>[Gimp]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

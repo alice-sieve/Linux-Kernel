@@ -1,0 +1,383 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re:  [PATCH 09/29] remote: conditionalize IP socket config in augeas definitions -->
+<!--X-From-R13: [vpuny Bevibmavx &#60;zcevibmaNerqung.pbz> -->
+<!--X-Date: Fri, 12 Jul 2019 06:37:24 &#45;0700 -->
+<!--X-Message-Id: f19e4221&#45;040b&#45;73a7&#45;3204&#45;1272159df49a@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190711160516.2130&#45;1&#45;berrange@redhat.com -->
+<!--X-Reference: 20190711160516.2130&#45;10&#45;berrange@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; Re:  [PATCH 09/29] remote: conditionalize IP socket config in augeas definitions</title>
+<meta name="description" content="libvirt: Re:  [PATCH 09/29] remote: conditionalize IP socket config in augeas definitions">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>Re:  [PATCH 09/29] remote: conditionalize IP socket config in augeas definitions</h1>
+[<a href="msg187287.html">Date Prev</a>][<a href="msg187289.html">Date Next</a>][<a href="msg187204.html">Thread Prev</a>][<a href="msg187505.html">Thread Next</a>][<a href="maillist.html#187288">Date Index</a>][<a href="index.html#187288">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re:  [PATCH 09/29] remote: conditionalize IP socket config in augeas definitions</li>
+<li><em>From</em>: Michal Privoznik &lt;mprivozn@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 12 Jul 2019 15:37:14 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187204.html">20190711160516.2130-10-berrange@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187198.html">20190711160516.2130-1-berrange@redhat.com</a>&gt;	&lt;<a href="msg187204.html">20190711160516.2130-10-berrange@redhat.com</a>&gt;</li>
+<li><em>User-agent</em>: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101	Thunderbird/60.7.2</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On 7/11/19 6:04 PM, Daniel P. Berrang&#xE9; wrote:
+&gt; Prepare for reusing libvirtd augeas defintions with other daemons by
+&gt; making the config parameters for IP sockets conditionally defined by
+&gt; the make rules.
+&gt; 
+&gt; Signed-off-by: Daniel P. Berrang&#xE9; &lt;berrange@xxxxxxxxxx&gt;
+&gt; ---
+&gt;   build-aux/augeas-gentest.pl                  |  2 +-
+&gt;   src/remote/Makefile.inc.am                   | 27 +++++++++++++++-----
+&gt;   src/remote/{libvirtd.aug =&gt; libvirtd.aug.in} | 24 ++++++++++++-----
+&gt;   src/remote/test_libvirtd.aug.in              | 14 +++++++---
+&gt;   4 files changed, 49 insertions(+), 18 deletions(-)
+&gt;   rename src/remote/{libvirtd.aug =&gt; libvirtd.aug.in} (88%)
+&gt; 
+&gt; diff --git a/build-aux/augeas-gentest.pl b/build-aux/augeas-gentest.pl
+&gt; index 567fc651f3..69d94e6a0f 100755
+&gt; --- a/build-aux/augeas-gentest.pl
+&gt; +++ b/build-aux/augeas-gentest.pl
+&gt; @@ -37,7 +37,7 @@ open TEMPLATE, &quot;&lt;&quot;, $template or die &quot;cannot read $template: $!&quot;;
+&gt;   
+&gt;   my $group = 0;
+&gt;   while (&lt;TEMPLATE&gt;) {
+&gt; -    if (/::CONFIG::/) {
+&gt; +    if (/::\s*CONFIG\s*::/) {
+&gt;           my $group = 0;
+&gt;           print AUGTEST &quot;  let conf = \&quot;&quot;;
+&gt;           while (&lt;CONFIG&gt;) {
+&gt; diff --git a/src/remote/Makefile.inc.am b/src/remote/Makefile.inc.am
+&gt; index 4bc71346f2..7732fa744c 100644
+&gt; --- a/src/remote/Makefile.inc.am
+&gt; +++ b/src/remote/Makefile.inc.am
+&gt; @@ -124,11 +124,11 @@ sbin_PROGRAMS += libvirtd
+&gt;   
+&gt;   augeas_DATA += remote/libvirtd.aug
+
+In order to generate this, we need to distribute libvirtd.aug.in:
+
+--- i/src/remote/Makefile.inc.am
++++ w/src/remote/Makefile.inc.am
+@@ -70,7 +70,7 @@ EXTRA_DIST += \
+        $(REMOTE_DRIVER_SOURCES) \
+        $(LIBVIRTD_SOURCES) \
+        remote/test_libvirtd.aug.in \
+-       remote/libvirtd.aug \
++       remote/libvirtd.aug.in \
+        remote/libvirtd.conf.in \
+        remote/libvirtd.policy \
+        remote/libvirtd.rules \
+
+&gt;   
+&gt; -augeastest_DATA += test_libvirtd.aug
+&gt; +augeastest_DATA += remote/test_libvirtd.aug
+&gt;   
+&gt;   conf_DATA += remote/libvirtd.conf
+&gt;   
+&gt; -CLEANFILES += test_libvirtd.aug
+&gt; +CLEANFILES += remote/libvirtd.aug remote/test_libvirtd.aug
+&gt;   
+&gt;   man8_MANS += libvirtd.8
+&gt;   
+&gt; @@ -198,13 +198,28 @@ uninstall-data-remote:
+&gt;   
+&gt;   AUGEAS_DIRS += remote
+&gt;   
+&gt; -test_libvirtd.aug: remote/test_libvirtd.aug.in \
+&gt; +remote/libvirtd.aug: remote/libvirtd.aug.in
+&gt; +	$(AM_V_GEN)$(SED) \
+&gt; +		-e '/:: CUT ENABLE_IP ::/d' \
+&gt; +		-e '/:: END ::/d' \
+&gt; +		-e 's/:: DAEMON_NAME ::/libvirtd/' \
+&gt; +		-e 's/:: DAEMON_NAME_UC ::/Libvirtd/' \
+&gt; +		$&lt; &gt; $@
+&gt; +
+&gt; +remote/test_libvirtd.aug.tmp: remote/test_libvirtd.aug.in \
+&gt;   		remote/libvirtd.conf $(AUG_GENTEST)
+&gt; -	$(AM_V_GEN)$(AUG_GENTEST) $(srcdir)/remote/libvirtd.conf $&lt; $@
+&gt; +	$(AM_V_GEN)$(AUG_GENTEST) remote/libvirtd.conf remote/test_libvirtd.aug.in $@
+&gt; +
+&gt; +remote/test_libvirtd.aug: remote/test_libvirtd.aug.tmp
+&gt; +	$(AM_V_GEN)$(SED) -e '/:: CUT ENABLE_IP ::/d' \
+&gt; +		-e '/:: END ::/d' \
+&gt; +		-e 's/:: DAEMON_NAME ::/libvirtd/' \
+&gt; +		-e 's/:: DAEMON_NAME_UC ::/Libvirtd/' \
+&gt; +		&lt; $^ &gt; $@ || rm -f $@
+&gt;   
+&gt; -check-augeas-remote: test_libvirtd.aug
+&gt; +check-augeas-remote: remote/test_libvirtd.aug
+&gt;   	$(AM_V_GEN)if test -x '$(AUGPARSE)'; then \
+&gt; -	    '$(AUGPARSE)' -I $(srcdir)/remote test_libvirtd.aug; \
+&gt; +	    '$(AUGPARSE)' -I $(srcdir)/remote remote/test_libvirtd.aug; \
+&gt;   	fi
+&gt;   
+&gt;   if WITH_SYSCTL
+&gt; diff --git a/src/remote/libvirtd.aug b/src/remote/libvirtd.aug.in
+&gt; similarity index 88%
+&gt; rename from src/remote/libvirtd.aug
+&gt; rename to src/remote/libvirtd.aug.in
+&gt; index 0188c23dd7..54a45e438a 100644
+&gt; --- a/src/remote/libvirtd.aug
+&gt; +++ b/src/remote/libvirtd.aug.in
+&gt; @@ -1,6 +1,6 @@
+&gt; -(* /etc/libvirt/libvirtd.conf *)
+&gt; +(* /etc/libvirt/:: DAEMON_NAME ::.conf *)
+&gt;   
+&gt; -module Libvirtd =
+&gt; +module :: DAEMON_NAME_UC :: =
+&gt;      autoload xfm
+&gt;   
+&gt;      let eol   = del /[ \t]*\n/ &quot;\n&quot;
+&gt; @@ -24,11 +24,13 @@ module Libvirtd =
+&gt;   
+&gt;   
+&gt;      (* Config entry grouped by function - same order as example config *)
+&gt; +:: CUT ENABLE_IP ::
+&gt;      let network_entry = bool_entry &quot;listen_tls&quot;
+&gt;                        | bool_entry &quot;listen_tcp&quot;
+&gt;                        | str_entry &quot;tls_port&quot;
+&gt;                        | str_entry &quot;tcp_port&quot;
+&gt;                        | str_entry &quot;listen_addr&quot;
+&gt; +:: END::
+
+s/END::/END ::/
+
+&gt;   
+&gt;      let sock_acl_entry = str_entry &quot;unix_sock_group&quot;
+&gt;                         | str_entry &quot;unix_sock_ro_perms&quot;
+&gt; @@ -38,6 +40,7 @@ module Libvirtd =
+&gt;   
+&gt;      let authentication_entry = str_entry &quot;auth_unix_ro&quot;
+&gt;                               | str_entry &quot;auth_unix_rw&quot;
+&gt; +:: CUT ENABLE_IP ::
+&gt;                               | str_entry &quot;auth_tcp&quot;
+&gt;                               | str_entry &quot;auth_tls&quot;
+&gt;   
+&gt; @@ -46,12 +49,16 @@ module Libvirtd =
+&gt;                            | str_entry &quot;ca_file&quot;
+&gt;                            | str_entry &quot;crl_file&quot;
+&gt;   
+&gt; -   let authorization_entry = bool_entry &quot;tls_no_verify_certificate&quot;
+&gt; +   let tls_authorization_entry = bool_entry &quot;tls_no_verify_certificate&quot;
+&gt;                              | bool_entry &quot;tls_no_sanity_certificate&quot;
+&gt;                              | str_array_entry &quot;tls_allowed_dn_list&quot;
+&gt;                              | str_array_entry &quot;sasl_allowed_username_list&quot;
+&gt;                              | str_array_entry &quot;access_drivers&quot;
+&gt;                              | str_entry &quot;tls_priority&quot;
+&gt; +:: END ::
+&gt; +
+&gt; +   let misc_authorization_entry = str_array_entry &quot;sasl_allowed_username_list&quot;
+&gt; +                           | str_array_entry &quot;access_drivers&quot;
+
+You need to remove these two variables from tls_authorization_entry then:
+
+@@ -52,8 +52,6 @@ module :: DAEMON_NAME_UC :: =
+    let tls_authorization_entry = bool_entry &quot;tls_no_verify_certificate&quot;
+                            | bool_entry &quot;tls_no_sanity_certificate&quot;
+                            | str_array_entry &quot;tls_allowed_dn_list&quot;
+-                           | str_array_entry &quot;sasl_allowed_username_list&quot;
+-                           | str_array_entry &quot;access_drivers&quot;
+                            | str_entry &quot;tls_priority&quot;
+ :: END ::
+
+
+&gt;   
+&gt;      let processing_entry = int_entry &quot;min_workers&quot;
+&gt;                           | int_entry &quot;max_workers&quot;
+
+
+Surprisingly, 'distcheck' fails for me after this because augeas-gentest.pl is unable to find libvirtd.conf. What is surprising is that you're not touching libvirtd.conf in this patch but the previous one and distcheck just works there.
+
+Michal
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187287.html">Re:  [PATCH 00/29] Split the libvirtd daemon into per-driver daemons</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187289.html">Re:  [PATCH 10/29] remote: refactor &amp; rename variables for building libvirtd</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187204.html">[PATCH 09/29] remote: conditionalize IP socket config in	augeas definitions</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187505.html">Re:  [PATCH 09/29] remote: conditionalize IP socket config in augeas definitions</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187288"><strong>Date</strong></a></li>
+<li><a href="index.html#187288"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

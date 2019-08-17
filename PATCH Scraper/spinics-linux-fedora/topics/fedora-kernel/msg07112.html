@@ -1,0 +1,347 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] kernel&#45;tools.spec: Adding bpftool package -->
+<!--X-From-R13: Xvev Ayfn &#60;wbyfnNerqung.pbz> -->
+<!--X-Date: Fri, 23 Mar 2018 08:46:55 &#45;0700 -->
+<!--X-Message-Id: 20180323154635.GA8863@krava -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description content="[PATCH] kernel-tools.spec: Adding bpftool package &mdash; Fedora Linux Kernel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH] kernel-tools.spec: Adding bpftool package &mdash; Fedora Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Fedora Linux Kernel" href="//feeds.feedburner.com/FedoraKernel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH] kernel-tools.spec: Adding bpftool package</h1>
+[<a href="msg07111.html">Date Prev</a>][<a href="msg07113.html">Date Next</a>][<a href="msg07104.html">Thread Prev</a>][<a href="msg07113.html">Thread Next</a>][<a href="maillist.html#07112">Date Index</a>][<a href="index.html#07112">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] kernel-tools.spec: Adding bpftool package</li>
+<li><em>From</em>: Jiri Olsa &lt;jolsa@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 23 Mar 2018 16:46:35 +0100</li>
+<li><em>Archived-at</em>: &lt;https://lists.fedoraproject.org/archives/list/kernel@xxxxxxxxxxxxxxxxxxxxxxx/message/3LCJTWZN3AUUSNEPNFFKJMJCZ46TOOTY/&gt;</li>
+<li><em>Cc</em>: Jesper Dangaard Brouer &lt;jbrouer@xxxxxxxxxx&gt;,        Stanislav Kozina &lt;skozina@xxxxxxxxxx&gt;, Jiri Benc &lt;jbenc@xxxxxxxxxx&gt;</li>
+<li><em>User-agent</em>: Mutt/1.9.1 (2017-09-22)</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>hi,
+please consider attached change that adds bpftool sub
+package to be generated within kernel-tools spec.
+
+The reason to have bpftool in separate rpm is to
+have minimal dependency for sosreport that will
+depend on it.
+
+The bpftool rpm contains following files:
+  $ rpm -ql -p bpftool-4.16.0-0.rc5.git0.1.fc29.x86_64.rpm
+  /etc/bash_completion.d/bpftool
+  /usr/sbin/bpftool
+  /usr/share/man/man8/bpftool-cgroup.8.gz
+  /usr/share/man/man8/bpftool-map.8.gz
+  /usr/share/man/man8/bpftool-prog.8.gz
+  /usr/share/man/man8/bpftool.8.gz
+
+thanks,
+jirka
+
+
+---
+ kernel-tools.spec | 23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
+
+diff --git a/kernel-tools.spec b/kernel-tools.spec
+index c8cbcff104fd..2d190d0497b6 100644
+--- a/kernel-tools.spec
++++ b/kernel-tools.spec
+@@ -69,7 +69,7 @@ BuildRequires: kmod, patch, bash, tar, git
+ BuildRequires: bzip2, xz, findutils, gzip, m4, perl-interpreter, perl(Carp), perl-devel, perl-generators, make, diffutils, gawk
+ BuildRequires: gcc, binutils, redhat-rpm-config, hmaccalc
+ BuildRequires: net-tools, hostname, bc, elfutils-devel
+-BuildRequires: zlib-devel binutils-devel newt-devel python2-devel perl(ExtUtils::Embed) bison flex xz-devel
++BuildRequires: zlib-devel binutils-devel newt-devel python2-devel python2-docutils perl(ExtUtils::Embed) bison flex xz-devel
+ BuildRequires: audit-libs-devel glibc-devel glibc-static
+ %ifnarch s390x %{arm}
+ BuildRequires: numactl-devel
+@@ -164,6 +164,13 @@ Provides: kernel-tools-devel
+ This package contains the development files for the tools/ directory from
+ the kernel source.
+ 
++%package -n bpftool
++Summary: Inspection and simple manipulation of eBPF programs and maps
++License: GPLv2
++%description -n bpftool
++This package contains the bpftool, which allows inspection and simple
++manipulation of eBPF programs and maps.
++
+ %prep
+ %setup -q -n kernel-%{kversion}%{?dist} -c
+ 
+@@ -233,6 +240,9 @@ popd
+ pushd tools/gpio/
+ make
+ popd
++pushd tools/bpf/bpftool
++make
++popd
+ 
+ ###
+ ### install
+@@ -299,6 +309,9 @@ popd
+ pushd tools/kvm/kvm_stat
+ make INSTALL_ROOT=%{buildroot} install-tools
+ popd
++pushd tools/bpf/bpftool
++make DESTDIR=%{buildroot} prefix=%{_prefix} bash_compdir=%{_sysconfdir}/bash_completion.d/ mandir=%{_mandir} install doc-install
++popd
+ 
+ ###
+ ### scripts
+@@ -368,6 +381,14 @@ popd
+ %{_includedir}/cpufreq.h
+ %{_includedir}/cpuidle.h
+ 
++%files -n bpftool
++%{_sbindir}/bpftool
++%{_sysconfdir}/bash_completion.d/bpftool
++%{_mandir}/man8/bpftool-cgroup.8.gz
++%{_mandir}/man8/bpftool-map.8.gz
++%{_mandir}/man8/bpftool-prog.8.gz
++%{_mandir}/man8/bpftool.8.gz
++
+ %changelog
+ * Mon Mar 12 2018 Jeremy Cline &lt;jeremy@xxxxxxxxxx&gt; - 4.16.0-0.rc5.git0.1
+ - Linux 4.16-rc5
+-- 
+2.13.6
+_______________________________________________
+kernel mailing list -- kernel@xxxxxxxxxxxxxxxxxxxxxxx
+To unsubscribe send an email to kernel-leave@xxxxxxxxxxxxxxxxxxxxxxx
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07113" href="msg07113.html">Re: [PATCH] kernel-tools.spec: Adding bpftool package</a></strong>
+<ul><li><em>From:</em> Peter Robinson</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07111.html">Re: Feature request: improved build-id generation</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07113.html">Re: [PATCH] kernel-tools.spec: Adding bpftool package</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07104.html">Re: Feature request: improved build-id generation</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07113.html">Re: [PATCH] kernel-tools.spec: Adding bpftool package</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07112"><strong>Date</strong></a></li>
+<li><a href="index.html#07112"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;General&nbsp;Discussion]</a>
+&nbsp;
+&nbsp;
+<a href=http://lists.linuxcoding.com/rhl/>[Older&nbsp;Fedora&nbsp;Users&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-advisory-board/>[Fedora&nbsp;Advisory&nbsp;Board]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-security/>[Fedora&nbsp;Security]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-devel-java/>[Fedora&nbsp;Devel&nbsp;Java]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-legacy/>[Fedora&nbsp;Legacy]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ataraid/>[ATA&nbsp;RAID]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-marketing/>[Fedora&nbsp;Marketing]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-mentors/>[Fedora&nbsp;Mentors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-package-announce/>[Fedora&nbsp;Package&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-package-review/>[Fedora&nbsp;Package&nbsp;Review]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-music/>[Fedora&nbsp;Music]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-packaging/>[Fedora&nbsp;Packaging]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos/>[Centos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/coolkey/>[Coolkey]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/yum/>[Yum&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/tux/>[Tux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-art/>[Fedora&nbsp;Art]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-docs/>[Fedora&nbsp;Docs]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[USB]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

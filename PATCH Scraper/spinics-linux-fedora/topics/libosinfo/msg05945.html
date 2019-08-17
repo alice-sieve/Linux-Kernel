@@ -1,0 +1,419 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [libosinfo PATCH v2 5/8] media: Use libsoup for http://	&#38; https:// requests -->
+<!--X-From-R13: =?GFT&#45;8?d?Tnovnab=20Tvq=Q3=OOapvb?= &#60;svqrapvbNerqung.pbz> -->
+<!--X-Date: Tue, 2 Jul 2019 12:52:43 &#45;0700 -->
+<!--X-Message-Id: 20190702195224.12291&#45;6&#45;fidencio@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190702195224.12291&#45;1&#45;fidencio@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<title>[libosinfo PATCH v2 5/8] media: Use libsoup for http://	&amp; https:// requests &mdash; libosinfo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="libosinfo: [libosinfo PATCH v2 5/8] media: Use libsoup for http://	&amp; https:// requests">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="libosinfo" href="//feeds.feedburner.com/libosinfo">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[libosinfo PATCH v2 5/8] media: Use libsoup for http://	&amp; https:// requests</h1>
+[<a href="msg05946.html">Date Prev</a>][<a href="msg05947.html">Date Next</a>][<a href="msg05946.html">Thread Prev</a>][<a href="msg05947.html">Thread Next</a>][<a href="maillist.html#05945">Date Index</a>][<a href="index.html#05945">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [libosinfo PATCH v2 5/8] media: Use libsoup for http://	&amp; https:// requests</li>
+<li><em>From</em>: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue,  2 Jul 2019 21:52:21 +0200</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg05948.html">20190702195224.12291-1-fidencio@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg05948.html">20190702195224.12291-1-fidencio@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>As osinfo_media_create_from_location_with_flags_async() can handle
+non-local cases, they'd end up relying on GVFS under the hood, which
+would cause those APIs to not work when called from an app running as
+root.
+
+In order to avoid this situation, let's rely on libsoup for these cases.
+
+<a  rel="nofollow" href="https://gitlab.com/libosinfo/libosinfo/issues/30">https://gitlab.com/libosinfo/libosinfo/issues/30</a>
+
+Signed-off-by: Fabiano Fid&#xEA;ncio &lt;fidencio@xxxxxxxxxx&gt;
+---
+ configure.ac          |  1 +
+ libosinfo.spec.in     |  1 +
+ osinfo/Makefile.am    |  5 ++-
+ osinfo/osinfo_media.c | 72 ++++++++++++++++++++++++++++++++++---------
+ 4 files changed, 63 insertions(+), 16 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 59c701d..02ea1df 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -42,6 +42,7 @@ GLIB_ENCODED_VERSION=&quot;GLIB_VERSION_2_38&quot;
+ 
+ PKG_CHECK_MODULES([LIBXML], [libxml-2.0 &gt;= 2.6.0])
+ PKG_CHECK_MODULES([LIBXSLT], [libxslt &gt;= 1.0.0])
++PKG_CHECK_MODULES([LIBSOUP], [libsoup-2.4])
+ 
+ PKG_CHECK_MODULES([GLIB], [glib-2.0 &gt;= $GLIB_MINIMUM_VERSION gobject-2.0 gio-2.0])
+ GLIB_CFLAGS=&quot;$GLIB_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=$GLIB_ENCODED_VERSION&quot;
+diff --git a/libosinfo.spec.in b/libosinfo.spec.in
+index 8118755..e5a16aa 100644
+--- a/libosinfo.spec.in
++++ b/libosinfo.spec.in
+@@ -13,6 +13,7 @@ BuildRequires: gettext-devel
+ BuildRequires: glib2-devel
+ BuildRequires: libxml2-devel &gt;= 2.6.0
+ BuildRequires: libxslt-devel &gt;= 1.0.0
++BuildRequires: libsoup-devel
+ BuildRequires: vala
+ BuildRequires: /usr/bin/pod2man
+ BuildRequires: hwdata
+diff --git a/osinfo/Makefile.am b/osinfo/Makefile.am
+index cb1df8f..33e9c66 100644
+--- a/osinfo/Makefile.am
++++ b/osinfo/Makefile.am
+@@ -50,6 +50,7 @@ libosinfo_impl_la_CFLAGS = \
+ 	$(GOBJECT_CFLAGS) \
+ 	$(GLIB_CFLAGS) \
+ 	$(GIO_CFLAGS) \
++	$(LIBSOUP_CFLAGS) \
+ 	-DDATA_DIR='&quot;$(datadir)&quot;' \
+ 	-DPKG_DATA_DIR='&quot;$(pkgdatadir)&quot;' \
+ 	-DSYS_CONF_DIR='&quot;$(sysconfdir)&quot;' \
+@@ -61,7 +62,9 @@ libosinfo_impl_la_LIBADD = \
+ 	$(LIBXSLT_LIBS) \
+ 	$(GOBJECT_LIBS) \
+ 	$(GLIB_LIBS) \
+-	$(GIO_LIBS)
++	$(GIO_LIBS) \
++	$(LIBSOUP_LIBS) \
++	$(NULL)
+ 
+ libosinfo_impl_includedir = $(includedir)/libosinfo-1.0/osinfo
+ 
+diff --git a/osinfo/osinfo_media.c b/osinfo/osinfo_media.c
+index aba3e20..65b47e6 100644
+--- a/osinfo/osinfo_media.c
++++ b/osinfo/osinfo_media.c
+@@ -31,6 +31,7 @@
+ #include &lt;stdlib.h&gt;
+ #include &lt;string.h&gt;
+ #include &lt;glib/gi18n-lib.h&gt;
++#include &lt;libsoup/soup.h&gt;
+ 
+ #define MAX_VOLUME 32
+ #define MAX_SYSTEM 32
+@@ -129,6 +130,9 @@ static void search_ppc_bootinfo_async_data_free(SearchPPCBootinfoAsyncData *data
+ typedef struct _CreateFromLocationAsyncData CreateFromLocationAsyncData;
+ struct _CreateFromLocationAsyncData {
+     GFile *file;
++    SoupSession *session;
++    SoupMessage *message;
++    gchar *uri;
+ 
+     GTask *res;
+ 
+@@ -150,7 +154,12 @@ struct _CreateFromLocationAsyncData {
+ static void create_from_location_async_data_free
+                                 (CreateFromLocationAsyncData *data)
+ {
+-    g_object_unref(data-&gt;file);
++    if (data-&gt;file != NULL)
++        g_object_unref(data-&gt;file);
++    if (data-&gt;session != NULL)
++        g_object_unref(data-&gt;session);
++    if (data-&gt;message != NULL)
++        g_object_unref(data-&gt;message);
+     g_object_unref(data-&gt;res);
+     g_free(data-&gt;volume);
+     g_free(data-&gt;system);
+@@ -730,6 +739,19 @@ OsinfoMedia *osinfo_media_new(const gchar *id,
+     return media;
+ }
+ 
++static gboolean requires_soup(const gchar *location)
++{
++    const gchar *prefixes[] = { &quot;<a  rel="nofollow" href="http://&quot">http://&quot</a>;, &quot;<a  rel="nofollow" href="https://&quot">https://&quot</a>;, NULL };
++    gsize i;
++
++    for (i = 0; prefixes[i] != NULL; i++) {
++        if (g_str_has_prefix(location, prefixes[i]))
++            return TRUE;
++    }
++
++    return FALSE;
++}
++
+ static void on_media_create_from_location_ready(GObject *source_object,
+                                                  GAsyncResult *res,
+                                                  gpointer user_data)
+@@ -748,7 +770,7 @@ static void on_media_create_from_location_ready(GObject *source_object,
+  * @error: The location where to store any error, or %NULL
+  *
+  * Creates a new #OsinfoMedia for installation media at @location. The @location
+- * could be any URI that GIO can handle or a local path.
++ * could be a http:// or a https:// URI or a local path.
+  *
+  * NOTE: Currently this only works for ISO images/devices.
+  *
+@@ -772,7 +794,7 @@ OsinfoMedia *osinfo_media_create_from_location(const gchar *location,
+  * @flags: An #OsinfoMediaDetectFlag, or 0.
+  *
+  * Creates a new #OsinfoMedia for installation media at @location. The @location
+- * could be any URI that GIO can handle or a local path.
++ * could be a http:// or a https:// URI or a local path.
+  *
+  * NOTE: Currently this only works for ISO images/devices.
+  *
+@@ -835,18 +857,15 @@ static OsinfoMedia *
+ create_from_location_async_data(CreateFromLocationAsyncData *data)
+ {
+     OsinfoMedia *media;
+-    gchar *uri;
+     guint64 vol_size;
+     guint8 index;
+ 
+-    uri = g_file_get_uri(data-&gt;file);
+     media = g_object_new(OSINFO_TYPE_MEDIA,
+-                         &quot;id&quot;, uri,
++                         &quot;id&quot;, data-&gt;uri,
+                          NULL);
+     osinfo_entity_set_param(OSINFO_ENTITY(media),
+                             OSINFO_MEDIA_PROP_URL,
+-                            uri);
+-    g_free(uri);
++                            data-&gt;uri);
+     if (!is_str_empty(data-&gt;volume))
+         osinfo_entity_set_param(OSINFO_ENTITY(media),
+                                 OSINFO_MEDIA_PROP_VOLUME_ID,
+@@ -1299,7 +1318,17 @@ static void on_location_read(GObject *source,
+ 
+     data = (CreateFromLocationAsyncData *)user_data;
+ 
+-    stream = G_INPUT_STREAM(g_file_read_finish(G_FILE(source), res, &amp;error));
++    if (data-&gt;file != NULL) {
++        stream = G_INPUT_STREAM(g_file_read_finish(G_FILE(source), res, &amp;error));
++    } else {
++        stream = soup_session_send_finish(SOUP_SESSION(source), res, &amp;error);
++        if (!SOUP_STATUS_IS_SUCCESSFUL(data-&gt;message-&gt;status_code) &amp;&amp; error == NULL) {
++            g_set_error_literal(&amp;error,
++                                OSINFO_MEDIA_ERROR,
++                                OSINFO_MEDIA_ERROR_NO_DESCRIPTORS,
++                                soup_status_get_phrase(data-&gt;message-&gt;status_code));
++        }
++    }
+     if (error != NULL) {
+         g_prefix_error(&amp;error, _(&quot;Failed to open file: &quot;));
+         g_task_return_error(data-&gt;res, error);
+@@ -1386,12 +1415,25 @@ void osinfo_media_create_from_location_with_flags_async(const gchar *location,
+     g_task_set_priority(data-&gt;res, priority);
+     data-&gt;flags = flags;
+ 
+-    data-&gt;file = g_file_new_for_commandline_arg(location);
+-    g_file_read_async(data-&gt;file,
+-                      priority,
+-                      cancellable,
+-                      on_location_read,
+-                      data);
++    data-&gt;uri = g_strdup(location);
++
++    if (requires_soup(location)) {
++        data-&gt;session = soup_session_new();
++        data-&gt;message = soup_message_new(&quot;GET&quot;, location);
++
++        soup_session_send_async(data-&gt;session,
++                                data-&gt;message,
++                                cancellable,
++                                on_location_read,
++                                data);
++    } else {
++        data-&gt;file = g_file_new_for_commandline_arg(location);
++        g_file_read_async(data-&gt;file,
++                          priority,
++                          cancellable,
++                          on_location_read,
++                          data);
++    }
+ }
+ 
+ /**
+-- 
+2.21.0
+
+_______________________________________________
+Libosinfo mailing list
+Libosinfo@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libosinfo">https://www.redhat.com/mailman/listinfo/libosinfo</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05946.html">[libosinfo PATCH v2 1/8] media: Fix indentation in	create_from_location_asunc_data_free()</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05947.html">[libosinfo PATCH v2 3/8] media: Improve	on_location_read error message readability</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05946.html">[libosinfo PATCH v2 1/8] media: Fix indentation in	create_from_location_asunc_data_free()</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05947.html">[libosinfo PATCH v2 3/8] media: Improve	on_location_read error message readability</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05945"><strong>Date</strong></a></li>
+<li><a href="index.html#05945"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,646 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH dmraid 1.0.0.rc14] isw: raid10 support for isw format -->
+<!--X-From-R13: Xnfba Unfgba &#60;wnfba.q.tnfgbaNvagry.pbz> -->
+<!--X-Date: Thu, 28 Jun 2007 16:52:12 &#45;0700 -->
+<!--X-Message-Id: 200706281652.00262.jason.d.gaston@intel.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 200611221515.08246.jason.d.gaston@intel.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH dmraid 1.0.0.rc14] isw: raid10 support for isw format &mdash; Linux ATA RAID Storage Archive">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux ATA RAID Storage &mdash; [PATCH dmraid 1.0.0.rc14] isw: raid10 support for isw format</title>
+<link rel="alternate" type="application/rss+xml" title="ATA RAID" href="//feeds2.feedburner.com/ataraid">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH dmraid 1.0.0.rc14] isw: raid10 support for isw format</h1>
+[<a href="msg02907.html">Date Prev</a>][<a href="msg02909.html">Date Next</a>][<a href="msg02903.html">Thread Prev</a>][<a href="msg02909.html">Thread Next</a>][<a href="maillist.html#02908">Date Index</a>][<a href="threads.html#02908">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH dmraid 1.0.0.rc14] isw: raid10 support for isw format</li>
+<li><em>From</em>: Jason Gaston &lt;<a href="mailto:jason.d.gaston@DOMAIN.HIDDEN">jason.d.gaston@xxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Thu, 28 Jun 2007 16:51:59 -0700</li>
+<li><em>In-reply-to</em>: &lt;<a href="mailto:200611221515.08246.jason.d.gaston@DOMAIN.HIDDEN">200611221515.08246.jason.d.gaston@xxxxxxxxx</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="mailto:200611221515.08246.jason.d.gaston@DOMAIN.HIDDEN">200611221515.08246.jason.d.gaston@xxxxxxxxx</a>&gt;</li>
+<li><em>User-agent</em>: KMail/1.9.1</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This patch adds raid10(0+1) nested raid level support to the Intel isw 
+metadata format handler in dmraid 1.0.0.rc14. 
+
+Signed-off-by: &#xA0;Jason Gaston &lt;jason.d.gaston@xxxxxxxxx&gt;
+
+--- 1.0.0.rc14/lib/format/ataraid/isw.c.orig	2006-09-22 11:11:37.000000000 
+-0700
++++ 1.0.0.rc14/lib/format/ataraid/isw.c	2007-06-28 14:06:31.000000000 -0700
+@@ -25,30 +25,59 @@
+ #endif
+ 
+ static const char *handler = HANDLER;
++static struct isw_disk *_get_disk(struct isw *isw, struct dev_info *di);
++int is_raid10(struct isw *isw);
+ 
+-/*
+- * Make up RAID set name from family_num and volume name.
+- */
+-static size_t _name(struct isw *isw, struct isw_dev *dev,
+-		     char *str, size_t len)
++static size_t _name(struct isw *isw, char *str, size_t len, int subset,
++						int num, struct isw_dev *dev)
+ {
+-	return snprintf(str, len, dev ? &quot;isw_%u_%s&quot; : &quot;isw_%u&quot;,
++	switch(subset) {
++	case 2:
++		return snprintf(str, len, &quot;isw_%u&quot;, isw-&gt;family_num);
++	case 1:
++		if(!is_raid10(isw))
++			return snprintf(str, len, &quot;isw_%u_%s&quot;,
+ 			isw-&gt;family_num, (char*) dev-&gt;volume);
+-}
++		else	
++			return snprintf(str, len, &quot;isw_%u_%s-%u&quot;,
++				isw-&gt;family_num, (char*) dev-&gt;volume, num);
++	case 0:
++		return snprintf(str, len, &quot;isw_%u_%s&quot;, isw-&gt;family_num,
++							(char*) dev-&gt;volume);
++	}
++	return 0;
++}
++
++static char *name(struct lib_context *lc, struct raid_dev *rd,
++						unsigned int subset)
++{
++	size_t len;
++	char *ret = NULL;
++	int id = 0;
++	struct isw *isw = META(rd, isw);
++	struct isw_disk *disk = isw-&gt;disk;
++	struct isw_dev *dev = (struct isw_dev*) (isw-&gt;disk + isw-&gt;num_disks);
+ 
+-static char *name(struct lib_context *lc, struct isw *isw, struct isw_dev 
+*dev)
+-{
+-        size_t len;
+-        char *ret;
++	if((subset == 1) &amp;&amp; (is_raid10(isw))) {
++		if ((disk = _get_disk(isw, rd-&gt;di))) {
++			if(disk == isw-&gt;disk)	id = 0;
++			else if(disk == isw-&gt;disk + 1)	id = 1;
++			else if(disk == isw-&gt;disk + 2)	id = 2;
++			else if(disk == isw-&gt;disk + 3)	id = 3;
++			else return ret;
++		}
++		id = id % 2;
++	}
+ 
+-        if ((ret = dbg_malloc((len = _name(isw, dev, NULL, 0) + 1)))) {
+-                _name(isw, dev, ret, len);
+-		mk_alpha(lc, ret + HANDLER_LEN, len - HANDLER_LEN -
+-			 (dev ? strlen((char*) dev-&gt;volume) - 2 : 1));
+-        } else
++	if ((ret = dbg_malloc((len = _name(isw, ret, 0, subset, id,
++							dev) + 1)))) {
++					_name(isw, ret, len, subset, id, dev);
++		mk_alpha(lc, ret + HANDLER_LEN, snprintf(ret, 0, &quot;%u&quot;,
++							isw-&gt;family_num));
++	} else
+ 		log_alloc_err(lc, handler);
+ 
+-        return ret;
++	return ret;
+ }
+ 
+ /* Find a disk table slot by serial number. */
+@@ -59,7 +88,7 @@
+ 
+ 		do {
+ 			if (!strncmp(di-&gt;serial, (const char*) disk-&gt;serial,
+-				     MAX_RAID_SERIAL_LEN))
++							MAX_RAID_SERIAL_LEN))
+ 				return disk;
+ 		} while (++disk &lt; isw-&gt;disk + isw-&gt;num_disks);
+ 	}
+@@ -102,21 +131,38 @@
+ }
+ 
+ /* Neutralize disk type. */
+-static enum type type(struct raid_dev *rd)
++static enum type type(struct isw *isw)
+ {
+ 	/* Mapping of Intel types to generic types. */
+ 	static struct types types[] = {
+ 	        { ISW_T_RAID0, t_raid0},
+ 	        { ISW_T_RAID1, t_raid1},
+ 	        { ISW_T_RAID5, t_raid5_la},
++	        { ISW_T_RAID10, t_raid0},
+ 	        { 0, t_undef},
+ 	};
+-	struct isw_dev *dev = rd-&gt;private.ptr;
++
++	struct isw_dev *dev = (struct isw_dev*) (isw-&gt;disk + isw-&gt;num_disks);
++	
++	if(is_raid10(isw))
++		dev-&gt;vol.map.raid_level = ISW_T_RAID10;
+ 
+ 	return dev ? rd_type(types, (unsigned int) dev-&gt;vol.map.raid_level) :
+ 		     t_group;
+ }
+ 
++int is_raid10(struct isw *isw)
++{
++	int ret;
++	struct isw_dev *dev = (struct isw_dev*) (isw-&gt;disk + isw-&gt;num_disks);
++
++	ret = ((dev-&gt;vol.map.raid_level == ISW_T_RAID10) ||
++			(dev-&gt;vol.map.raid_level == ISW_T_RAID1 &amp;&amp;
++			isw-&gt;num_disks &gt; 3));
++
++	return ret;
++}
++
+ /*
+  * Generate checksum of Raid metadata for mpb_size/sizeof(u32) words
+  * (checksum field itself ignored for this calculation).
+@@ -298,7 +344,8 @@
+ }
+ 
+ /* Check for RAID disk ok. */
+-static int disk_ok(struct lib_context *lc, struct dev_info *di, struct isw 
+*isw)
++static int disk_ok(struct lib_context *lc, struct dev_info *di,
++						struct isw *isw)
+ {
+ 	struct isw_disk *disk = get_disk(lc, di, isw);
+ 
+@@ -306,15 +353,15 @@
+ }
+ 
+ static void *isw_read_metadata(struct lib_context *lc, struct dev_info *di,
+-			       size_t *sz, uint64_t *offset,
+-			       union read_info *info)
++						size_t *sz, uint64_t *offset,
++						union read_info *info)
+ {
+ 	size_t size = ISW_DISK_BLOCK_SIZE;
+ 	uint64_t isw_sboffset = ISW_CONFIGOFFSET;
+ 	struct isw *isw;
+ 
+ 	if (!(isw = alloc_private_and_read(lc, handler, size,
+-					   di-&gt;path, isw_sboffset)))
++					di-&gt;path, isw_sboffset)))
+ 		goto out;
+ 
+ 	/*
+@@ -391,7 +438,7 @@
+  */
+ /* Check state if isw device map. */
+ static int _check_map_state(struct lib_context *lc, struct raid_dev *rd,
+-			    struct isw_dev *dev)
++							struct isw_dev *dev)
+ {
+ 	/* FIXME: FAILED_MAP etc. */
+ 	switch (dev-&gt;vol.map.map_state) {
+@@ -415,20 +462,27 @@
+ 	struct raid_dev *r;
+ 
+ 	if (!_check_map_state(lc, rd, dev) ||
+-	    !(r = alloc_raid_dev(lc, handler)))
++		!(r = alloc_raid_dev(lc, handler)))
+ 		return NULL;
+ 
+ 	if (!(r-&gt;private.ptr = alloc_private(lc, handler, sizeof(*dev))))
+ 		goto free;
+-
+ 	memcpy(r-&gt;private.ptr, dev, sizeof(*dev));
+-	if ((r-&gt;type = type(r)) == t_undef) {
++
++	if (!(r-&gt;meta_areas = alloc_meta_areas(lc, rd, handler, 1)))
++		return 0;
++
++	r-&gt;meta_areas-&gt;offset = rd-&gt;meta_areas-&gt;offset;
++	r-&gt;meta_areas-&gt;size = rd-&gt;meta_areas-&gt;size; 
++	r-&gt;meta_areas-&gt;area = rd-&gt;meta_areas-&gt;area; 
++
++	if ((r-&gt;type = type(isw)) == t_undef) {
+ 		log_err(lc, &quot;%s: RAID type %u not supported&quot;,
+ 			handler, (unsigned int) dev-&gt;vol.map.raid_level);
+ 		goto free;
+ 	}
+ 
+-        if (!(r-&gt;name = name(lc, isw, dev)))
++        if (!(r-&gt;name = name(lc, rd, 1)))
+ 		goto free;
+ 
+ 	r-&gt;di = rd-&gt;di;
+@@ -460,43 +514,73 @@
+ 	return _get_disk(isw, RD(new)-&gt;di) &lt; _get_disk(isw, RD(pos)-&gt;di);
+ }
+ 
++static void super_created(struct raid_set *super, void *private)
++{
++	super-&gt;type   = t_raid1;
++	super-&gt;stride = ((struct isw_dev*) private)-&gt;vol.map.blocks_per_strip;
++}
++
++static int set_sort(struct list_head *pos, struct list_head *new)
++{
++	return 0;
++}
++
+ /*
+  * rs_group contains the top-level group RAID set (type: t_group) on entry
+  * and shall be returned on success (or NULL on error).
+  */
+ static struct raid_set *group_rd(struct lib_context *lc,
+-				   struct raid_set *rs_group,
+-				   struct raid_dev *rd_meta)
++				struct raid_set *rs_group,
++				struct raid_dev *rd_meta)
+ {
+ 	unsigned int d;
+ 	void *private;
+ 	struct isw *isw = META(rd_meta, isw);
+ 	struct isw_dev *dev;
+ 	struct raid_dev *rd;
+-	struct raid_set *rs;
+-
++	struct raid_set *rs, *ss;
++	char *nm = NULL;
++		
+ 	/* Loop the device/volume table. */
+ 	for (d = 0; d &lt; isw-&gt;num_raid_devs; d++) {
+ 		dev = raiddev(isw, d);
+-
++		
+ 		if (!(rd = _create_rd(lc, rd_meta, isw, dev)))
+ 			return NULL;
+ 
+-		if (!(rs = find_or_alloc_raid_set(lc, rd-&gt;name, FIND_ALL,
+-				      		  rd, &amp;rs_group-&gt;sets,
+-						  create_rs, dev))) {
+-			free_raid_dev(lc, &amp;rd);
+-			return NULL;
++		if(is_raid10(isw)) {
++			nm = name(lc, rd, 0);
++			ss = find_or_alloc_raid_set(lc, nm, FIND_TOP, rd,
++						LC_RS(lc), super_created, dev);
++	 		if (!(rs = find_or_alloc_raid_set(lc, rd-&gt;name,
++					FIND_ALL, rd, &amp;ss-&gt;sets, create_rs,
++					dev))) {
++				free_raid_dev(lc, &amp;rd);
++				return NULL;
++			}
++		} else {
++			if (!(rs = find_or_alloc_raid_set(lc, rd-&gt;name,
++						FIND_ALL, rd, &amp;rs_group-&gt;sets,
++						create_rs, dev))) {
++				free_raid_dev(lc, &amp;rd);
++				return NULL;
++			}
+ 		}
+ 
++		rs-&gt;status = s_ok;
++
+ 		/* Save and set to enable dev_sort(). */
+ 		private = rd-&gt;private.ptr;
+ 		rd-&gt;private.ptr = isw;
+-
+ 		list_add_sorted(lc, &amp;rs-&gt;devs, &amp;rd-&gt;devs, dev_sort);
+-
+ 		/* Restore. */
+ 		rd-&gt;private.ptr = private;
++
++		if(is_raid10(isw)) {
++			ss = join_superset(lc, name, super_created, set_sort,
++								rs, rd);
++			return ss;
++		}
+ 	}
+ 
+ 	return rs_group;
+@@ -504,31 +588,35 @@
+ 
+ /* Add an Intel SW RAID device to a set */
+ static struct raid_set *isw_group(struct lib_context *lc,
+-				    struct raid_dev *rd_meta)
++		struct raid_dev *rd_meta)
+ {
+-	struct raid_set *rs_group;
++	struct raid_set *rs_group = NULL;
++	struct isw *isw = META(rd_meta, isw);
+ 
+ 	if (T_SPARE(rd_meta))
+ 		return NULL;
+ 
+-	/*
+-	 * Once we get here, an Intel SW RAID disk containing a metadata area
+-	 * with a volume table has been discovered by isw_read.
+-	 */
+-	/* Check if a top level group RAID set already exists. */
+-	if (!(rs_group = find_or_alloc_raid_set(lc, rd_meta-&gt;name, FIND_TOP,
+-				      		rd_meta, LC_RS(lc),
+-						NO_CREATE, NO_CREATE_ARG)))
+-		return NULL;
++	if(!is_raid10(isw)) {
++		/*
++	 	* Once we get here, an Intel SW RAID disk containing a metadata
++		* area with a volume table has been discovered by isw_read.
++	 	*/
++		/* Check if a top level group RAID set already exists. */
++		if (!(rs_group = find_or_alloc_raid_set(lc, rd_meta-&gt;name,
++				FIND_TOP, rd_meta, LC_RS(lc),
++				NO_CREATE, NO_CREATE_ARG)))
++			return NULL;
+ 
+-	/*
+-	 * Add the whole underlying (meta) RAID device to the group set.
+-	 * Sorting is no problem here, because RAID sets and devices will
+-	 * be created for all the Volumes of an ISW set and those need sorting.
+-	 */
+-	rd_meta-&gt;private.ptr = rd_meta-&gt;meta_areas-&gt;area;
+-	list_add_sorted(lc, &amp;rs_group-&gt;devs, &amp;rd_meta-&gt;devs, dev_sort);
+-	rd_meta-&gt;private.ptr = NULL;
++		/*
++	 	* Add the whole underlying (meta) RAID device to the group set.
++	 	* Sorting is no problem here, because RAID sets and devices
++	 	* will be created for all the Volumes of an ISW set and those
++		* need sorting.
++	 	*/
++		rd_meta-&gt;private.ptr = rd_meta-&gt;meta_areas-&gt;area;
++		list_add_sorted(lc, &amp;rs_group-&gt;devs, &amp;rd_meta-&gt;devs, dev_sort);
++		rd_meta-&gt;private.ptr = NULL;
++	}
+ 
+ 	/*
+ 	 * We need to run through the volume table and create a RAID set and
+@@ -552,17 +640,16 @@
+ }
+ 
+ static int check_rd(struct lib_context *lc, struct raid_set *rs,
+-		    struct raid_dev *rd, void *context)
++				struct raid_dev *rd, void *context)
+ {
+ 	struct isw_dev *dev = rd-&gt;private.ptr;
+ 
+ 	/* FIXME: more status checks ? */
+ 	if (dev-&gt;status)
+ 		LOG_ERR(lc, 0, &quot;%s device for volume \&quot;%s\&quot; broken on %s &quot;
+-			&quot;in RAID set \&quot;%s\&quot;&quot;,
+-			handler, dev-&gt;volume, rd-&gt;di-&gt;path, rs-&gt;name);
+-
+-	return 1;
++				&quot;in RAID set \&quot;%s\&quot;&quot;, handler, dev-&gt;volume,
++				rd-&gt;di-&gt;path, rs-&gt;name);
++		return 1;
+ }
+ 
+ static int _isw_check(struct lib_context *lc, struct raid_set *rs)
+@@ -572,9 +659,14 @@
+ 
+ static int isw_check(struct lib_context *lc, struct raid_set *rs)
+ {
+-	return T_GROUP(rs) ? _isw_check(lc, rs) : 0;
++	/* If it is a stacked set like RAID10 */
++	if((!T_GROUP(rs)) &amp;&amp; SETS(rs)) {
++		return check_raid_set(lc, rs, devices, NULL,
++				NO_CHECK_RD, NULL, handler);
++	} else {
++		return T_GROUP(rs) ? _isw_check(lc, rs) : 0;
++	}
+ }
+-
+ /*
+  * IO error event handler.
+  */
+@@ -585,7 +677,7 @@
+ 	struct isw_disk *disk;
+ 
+ 	if (!(disk = get_disk(lc, rd-&gt;di, isw)))
+-		LOG_ERR(lc, 0, &quot;%s: disk&quot;, handler);
++			LOG_ERR(lc, 0, &quot;%s: disk&quot;, handler);
+ 
+ 	/* Avoid write trashing. */
+ 	if (S_BROKEN(status(lc, rd)))
+@@ -629,7 +721,7 @@
+ 	for (i = 0; i &lt; ISW_FILLERS; i++) {
+ 		if (isw-&gt;filler[i])
+         		P(&quot;filler[%i]: %u&quot;, isw,
+-			  isw-&gt;filler[i], i, isw-&gt;filler[i]);
++					isw-&gt;filler[i], i, isw-&gt;filler[i]);
+ 	}
+ 
+ 	/* Disk table. */
+@@ -744,7 +836,7 @@
+ static struct dmraid_format isw_format = {
+ 	.name	= HANDLER,
+ 	.descr	= &quot;Intel Software RAID&quot;,
+-	.caps	= &quot;0,1&quot;,
++	.caps	= &quot;0,1,10&quot;,
+ 	.format = FMT_RAID,
+ 	.read	= isw_read,
+ 	.write	= isw_write,
+@@ -797,5 +889,7 @@
+ 	rd-&gt;status = status(lc, rd);
+ 	rd-&gt;type   = t_group;
+ 
+-        return (rd-&gt;name = name(lc, isw, NULL)) ? 1 : 0;
++        return (rd-&gt;name = name(lc, rd, 2)) ? 1 : 0;
+ }
++
++
+--- 1.0.0.rc14/lib/format/ataraid/isw.h.orig	2006-01-24 07:02:54.000000000 
+-0800
++++ 1.0.0.rc14/lib/format/ataraid/isw.h	2007-06-27 15:24:19.000000000 -0700
+@@ -68,6 +68,7 @@
+ 	uint8_t  raid_level;
+ #define	ISW_T_RAID0	0
+ #define	ISW_T_RAID1	1
++#define	ISW_T_RAID10	2
+ #define	ISW_T_RAID5	5		// since metadata version 1.2.02 ?
+ 	uint8_t  num_members;		// number of member disks
+ 	uint8_t  reserved[3];
+
+_______________________________________________
+Ataraid-list mailing list
+Ataraid-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/ataraid-list">https://www.redhat.com/mailman/listinfo/ataraid-list</a>
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg02907.html">dmraid -r -E segfault</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg02909.html">[PATCH dmraid 1.0.0.rc14] isw: raid10 support for isw format</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg02903.html">Re: dmraid &amp; adaptec aic94xx</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg02909.html">[PATCH dmraid 1.0.0.rc14] isw: raid10 support for isw format</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#02908"><strong>Date</strong></a></li>
+<li><a href="threads.html#02908"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/raid/>[Linux&nbsp;RAID]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dm-devel/>[Linux&nbsp;Device&nbsp;Mapper]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ide/>[Linux&nbsp;IDE]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art/z/biglist.php>[Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-admin/>[Linux&nbsp;Admin]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gfs/>[GFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/rpm/>[RPM]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;Campgrounds]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/amd64/>[AMD&nbsp;64]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

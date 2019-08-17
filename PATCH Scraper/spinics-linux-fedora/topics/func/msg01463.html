@@ -1,0 +1,318 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 3/3] &#45; make Acls.acls a property &#45; make acls	reload if any .acl file is added,	removed or changed during runtimes &#45; log slightly better than before -->
+<!--X-From-R13: Ergu Hvqny &#60;fxivqnyNsrqbencebwrpg.bet> -->
+<!--X-Date: Mon, 10 May 2010 11:29:24 &#45;0700 -->
+<!--X-Message-Id: 1273516083&#45;17849&#45;3&#45;git&#45;send&#45;email&#45;skvidal@fedoraproject.org -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1273516083&#45;17849&#45;2&#45;git&#45;send&#45;email&#45;skvidal@fedoraproject.org -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Universal Network Connector, [PATCH 3/3] - make Acls.acls a property - make acls	reload if any .acl file is added,	removed or changed during runtimes - log slightly better than before">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Fedora Universal Network Connector &mdash; [PATCH 3/3] - make Acls.acls a property - make acls	reload if any .acl file is added,	removed or changed during runtimes - log slightly better than before</title>
+<link rel="alternate" type="application/rss+xml" title="Fedora Universal Network Connector" href="//feeds.feedburner.com/FedoraUniversalNetworkConnector">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 3/3] - make Acls.acls a property - make acls	reload if any .acl file is added,	removed or changed during runtimes - log slightly better than before</h1>
+[<a href="msg01462.html">Date Prev</a>][<a href="msg01464.html">Date Next</a>][<a href="msg01462.html">Thread Prev</a>][<a href="msg01464.html">Thread Next</a>][<a href="maillist.html#01463">Date Index</a>][<a href="index.html#01463">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 3/3] - make Acls.acls a property - make acls	reload if any .acl file is added,	removed or changed during runtimes - log slightly better than before</li>
+<li><em>From</em>: Seth Vidal &lt;<a href="mailto:skvidal@DOMAIN.HIDDEN">skvidal@xxxxxxxxxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Mon, 10 May 2010 14:28:03 -0400</li>
+<li><em>In-reply-to</em>: &lt;<a href="mailto:1273516083-17849-2-git-send-email-skvidal@DOMAIN.HIDDEN">1273516083-17849-2-git-send-email-skvidal@xxxxxxxxxxxxxxxxx</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="mailto:1273516083-17849-2-git-send-email-skvidal@DOMAIN.HIDDEN">1273516083-17849-2-git-send-email-skvidal@xxxxxxxxxxxxxxxxx</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>---
+ func/minion/acls.py |   56 +++++++++++++++++++++++++++++++++++++-------------
+ 1 files changed, 41 insertions(+), 15 deletions(-)
+
+diff --git a/func/minion/acls.py b/func/minion/acls.py
+index fec3be0..5b80159 100644
+--- a/func/minion/acls.py
++++ b/func/minion/acls.py
+@@ -14,7 +14,8 @@ import fnmatch
+ import glob
+ import os
+ import sys
+-
++import time
++import stat
+ from func import logger
+ 
+ 
+@@ -25,25 +26,49 @@ class Acls(object):
+         self.config = config
+         
+         self.acldir = self.config.acl_dir
+-        self.acls = {}
++        self._acl_glob = '%s/*.acl' % self.acldir
++        self._acls = {}
+         self.logger = logger.Logger().logger
+         self.certmaster_overrides_acls = self.config.certmaster_overrides_acls
++        self.last_load_time = 0
+         self.load()
+ 
++    def _reload_acls(self):
++        &quot;&quot;&quot;
++        return True if most recent timestamp of any of the acl files in the acl
++        dir is more recent than the last_load_time
++        &quot;&quot;&quot;
++        
++        # if we removed or added a file - this will trigger a reload
++        if os.stat(self.acldir)[stat.ST_MTIME] &gt; self.last_load_time:
++            return True
++        
++        # if we modified or added a file - this will trigger a reload
++        for fn in glob.glob(self._acl_glob):
++            if os.stat(fn)[stat.ST_MTIME] &gt; self.last_load_time:
++                return True
++        
++        return False
++        
+     def load(self): 
+         &quot;&quot;&quot;
+         takes a dir of .acl files
+         returns a dict of hostname+hash =  [methods, to, run]
+         
+         &quot;&quot;&quot;
+-    
++
+         if not os.path.exists(self.acldir):
+             sys.stderr.write('acl dir does not exist: %s\n' % self.acldir)
+-            return self.acls
++            return self._acls
+     
++        if not self._reload_acls():
++            return self._acls
++        
++        self.logger.debug(&quot;acl [re]loading&quot;)
++        self._acls = {} # nuking from orbit - just in case
++
+         # get the set of files
+-        acl_glob = '%s/*.acl' % self.acldir
+-        files = glob.glob(acl_glob)
++        files = glob.glob(self._acl_glob)
+     
+         for acl_file in files:
+             self.logger.debug(&quot;acl_file %s&quot;, acl_file)
+@@ -62,30 +87,31 @@ class Acls(object):
+                 methods = methods.strip()
+                 methods = methods.replace(',',' ')
+                 methods = methods.split()
+-                if not self.acls.has_key(host):
+-                    self.acls[host] = []
+-                self.acls[host].extend(methods)
++                if not self._acls.has_key(host):
++                    self._acls[host] = []
++                self._acls[host].extend(methods)
+ 
+-        self.logger.debug(&quot;acls %s&quot; % self.acls)
++        self.logger.debug(&quot;acls %s&quot; % self._acls)
++        
++        self.last_load_time = time.time()
++        return self._acls
+ 
+-        return self.acls
++    acls = property(load)
+ 
+     def check(self, cm_cert, cert, ip, method, params):
+ 
+         # certmaster always gets to run things
+         # unless we are testing, and need to turn it off.. -al;
+-        
+- 
+         if self.config.certmaster_overrides_acls:
+             ca_cn = cm_cert.get_subject().CN
+             ca_hash = cm_cert.subject_name_hash()
+             ca_key = '%s-%s' % (ca_cn, ca_hash)
+-            self.acls[ca_key] = ['*']
++            self._acls[ca_key] = ['*', 'foo']
+ 
+         cn = cert.get_subject().CN
+         sub_hash = cert.subject_name_hash()
+         self.logger.debug(&quot;cn: %s sub_hash: %s&quot; % (cn, sub_hash))
+-        self.logger.debug(&quot;acls %s&quot; % self.acls)
++        self.logger.debug(&quot;current acls %s&quot; % self.acls)
+         if self.acls:
+             allow_list = []
+             hostkey = '%s-%s' % (cn, sub_hash)
+-- 
+1.7.0.1
+
+_______________________________________________
+Func-list mailing list
+Func-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/func-list">https://www.redhat.com/mailman/listinfo/func-list</a>
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01462.html">[PATCH 2/3] move around the imports of sys and re so	chasing them down isn't as annoying</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01464.html">Re:  [PATCH 2/3] move around the imports of sys and re so chasing them down isn't as annoying</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01462.html">[PATCH 2/3] move around the imports of sys and re so	chasing them down isn't as annoying</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01464.html">Re:  [PATCH 2/3] move around the imports of sys and re so chasing them down isn't as annoying</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01463"><strong>Date</strong></a></li>
+<li><a href="index.html#01463"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/netdev/>[Linux&nbsp;Networking]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fll/>[Fedora&nbsp;Legacy&nbsp;List]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z//biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

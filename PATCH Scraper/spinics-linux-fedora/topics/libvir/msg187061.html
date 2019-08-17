@@ -1,0 +1,359 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 1/5] lib: add API to query info about logged&#45;in	users -->
+<!--X-From-R13: Xbanguba Xbatfzn &#60;wwbatfznNerqung.pbz> -->
+<!--X-Date: Wed, 10 Jul 2019 13:07:55 &#45;0700 -->
+<!--X-Message-Id: 20190710200747.745&#45;2&#45;jjongsma@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190710200747.745&#45;1&#45;jjongsma@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 1/5] lib: add API to query info about logged-in	users</title>
+<meta name="description" content="libvirt: [PATCH 1/5] lib: add API to query info about logged-in	users">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 1/5] lib: add API to query info about logged-in	users</h1>
+[<a href="msg187060.html">Date Prev</a>][<a href="msg187062.html">Date Next</a>][<a href="msg187060.html">Thread Prev</a>][<a href="msg187121.html">Thread Next</a>][<a href="maillist.html#187061">Date Index</a>][<a href="index.html#187061">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 1/5] lib: add API to query info about logged-in	users</li>
+<li><em>From</em>: Jonathon Jongsma &lt;jjongsma@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 10 Jul 2019 15:07:43 -0500</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187060.html">20190710200747.745-1-jjongsma@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187060.html">20190710200747.745-1-jjongsma@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Add API for querying logged-in users from a domain implemented via
+guest agent.
+
+Signed-off-by: Jonathon Jongsma &lt;jjongsma@xxxxxxxxxx&gt;
+---
+ include/libvirt/libvirt-domain.h | 18 ++++++++++
+ src/driver-hypervisor.h          |  6 ++++
+ src/libvirt-domain.c             | 62 ++++++++++++++++++++++++++++++++
+ src/libvirt_public.syms          |  5 +++
+ 4 files changed, 91 insertions(+)
+
+diff --git a/include/libvirt/libvirt-domain.h b/include/libvirt/libvirt-domain.h
+index 2dbd74d4f3..82dbbd3fc5 100644
+--- a/include/libvirt/libvirt-domain.h
++++ b/include/libvirt/libvirt-domain.h
+@@ -4896,4 +4896,22 @@ int virDomainGetLaunchSecurityInfo(virDomainPtr domain,
+                                    int *nparams,
+                                    unsigned int flags);
+ 
++/**
++ * virDomainUserInfo:
++ *
++ * The data structure containing informationa bout logged-in users within a
++ * guest
++ */
++typedef struct _virDomainUserInfo virDomainUserInfo;
++typedef virDomainUserInfo *virDomainUserInfoPtr;
++struct _virDomainUserInfo {
++    char *user; /* username */
++    char *domain; /* login domain (windows only) */
++    unsigned long long loginTime; /* timestamp of login for this user in ms since epoch */
++};
++int virDomainGetGuestUsers(virDomainPtr domain,
++                           virDomainUserInfoPtr **info,
++                           unsigned int flags);
++void virDomainUserInfoFree(virDomainUserInfoPtr info);
++
+ #endif /* LIBVIRT_DOMAIN_H */
+diff --git a/src/driver-hypervisor.h b/src/driver-hypervisor.h
+index b15aaa36bc..0ef7257ace 100644
+--- a/src/driver-hypervisor.h
++++ b/src/driver-hypervisor.h
+@@ -1327,6 +1327,11 @@ typedef int
+                                         int *nparams,
+                                         unsigned int flags);
+ 
++typedef int
++(*virDrvDomainGetGuestUsers)(virDomainPtr domain,
++                             virDomainUserInfoPtr **info,
++                             unsigned int flags);
++
+ 
+ typedef struct _virHypervisorDriver virHypervisorDriver;
+ typedef virHypervisorDriver *virHypervisorDriverPtr;
+@@ -1579,4 +1584,5 @@ struct _virHypervisorDriver {
+     virDrvConnectBaselineHypervisorCPU connectBaselineHypervisorCPU;
+     virDrvNodeGetSEVInfo nodeGetSEVInfo;
+     virDrvDomainGetLaunchSecurityInfo domainGetLaunchSecurityInfo;
++    virDrvDomainGetGuestUsers domainGetGuestUsers;
+ };
+diff --git a/src/libvirt-domain.c b/src/libvirt-domain.c
+index 3d12e7c125..80faa08758 100644
+--- a/src/libvirt-domain.c
++++ b/src/libvirt-domain.c
+@@ -12199,6 +12199,68 @@ virDomainSetVcpu(virDomainPtr domain,
+     return -1;
+ }
+ 
++/**
++ * virDomainGetGuestUsers:
++ * @domain: pointer to domain object
++ * @info: a pointer to a variable to store an array of user info
++ * @flags: currently unused, callers shall pass 0
++ *
++ * Queries the guest agent for the list of currently active users on the
++ * guest. The reported data depends on the guest agent implementation.
++ *
++ * This API requires the VM to run. The caller is responsible for calling
++ * virTypedParamsFree to free memory returned in @params.
++ *
++ * Returns the number of returned users, or -1 in case of error.
++ * On success, the array of the information is stored into @info. The caller is
++ * responsible for calling virDomainUserInfoFree() on each array element, then
++ * calling free() on @info. On error, @info is set to NULL.
++ */
++int
++virDomainGetGuestUsers(virDomainPtr domain,
++                       virDomainUserInfoPtr **info,
++                       unsigned int flags)
++{
++    virResetLastError();
++
++    virCheckDomainReturn(domain, -1);
++    virCheckReadOnlyGoto(domain-&gt;conn-&gt;flags, error);
++
++    virCheckNonNullArgGoto(info, error);
++
++    if (domain-&gt;conn-&gt;driver-&gt;domainGetGuestUsers) {
++        int ret;
++        ret = domain-&gt;conn-&gt;driver-&gt;domainGetGuestUsers(domain, info,
++                                                        flags);
++        if (ret &lt; 0)
++            goto error;
++        return ret;
++    }
++
++    virReportUnsupportedError();
++
++ error:
++    virDispatchError(domain-&gt;conn);
++    return -1;
++}
++
++/**
++ * virDomainUserInfoFree:
++ * @info: pointer to a UserInfo object
++ *
++ * Frees all the memory occupied by @info.
++ */
++void
++virDomainUserInfoFree(virDomainUserInfoPtr info)
++{
++    if (!info)
++        return;
++
++    VIR_FREE(info-&gt;user);
++    VIR_FREE(info-&gt;domain);
++
++    VIR_FREE(info);
++}
+ 
+ /**
+  * virDomainSetBlockThreshold:
+diff --git a/src/libvirt_public.syms b/src/libvirt_public.syms
+index 18500ec8b2..7d0e3c7849 100644
+--- a/src/libvirt_public.syms
++++ b/src/libvirt_public.syms
+@@ -836,4 +836,9 @@ LIBVIRT_5.5.0 {
+         virNetworkPortSetParameters;
+ } LIBVIRT_5.2.0;
+ 
++LIBVIRT_5.6.0 {
++    global:
++        virDomainGetGuestUsers;
++        virDomainUserInfoFree;
++} LIBVIRT_5.5.0;
+ # .... define new API here using predicted next version number ....
+-- 
+2.20.1
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187060.html">[PATCH 0/5] Implement qemu-ga 'guest-get-users'</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187062.html">[PATCH 3/5] virsh: add command 'guestusers' implementing	VirDomainGetGuestUsers</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187060.html">[PATCH 0/5] Implement qemu-ga 'guest-get-users'</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187121.html">Re:  [PATCH 1/5] lib: add API to query info about logged-in users</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187061"><strong>Date</strong></a></li>
+<li><a href="index.html#187061"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

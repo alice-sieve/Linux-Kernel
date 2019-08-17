@@ -1,0 +1,332 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 03/29] logging: pass binary name not logfile name	when enabling logging -->
+<!--X-From-R13: =?GFT&#45;8?d?Rnavry=20B=2S=20Preenat=Q3=O9?= &#60;oreenatrNerqung.pbz> -->
+<!--X-Date: Thu, 11 Jul 2019 09:05:25 &#45;0700 -->
+<!--X-Message-Id: 20190711160516.2130&#45;4&#45;berrange@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190711160516.2130&#45;1&#45;berrange@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 03/29] logging: pass binary name not logfile name	when enabling logging</title>
+<meta name="description" content="libvirt: [PATCH 03/29] logging: pass binary name not logfile name	when enabling logging">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 03/29] logging: pass binary name not logfile name	when enabling logging</h1>
+[<a href="msg187199.html">Date Prev</a>][<a href="msg187201.html">Date Next</a>][<a href="msg187198.html">Thread Prev</a>][<a href="msg187201.html">Thread Next</a>][<a href="maillist.html#187200">Date Index</a>][<a href="index.html#187200">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 03/29] logging: pass binary name not logfile name	when enabling logging</li>
+<li><em>From</em>: Daniel P. Berrang&#xE9; &lt;berrange@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 11 Jul 2019 17:04:50 +0100</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187198.html">20190711160516.2130-1-berrange@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187198.html">20190711160516.2130-1-berrange@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Instead of having each caller pass in the desired logfile name, pass in
+the binary name instead. The logging code can then just derive a logfile
+name by appending &quot;.log&quot;.
+
+Signed-off-by: Daniel P. Berrang&#xE9; &lt;berrange@xxxxxxxxxx&gt;
+---
+ src/locking/lock_daemon.c  |  2 +-
+ src/logging/log_daemon.c   |  2 +-
+ src/remote/remote_daemon.c |  2 +-
+ src/util/virlog.c          | 20 ++++++++++----------
+ 4 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/src/locking/lock_daemon.c b/src/locking/lock_daemon.c
+index bc2fb4a7fb..7cdcd61722 100644
+--- a/src/locking/lock_daemon.c
++++ b/src/locking/lock_daemon.c
+@@ -532,7 +532,7 @@ virLockDaemonSetupLogging(virLockDaemonConfigPtr config,
+     /* Define the default output. This is only applied if there was no setting
+      * from either the config or the environment.
+      */
+-    if (virLogSetDefaultOutput(&quot;virtlockd.log&quot;, godaemon, privileged) &lt; 0)
++    if (virLogSetDefaultOutput(&quot;virtlockd&quot;, godaemon, privileged) &lt; 0)
+         return -1;
+ 
+     if (virLogGetNbOutputs() == 0)
+diff --git a/src/logging/log_daemon.c b/src/logging/log_daemon.c
+index 014596b280..c8de7aa687 100644
+--- a/src/logging/log_daemon.c
++++ b/src/logging/log_daemon.c
+@@ -467,7 +467,7 @@ virLogDaemonSetupLogging(virLogDaemonConfigPtr config,
+     /* Define the default output. This is only applied if there was no setting
+      * from either the config or the environment.
+      */
+-    if (virLogSetDefaultOutput(&quot;virtlogd.log&quot;, godaemon, privileged) &lt; 0)
++    if (virLogSetDefaultOutput(&quot;virtlogd&quot;, godaemon, privileged) &lt; 0)
+         return -1;
+ 
+     if (virLogGetNbOutputs() == 0)
+diff --git a/src/remote/remote_daemon.c b/src/remote/remote_daemon.c
+index 0dabd3dff8..574c50075f 100644
+--- a/src/remote/remote_daemon.c
++++ b/src/remote/remote_daemon.c
+@@ -605,7 +605,7 @@ daemonSetupLogging(struct daemonConfig *config,
+     /* Define the default output. This is only applied if there was no setting
+      * from either the config or the environment.
+      */
+-    if (virLogSetDefaultOutput(&quot;libvirtd.log&quot;, godaemon, privileged) &lt; 0)
++    if (virLogSetDefaultOutput(&quot;libvirtd&quot;, godaemon, privileged) &lt; 0)
+         return -1;
+ 
+     if (virLogGetNbOutputs() == 0)
+diff --git a/src/util/virlog.c b/src/util/virlog.c
+index 248ce19902..da433878df 100644
+--- a/src/util/virlog.c
++++ b/src/util/virlog.c
+@@ -175,7 +175,7 @@ virLogSetDefaultOutputToJournald(void)
+ 
+ 
+ static int
+-virLogSetDefaultOutputToFile(const char *filename, bool privileged)
++virLogSetDefaultOutputToFile(const char *binary, bool privileged)
+ {
+     int ret = -1;
+     char *logdir = NULL;
+@@ -183,8 +183,8 @@ virLogSetDefaultOutputToFile(const char *filename, bool privileged)
+ 
+     if (privileged) {
+         if (virAsprintf(&amp;virLogDefaultOutput,
+-                        &quot;%d:file:%s/log/libvirt/%s&quot;, virLogDefaultPriority,
+-                        LOCALSTATEDIR, filename) &lt; 0)
++                        &quot;%d:file:%s/log/libvirt/%s.log&quot;, virLogDefaultPriority,
++                        LOCALSTATEDIR, binary) &lt; 0)
+             goto cleanup;
+     } else {
+         if (!(logdir = virGetUserCacheDirectory()))
+@@ -197,8 +197,8 @@ virLogSetDefaultOutputToFile(const char *filename, bool privileged)
+         }
+         umask(old_umask);
+ 
+-        if (virAsprintf(&amp;virLogDefaultOutput, &quot;%d:file:%s/%s&quot;,
+-                        virLogDefaultPriority, logdir, filename) &lt; 0)
++        if (virAsprintf(&amp;virLogDefaultOutput, &quot;%d:file:%s/%s.log&quot;,
++                        virLogDefaultPriority, logdir, binary) &lt; 0)
+             goto cleanup;
+     }
+ 
+@@ -211,19 +211,19 @@ virLogSetDefaultOutputToFile(const char *filename, bool privileged)
+ 
+ /*
+  * virLogSetDefaultOutput:
+- * @filename: the file that the output should be redirected to (only needed
+- *            when @godaemon equals true
++ * @binary: the binary for which logging is performed. The log file name
++ *          will be derived from the binary name, with &quot;.log&quot; appended.
+  * @godaemon: whether we're running daemonized
+  * @privileged: whether we're running with root privileges or not (session)
+  *
+  * Decides on what the default output (journald, file, stderr) should be
+- * according to @filename, @godaemon, @privileged. This function should be run
++ * according to @binary, @godaemon, @privileged. This function should be run
+  * exactly once at daemon startup, so no locks are used.
+  *
+  * Returns 0 on success, -1 in case of a failure.
+  */
+ int
+-virLogSetDefaultOutput(const char *filename, bool godaemon, bool privileged)
++virLogSetDefaultOutput(const char *binary, bool godaemon, bool privileged)
+ {
+     bool have_journald = access(&quot;/run/systemd/journal/socket&quot;, W_OK) &gt;= 0;
+ 
+@@ -237,7 +237,7 @@ virLogSetDefaultOutput(const char *filename, bool godaemon, bool privileged)
+         return virLogSetDefaultOutputToStderr();
+     }
+ 
+-    return virLogSetDefaultOutputToFile(filename, privileged);
++    return virLogSetDefaultOutputToFile(binary, privileged);
+ }
+ 
+ 
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187199.html">Re:  [PATCH v1 11/31] conf: Format and parse NVMe type disk</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187201.html">[PATCH 05/29] remote: conditionalize daemon name in	libvirtd daemon</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187198.html">[PATCH 00/29] Split the libvirtd daemon into per-driver	daemons</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187201.html">[PATCH 05/29] remote: conditionalize daemon name in	libvirtd daemon</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187200"><strong>Date</strong></a></li>
+<li><a href="index.html#187200"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

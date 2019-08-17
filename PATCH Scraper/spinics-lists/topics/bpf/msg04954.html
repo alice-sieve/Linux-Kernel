@@ -1,0 +1,380 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH bpf&#45;next v3 0/6] add need_wakeup flag to the AF_XDP rings -->
+<!--X-From-R13: [ntahf Yneyffba &#60;zntahf.xneyffbaNvagry.pbz> -->
+<!--X-Date: Thu, 4 Jul 2019 05:43:04 &#45;0700 -->
+<!--X-Message-Id: 1562244134&#45;19069&#45;1&#45;git&#45;send&#45;email&#45;magnus.karlsson@intel.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BPF: [PATCH bpf-next v3 0/6] add need_wakeup flag to the AF_XDP rings">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH bpf-next v3 0/6] add need_wakeup flag to the AF_XDP rings &mdash; BPF</title>
+<link rel="alternate" type="application/rss+xml" title="BPF" href="//feeds.feedburner.com/packetfilters">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH bpf-next v3 0/6] add need_wakeup flag to the AF_XDP rings</h1>
+[<a href="msg04953.html">Date Prev</a>][<a href="msg04955.html">Date Next</a>][<a href="msg04952.html">Thread Prev</a>][<a href="msg04955.html">Thread Next</a>][<a href="maillist.html#04954">Date Index</a>][<a href="index.html#04954">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH bpf-next v3 0/6] add need_wakeup flag to the AF_XDP rings</li>
+<li><em>From</em>: Magnus Karlsson &lt;magnus.karlsson@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu,  4 Jul 2019 14:42:08 +0200</li>
+<li><em>Cc</em>: bpf@xxxxxxxxxxxxxxx, bruce.richardson@xxxxxxxxx,        ciara.loftus@xxxxxxxxx, jakub.kicinski@xxxxxxxxxxxxx,        xiaolong.ye@xxxxxxxxx, qi.z.zhang@xxxxxxxxx, maximmi@xxxxxxxxxxxx,        sridhar.samudrala@xxxxxxxxx, kevin.laatz@xxxxxxxxx,        ilias.apalodimas@xxxxxxxxxx, kiran.patil@xxxxxxxxx, axboe@xxxxxxxxx,        maciej.fijalkowski@xxxxxxxxx, maciejromanfijalkowski@xxxxxxxxx,        intel-wired-lan@xxxxxxxxxxxxxxxx</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This patch set adds support for a new flag called need_wakeup in the
+AF_XDP Tx and fill rings. When this flag is set by the driver, it
+means that the application has to explicitly wake up the kernel Rx
+(for the bit in the fill ring) or kernel Tx (for bit in the Tx ring)
+processing by issuing a syscall. Poll() can wake up both and sendto()
+will wake up Tx processing only.
+
+The main reason for introducing this new flag is to be able to
+efficiently support the case when application and driver is executing
+on the same core. Previously, the driver was just busy-spinning on the
+fill ring if it ran out of buffers in the HW and there were none to
+get from the fill ring. This approach works when the application and
+driver is running on different cores as the application can replenish
+the fill ring while the driver is busy-spinning. Though, this is a
+lousy approach if both of them are running on the same core as the
+probability of the fill ring getting more entries when the driver is
+busy-spinning is zero. With this new feature the driver now sets the
+need_wakeup flag and returns to the application. The application can
+then replenish the fill queue and then explicitly wake up the Rx
+processing in the kernel using the syscall poll(). For Tx, the flag is
+only set to one if the driver has no outstanding Tx completion
+interrupts. If it has some, the flag is zero as it will be woken up by
+a completion interrupt anyway. This flag can also be used in other
+situations where the driver needs to be woken up explicitly.
+
+As a nice side effect, this new flag also improves the Tx performance
+of the case where application and driver are running on two different
+cores as it reduces the number of syscalls to the kernel. The kernel
+tells user space if it needs to be woken up by a syscall, and this
+eliminates many of the syscalls. The Rx performance of the 2-core case
+is on the other hand slightly worse, since there is a need to use a
+syscall now to wake up the driver, instead of the driver
+busy-spinning. It does waste less CPU cycles though, which might lead
+to better overall system performance.
+
+This new flag needs some simple driver support. If the driver does not
+support it, the Rx flag is always zero and the Tx flag is always
+one. This makes any application relying on this feature default to the
+old behavior of not requiring any syscalls in the Rx path and always
+having to call sendto() in the Tx path.
+
+For backwards compatibility reasons, this feature has to be explicitly
+turned on using a new bind flag (XDP_USE_NEED_WAKEUP). I recommend
+that you always turn it on as it has a large positive performance
+impact for the one core case and does not degrade 2 core performance
+and actually improves it for Tx heavy workloads.
+
+Here are some performance numbers measured on my local,
+non-performance optimized development system. That is why you are
+seeing numbers lower than the ones from Bj&#xF6;rn and Jesper. 64 byte
+packets at 40Gbit/s line rate. All results in Mpps. Cores == 1 means
+that both application and driver is executing on the same core. Cores
+== 2 that they are on different cores.
+
+                              Applications
+need_wakeup  cores    txpush    rxdrop      l2fwd
+---------------------------------------------------------------
+     n         1       0.07      0.06        0.03
+     y         1       21.6      8.2         6.5
+     n         2       32.3      11.7        8.7
+     y         2       33.1      11.7        8.7
+
+Overall, the need_wakeup flag provides the same or better performance
+in all the micro-benchmarks. The reduction of sendto() calls in txpush
+is large. Only a few per second is needed. For l2fwd, the drop is 50%
+for the 1 core case and more than 99.9% for the 2 core case. Do not
+know why I am not seeing the same drop for the 1 core case yet.
+
+The name and inspiration of the flag has been taken from io_uring by
+Jens Axboe. Details about this feature in io_uring can be found in
+<a  rel="nofollow" href="http://kernel.dk/io_uring.pdf">http://kernel.dk/io_uring.pdf</a>, section 8.3. It also addresses most of
+the denial of service and sendto() concerns raised by Maxim
+Mikityanskiy in <a  rel="nofollow" href="https://www.spinics.net/lists/netdev/msg554657.html">https://www.spinics.net/lists/netdev/msg554657.html</a>.
+
+The typical Tx part of an application will have to change from:
+
+ret = sendto(fd,....)
+
+to:
+
+if (xsk_ring_prod__needs_wakeup(&amp;xsk-&gt;tx))
+       ret = sendto(fd,....)
+
+and th Rx part from:
+
+rcvd = xsk_ring_cons__peek(&amp;xsk-&gt;rx, BATCH_SIZE, &amp;idx_rx);
+if (!rcvd)
+       return;
+
+to:
+
+rcvd = xsk_ring_cons__peek(&amp;xsk-&gt;rx, BATCH_SIZE, &amp;idx_rx);
+if (!rcvd) {
+       if (xsk_ring_prod__needs_wakeup(&amp;xsk-&gt;umem-&gt;fq))
+              ret = poll(fd,.....);
+       return;
+}
+
+v2 -&gt; v3:
+* Converted the Mellanox driver to the new ndo in patch 1 as pointed out
+  by Maxim
+* Fixed the compatibility code of XDP_MMAP_OFFSETS so it now works.
+
+v1 -&gt; v2:
+* Fixed bisectability problem pointed out by Jakub
+* Added missing initiliztion of the Tx need_wakeup flag to 1
+
+This patch has been applied against commit e5a3e259ef23 (&quot;Merge branch 'bpf-tcp-rtt-hook'&quot;)
+
+Structure of the patch set:
+
+Patch 1: Replaces the ndo_xsk_async_xmit with ndo_xsk_wakeup to
+         support waking up both Rx and Tx processing
+Patch 2: Implements the need_wakeup functionality in common code
+Patch 3-4: Add need_wakeup support to the i40e and ixgbe drivers
+Patch 5: Add need_wakeup support to libbpf
+Patch 6: Add need_wakeup support to the xdpsock sample application
+
+Thanks: Magnus
+
+Magnus Karlsson (6):
+  xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup
+  xsk: add support for need_wakeup flag in AF_XDP rings
+  i40e: add support for AF_XDP need_wakup feature
+  ixgbe: add support for AF_XDP need_wakup feature
+  libbpf: add support for need_wakeup flag in AF_XDP part
+  samples/bpf: add use of need_sleep flag in xdpsock
+
+ drivers/net/ethernet/intel/i40e/i40e_main.c        |   5 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c         |  23 ++-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.h         |   2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      |   5 +-
+ .../net/ethernet/intel/ixgbe/ixgbe_txrx_common.h   |   2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |  20 ++-
+ .../net/ethernet/mellanox/mlx5/core/en/xsk/tx.c    |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xsk/tx.h    |   2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |   2 +-
+ include/linux/netdevice.h                          |  18 +-
+ include/net/xdp_sock.h                             |  33 +++-
+ include/uapi/linux/if_xdp.h                        |  13 ++
+ net/xdp/xdp_umem.c                                 |  12 +-
+ net/xdp/xsk.c                                      | 149 +++++++++++++---
+ net/xdp/xsk.h                                      |  13 ++
+ net/xdp/xsk_queue.h                                |   1 +
+ samples/bpf/xdpsock_user.c                         | 192 +++++++++++++--------
+ tools/include/uapi/linux/if_xdp.h                  |  13 ++
+ tools/lib/bpf/xsk.c                                |   4 +
+ tools/lib/bpf/xsk.h                                |   6 +
+ 20 files changed, 406 insertions(+), 111 deletions(-)
+
+--
+2.7.4
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="04960" href="msg04960.html">[PATCH bpf-next v3 6/6] samples/bpf: add use of need_sleep flag in xdpsock</a></strong>
+<ul><li><em>From:</em> Magnus Karlsson</li></ul></li>
+<li><strong><a name="04959" href="msg04959.html">[PATCH bpf-next v3 5/6] libbpf: add support for need_wakeup flag in AF_XDP part</a></strong>
+<ul><li><em>From:</em> Magnus Karlsson</li></ul></li>
+<li><strong><a name="04958" href="msg04958.html">[PATCH bpf-next v3 4/6] ixgbe: add support for AF_XDP need_wakup feature</a></strong>
+<ul><li><em>From:</em> Magnus Karlsson</li></ul></li>
+<li><strong><a name="04957" href="msg04957.html">[PATCH bpf-next v3 3/6] i40e: add support for AF_XDP need_wakup feature</a></strong>
+<ul><li><em>From:</em> Magnus Karlsson</li></ul></li>
+<li><strong><a name="04956" href="msg04956.html">[PATCH bpf-next v3 2/6] xsk: add support for need_wakeup flag in AF_XDP rings</a></strong>
+<ul><li><em>From:</em> Magnus Karlsson</li></ul></li>
+<li><strong><a name="04955" href="msg04955.html">[PATCH bpf-next v3 1/6] xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup</a></strong>
+<ul><li><em>From:</em> Magnus Karlsson</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg04953.html">Re: [PATCH 2/3] module: Fix up module_notifier return values.</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg04955.html">[PATCH bpf-next v3 1/6] xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg04952.html">[PATCH] tools bpftool: Fix json dump crash on powerpc</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg04955.html">[PATCH bpf-next v3 1/6] xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#04954"><strong>Date</strong></a></li>
+<li><a href="index.html#04954"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;Samsung&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-rockchip/>[Linux&nbsp;Rockchip&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-actions/>[Linux&nbsp;Actions&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-snps-arc/>[Linux&nbsp;for&nbsp;Synopsys&nbsp;ARC&nbsp;Processors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nfs/>[Linux&nbsp;NFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nilfs/>[Linux&nbsp;NILFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/vfl/>[Video&nbsp;for&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<p>
+<hr>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

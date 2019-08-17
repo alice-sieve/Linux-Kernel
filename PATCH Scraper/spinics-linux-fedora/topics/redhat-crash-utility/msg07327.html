@@ -1,0 +1,286 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re:  [PATCH] arm64: fix page size calculation -->
+<!--X-From-R13: Rnir Oaqrefba &#60;naqrefbaNerqung.pbz> -->
+<!--X-Date: Thu, 15 Feb 2018 11:55:57 &#45;0800 -->
+<!--X-Message-Id: 1059098058.2783537.1518724034003.JavaMail.zimbra@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20180215044122.19425&#45;1&#45;takahiro.akashi@linaro.org -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Re:  [PATCH] arm64: fix page size calculation &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  Re:  [PATCH] arm64: fix page size calculation</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re:  [PATCH] arm64: fix page size calculation</h1>
+[<a href="msg07326.html">Date Prev</a>][<a href="msg07328.html">Date Next</a>][<a href="msg07323.html">Thread Prev</a>][<a href="msg07343.html">Thread Next</a>][<a href="maillist.html#07327">Date Index</a>][<a href="index.html#07327">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re:  [PATCH] arm64: fix page size calculation</li>
+<li><em>From</em>: Dave Anderson &lt;anderson@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 15 Feb 2018 14:47:14 -0500 (EST)</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg07323.html">20180215044122.19425-1-takahiro.akashi@linaro.org</a>&gt;</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>
+
+----- Original Message -----
+&gt;<i> As for v4.16-rc1, crash for arm64 fails to analyze the core dump,</i>
+&gt;<i> with a message: cannot determine page size.</i>
+&gt;<i> </i>
+&gt;<i> There seems to be a couple of reasons for this:</i>
+&gt;<i> [1] splits a 64-bit field of image header, _kernel_flags_le, into two</i>
+&gt;<i> 32-bit values and in turn they have got a bit different names.</i>
+&gt;<i> </i>
+&gt;<i> [2] and more recent [3] can possibly add extra space between idmap_pg_dir</i>
+&gt;<i> and swapper_pg_dir.</i>
+&gt;<i> </i>
+&gt;<i> This patch addresses both of changes.</i>
+&gt;<i> </i>
+&gt;<i> [1] commit 6ad1fe5d9077 (&quot;arm64: avoid R_AARCH64_ABS64 relocations for</i>
+&gt;<i>     Image header fields&quot;)</i>
+&gt;<i> </i>
+&gt;<i> [2] commit 1e1b8c04fa34 (&quot;arm64: entry: Move the trampoline to be before</i>
+&gt;<i> PAN&quot;)</i>
+&gt;<i> </i>
+&gt;<i> [3] commit 4b65a5db3627 (&quot;arm64: Introduce uaccess_{disable,enable}</i>
+&gt;<i>     functionality based on TTBR0_EL1&quot;)</i>
+&gt;<i> </i>
+&gt;<i> Signed-off-by: AKASHI Takahiro &lt;takahiro.akashi@xxxxxxxxxx&gt;</i>
+
+
+Hi Takahiro,
+
+Thanks for investigating and fixing this -- queued for crash-7.2.2:
+
+  <a  rel="nofollow" href="https://github.com/crash-utility/crash/commit/764e2d09978bb3f87dfaff4c6a59d4a5cc00f277">https://github.com/crash-utility/crash/commit/764e2d09978bb3f87dfaff4c6a59d4a5cc00f277</a>
+
+Dave
+
+
+
+&gt;<i> ---</i>
+&gt;<i>  arm64.c | 16 ++++++++++++++--</i>
+&gt;<i>  1 file changed, 14 insertions(+), 2 deletions(-)</i>
+&gt;<i> </i>
+&gt;<i> diff --git a/arm64.c b/arm64.c</i>
+&gt;<i> index 7904f65..7f87d5b 100644</i>
+&gt;<i> --- a/arm64.c</i>
+&gt;<i> +++ b/arm64.c</i>
+&gt;<i> @@ -172,8 +172,14 @@ arm64_init(int when)</i>
+&gt;<i>  		if (!machdep-&gt;pagesize &amp;&amp;</i>
+&gt;<i>  		    kernel_symbol_exists(&quot;swapper_pg_dir&quot;) &amp;&amp;</i>
+&gt;<i>  		    kernel_symbol_exists(&quot;idmap_pg_dir&quot;)) {</i>
+&gt;<i> -			value = symbol_value(&quot;swapper_pg_dir&quot;) -</i>
+&gt;<i> -				symbol_value(&quot;idmap_pg_dir&quot;);</i>
+&gt;<i> +			if (kernel_symbol_exists(&quot;tramp_pg_dir&quot;))</i>
+&gt;<i> +				value = symbol_value(&quot;tramp_pg_dir&quot;);</i>
+&gt;<i> +			else if (kernel_symbol_exists(&quot;reserved_ttbr0&quot;))</i>
+&gt;<i> +				value = symbol_value(&quot;reserved_ttbr0&quot;);</i>
+&gt;<i> +			else</i>
+&gt;<i> +				value = symbol_value(&quot;swapper_pg_dir&quot;);</i>
+&gt;<i> +</i>
+&gt;<i> +			value -= symbol_value(&quot;idmap_pg_dir&quot;);</i>
+&gt;<i>  			/*</i>
+&gt;<i>  			 * idmap_pg_dir is 2 pages prior to 4.1,</i>
+&gt;<i>  			 * and 3 pages thereafter.  Only 4K and 64K</i>
+&gt;<i> @@ -436,6 +442,12 @@ arm64_verify_symbol(const char *name, ulong value, char</i>
+&gt;<i> type)</i>
+&gt;<i>  	if ((type == 'A') &amp;&amp; STREQ(name, &quot;_kernel_flags_le&quot;))</i>
+&gt;<i>  		machdep-&gt;machspec-&gt;kernel_flags = le64toh(value);</i>
+&gt;<i>  </i>
+&gt;<i> +	if ((type == 'A') &amp;&amp; STREQ(name, &quot;_kernel_flags_le_hi32&quot;))</i>
+&gt;<i> +		machdep-&gt;machspec-&gt;kernel_flags |= (le32toh(value) &lt;&lt; 32);</i>
+&gt;<i> +</i>
+&gt;<i> +	if ((type == 'A') &amp;&amp; STREQ(name, &quot;_kernel_flags_le_lo32&quot;))</i>
+&gt;<i> +		machdep-&gt;machspec-&gt;kernel_flags |= le32toh(value);</i>
+&gt;<i> +</i>
+&gt;<i>  	if (((type == 'A') || (type == 'a')) &amp;&amp; (highest_bit_long(value) != 63))</i>
+&gt;<i>  		return FALSE;</i>
+&gt;<i>  </i>
+&gt;<i> --</i>
+&gt;<i> 2.15.1</i>
+&gt;<i> </i>
+&gt;<i> --</i>
+&gt;<i> Crash-utility mailing list</i>
+&gt;<i> Crash-utility@xxxxxxxxxx</i>
+&gt;<i> <a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a></i>
+&gt;<i> </i>
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="07323" href="msg07323.html">[PATCH] arm64: fix page size calculation</a></strong>
+<ul><li><em>From:</em> AKASHI Takahiro</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07326.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07328.html">Re:  [PATCH] Speed up &quot;kmem -[sS]&quot; by optimizing is_page_ptr()</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07323.html">[PATCH] arm64: fix page size calculation</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07343.html">[PATCH] crash/symbols: Error out earlier in case	_stext_vmlinux is NULL or UNINITIALIZED</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07327"><strong>Date</strong></a></li>
+<li><a href="index.html#07327"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

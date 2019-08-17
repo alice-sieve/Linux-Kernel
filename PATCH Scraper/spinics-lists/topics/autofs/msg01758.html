@@ -1,0 +1,470 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 3/3] VFS / autofs4: remove kern_path_mountpoint() -->
+<!--X-From-R13: @rvyPebja &#60;arvyoNfhfr.pbz> -->
+<!--X-Date: Wed, 8 Nov 2017 23:52:04 &#45;0800 -->
+<!--X-Message-Id: 151021202428.22743.11071460838655377498.stgit@noble -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 151021179901.22743.15252956909042161062.stgit@noble -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 3/3] VFS / autofs4: remove kern_path_mountpoint() &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 3/3] VFS / autofs4: remove kern_path_mountpoint() &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 3/3] VFS / autofs4: remove kern_path_mountpoint()</h1>
+[<a href="msg01757.html">Date Prev</a>][<a href="msg01759.html">Date Next</a>][<a href="msg01757.html">Thread Prev</a>][<a href="msg01761.html">Thread Next</a>][<a href="maillist.html#01758">Date Index</a>][<a href="index.html#01758">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: Ian Kent &lt;ikent@xxxxxxxxxx&gt;, Latchesar Ionkov &lt;lucho@xxxxxxxxxx&gt;,        Jeff Layton &lt;jlayton@xxxxxxxxxx&gt;,        Eric Van Hensbergen &lt;ericvh@xxxxxxxxx&gt;,        Al Viro &lt;viro@xxxxxxxxxxxxxxxxxx&gt;, Ron Minnich &lt;rminnich@xxxxxxxxxx&gt;,        Trond Myklebust &lt;trondmy@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 3/3] VFS / autofs4: remove kern_path_mountpoint()</li>
+<li><em>From</em>: NeilBrown &lt;neilb@xxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 09 Nov 2017 18:20:24 +1100</li>
+<li><em>Cc</em>: linux-nfs@xxxxxxxxxxxxxxx, autofs@xxxxxxxxxxxxxxx,        linux-kernel@xxxxxxxxxxxxxxx, linux-fsdevel@xxxxxxxxxxxxxxx,        v9fs-developer@xxxxxxxxxxxxxxxxxxxxx,        Linus Torvalds &lt;torvalds@xxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;151021179901.22743.15252956909042161062.stgit@noble&gt;</li>
+<li><em>References</em>: &lt;151021179901.22743.15252956909042161062.stgit@noble&gt;</li>
+<li><em>User-agent</em>: StGit/0.17.1-dirty</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>kern_path_mountpoint() is only called from autofs4 to perform
+lookups which need to identify autofs4 mount points.
+
+Many of the differences between kern_path() and kern_path_mountpoint()
+are related to the fact that we will never use O_CREAT with the
+latter, and don't need to &quot;open&quot; the target.
+The main differences that could be relevant to autofs4 are:
+- kern_path_mountpoint() does not call complete_walk() in
+  mountpoint_last(), contrasting with do_last() which does call it.
+  This means -&gt;d_weak_revalidate() is not called from autofs4.
+
+- follow_managed() is not call from mountpoint_last().
+
+- LOOKUP_NO_REVAL is used for lookup_slow on the last component,
+  if it isn't in cache.
+
+As -&gt;d_weak_revalidate() is now a no-op when LOOKUP_OPEN isn't
+present, the first difference is no longer important.
+
+The use of LOOKUP_NO_REVAL shouldn't cause autofs4 any problems
+as no autofs4 dentry has -&gt;d_revalidate().
+
+follow_managed() might:
+ a/ call -&gt;d_manage()
+ b/ might cross a mountpoint
+ c/ might call follow_automount()
+
+'b' cannot be relevant as path_mountpoint calls follow_mount() after
+mountpoint_last() is called.
+
+'a' might only be interesting when -&gt;d_manage is autofs4_d_manage(),
+but autofs4 only calls kern_path_mountpoint from ioctls issued by the
+automount daemon, and autofs4_d_manage() will exit quickly in that
+case.  So there is no risk of autofs4_d_manage() waiting for the
+automount daemon (which it would be blocking) and causing a deadlock.
+
+'c' could have been a problem before commit 42f461482178 (&quot;autofs: fix
+AT_NO_AUTOMOUNT not being honored&quot;).  Prior to that commit a lookup
+for a negative autofs4 dentry could trigger an automount, even though
+'flags' is 0.  Since that commit and error is returned instead.
+
+So follow_managed() is no longer a problem.
+
+So there is no reason that autofs4 needs to use kern_path_mountpoint()
+any more.  It cannot deadlock.
+So the whole 'path mountpoint' infrastructure can be discarded.
+
+Signed-off-by: NeilBrown &lt;neilb@xxxxxxxx&gt;
+---
+ fs/autofs4/dev-ioctl.c |    5 +-
+ fs/namei.c             |  129 ------------------------------------------------
+ include/linux/namei.h  |    1 
+ 3 files changed, 2 insertions(+), 133 deletions(-)
+
+diff --git a/fs/autofs4/dev-ioctl.c b/fs/autofs4/dev-ioctl.c
+index b7c816f39404..716c44593117 100644
+--- a/fs/autofs4/dev-ioctl.c
++++ b/fs/autofs4/dev-ioctl.c
+@@ -209,7 +209,7 @@ static int find_autofs_mount(const char *pathname,
+ 	struct path path;
+ 	int err;
+ 
+-	err = kern_path_mountpoint(AT_FDCWD, pathname, &amp;path, 0);
++	err = kern_path(pathname,0 , &amp;path);
+ 	if (err)
+ 		return err;
+ 	err = -ENOENT;
+@@ -547,8 +547,7 @@ static int autofs_dev_ioctl_ismountpoint(struct file *fp,
+ 
+ 	if (!fp || param-&gt;ioctlfd == -1) {
+ 		if (autofs_type_any(type))
+-			err = kern_path_mountpoint(AT_FDCWD,
+-						   name, &amp;path, LOOKUP_FOLLOW);
++			err = kern_path(name, LOOKUP_FOLLOW, &amp;path);
+ 		else
+ 			err = find_autofs_mount(name, &amp;path,
+ 						test_by_type, &amp;type);
+diff --git a/fs/namei.c b/fs/namei.c
+index 6639203d7eba..e90680a3f6f1 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -2601,135 +2601,6 @@ int user_path_at_empty(int dfd, const char __user *name, unsigned flags,
+ }
+ EXPORT_SYMBOL(user_path_at_empty);
+ 
+-/**
+- * mountpoint_last - look up last component for umount
+- * @nd:   pathwalk nameidata - currently pointing at parent directory of &quot;last&quot;
+- *
+- * This is a special lookup_last function just for umount. In this case, we
+- * need to resolve the path without doing any revalidation.
+- *
+- * The nameidata should be the result of doing a LOOKUP_PARENT pathwalk. Since
+- * mountpoints are always pinned in the dcache, their ancestors are too. Thus,
+- * in almost all cases, this lookup will be served out of the dcache. The only
+- * cases where it won't are if nd-&gt;last refers to a symlink or the path is
+- * bogus and it doesn't exist.
+- *
+- * Returns:
+- * -error: if there was an error during lookup. This includes -ENOENT if the
+- *         lookup found a negative dentry.
+- *
+- * 0:      if we successfully resolved nd-&gt;last and found it to not to be a
+- *         symlink that needs to be followed.
+- *
+- * 1:      if we successfully resolved nd-&gt;last and found it to be a symlink
+- *         that needs to be followed.
+- */
+-static int
+-mountpoint_last(struct nameidata *nd)
+-{
+-	int error = 0;
+-	struct dentry *dir = nd-&gt;path.dentry;
+-	struct path path;
+-
+-	/* If we're in rcuwalk, drop out of it to handle last component */
+-	if (nd-&gt;flags &amp; LOOKUP_RCU) {
+-		if (unlazy_walk(nd))
+-			return -ECHILD;
+-	}
+-
+-	nd-&gt;flags &amp;= ~LOOKUP_PARENT;
+-
+-	if (unlikely(nd-&gt;last_type != LAST_NORM)) {
+-		error = handle_dots(nd, nd-&gt;last_type);
+-		if (error)
+-			return error;
+-		path.dentry = dget(nd-&gt;path.dentry);
+-	} else {
+-		path.dentry = d_lookup(dir, &amp;nd-&gt;last);
+-		if (!path.dentry) {
+-			/*
+-			 * No cached dentry. Mounted dentries are pinned in the
+-			 * cache, so that means that this dentry is probably
+-			 * a symlink or the path doesn't actually point
+-			 * to a mounted dentry.
+-			 */
+-			path.dentry = lookup_slow(&amp;nd-&gt;last, dir,
+-					     nd-&gt;flags | LOOKUP_NO_REVAL);
+-			if (IS_ERR(path.dentry))
+-				return PTR_ERR(path.dentry);
+-		}
+-	}
+-	if (d_is_negative(path.dentry)) {
+-		dput(path.dentry);
+-		return -ENOENT;
+-	}
+-	path.mnt = nd-&gt;path.mnt;
+-	return step_into(nd, &amp;path, 0, d_backing_inode(path.dentry), 0);
+-}
+-
+-/**
+- * path_mountpoint - look up a path to be umounted
+- * @nd:		lookup context
+- * @flags:	lookup flags
+- * @path:	pointer to container for result
+- *
+- * Look up the given name, but don't attempt to revalidate the last component.
+- * Returns 0 and &quot;path&quot; will be valid on success; Returns error otherwise.
+- */
+-static int
+-path_mountpoint(struct nameidata *nd, unsigned flags, struct path *path)
+-{
+-	const char *s = path_init(nd, flags);
+-	int err;
+-	if (IS_ERR(s))
+-		return PTR_ERR(s);
+-	while (!(err = link_path_walk(s, nd)) &amp;&amp;
+-		(err = mountpoint_last(nd)) &gt; 0) {
+-		s = trailing_symlink(nd);
+-		if (IS_ERR(s)) {
+-			err = PTR_ERR(s);
+-			break;
+-		}
+-	}
+-	if (!err) {
+-		*path = nd-&gt;path;
+-		nd-&gt;path.mnt = NULL;
+-		nd-&gt;path.dentry = NULL;
+-		follow_mount(path);
+-	}
+-	terminate_walk(nd);
+-	return err;
+-}
+-
+-static int
+-filename_mountpoint(int dfd, struct filename *name, struct path *path,
+-			unsigned int flags)
+-{
+-	struct nameidata nd;
+-	int error;
+-	if (IS_ERR(name))
+-		return PTR_ERR(name);
+-	set_nameidata(&amp;nd, dfd, name);
+-	error = path_mountpoint(&amp;nd, flags | LOOKUP_RCU, path);
+-	if (unlikely(error == -ECHILD))
+-		error = path_mountpoint(&amp;nd, flags, path);
+-	if (unlikely(error == -ESTALE))
+-		error = path_mountpoint(&amp;nd, flags | LOOKUP_REVAL, path);
+-	if (likely(!error))
+-		audit_inode(name, path-&gt;dentry, 0);
+-	restore_nameidata();
+-	putname(name);
+-	return error;
+-}
+-
+-int
+-kern_path_mountpoint(int dfd, const char *name, struct path *path,
+-			unsigned int flags)
+-{
+-	return filename_mountpoint(dfd, getname_kernel(name), path, flags);
+-}
+-EXPORT_SYMBOL(kern_path_mountpoint);
+-
+ int __check_sticky(struct inode *dir, struct inode *inode)
+ {
+ 	kuid_t fsuid = current_fsuid();
+diff --git a/include/linux/namei.h b/include/linux/namei.h
+index a982bb7cd480..e576bf40d761 100644
+--- a/include/linux/namei.h
++++ b/include/linux/namei.h
+@@ -79,7 +79,6 @@ extern struct dentry *kern_path_create(int, const char *, struct path *, unsigne
+ extern struct dentry *user_path_create(int, const char __user *, struct path *, unsigned int);
+ extern void done_path_create(struct path *, struct dentry *);
+ extern struct dentry *kern_path_locked(const char *, struct path *);
+-extern int kern_path_mountpoint(int, const char *, struct path *, unsigned int);
+ 
+ extern struct dentry *lookup_one_len(const char *, struct dentry *, int);
+ extern struct dentry *lookup_one_len_unlocked(const char *, struct dentry *, int);
+
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="01761" href="msg01761.html">Re: [PATCH 3/3] VFS / autofs4: remove kern_path_mountpoint()</a></strong>
+<ul><li><em>From:</em> Linus Torvalds</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01756" href="msg01756.html">[PATCH 0/3] VFS: name lookup improvements.</a></strong>
+<ul><li><em>From:</em> NeilBrown</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01757.html">[PATCH 2/3] VFS: remove user_path_mountpoint_at()</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01759.html">[PATCH 1/3] VFS/nfs/9p: revise meaning of d_weak_invalidate.</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01757.html">[PATCH 2/3] VFS: remove user_path_mountpoint_at()</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01761.html">Re: [PATCH 3/3] VFS / autofs4: remove kern_path_mountpoint()</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01758"><strong>Date</strong></a></li>
+<li><a href="index.html#01758"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

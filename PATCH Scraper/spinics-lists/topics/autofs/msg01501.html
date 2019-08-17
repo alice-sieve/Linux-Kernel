@@ -1,0 +1,298 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 6/7] autofs &#45; dont hold spin lock over direct mount expire -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Sun, 27 Nov 2016 18:12:36 &#45;0800 -->
+<!--X-Message-Id: 148029913453.27779.15747032937407838983.stgit@pluto.themaw.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 148029910861.27779.4517883721395202453.stgit@pluto.themaw.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 6/7] autofs - dont hold spin lock over direct mount expire &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 6/7] autofs - dont hold spin lock over direct mount expire &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 6/7] autofs - dont hold spin lock over direct mount expire</h1>
+[<a href="msg01500.html">Date Prev</a>][<a href="msg01502.html">Date Next</a>][<a href="msg01500.html">Thread Prev</a>][<a href="msg01502.html">Thread Next</a>][<a href="maillist.html#01501">Date Index</a>][<a href="index.html#01501">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: Andrew Morton &lt;akpm@xxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 6/7] autofs - dont hold spin lock over direct mount expire</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 28 Nov 2016 10:12:14 +0800</li>
+<li><em>Cc</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;,        Kernel Mailing List &lt;linux-kernel@xxxxxxxxxxxxxxx&gt;,        &quot;Eric W. Biederman&quot; &lt;ebiederm@xxxxxxxxxxxx&gt;,        linux-fsdevel &lt;linux-fsdevel@xxxxxxxxxxxxxxx&gt;,        Omar Sandoval &lt;osandov@xxxxxxxxxxx&gt;, Al Viro &lt;viro@xxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg01498.html">148029910861.27779.4517883721395202453.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg01498.html">148029910861.27779.4517883721395202453.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>User-agent</em>: StGit/0.17.1-dirty</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Ian Kent &lt;ikent@xxxxxxxxxx&gt;
+
+Commit 7cbdb4a286 altered the autofs indirect mount expire to
+not hold a spin lock during the expire check.
+
+The direct mount expire needs the same treatment because to
+make autofs expires namespace aware may_umount_tree() needs to
+to use a similar method to may_umount() when checking if a mount
+tree is in use.
+
+This means may_umount_tree() will end up taking the namespace_sem
+for the check so the autofs direct mount expire won't be allowed
+to hold a spin lock over the check.
+
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+Cc: Al Viro &lt;viro@xxxxxxxxxxxxxxxxxx&gt;
+Cc: Eric W. Biederman &lt;ebiederm@xxxxxxxxxxxx&gt;
+Cc: Omar Sandoval &lt;osandov@xxxxxxxxxxx&gt;
+---
+ fs/autofs4/expire.c |   17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
+
+diff --git a/fs/autofs4/expire.c b/fs/autofs4/expire.c
+index 13178bf..57725d4 100644
+--- a/fs/autofs4/expire.c
++++ b/fs/autofs4/expire.c
+@@ -310,26 +310,29 @@ struct dentry *autofs4_expire_direct(struct super_block *sb,
+ 	now = jiffies;
+ 	timeout = sbi-&gt;exp_timeout;
+ 
+-	spin_lock(&amp;sbi-&gt;fs_lock);
+-	ino = autofs4_dentry_ino(root);
+-	/* No point expiring a pending mount */
+-	if (ino-&gt;flags &amp; AUTOFS_INF_PENDING)
+-		goto out;
+ 	if (!autofs4_direct_busy(mnt, root, timeout, do_now)) {
++		spin_lock(&amp;sbi-&gt;fs_lock);
++		ino = autofs4_dentry_ino(root);
++		/* No point expiring a pending mount */
++		if (ino-&gt;flags &amp; AUTOFS_INF_PENDING) {
++			spin_unlock(&amp;sbi-&gt;fs_lock);
++			goto out;
++		}
+ 		ino-&gt;flags |= AUTOFS_INF_WANT_EXPIRE;
+ 		spin_unlock(&amp;sbi-&gt;fs_lock);
+ 		synchronize_rcu();
+-		spin_lock(&amp;sbi-&gt;fs_lock);
+ 		if (!autofs4_direct_busy(mnt, root, timeout, do_now)) {
++			spin_lock(&amp;sbi-&gt;fs_lock);
+ 			ino-&gt;flags |= AUTOFS_INF_EXPIRING;
+ 			init_completion(&amp;ino-&gt;expire_complete);
+ 			spin_unlock(&amp;sbi-&gt;fs_lock);
+ 			return root;
+ 		}
++		spin_lock(&amp;sbi-&gt;fs_lock);
+ 		ino-&gt;flags &amp;= ~AUTOFS_INF_WANT_EXPIRE;
++		spin_unlock(&amp;sbi-&gt;fs_lock);
+ 	}
+ out:
+-	spin_unlock(&amp;sbi-&gt;fs_lock);
+ 	dput(root);
+ 
+ 	return NULL;
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01498" href="msg01498.html">[PATCH 1/7] vfs - merge path_is_mountpoint() and path_is_mountpoint_rcu()</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01500.html">[PATCH 3/7] autofs - change struct path to const in autofs4_expire_wait() and autofs4_wait()</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01502.html">[PATCH 7/7] vfs - make may_umount_tree() mount propogation aware</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01500.html">[PATCH 3/7] autofs - change struct path to const in autofs4_expire_wait() and autofs4_wait()</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01502.html">[PATCH 7/7] vfs - make may_umount_tree() mount propogation aware</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01501"><strong>Date</strong></a></li>
+<li><a href="index.html#01501"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

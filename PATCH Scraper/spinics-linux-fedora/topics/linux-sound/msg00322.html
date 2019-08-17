@@ -1,0 +1,379 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 2/2] ASoC: atmel&#45;pcm: use generic dmaengine framework -->
+<!--X-From-R13: Pb Eura &#60;ibvpr.furaNngzry.pbz> -->
+<!--X-Date: Tue, 2 Jul 2013 01:40:09 &#45;0700 -->
+<!--X-Message-Id: 1372751718&#45;1437&#45;3&#45;git&#45;send&#45;email&#45;voice.shen@atmel.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1372751718&#45;1437&#45;1&#45;git&#45;send&#45;email&#45;voice.shen@atmel.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Sound: [PATCH 2/2] ASoC: atmel-pcm: use generic dmaengine framework">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Sound &mdash; [PATCH 2/2] ASoC: atmel-pcm: use generic dmaengine framework</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Sound" href="//feeds.feedburner.com/LinuxSound">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:6612422167" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 2/2] ASoC: atmel-pcm: use generic dmaengine framework</h1>
+[<a href="msg00321.html">Date Prev</a>][<a href="msg00323.html">Date Next</a>][<a href="msg00321.html">Thread Prev</a>][<a href="msg00324.html">Thread Next</a>][<a href="maillist.html#00322">Date Index</a>][<a href="index.html#00322">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 2/2] ASoC: atmel-pcm: use generic dmaengine framework</li>
+<li><em>From</em>: Bo Shen &lt;<a href="mailto:voice.shen@DOMAIN.HIDDEN">voice.shen@xxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Tue,  2 Jul 2013 15:55:18 +0800</li>
+<li><em>Cc</em>: Nicolas Ferre &lt;<a href="mailto:nicolas.ferre@DOMAIN.HIDDEN">nicolas.ferre@xxxxxxxxx</a>&gt;, <a href="mailto:richard.genoud@DOMAIN.HIDDEN">richard.genoud@xxxxxxxxx</a>,        <a href="mailto:linux-arm-kernel@DOMAIN.HIDDEN">linux-arm-kernel@xxxxxxxxxxxxxxx</a>, <a href="mailto:alsa-devel@DOMAIN.HIDDEN">alsa-devel@xxxxxxxxxxxxxxxx</a>,        <a href="mailto:linux-sound@DOMAIN.HIDDEN">linux-sound@xxxxxxxxxxxxxxx</a>, Bo Shen &lt;<a href="mailto:voice.shen@DOMAIN.HIDDEN">voice.shen@xxxxxxxxx</a>&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg00323.html">1372751718-1437-1-git-send-email-voice.shen@atmel.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Align atmel pcm to use ASoC generic dmaengine framework
+
+Signed-off-by: Bo Shen &lt;voice.shen@xxxxxxxxx&gt;
+
+---
+ sound/soc/atmel/atmel-pcm-dma.c |  118 ++++++---------------------------------
+ 1 file changed, 16 insertions(+), 102 deletions(-)
+
+diff --git a/sound/soc/atmel/atmel-pcm-dma.c b/sound/soc/atmel/atmel-pcm-dma.c
+index 1d38fd0..0f6c701 100644
+--- a/sound/soc/atmel/atmel-pcm-dma.c
++++ b/sound/soc/atmel/atmel-pcm-dma.c
+@@ -89,138 +89,52 @@ static void atmel_pcm_dma_irq(u32 ssc_sr,
+ 	}
+ }
+ 
+-/*--------------------------------------------------------------------------*\
+- * DMAENGINE operations
+-\*--------------------------------------------------------------------------*/
+-static bool filter(struct dma_chan *chan, void *slave)
+-{
+-	struct at_dma_slave *sl = slave;
+-
+-	if (sl-&gt;dma_dev == chan-&gt;device-&gt;dev) {
+-		chan-&gt;private = sl;
+-		return true;
+-	} else {
+-		return false;
+-	}
+-}
+-
+ static int atmel_pcm_configure_dma(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *params, struct atmel_pcm_dma_params *prtd)
++	struct snd_pcm_hw_params *params, struct dma_slave_config *slave_config)
+ {
++	struct snd_soc_pcm_runtime *rtd = substream-&gt;private_data;
++	struct atmel_pcm_dma_params *prtd;
+ 	struct ssc_device *ssc;
+-	struct dma_chan *dma_chan;
+-	struct dma_slave_config slave_config;
+ 	int ret;
+ 
++	prtd = snd_soc_dai_get_dma_data(rtd-&gt;cpu_dai, substream);
+ 	ssc = prtd-&gt;ssc;
+ 
+-	ret = snd_hwparams_to_dma_slave_config(substream, params,
+-			&amp;slave_config);
++	ret = snd_hwparams_to_dma_slave_config(substream, params, slave_config);
+ 	if (ret) {
+ 		pr_err(&quot;atmel-pcm: hwparams to dma slave configure failed\n&quot;);
+ 		return ret;
+ 	}
+ 
+ 	if (substream-&gt;stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		slave_config.dst_addr = (dma_addr_t)ssc-&gt;phybase + SSC_THR;
+-		slave_config.dst_maxburst = 1;
++		slave_config-&gt;dst_addr = (dma_addr_t)ssc-&gt;phybase + SSC_THR;
++		slave_config-&gt;dst_maxburst = 1;
+ 	} else {
+-		slave_config.src_addr = (dma_addr_t)ssc-&gt;phybase + SSC_RHR;
+-		slave_config.src_maxburst = 1;
+-	}
+-
+-	dma_chan = snd_dmaengine_pcm_get_chan(substream);
+-	if (dmaengine_slave_config(dma_chan, &amp;slave_config)) {
+-		pr_err(&quot;atmel-pcm: failed to configure dma channel\n&quot;);
+-		ret = -EBUSY;
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static int atmel_pcm_hw_params(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream-&gt;private_data;
+-	struct atmel_pcm_dma_params *prtd;
+-	struct ssc_device *ssc;
+-	struct at_dma_slave *sdata = NULL;
+-	int ret;
+-
+-	snd_pcm_set_runtime_buffer(substream, &amp;substream-&gt;dma_buffer);
+-
+-	prtd = snd_soc_dai_get_dma_data(rtd-&gt;cpu_dai, substream);
+-	ssc = prtd-&gt;ssc;
+-	if (ssc-&gt;pdev)
+-		sdata = ssc-&gt;pdev-&gt;dev.platform_data;
+-
+-	ret = snd_dmaengine_pcm_open_request_chan(substream, filter, sdata);
+-	if (ret) {
+-		pr_err(&quot;atmel-pcm: dmaengine pcm open failed\n&quot;);
+-		return -EINVAL;
+-	}
+-
+-	ret = atmel_pcm_configure_dma(substream, params, prtd);
+-	if (ret) {
+-		pr_err(&quot;atmel-pcm: failed to configure dmai\n&quot;);
+-		goto err;
++		slave_config-&gt;src_addr = (dma_addr_t)ssc-&gt;phybase + SSC_RHR;
++		slave_config-&gt;src_maxburst = 1;
+ 	}
+ 
+ 	prtd-&gt;dma_intr_handler = atmel_pcm_dma_irq;
+ 
+ 	return 0;
+-err:
+-	snd_dmaengine_pcm_close_release_chan(substream);
+-	return ret;
+ }
+ 
+-static int atmel_pcm_dma_prepare(struct snd_pcm_substream *substream)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream-&gt;private_data;
+-	struct atmel_pcm_dma_params *prtd;
+-
+-	prtd = snd_soc_dai_get_dma_data(rtd-&gt;cpu_dai, substream);
+-
+-	ssc_writex(prtd-&gt;ssc-&gt;regs, SSC_IER, prtd-&gt;mask-&gt;ssc_error);
+-	ssc_writex(prtd-&gt;ssc-&gt;regs, SSC_CR, prtd-&gt;mask-&gt;ssc_enable);
+-
+-	return 0;
+-}
+-
+-static int atmel_pcm_open(struct snd_pcm_substream *substream)
+-{
+-	snd_soc_set_runtime_hwparams(substream, &amp;atmel_pcm_dma_hardware);
+-
+-	return 0;
+-}
+-
+-static struct snd_pcm_ops atmel_pcm_ops = {
+-	.open		= atmel_pcm_open,
+-	.close		= snd_dmaengine_pcm_close_release_chan,
+-	.ioctl		= snd_pcm_lib_ioctl,
+-	.hw_params	= atmel_pcm_hw_params,
+-	.prepare	= atmel_pcm_dma_prepare,
+-	.trigger	= snd_dmaengine_pcm_trigger,
+-	.pointer	= snd_dmaengine_pcm_pointer_no_residue,
+-	.mmap		= atmel_pcm_mmap,
+-};
+-
+-static struct snd_soc_platform_driver atmel_soc_platform = {
+-	.ops		= &amp;atmel_pcm_ops,
+-	.pcm_new	= atmel_pcm_new,
+-	.pcm_free	= atmel_pcm_free,
++static const struct snd_dmaengine_pcm_config atmel_dmaengine_pcm_config = {
++	.prepare_slave_config = atmel_pcm_configure_dma,
++	.pcm_hardware = &amp;atmel_pcm_dma_hardware,
++	.prealloc_buffer_size = ATMEL_SSC_DMABUF_SIZE,
+ };
+ 
+ int atmel_pcm_dma_platform_register(struct device *dev)
+ {
+-	return snd_soc_register_platform(dev, &amp;atmel_soc_platform);
++	return snd_dmaengine_pcm_register(dev, &amp;atmel_dmaengine_pcm_config,
++			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE);
+ }
+ EXPORT_SYMBOL(atmel_pcm_dma_platform_register);
+ 
+ void atmel_pcm_dma_platform_unregister(struct device *dev)
+ {
+-	snd_soc_unregister_platform(dev);
++	snd_dmaengine_pcm_unregister(dev);
+ }
+ EXPORT_SYMBOL(atmel_pcm_dma_platform_unregister);
+ 
+-- 
+1.7.9.5
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe linux-sound&quot; in
+the body of a message to majordomo@xxxxxxxxxxxxxxx
+More majordomo info at  <a  rel="nofollow" href="http://vger.kernel.org/majordomo-info.html">http://vger.kernel.org/majordomo-info.html</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="00323" href="msg00323.html">[PATCH 0/2] ASoC: atmel-pcm: use generic dmaengine framework</a></strong>
+<ul><li><em>From:</em> Bo Shen</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00321.html">[PATCH 1/2] ASoC: atmel_ssc_dai: move set dma data to startup callback</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00323.html">[PATCH 0/2] ASoC: atmel-pcm: use generic dmaengine framework</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00321.html">[PATCH 1/2] ASoC: atmel_ssc_dai: move set dma data to startup callback</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00324.html">[PATCH 0/2] ASoC: atmel-pcm: use generic dmaengine framework</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00322"><strong>Date</strong></a></li>
+<li><a href="index.html#00322"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/Pulseaudio/>[Pulseaudio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/alsa-devel/>[ALSA&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td valign=top align=left>&nbsp;</td>
+<td valign=top align=right>
+<a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

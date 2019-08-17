@@ -1,0 +1,620 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH bpf&#45;next v9 00/10] Landlock LSM: Toward unprivileged sandboxing -->
+<!--X-From-R13: =?GFT&#45;8?d?[vpxn=Q3=OPy=20Enyn=Q3=PQa?= &#60;zvpNqvtvxbq.arg> -->
+<!--X-Date: Tue, 25 Jun 2019 14:58:11 &#45;0700 -->
+<!--X-Message-Id: 20190625215239.11136&#45;1&#45;mic@digikod.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, [PATCH bpf-next v9 00/10] Landlock LSM: Toward unprivileged sandboxing">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- [PATCH bpf-next v9 00/10] Landlock LSM: Toward unprivileged sandboxing</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH bpf-next v9 00/10] Landlock LSM: Toward unprivileged sandboxing</h1>
+[<a href="msg29351.html">Date Prev</a>][<a href="msg29353.html">Date Next</a>][<a href="msg29327.html">Thread Prev</a>][<a href="msg29343.html">Thread Next</a>][<a href="maillist.html#29352">Date Index</a>][<a href="index.html#29352">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH bpf-next v9 00/10] Landlock LSM: Toward unprivileged sandboxing</li>
+<li><em>From</em>: Micka&#xEB;l Sala&#xFC;n &lt;mic@xxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 25 Jun 2019 23:52:29 +0200</li>
+<li><em>Cc</em>: Micka&#xEB;l Sala&#xFC;n &lt;mic@xxxxxxxxxxx&gt;,        Aleksa Sarai &lt;cyphar@xxxxxxxxxx&gt;,        Alexander Viro &lt;viro@xxxxxxxxxxxxxxxxxx&gt;,        Alexei Starovoitov &lt;ast@xxxxxxxxxx&gt;,        Andrew Morton &lt;akpm@xxxxxxxxxxxxxxxxxxxx&gt;,        Andy Lutomirski &lt;luto@xxxxxxxxxxxxxx&gt;,        Arnaldo Carvalho de Melo &lt;acme@xxxxxxxxxx&gt;,        Casey Schaufler &lt;casey@xxxxxxxxxxxxxxxx&gt;,        Daniel Borkmann &lt;daniel@xxxxxxxxxxxxx&gt;,        David Drysdale &lt;drysdale@xxxxxxxxxx&gt;,        &quot;David S . Miller&quot; &lt;davem@xxxxxxxxxxxxx&gt;,        &quot;Eric W . Biederman&quot; &lt;ebiederm@xxxxxxxxxxxx&gt;,        James Morris &lt;jmorris@xxxxxxxxx&gt;, Jann Horn &lt;jann@xxxxxxxxx&gt;,        John Johansen &lt;john.johansen@xxxxxxxxxxxxx&gt;,        Jonathan Corbet &lt;corbet@xxxxxxx&gt;, Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;,        Michael Kerrisk &lt;mtk.manpages@xxxxxxxxx&gt;,        Micka&#xEB;l Sala&#xFC;n &lt;mickael.salaun@xxxxxxxxxxx&gt;,        Paul Moore &lt;paul@xxxxxxxxxxxxxx&gt;, Sargun Dhillon &lt;sargun@xxxxxxxxx&gt;,        &quot;Serge E . Hallyn&quot; &lt;serge@xxxxxxxxxx&gt;, Shuah Khan &lt;shuah@xxxxxxxxxx&gt;,        Stephen Smalley &lt;sds@xxxxxxxxxxxxx&gt;, Tejun Heo &lt;tj@xxxxxxxxxx&gt;,        Tetsuo Handa &lt;penguin-kernel@xxxxxxxxxxxxxxxxxxx&gt;,        Thomas Graf &lt;tgraf@xxxxxxx&gt;, Tycho Andersen &lt;tycho@xxxxxxxx&gt;,        Will Drewry &lt;wad@xxxxxxxxxxxx&gt;, kernel-hardening@xxxxxxxxxxxxxxxxxx,        linux-api@xxxxxxxxxxxxxxx, linux-fsdevel@xxxxxxxxxxxxxxx,        linux-security-module@xxxxxxxxxxxxxxx, netdev@xxxxxxxxxxxxxxx</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Hi,
+
+This ninth series upgrade Landlock as a stackable LSM [4] and elide the
+file system path evaluation from the previous series [1] to make this
+review process easier.  This patch series is almost half the size of the
+previous one.
+
+Landlock is a low-level framework to build custom access-control systems
+or safe endpoint security agents.  There is two types of Landlock hooks:
+FS_WALK and FS_PICK.  Each of them accepts a dedicated eBPF program,
+called a Landlock program.  The set of actions on a file is well defined
+(e.g.  read, write, ioctl, append, lock, mount...) taking inspiration
+from the major Linux LSMs and some other access-controls like Capsicum.
+
+The example patch show how a file system access control can be built
+based on a list of denied files and directories.  From a security point
+of view, it may be preferable to use a whitelist instead of a blacklist,
+but this series only enable to match a specific list of files.  Bringing
+back a way to evaluate a path is planned for a future dedicated series,
+once this base Landlock framework is merged.  I may take inspiration
+from the LOOKUP_BENEATH approach [5], but from an eBPF point of view.
+
+The documentation patch contains some kernel documentation and
+explanations on how to use Landlock.  The compiled documentation and
+some talks can be found here: <a  rel="nofollow" href="https://landlock.io">https://landlock.io</a>
+This patch series can be found in a Git repository here:
+<a  rel="nofollow" href="https://github.com/landlock-lsm/linux/commits/landlock-v9">https://github.com/landlock-lsm/linux/commits/landlock-v9</a>
+
+There is still some minor issues with this patch series but it is enough
+to get a deep review.
+
+This is the first step of the roadmap discussed at LPC [2].  While the
+intended final goal is to allow unprivileged users to use Landlock, this
+series allows only a process with global CAP_SYS_ADMIN to load and
+enforce a rule.  This may help to get feedback and avoid unexpected
+behaviors.
+
+This series can be applied on top of bpf-next, commit 88091ff56b71
+(&quot;selftests, bpf: Add test for veth native XDP&quot;).  This can be tested
+with CONFIG_SECCOMP_FILTER and CONFIG_SECURITY_LANDLOCK.  I would really
+appreciate constructive comments on the design and the code.
+
+
+# Landlock LSM
+
+The goal of this new Linux Security Module (LSM) called Landlock is to
+allow any process, including unprivileged ones, to create powerful
+security sandboxes comparable to XNU Sandbox or OpenBSD Pledge (which
+could be implemented with Landlock).  This kind of sandbox is expected
+to help mitigate the security impact of bugs or unexpected/malicious
+behaviors in user-space applications.
+
+The approach taken is to add the minimum amount of code while still
+allowing the user-space application to create quite complex access
+rules.  A dedicated security policy language such as the one used by
+SELinux, AppArmor and other major LSMs involves a lot of code and is
+usually permitted to only a trusted user (i.e. root).  On the contrary,
+eBPF programs already exist and are designed to be safely loaded by
+unprivileged user-space.
+
+This design does not seem too intrusive but is flexible enough to allow
+a powerful sandbox mechanism accessible by any process on Linux. The use
+of seccomp and Landlock is more suitable with the help of a user-space
+library (e.g.  libseccomp) that could help to specify a high-level
+language to express a security policy instead of raw eBPF programs.
+Moreover, thanks to the LLVM front-end, it is quite easy to write an
+eBPF program with a subset of the C language.
+
+
+# Frequently asked questions
+
+## Why is seccomp-bpf not enough?
+
+A seccomp filter can access only raw syscall arguments (i.e. the
+register values) which means that it is not possible to filter according
+to the value pointed to by an argument, such as a file pathname. As an
+embryonic Landlock version demonstrated, filtering at the syscall level
+is complicated (e.g. need to take care of race conditions). This is
+mainly because the access control checkpoints of the kernel are not at
+this high-level but more underneath, at the LSM-hook level. The LSM
+hooks are designed to handle this kind of checks.  Landlock abstracts
+this approach to leverage the ability of unprivileged users to limit
+themselves.
+
+Cf. section &quot;What it isn't?&quot; in Documentation/prctl/seccomp_filter.txt
+
+
+## Why use the seccomp(2) syscall?
+
+Landlock use the same semantic as seccomp to apply access rule
+restrictions. It add a new layer of security for the current process
+which is inherited by its children. It makes sense to use an unique
+access-restricting syscall (that should be allowed by seccomp filters)
+which can only drop privileges. Moreover, a Landlock rule could come
+from outside a process (e.g.  passed through a UNIX socket). It is then
+useful to differentiate the creation/load of Landlock eBPF programs via
+bpf(2), from rule enforcement via seccomp(2).
+
+
+## Why a new LSM? Are SELinux, AppArmor, Smack and Tomoyo not good
+   enough?
+
+The current access control LSMs are fine for their purpose which is to
+give the *root* the ability to enforce a security policy for the
+*system*. What is missing is a way to enforce a security policy for any
+application by its developer and *unprivileged user* as seccomp can do
+for raw syscall filtering.
+
+Differences from other (access control) LSMs:
+* not only dedicated to administrators (i.e. no_new_priv);
+* limited kernel attack surface (e.g. policy parsing);
+* constrained policy rules (no DoS: deterministic execution time);
+* do not leak more information than the loader process can legitimately
+  have access to (minimize metadata inference).
+
+
+# Changes since v8
+
+* fit with the new LSM stacking framework (security blobs were tested
+  but are not use in this series because of the code reduction)
+* remove the Landlock program chaining and the file path evaluation
+  feature to get a minimum viable product and ease the review
+* replace the example with a simple blacklist policy
+* rebase on bpf-next
+
+
+# Changes since v7
+
+* major revamp of the file system enforcement:
+  * new eBPF map dedicated to tie an inode with an arbitrary 64-bits
+    value, which can be used to tag files
+  * three new Landlock hooks: FS_WALK, FS_PICK and FS_GET
+  * add the ability to chain Landlock programs
+  * add a new eBPF map type to compare inodes
+  * don't use macros anymore
+* replace subtype fields:
+  * triggers: fine-grained bitfiel of actions on which a Landlock
+    program may be called (if it comes from a sandbox process)
+  * previous: a parent chained program
+* upstreamed patches:
+  * commit 369130b63178 (&quot;selftests: Enhance kselftest_harness.h to
+    print which assert failed&quot;)
+
+
+# Changes since v6
+
+* upstreamed patches:
+  * commit 752ba56fb130 (&quot;bpf: Extend check_uarg_tail_zero() checks&quot;)
+  * commit 0b40808a1084 (&quot;selftests: Make test_harness.h more generally
+    available&quot;) and related ones
+  * commit 3bb857e47e49 (&quot;LSM: Enable multiple calls to
+    security_add_hooks() for the same LSM&quot;)
+* simplify the landlock_context (remove syscall_* fields) and add three
+  FS sub-events: IOCTL, LOCK, FCNTL
+* minimize the number of callable BPF functions from a Landlock rule
+* do not split put_seccomp_filter() with put_seccomp()
+* rename Landlock version to Landlock ABI
+* miscellaneous fixes
+* rebase on net-next
+
+
+# Changes since v5
+
+* eBPF program subtype:
+  * use a prog_subtype pointer instead of inlining it into bpf_attr
+  * enable a future-proof behavior (reject unhandled data/size)
+  * add tests
+* use a simple rule hierarchy (similar to seccomp-bpf)
+* add a ptrace scope protection
+* add more tests
+* add more documentation
+* rename some files
+* miscellaneous fixes
+* rebase on net-next
+
+
+# Changes since v4
+
+* upstreamed patches:
+  * commit d498f8719a09 (&quot;bpf: Rebuild bpf.o for any dependency update&quot;)
+  * commit a734fb5d6006 (&quot;samples/bpf: Reset global variables&quot;) and
+    related ones
+  * commit f4874d01beba (&quot;bpf: Use bpf_create_map() from the library&quot;)
+    and related ones
+  * commit d02d8986a768 (&quot;bpf: Always test unprivileged programs&quot;)
+  * commit 640eb7e7b524 (&quot;fs: Constify path_is_under()'s arguments&quot;)
+  * commit 535e7b4b5ef2 (&quot;bpf: Use u64_to_user_ptr()&quot;)
+* revamp Landlock to not expose an LSM hook interface but wrap and
+  abstract them with Landlock events (currently one for all filesystem
+  related operations: LANDLOCK_SUBTYPE_EVENT_FS)
+* wrap all filesystem kernel objects through the same FS handle (struct
+  landlock_handle_fs): struct file, struct inode, struct path and struct
+  dentry
+* a rule don't return an errno code but only a boolean to allow or deny
+  an access request
+* handle all filesystem related LSM hooks
+* add some tests and a sample:
+  * BPF context tests
+  * Landlock sandboxing tests and sample
+  * write Landlock rules in C and compile them with LLVM
+* change field names of eBPF program subtype
+* remove arraymap of handles for now (will be replaced with a revamped
+  map)
+* remove cgroup handling for now
+* add user and kernel documentation
+* rebase on net-next
+
+
+# Changes since v3
+
+* upstreamed patch:
+  * commit 1955351da41c (&quot;bpf: Set register type according to
+    is_valid_access()&quot;)
+* use abstract LSM hook arguments with custom types (e.g.
+  *_LANDLOCK_ARG_FS for struct file, struct inode and struct path)
+* add more LSM hooks to support full filesystem access control
+* improve the sandbox example
+* fix races and RCU issues:
+  * eBPF program execution and eBPF helpers
+  * revamp the arraymap of handles to cleanly deal with update/delete
+* eBPF program subtype for Landlock:
+  * remove the &quot;origin&quot; field
+  * add an &quot;option&quot; field
+* rebase onto Daniel Mack's patches v7 [3]
+* remove merged commit 1955351da41c (&quot;bpf: Set register type according
+  to is_valid_access()&quot;)
+* fix spelling mistakes
+* cleanup some type and variable names
+* split patches
+* for now, remove cgroup delegation handling for unprivileged user
+* remove extra access check for cgroup_get_from_fd()
+* remove unused example code dealing with skb
+* remove seccomp-bpf link:
+  * no more seccomp cookie
+  * for now, it is no more possible to check the current syscall
+    properties
+
+
+# Changes since v2
+
+* revamp cgroup handling:
+  * use Daniel Mack's patches &quot;Add eBPF hooks for cgroups&quot; v5
+  * remove bpf_landlock_cmp_cgroup_beneath()
+  * make BPF_PROG_ATTACH usable with delegated cgroups
+  * add a new CGRP_NO_NEW_PRIVS flag for safe cgroups
+  * handle Landlock sandboxing for cgroups hierarchy
+  * allow unprivileged processes to attach Landlock eBPF program to
+    cgroups
+* add subtype to eBPF programs:
+  * replace Landlock hook identification by custom eBPF program types
+    with a dedicated subtype field
+  * manage fine-grained privileged Landlock programs
+  * register Landlock programs for dedicated trigger origins (e.g.
+    syscall, return from seccomp filter and/or interruption)
+* performance and memory optimizations: use an array to access Landlock
+  hooks directly but do not duplicated it for each thread
+  (seccomp-based)
+* allow running Landlock programs without seccomp filter
+* fix seccomp-related issues
+* remove extra errno bounding check for Landlock programs
+* add some examples for optional eBPF functions or context access
+  (network related) according to security checks to allow more features
+  for privileged programs (e.g. Checmate)
+
+
+# Changes since v1
+
+* focus on the LSM hooks, not the syscalls:
+  * much more simple implementation
+  * does not need audit cache tricks to avoid race conditions
+  * more simple to use and more generic because using the LSM hook
+    abstraction directly
+  * more efficient because only checking in LSM hooks
+  * architecture agnostic
+* switch from cBPF to eBPF:
+  * new eBPF program types dedicated to Landlock
+  * custom functions used by the eBPF program
+  * gain some new features (e.g. 10 registers, can load values of
+    different size, LLVM translator) but only a few functions allowed
+    and a dedicated map type
+  * new context: LSM hook ID, cookie and LSM hook arguments
+  * need to set the sysctl kernel.unprivileged_bpf_disable to 0 (default
+    value) to be able to load hook filters as unprivileged users
+* smaller and simpler:
+  * no more checker groups but dedicated arraymap of handles
+  * simpler userland structs thanks to eBPF functions
+* distinctive name: Landlock
+
+
+[1] <a  rel="nofollow" href="https://lore.kernel.org/lkml/20180227004121.3633-1-mic@xxxxxxxxxxx/">https://lore.kernel.org/lkml/20180227004121.3633-1-mic@xxxxxxxxxxx/</a>
+[2] <a  rel="nofollow" href="https://lore.kernel.org/lkml/5828776A.1010104@xxxxxxxxxxx/">https://lore.kernel.org/lkml/5828776A.1010104@xxxxxxxxxxx/</a>
+[3] <a  rel="nofollow" href="https://lore.kernel.org/netdev/1477390454-12553-1-git-send-email-daniel@xxxxxxxxxx/">https://lore.kernel.org/netdev/1477390454-12553-1-git-send-email-daniel@xxxxxxxxxx/</a>
+[4] <a  rel="nofollow" href="https://lore.kernel.org/lkml/50db058a-7dde-441b-a7f9-f6837fe8b69f@xxxxxxxxxxxxxxxx/">https://lore.kernel.org/lkml/50db058a-7dde-441b-a7f9-f6837fe8b69f@xxxxxxxxxxxxxxxx/</a>
+[5] <a  rel="nofollow" href="https://lore.kernel.org/lkml/20190520133305.11925-1-cyphar@xxxxxxxxxx/">https://lore.kernel.org/lkml/20190520133305.11925-1-cyphar@xxxxxxxxxx/</a>
+
+Regards,
+
+Micka&#xEB;l Sala&#xFC;n (10):
+  fs,security: Add a new file access type: MAY_CHROOT
+  bpf: Add eBPF program subtype and is_valid_subtype() verifier
+  bpf,landlock: Define an eBPF program type for Landlock hooks
+  seccomp,landlock: Enforce Landlock programs per process hierarchy
+  bpf,landlock: Add a new map type: inode
+  landlock: Handle filesystem access control
+  landlock: Add ptrace restrictions
+  bpf: Add a Landlock sandbox example
+  bpf,landlock: Add tests for Landlock
+  landlock: Add user and kernel documentation for Landlock
+
+ Documentation/security/index.rst              |   1 +
+ Documentation/security/landlock/index.rst     |  20 +
+ Documentation/security/landlock/kernel.rst    |  99 +++
+ Documentation/security/landlock/user.rst      | 148 +++++
+ MAINTAINERS                                   |  13 +
+ fs/open.c                                     |   3 +-
+ include/linux/bpf.h                           |  17 +
+ include/linux/bpf_types.h                     |   6 +
+ include/linux/fs.h                            |   1 +
+ include/linux/landlock.h                      |  34 ++
+ include/linux/lsm_hooks.h                     |   1 +
+ include/linux/seccomp.h                       |   5 +
+ include/uapi/linux/bpf.h                      |  22 +-
+ include/uapi/linux/landlock.h                 | 109 ++++
+ include/uapi/linux/seccomp.h                  |   1 +
+ kernel/bpf/Makefile                           |   3 +
+ kernel/bpf/core.c                             |   3 +
+ kernel/bpf/inodemap.c                         | 315 ++++++++++
+ kernel/bpf/syscall.c                          |  59 +-
+ kernel/bpf/verifier.c                         |  25 +
+ kernel/fork.c                                 |   8 +-
+ kernel/seccomp.c                              |   4 +
+ net/core/filter.c                             |  25 +-
+ samples/bpf/.gitignore                        |   1 +
+ samples/bpf/Makefile                          |   3 +
+ samples/bpf/bpf_load.c                        |  76 ++-
+ samples/bpf/bpf_load.h                        |   7 +
+ samples/bpf/landlock1.h                       |   8 +
+ samples/bpf/landlock1_kern.c                  | 104 ++++
+ samples/bpf/landlock1_user.c                  | 157 +++++
+ security/Kconfig                              |   1 +
+ security/Makefile                             |   2 +
+ security/landlock/Kconfig                     |  18 +
+ security/landlock/Makefile                    |   5 +
+ security/landlock/common.h                    |  81 +++
+ security/landlock/enforce.c                   | 272 +++++++++
+ security/landlock/enforce.h                   |  18 +
+ security/landlock/enforce_seccomp.c           |  92 +++
+ security/landlock/hooks.c                     |  95 +++
+ security/landlock/hooks.h                     |  31 +
+ security/landlock/hooks_fs.c                  | 568 ++++++++++++++++++
+ security/landlock/hooks_fs.h                  |  31 +
+ security/landlock/hooks_ptrace.c              | 121 ++++
+ security/landlock/hooks_ptrace.h              |   8 +
+ security/landlock/init.c                      | 159 +++++
+ security/security.c                           |  15 +
+ tools/include/uapi/linux/bpf.h                |  22 +-
+ tools/include/uapi/linux/landlock.h           | 109 ++++
+ tools/lib/bpf/bpf.c                           |  10 +-
+ tools/lib/bpf/bpf.h                           |   2 +
+ tools/lib/bpf/libbpf.c                        |   1 +
+ tools/lib/bpf/libbpf.map                      |   1 +
+ tools/lib/bpf/libbpf_probes.c                 |   2 +
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/bpf/bpf_helpers.h     |   2 +
+ tools/testing/selftests/bpf/test_verifier.c   |  27 +-
+ .../testing/selftests/bpf/verifier/landlock.c |  35 ++
+ .../testing/selftests/bpf/verifier/subtype.c  |  20 +
+ tools/testing/selftests/landlock/.gitignore   |   4 +
+ tools/testing/selftests/landlock/Makefile     |  39 ++
+ tools/testing/selftests/landlock/test.h       |  48 ++
+ tools/testing/selftests/landlock/test_base.c  |  24 +
+ tools/testing/selftests/landlock/test_fs.c    | 257 ++++++++
+ .../testing/selftests/landlock/test_ptrace.c  | 154 +++++
+ 64 files changed, 3528 insertions(+), 25 deletions(-)
+ create mode 100644 Documentation/security/landlock/index.rst
+ create mode 100644 Documentation/security/landlock/kernel.rst
+ create mode 100644 Documentation/security/landlock/user.rst
+ create mode 100644 include/linux/landlock.h
+ create mode 100644 include/uapi/linux/landlock.h
+ create mode 100644 kernel/bpf/inodemap.c
+ create mode 100644 samples/bpf/landlock1.h
+ create mode 100644 samples/bpf/landlock1_kern.c
+ create mode 100644 samples/bpf/landlock1_user.c
+ create mode 100644 security/landlock/Kconfig
+ create mode 100644 security/landlock/Makefile
+ create mode 100644 security/landlock/common.h
+ create mode 100644 security/landlock/enforce.c
+ create mode 100644 security/landlock/enforce.h
+ create mode 100644 security/landlock/enforce_seccomp.c
+ create mode 100644 security/landlock/hooks.c
+ create mode 100644 security/landlock/hooks.h
+ create mode 100644 security/landlock/hooks_fs.c
+ create mode 100644 security/landlock/hooks_fs.h
+ create mode 100644 security/landlock/hooks_ptrace.c
+ create mode 100644 security/landlock/hooks_ptrace.h
+ create mode 100644 security/landlock/init.c
+ create mode 100644 tools/include/uapi/linux/landlock.h
+ create mode 100644 tools/testing/selftests/bpf/verifier/landlock.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/subtype.c
+ create mode 100644 tools/testing/selftests/landlock/.gitignore
+ create mode 100644 tools/testing/selftests/landlock/Makefile
+ create mode 100644 tools/testing/selftests/landlock/test.h
+ create mode 100644 tools/testing/selftests/landlock/test_base.c
+ create mode 100644 tools/testing/selftests/landlock/test_fs.c
+ create mode 100644 tools/testing/selftests/landlock/test_ptrace.c
+
+-- 
+2.20.1
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="29353" href="msg29353.html">[PATCH bpf-next v9 05/10] bpf,landlock: Add a new map type: inode</a></strong>
+<ul><li><em>From:</em> Micka&#xEB;l Sala&#xFC;n</li></ul></li>
+<li><strong><a name="29351" href="msg29351.html">[PATCH bpf-next v9 06/10] landlock: Handle filesystem access control</a></strong>
+<ul><li><em>From:</em> Micka&#xEB;l Sala&#xFC;n</li></ul></li>
+<li><strong><a name="29350" href="msg29350.html">[PATCH bpf-next v9 09/10] bpf,landlock: Add tests for Landlock</a></strong>
+<ul><li><em>From:</em> Micka&#xEB;l Sala&#xFC;n</li></ul></li>
+<li><strong><a name="29349" href="msg29349.html">[PATCH bpf-next v9 04/10] seccomp,landlock: Enforce Landlock programs per process hierarchy</a></strong>
+<ul><li><em>From:</em> Micka&#xEB;l Sala&#xFC;n</li></ul></li>
+<li><strong><a name="29348" href="msg29348.html">[PATCH bpf-next v9 10/10] landlock: Add user and kernel documentation for Landlock</a></strong>
+<ul><li><em>From:</em> Micka&#xEB;l Sala&#xFC;n</li></ul></li>
+<li><strong><a name="29347" href="msg29347.html">[PATCH bpf-next v9 08/10] bpf: Add a Landlock sandbox example</a></strong>
+<ul><li><em>From:</em> Micka&#xEB;l Sala&#xFC;n</li></ul></li>
+<li><strong><a name="29346" href="msg29346.html">[PATCH bpf-next v9 03/10] bpf,landlock: Define an eBPF program type for Landlock hooks</a></strong>
+<ul><li><em>From:</em> Micka&#xEB;l Sala&#xFC;n</li></ul></li>
+<li><strong><a name="29345" href="msg29345.html">[PATCH bpf-next v9 02/10] bpf: Add eBPF program subtype and is_valid_subtype() verifier</a></strong>
+<ul><li><em>From:</em> Micka&#xEB;l Sala&#xFC;n</li></ul></li>
+<li><strong><a name="29344" href="msg29344.html">[PATCH bpf-next v9 01/10] fs,security: Add a new file access type: MAY_CHROOT</a></strong>
+<ul><li><em>From:</em> Micka&#xEB;l Sala&#xFC;n</li></ul></li>
+<li><strong><a name="29343" href="msg29343.html">[PATCH bpf-next v9 07/10] landlock: Add ptrace restrictions</a></strong>
+<ul><li><em>From:</em> Micka&#xEB;l Sala&#xFC;n</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29351.html">[PATCH bpf-next v9 06/10] landlock: Handle filesystem access control</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29353.html">[PATCH bpf-next v9 05/10] bpf,landlock: Add a new map type: inode</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29327.html">Re: possible deadlock in console_trylock_spinning</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29343.html">[PATCH bpf-next v9 07/10] landlock: Add ptrace restrictions</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29352"><strong>Date</strong></a></li>
+<li><a href="index.html#29352"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

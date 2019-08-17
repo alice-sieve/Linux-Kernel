@@ -1,0 +1,266 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 44/46] ASoC: qcom: consider CPU&#45;Platform	possibility -->
+<!--X-From-R13: Yhavabev [bevzbgb &#60;xhavabev.zbevzbgb.tkNerarfnf.pbz> -->
+<!--X-Date: Thu, 27 Jun 2019 19:16:45 &#45;0700 -->
+<!--X-Message-Id: 87imsqtr9y.wl&#45;kuninori.morimoto.gx@renesas.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 87a7e2wkll.wl&#45;kuninori.morimoto.gx@renesas.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 44/46] ASoC: qcom: consider CPU-Platform	possibility &mdash; ALSA Devel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 44/46] ASoC: qcom: consider CPU-Platform	possibility &mdash; ALSA Devel</title>
+<link rel="alternate" type="application/rss+xml" title="ALSA Devel" href="//feedproxy.google.com/AlsaDevel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 44/46] ASoC: qcom: consider CPU-Platform	possibility</h1>
+[<a href="msg93257.html">Date Prev</a>][<a href="msg93259.html">Date Next</a>][<a href="msg93332.html">Thread Prev</a>][<a href="msg93329.html">Thread Next</a>][<a href="maillist.html#93258">Date Index</a>][<a href="threads.html#93258">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: Mark Brown &lt;broonie@xxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 44/46] ASoC: qcom: consider CPU-Platform	possibility</li>
+<li><em>From</em>: Kuninori Morimoto &lt;kuninori.morimoto.gx@xxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: 28 Jun 2019 10:49:48 +0900</li>
+<li><em>Cc</em>: Linux-ALSA &lt;alsa-devel@xxxxxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg93214.html">87a7e2wkll.wl-kuninori.morimoto.gx@renesas.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg93214.html">87a7e2wkll.wl-kuninori.morimoto.gx@renesas.com</a>&gt;</li>
+<li><em>User-agent</em>: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>
+From: Kuninori Morimoto &lt;kuninori.morimoto.gx@xxxxxxxxxxx&gt;
+
+commit 0814c6412967 (&quot;ASoC: qcom: don't select unnecessary Platform&quot;)
+
+Current ALSA SoC avoid to add duplicate component to rtd,
+and this driver was selecting CPU component as Platform component.
+Thus, above patch removed Platform settings from this driver,
+because it assumed these are same component.
+
+But, some CPU driver is using generic DMAEngine, in such case, both
+CPU component and Platform component will have same of_node/name.
+In other words, there are some components which are different but
+have same of_node/name.
+
+In such case, Card driver definitely need to select Platform even
+though it is same as CPU.
+It is depends on CPU driver, but is difficult to know it from Card driver.
+This patch reverts above patch.
+
+Fixes: commit 0814c6412967 (&quot;ASoC: qcom: don't select unnecessary Platform&quot;)
+Signed-off-by: Kuninori Morimoto &lt;kuninori.morimoto.gx@xxxxxxxxxxx&gt;
+---
+ sound/soc/qcom/common.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
+index adf49b1..97488b5 100644
+--- a/sound/soc/qcom/common.c
++++ b/sound/soc/qcom/common.c
+@@ -103,9 +103,7 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 			link-&gt;codecs	 = dlc;
+ 			link-&gt;num_codecs = 1;
+ 
+-			link-&gt;platforms = NULL;
+-			link-&gt;num_platforms = 0;
+-
++			link-&gt;platforms-&gt;of_node = link-&gt;cpus-&gt;of_node;
+ 			link-&gt;codecs-&gt;dai_name = &quot;snd-soc-dummy-dai&quot;;
+ 			link-&gt;codecs-&gt;name = &quot;snd-soc-dummy&quot;;
+ 			link-&gt;dynamic = 1;
+-- 
+2.7.4
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@xxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://mailman.alsa-project.org/mailman/listinfo/alsa-devel">https://mailman.alsa-project.org/mailman/listinfo/alsa-devel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="93329" href="msg93329.html">Applied &quot;ASoC: qcom: consider CPU-Platform	possibility&quot; to the asoc tree</a></strong>
+<ul><li><em>From:</em> Mark Brown</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="93214" href="msg93214.html">[PATCH 00/46] ASoC: consider CPU-Platform possibility</a></strong>
+<ul><li><em>From:</em> Kuninori Morimoto</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg93257.html">[PATCH 43/46] ASoC: simple-card-utils: consider	CPU-Platform possibility</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg93259.html">[PATCH 45/46] ASoC: rockchip: rk3399_gru_sound:	consider CPU-Platform possibility</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg93332.html">Applied &quot;ASoC: simple-card-utils: consider	CPU-Platform possibility&quot; to the asoc tree</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg93329.html">Applied &quot;ASoC: qcom: consider CPU-Platform	possibility&quot; to the asoc tree</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#93258"><strong>Date</strong></a></li>
+<li><a href="threads.html#93258"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/alsa-user/>[ALSA&nbsp;User]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/pulse-audio/>[Pulse&nbsp;Audio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=http://yosemitephotos.net/>[Photo&nbsp;Sharing]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/linux-sound/>[Linux&nbsp;Sound]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-media/>[Video&nbsp;4&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gimp/>[Gimp]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

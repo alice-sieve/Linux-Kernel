@@ -1,0 +1,520 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 61/87] drm/amd/display: Hook up calls to do stereo mux and dig programming to stereo control interface -->
+<!--X-From-R13: &#60;fhacrat.yvNnzq.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 14:22:04 &#45;0700 -->
+<!--X-Message-Id: 20190715212049.4584&#45;62&#45;sunpeng.li@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715212049.4584&#45;1&#45;sunpeng.li@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 61/87] drm/amd/display: Hook up calls to do stereo mux and dig programming to stereo control interface">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 61/87] drm/amd/display: Hook up calls to do stereo mux and dig programming to stereo control interface &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 61/87] drm/amd/display: Hook up calls to do stereo mux and dig programming to stereo control interface</h1>
+[<a href="msg35913.html">Date Prev</a>][<a href="msg35915.html">Date Next</a>][<a href="msg35913.html">Thread Prev</a>][<a href="msg35915.html">Thread Next</a>][<a href="maillist.html#35914">Date Index</a>][<a href="index.html#35914">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: &lt;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 61/87] drm/amd/display: Hook up calls to do stereo mux and dig programming to stereo control interface</li>
+<li><em>From</em>: &lt;sunpeng.li@xxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 17:20:23 -0400</li>
+<li><em>Cc</em>: Leo Li &lt;sunpeng.li@xxxxxxx&gt;, Murton Liu &lt;murton.liu@xxxxxxx&gt;,        Aric Cyr &lt;Aric.Cyr@xxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg35850.html">20190715212049.4584-1-sunpeng.li@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg35850.html">20190715212049.4584-1-sunpeng.li@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Murton Liu &lt;murton.liu@xxxxxxx&gt;
+
+[Why]
+Implementation of stereo mux register is complete, but unused. Need to
+call functions to write relevant configs.
+
+[How]
+Add function to write stereo config for enable/disable case and call in
+stereo control interface.
+
+Signed-off-by: Murton Liu &lt;murton.liu@xxxxxxx&gt;
+Reviewed-by: Aric Cyr &lt;Aric.Cyr@xxxxxxx&gt;
+Acked-by: Leo Li &lt;sunpeng.li@xxxxxxx&gt;
+---
+ drivers/gpu/drm/amd/display/dc/core/dc.c      | 47 ++++++++++++
+ drivers/gpu/drm/amd/display/dc/dc.h           |  3 +
+ .../amd/display/dc/dcn10/dcn10_hw_sequencer.c |  7 ++
+ .../display/dc/gpio/dcn10/hw_factory_dcn10.c  | 42 ++++++++++-
+ .../drm/amd/display/dc/gpio/gpio_service.c    | 72 +++++++++++++++++++
+ .../display/include/gpio_service_interface.h  | 18 ++++-
+ 6 files changed, 186 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
+index d2948ffc3afe..b57e4550e73f 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
+@@ -1234,6 +1234,53 @@ void dc_release_state(struct dc_state *context)
+ 	kref_put(&amp;context-&gt;refcount, dc_state_free);
+ }
+ 
++bool dc_set_generic_gpio_for_stereo(bool enable,
++		struct gpio_service *gpio_service)
++{
++	enum gpio_result gpio_result = GPIO_RESULT_NON_SPECIFIC_ERROR;
++	struct gpio_pin_info pin_info;
++	struct gpio *generic;
++	struct gpio_generic_mux_config *config = kzalloc(sizeof(struct gpio_generic_mux_config),
++			   GFP_KERNEL);
++
++	pin_info = dal_gpio_get_generic_pin_info(gpio_service, GPIO_ID_GENERIC, 0);
++
++	if (pin_info.mask == 0xFFFFFFFF || pin_info.offset == 0xFFFFFFFF) {
++		kfree(config);
++		return false;
++	} else {
++		generic = dal_gpio_service_create_generic_mux(
++			gpio_service,
++			pin_info.offset,
++			pin_info.mask);
++	}
++
++	if (!generic) {
++		kfree(config);
++		return false;
++	}
++
++	gpio_result = dal_gpio_open(generic, GPIO_MODE_OUTPUT);
++
++	config-&gt;enable_output_from_mux = enable;
++	config-&gt;mux_select = GPIO_SIGNAL_SOURCE_PASS_THROUGH_STEREO_SYNC;
++
++	if (gpio_result == GPIO_RESULT_OK)
++		gpio_result = dal_mux_setup_config(generic, config);
++
++	if (gpio_result == GPIO_RESULT_OK) {
++		dal_gpio_close(generic);
++		dal_gpio_destroy_generic_mux(&amp;generic);
++		kfree(config);
++		return true;
++	} else {
++		dal_gpio_close(generic);
++		dal_gpio_destroy_generic_mux(&amp;generic);
++		kfree(config);
++		return false;
++	}
++}
++
+ static bool is_surface_in_context(
+ 		const struct dc_state *context,
+ 		const struct dc_plane_state *plane_state)
+diff --git a/drivers/gpu/drm/amd/display/dc/dc.h b/drivers/gpu/drm/amd/display/dc/dc.h
+index abc039b836d4..b314fd2869dd 100644
+--- a/drivers/gpu/drm/amd/display/dc/dc.h
++++ b/drivers/gpu/drm/amd/display/dc/dc.h
+@@ -852,6 +852,9 @@ enum dc_status dc_validate_plane(struct dc *dc, const struct dc_plane_state *pla
+ 
+ void get_clock_requirements_for_state(struct dc_state *state, struct AsicStateEx *info);
+ 
++bool dc_set_generic_gpio_for_stereo(bool enable,
++		struct gpio_service *gpio_service);
++
+ /*
+  * fast_validate: we return after determining if we can support the new state,
+  * but before we populate the programming info
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+index 40a8198ce934..c22fc1568184 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+@@ -2691,6 +2691,13 @@ static void dcn10_setup_stereo(struct pipe_ctx *pipe_ctx, struct dc *dc)
+ 
+ 	dcn10_config_stereo_parameters(stream, &amp;flags);
+ 
++	if (stream-&gt;timing.timing_3d_format == TIMING_3D_FORMAT_SIDEBAND_FA) {
++		if (!dc_set_generic_gpio_for_stereo(true, dc-&gt;ctx-&gt;gpio_service))
++			dc_set_generic_gpio_for_stereo(false, dc-&gt;ctx-&gt;gpio_service);
++	} else {
++		dc_set_generic_gpio_for_stereo(false, dc-&gt;ctx-&gt;gpio_service);
++	}
++
+ 	pipe_ctx-&gt;stream_res.opp-&gt;funcs-&gt;opp_program_stereo(
+ 		pipe_ctx-&gt;stream_res.opp,
+ 		flags.PROGRAM_STEREO == 1 ? true:false,
+diff --git a/drivers/gpu/drm/amd/display/dc/gpio/dcn10/hw_factory_dcn10.c b/drivers/gpu/drm/amd/display/dc/gpio/dcn10/hw_factory_dcn10.c
+index 32aa47a04a0d..5711f30cf848 100644
+--- a/drivers/gpu/drm/amd/display/dc/gpio/dcn10/hw_factory_dcn10.c
++++ b/drivers/gpu/drm/amd/display/dc/gpio/dcn10/hw_factory_dcn10.c
+@@ -31,6 +31,7 @@
+ #include &quot;../hw_gpio.h&quot;
+ #include &quot;../hw_ddc.h&quot;
+ #include &quot;../hw_hpd.h&quot;
++#include &quot;../hw_generic.h&quot;
+ 
+ #include &quot;hw_factory_dcn10.h&quot;
+ 
+@@ -121,6 +122,42 @@ static const struct ddc_sh_mask ddc_mask = {
+ 		DDC_MASK_SH_LIST(_MASK)
+ };
+ 
++#include &quot;../generic_regs.h&quot;
++
++/* set field name */
++#define SF_GENERIC(reg_name, field_name, post_fix)\
++	.field_name = reg_name ## __ ## field_name ## post_fix
++
++#define generic_regs(id) \
++{\
++	GENERIC_REG_LIST(id)\
++}
++
++static const struct generic_registers generic_regs[] = {
++	generic_regs(A),
++	generic_regs(B),
++};
++
++static const struct generic_sh_mask generic_shift[] = {
++	GENERIC_MASK_SH_LIST(__SHIFT, A),
++	GENERIC_MASK_SH_LIST(__SHIFT, B),
++};
++
++static const struct generic_sh_mask generic_mask[] = {
++	GENERIC_MASK_SH_LIST(_MASK, A),
++	GENERIC_MASK_SH_LIST(_MASK, B),
++};
++
++static void define_generic_registers(struct hw_gpio_pin *pin, uint32_t en)
++{
++	struct hw_generic *generic = HW_GENERIC_FROM_BASE(pin);
++
++	generic-&gt;regs = &amp;generic_regs[en];
++	generic-&gt;shifts = &amp;generic_shift[en];
++	generic-&gt;masks = &amp;generic_mask[en];
++	generic-&gt;base.regs = &amp;generic_regs[en].gpio;
++}
++
+ static void define_ddc_registers(
+ 		struct hw_gpio_pin *pin,
+ 		uint32_t en)
+@@ -161,12 +198,13 @@ static void define_hpd_registers(struct hw_gpio_pin *pin, uint32_t en)
+ static const struct hw_factory_funcs funcs = {
+ 	.create_ddc_data = dal_hw_ddc_create,
+ 	.create_ddc_clock = dal_hw_ddc_create,
+-	.create_generic = NULL,
++	.create_generic = dal_hw_generic_create,
+ 	.create_hpd = dal_hw_hpd_create,
+ 	.create_sync = NULL,
+ 	.create_gsl = NULL,
+ 	.define_hpd_registers = define_hpd_registers,
+-	.define_ddc_registers = define_ddc_registers
++	.define_ddc_registers = define_ddc_registers,
++	.define_generic_registers = define_generic_registers
+ };
+ /*
+  * dal_hw_factory_dcn10_init
+diff --git a/drivers/gpu/drm/amd/display/dc/gpio/gpio_service.c b/drivers/gpu/drm/amd/display/dc/gpio/gpio_service.c
+index 3c63a3c04dbb..937478bac796 100644
+--- a/drivers/gpu/drm/amd/display/dc/gpio/gpio_service.c
++++ b/drivers/gpu/drm/amd/display/dc/gpio/gpio_service.c
+@@ -139,6 +139,62 @@ struct gpio *dal_gpio_service_create_irq(
+ 	return dal_gpio_create_irq(service, id, en);
+ }
+ 
++struct gpio *dal_gpio_service_create_generic_mux(
++	struct gpio_service *service,
++	uint32_t offset,
++	uint32_t mask)
++{
++	enum gpio_id id;
++	uint32_t en;
++	struct gpio *generic;
++
++	if (mask == 1)
++		en = GPIO_GENERIC_A;
++	else if (mask == 0x00000100L)
++		en = GPIO_GENERIC_B;
++	else
++		return NULL;
++
++	id = GPIO_ID_GENERIC;
++
++	generic = dal_gpio_create(
++		service, id, en, GPIO_PIN_OUTPUT_STATE_DEFAULT);
++
++	return generic;
++}
++
++void dal_gpio_destroy_generic_mux(
++	struct gpio **mux)
++{
++	if (!mux || !*mux) {
++		ASSERT_CRITICAL(false);
++		return;
++	}
++
++	dal_gpio_close(*mux);
++	dal_gpio_destroy(mux);
++	kfree(*mux);
++
++	*mux = NULL;
++}
++
++struct gpio_pin_info dal_gpio_get_generic_pin_info(
++	struct gpio_service *service,
++	enum gpio_id id,
++	uint32_t en)
++{
++	struct gpio_pin_info pin;
++
++	if (service-&gt;translate.funcs-&gt;id_to_offset) {
++		service-&gt;translate.funcs-&gt;id_to_offset(id, en, &amp;pin);
++	} else {
++		pin.mask = 0xFFFFFFFF;
++		pin.offset = 0xFFFFFFFF;
++	}
++
++	return pin;
++}
++
+ void dal_gpio_service_destroy(
+ 	struct gpio_service **ptr)
+ {
+@@ -163,6 +219,21 @@ void dal_gpio_service_destroy(
+ 	*ptr = NULL;
+ }
+ 
++enum gpio_result dal_mux_setup_config(
++	struct gpio *mux,
++	struct gpio_generic_mux_config *config)
++{
++	struct gpio_config_data config_data;
++
++	if (!config)
++		return GPIO_RESULT_INVALID_DATA;
++
++	config_data.config.generic_mux = *config;
++	config_data.type = GPIO_CONFIG_TYPE_GENERIC_MUX;
++
++	return dal_gpio_set_config(mux, &amp;config_data);
++}
++
+ /*
+  * @brief
+  * Private API.
+@@ -253,6 +324,7 @@ enum gpio_result dal_gpio_service_open(
+ 	case GPIO_ID_GENERIC:
+ 		pin = service-&gt;factory.funcs-&gt;create_generic(
+ 			service-&gt;ctx, id, en);
++		service-&gt;factory.funcs-&gt;define_generic_registers(pin, en);
+ 	break;
+ 	case GPIO_ID_HPD:
+ 		pin = service-&gt;factory.funcs-&gt;create_hpd(
+diff --git a/drivers/gpu/drm/amd/display/include/gpio_service_interface.h b/drivers/gpu/drm/amd/display/include/gpio_service_interface.h
+index f40259bade40..9c55d247227e 100644
+--- a/drivers/gpu/drm/amd/display/include/gpio_service_interface.h
++++ b/drivers/gpu/drm/amd/display/include/gpio_service_interface.h
+@@ -51,13 +51,29 @@ struct gpio *dal_gpio_service_create_irq(
+ 	uint32_t offset,
+ 	uint32_t mask);
+ 
++struct gpio *dal_gpio_service_create_generic_mux(
++	struct gpio_service *service,
++	uint32_t offset,
++	uint32_t mask);
++
++void dal_gpio_destroy_generic_mux(
++	struct gpio **mux);
++
++enum gpio_result dal_mux_setup_config(
++	struct gpio *mux,
++	struct gpio_generic_mux_config *config);
++
++struct gpio_pin_info dal_gpio_get_generic_pin_info(
++	struct gpio_service *service,
++	enum gpio_id id,
++	uint32_t en);
++
+ struct ddc *dal_gpio_create_ddc(
+ 	struct gpio_service *service,
+ 	uint32_t offset,
+ 	uint32_t mask,
+ 	struct gpio_ddc_hw_info *info);
+ 
+-
+ void dal_gpio_destroy_ddc(
+ 	struct ddc **ddc);
+ 
+-- 
+2.22.0
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="35850" href="msg35850.html">[PATCH 00/87] DC Patches 15 Jul, 2019</a></strong>
+<ul><li><em>From:</em> sunpeng.li</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35913.html">[PATCH 70/87] drm/amd/display: add dcc programming for dual plane</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35915.html">[PATCH 69/87] drm/amd/display: Implement DAL3 GPU Integer Scaling</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35913.html">[PATCH 70/87] drm/amd/display: add dcc programming for dual plane</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35915.html">[PATCH 69/87] drm/amd/display: Implement DAL3 GPU Integer Scaling</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35914"><strong>Date</strong></a></li>
+<li><a href="index.html#35914"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

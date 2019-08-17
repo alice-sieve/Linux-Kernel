@@ -1,0 +1,569 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v4 12/23] tpm: Parse the capabilities supported by	swtpm and swtpm_setup -->
+<!--X-From-R13: Egrsna Pretre &#60;fgrsnaoNyvahk.iarg.voz.pbz> -->
+<!--X-Date: Thu, 11 Jul 2019 12:43:21 &#45;0700 -->
+<!--X-Message-Id: 20190711194151.3728114&#45;13&#45;stefanb@linux.vnet.ibm.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190711194151.3728114&#45;1&#45;stefanb@linux.vnet.ibm.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH v4 12/23] tpm: Parse the capabilities supported by	swtpm and swtpm_setup</title>
+<meta name="description" content="libvirt: [PATCH v4 12/23] tpm: Parse the capabilities supported by	swtpm and swtpm_setup">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH v4 12/23] tpm: Parse the capabilities supported by	swtpm and swtpm_setup</h1>
+[<a href="msg187257.html">Date Prev</a>][<a href="msg187259.html">Date Next</a>][<a href="msg187257.html">Thread Prev</a>][<a href="msg187259.html">Thread Next</a>][<a href="maillist.html#187258">Date Index</a>][<a href="index.html#187258">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v4 12/23] tpm: Parse the capabilities supported by	swtpm and swtpm_setup</li>
+<li><em>From</em>: Stefan Berger &lt;stefanb@xxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 11 Jul 2019 15:41:40 -0400</li>
+<li><em>Cc</em>: marcandre.lureau@xxxxxxxxxx, Stefan Berger &lt;stefanb@xxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187236.html">20190711194151.3728114-1-stefanb@linux.vnet.ibm.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187236.html">20190711194151.3728114-1-stefanb@linux.vnet.ibm.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Run 'swtpm socket --print-capabilities' and
+'swtpm_setup --print-capabilities' to get the JSON object of the
+features the programs are supporting and parse them into a bitmap.
+
+Signed-off-by: Stefan Berger &lt;stefanb@xxxxxxxxxxxxx&gt;
+---
+ src/conf/Makefile.inc.am |   6 ++
+ src/conf/virtpm_conf.c   |  36 +++++++++++
+ src/conf/virtpm_conf.h   |  36 +++++++++++
+ src/libvirt_private.syms |   5 ++
+ src/tpm/Makefile.inc.am  |   5 +-
+ src/tpm/virtpm.c         | 125 +++++++++++++++++++++++++++++++++++++--
+ 6 files changed, 208 insertions(+), 5 deletions(-)
+ create mode 100644 src/conf/virtpm_conf.c
+ create mode 100644 src/conf/virtpm_conf.h
+
+diff --git a/src/conf/Makefile.inc.am b/src/conf/Makefile.inc.am
+index 08c7c9da7f..e42425fcc5 100644
+--- a/src/conf/Makefile.inc.am
++++ b/src/conf/Makefile.inc.am
+@@ -153,6 +153,11 @@ DEVICE_CONF_SOURCES = \
+ 	conf/device_conf.h \
+ 	$(NULL)
+ 
++TPM_CONF_SOURCES = \
++	conf/virtpm_conf.c \
++	conf/virtpm_conf.h \
++	$(NULL)
++
+ CONF_SOURCES = \
+ 	$(NETDEV_CONF_SOURCES) \
+ 	$(DOMAIN_CONF_SOURCES) \
+@@ -171,6 +176,7 @@ CONF_SOURCES = \
+ 	$(CPU_CONF_SOURCES) \
+ 	$(CHRDEV_CONF_SOURCES) \
+ 	$(DEVICE_CONF_SOURCES) \
++	$(TPM_CONF_SOURCES) \
+ 	$(NULL)
+ 
+ noinst_LTLIBRARIES += libvirt_conf.la
+diff --git a/src/conf/virtpm_conf.c b/src/conf/virtpm_conf.c
+new file mode 100644
+index 0000000000..12e69e67b3
+--- /dev/null
++++ b/src/conf/virtpm_conf.c
+@@ -0,0 +1,36 @@
++/*
++ * virtpm_conf.c: vTPM XML processing
++ *
++ * Copyright (C) 2019 IBM Corporation
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library.  If not, see
++ * &lt;<a  rel="nofollow" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.
++ */
++
++#include &lt;config.h&gt;
++
++#include &quot;virenum.h&quot;
++#include &quot;virtpm_conf.h&quot;
++
++#define VIR_FROM_THIS VIR_FROM_NONE
++
++VIR_ENUM_IMPL(virTPMSwtpmFeature,
++              VIR_TPM_SWTPM_FEATURE_LAST,
++              &quot;cmdarg-pwd-fd&quot;,
++);
++
++VIR_ENUM_IMPL(virTPMSwtpmSetupFeature,
++              VIR_TPM_SWTPM_SETUP_FEATURE_LAST,
++              &quot;cmdarg-pwdfile-fd&quot;,
++);
+diff --git a/src/conf/virtpm_conf.h b/src/conf/virtpm_conf.h
+new file mode 100644
+index 0000000000..73c6c67271
+--- /dev/null
++++ b/src/conf/virtpm_conf.h
+@@ -0,0 +1,36 @@
++/*
++ * virtpm_conf.h: vTPM XML processing
++ *
++ * Copyright (C) 2019 IBM Corporation
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library.  If not, see
++ * &lt;<a  rel="nofollow" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.
++ */
++
++#pragma once
++
++typedef enum {
++    VIR_TPM_SWTPM_FEATURE_CMDARG_PWD_FD,
++
++    VIR_TPM_SWTPM_FEATURE_LAST
++} virTPMSwtpmFeature;
++
++typedef enum {
++    VIR_TPM_SWTPM_SETUP_FEATURE_CMDARG_PWDFILE_FD,
++
++    VIR_TPM_SWTPM_SETUP_FEATURE_LAST
++} virTPMSwtpmSetupFeature;
++
++VIR_ENUM_DECL(virTPMSwtpmFeature);
++VIR_ENUM_DECL(virTPMSwtpmSetupFeature);
+diff --git a/src/libvirt_private.syms b/src/libvirt_private.syms
+index e33d7d9f14..d2045895a1 100644
+--- a/src/libvirt_private.syms
++++ b/src/libvirt_private.syms
+@@ -1236,6 +1236,11 @@ virStoragePoolObjVolumeGetNames;
+ virStoragePoolObjVolumeListExport;
+ 
+ 
++# conf/virtpm_conf.h
++virTPMSwtpmFeatureTypeFromString;
++virTPMSwtpmSetupFeatureTypeFromString;
++
++
+ # cpu/cpu.h
+ cpuDecode;
+ cpuEncode;
+diff --git a/src/tpm/Makefile.inc.am b/src/tpm/Makefile.inc.am
+index 1f5131bf34..d8a15c406c 100644
+--- a/src/tpm/Makefile.inc.am
++++ b/src/tpm/Makefile.inc.am
+@@ -12,6 +12,9 @@ EXTRA_DIST += \
+ 
+ noinst_LTLIBRARIES += libvirt_tpm.la
+ libvirt_la_BUILT_LIBADD += libvirt_tpm.la
+-libvirt_tpm_la_CFLAGS = $(AM_CFLAGS)
++libvirt_tpm_la_CFLAGS = \
++	-I$(srcdir)/conf \
++	$(AM_CFLAGS) \
++	$(NULL)
+ libvirt_tpm_la_LDFLAGS = $(AM_LDFLAGS)
+ libvirt_tpm_la_SOURCES = $(TPM_UTIL_SOURCES)
+diff --git a/src/tpm/virtpm.c b/src/tpm/virtpm.c
+index e4735f9c4d..5aec663025 100644
+--- a/src/tpm/virtpm.c
++++ b/src/tpm/virtpm.c
+@@ -27,6 +27,10 @@
+ #include &quot;viralloc.h&quot;
+ #include &quot;virfile.h&quot;
+ #include &quot;virtpm.h&quot;
++#include &quot;vircommand.h&quot;
++#include &quot;virbitmap.h&quot;
++#include &quot;virjson.h&quot;
++#include &quot;virtpm_conf.h&quot;
+ 
+ #define VIR_FROM_THIS VIR_FROM_NONE
+ 
+@@ -74,17 +78,22 @@ virTPMCreateCancelPath(const char *devpath)
+ }
+ 
+ /*
+- * executables for the swtpm; to be found on the host
++ * executables for the swtpm; to be found on the host along with
++ * capabilties bitmap
+  */
+ static char *swtpm_path;
+ static struct stat swtpm_stat;
++static virBitmapPtr swtpm_caps;
+ 
+ static char *swtpm_setup;
+ static struct stat swtpm_setup_stat;
++static virBitmapPtr swtpm_setup_caps;
+ 
+ static char *swtpm_ioctl;
+ static struct stat swtpm_ioctl_stat;
+ 
++typedef int (*TypeFromStringFn)(const char *);
++
+ const char *
+ virTPMGetSwtpm(void)
+ {
+@@ -109,6 +118,99 @@ virTPMGetSwtpmIoctl(void)
+     return swtpm_ioctl;
+ }
+ 
++/* virTPMExecGetCaps
++ *
++ * Execute the prepared command and parse the returned JSON object
++ * to get the capabilities supported by the executable.
++ * A JSON object like this is expected:
++ *
++ * {
++ *  &quot;type&quot;: &quot;swtpm&quot;,
++ *  &quot;features&quot;: [
++ *    &quot;cmdarg-seccomp&quot;,
++ *    &quot;cmdarg-key-fd&quot;,
++ *    &quot;cmdarg-pwd-fd&quot;
++ *  ]
++ * }
++ */
++static virBitmapPtr
++virTPMExecGetCaps(virCommandPtr cmd,
++                  TypeFromStringFn typeFromStringFn)
++{
++    int exitstatus;
++    virBitmapPtr bitmap;
++    VIR_AUTOFREE(char *) outbuf = NULL;
++    VIR_AUTOPTR(virJSONValue) json = NULL;
++    virJSONValuePtr featureList;
++    virJSONValuePtr item;
++    size_t idx;
++    const char *str;
++    int typ;
++
++    virCommandSetOutputBuffer(cmd, &amp;outbuf);
++    if (virCommandRun(cmd, &amp;exitstatus) &lt; 0)
++        return NULL;
++
++    if (!(bitmap = virBitmapNewEmpty()))
++        return NULL;
++
++    /* older version does not support --print-capabilties -- that's fine */
++    if (exitstatus != 0)
++        return bitmap;
++
++    json = virJSONValueFromString(outbuf);
++    if (!json)
++        goto error_bad_json;
++
++    featureList = virJSONValueObjectGetArray(json, &quot;features&quot;);
++    if (!featureList)
++        goto error_bad_json;
++
++    if (!virJSONValueIsArray(featureList))
++        goto error_bad_json;
++
++    for (idx = 0; idx &lt; virJSONValueArraySize(featureList); idx++) {
++        item = virJSONValueArrayGet(featureList, idx);
++        if (!item)
++            continue;
++
++        str = virJSONValueGetString(item);
++        if (!str)
++            goto error_bad_json;
++        typ = typeFromStringFn(str);
++        if (typ &lt; 0)
++            continue;
++
++        if (virBitmapSetBitExpand(bitmap, typ) &lt; 0)
++            goto cleanup;
++    }
++
++ cleanup:
++    return bitmap;
++
++ error_bad_json:
++    virReportError(VIR_ERR_INTERNAL_ERROR,
++                   _(&quot;Unexpected JSON format: %s&quot;), outbuf);
++    goto cleanup;
++}
++
++static virBitmapPtr
++virTPMGetCaps(TypeFromStringFn typeFromStringFn,
++                  const char *exec, const char *param1)
++{
++    VIR_AUTOPTR(virCommand) cmd = NULL;
++
++    if (!(cmd = virCommandNew(exec)))
++        return NULL;
++
++    if (param1)
++        virCommandAddArg(cmd, param1);
++    virCommandAddArg(cmd, &quot;--print-capabilities&quot;);
++    virCommandClearCaps(cmd);
++
++    return virTPMExecGetCaps(cmd, typeFromStringFn);
++}
++
+ /*
+  * virTPMEmulatorInit
+  *
+@@ -122,16 +224,24 @@ virTPMEmulatorInit(void)
+         const char *name;
+         char **path;
+         struct stat *stat;
++        const char *parm;
++        virBitmapPtr *caps;
++        TypeFromStringFn typeFromStringFn;
+     } prgs[] = {
+         {
+             .name = &quot;swtpm&quot;,
+             .path = &amp;swtpm_path,
+             .stat = &amp;swtpm_stat,
++            .parm = &quot;socket&quot;,
++            .caps = &amp;swtpm_caps,
++            .typeFromStringFn = virTPMSwtpmFeatureTypeFromString,
+         },
+         {
+             .name = &quot;swtpm_setup&quot;,
+             .path = &amp;swtpm_setup,
+             .stat = &amp;swtpm_setup_stat,
++            .caps = &amp;swtpm_setup_caps,
++            .typeFromStringFn = virTPMSwtpmSetupFeatureTypeFromString,
+         },
+         {
+             .name = &quot;swtpm_ioctl&quot;,
+@@ -142,7 +252,7 @@ virTPMEmulatorInit(void)
+     size_t i;
+ 
+     for (i = 0; i &lt; ARRAY_CARDINALITY(prgs); i++) {
+-        char *path;
++        VIR_AUTOFREE(char *) path = NULL;
+         bool findit = *prgs[i].path == NULL;
+         struct stat statbuf;
+         char *tmp;
+@@ -174,18 +284,25 @@ virTPMEmulatorInit(void)
+                 virReportError(VIR_ERR_INTERNAL_ERROR,
+                                _(&quot;%s is not an executable&quot;),
+                                path);
+-                VIR_FREE(path);
+                 return -1;
+             }
+             if (stat(path, prgs[i].stat) &lt; 0) {
+                 virReportSystemError(errno,
+                                      _(&quot;Could not stat %s&quot;), path);
+-                VIR_FREE(path);
+                 return -1;
+             }
+             tmp = *prgs[i].path;
+             *prgs[i].path = path;
+             VIR_FREE(tmp);
++
++            if (prgs[i].caps) {
++                *prgs[i].caps = virTPMGetCaps(prgs[i].typeFromStringFn,
++                                              path, prgs[i].parm);
++                path = NULL;
++                if (!*prgs[i].caps)
++                    return -1;
++            }
++            path = NULL;
+         }
+     }
+ 
+-- 
+2.20.1
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187257.html">[PATCH v4 06/23] tests: Add test for TPM XML encryption	parser and formatter</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187259.html">[PATCH v4 11/23] tpm: Check whether previously found	executables were updated</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187257.html">[PATCH v4 06/23] tests: Add test for TPM XML encryption	parser and formatter</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187259.html">[PATCH v4 11/23] tpm: Check whether previously found	executables were updated</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187258"><strong>Date</strong></a></li>
+<li><a href="index.html#187258"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

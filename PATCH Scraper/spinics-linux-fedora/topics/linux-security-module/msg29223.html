@@ -1,0 +1,300 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re: [PATCH v3 10/24] Use lsmblob in security_ipc_getsecid -->
+<!--X-From-R13: Yrrf Qbbx &#60;xrrfpbbxNpuebzvhz.bet> -->
+<!--X-Date: Sat, 22 Jun 2019 15:48:29 &#45;0700 -->
+<!--X-Message-Id: 201906221545.43D54F0F@keescook -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190621185233.6766&#45;1&#45;casey@schaufler&#45;ca.com -->
+<!--X-Reference: 20190621185233.6766&#45;11&#45;casey@schaufler&#45;ca.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, Re: [PATCH v3 10/24] Use lsmblob in security_ipc_getsecid">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- Re: [PATCH v3 10/24] Use lsmblob in security_ipc_getsecid</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re: [PATCH v3 10/24] Use lsmblob in security_ipc_getsecid</h1>
+[<a href="msg29222.html">Date Prev</a>][<a href="msg29224.html">Date Next</a>][<a href="msg29163.html">Thread Prev</a>][<a href="msg29274.html">Thread Next</a>][<a href="maillist.html#29223">Date Index</a>][<a href="index.html#29223">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re: [PATCH v3 10/24] Use lsmblob in security_ipc_getsecid</li>
+<li><em>From</em>: Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Sat, 22 Jun 2019 15:48:24 -0700</li>
+<li><em>Cc</em>: casey.schaufler@xxxxxxxxx, jmorris@xxxxxxxxx,        linux-security-module@xxxxxxxxxxxxxxx, selinux@xxxxxxxxxxxxxxx,        john.johansen@xxxxxxxxxxxxx, penguin-kernel@xxxxxxxxxxxxxxxxxxx,        paul@xxxxxxxxxxxxxx, sds@xxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29163.html">20190621185233.6766-11-casey@schaufler-ca.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg29154.html">20190621185233.6766-1-casey@schaufler-ca.com</a>&gt; &lt;<a href="msg29163.html">20190621185233.6766-11-casey@schaufler-ca.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On Fri, Jun 21, 2019 at 11:52:19AM -0700, Casey Schaufler wrote:
+&gt; There may be more than one LSM that provides IPC data
+&gt; for auditing. Change security_ipc_getsecid() to fill in
+&gt; a lsmblob structure instead of the u32 secid. The
+&gt; audit data structure containing the secid will be updated
+&gt; later, so there is a bit of scaffolding here.
+&gt; 
+&gt; Signed-off-by: Casey Schaufler &lt;casey@xxxxxxxxxxxxxxxx&gt;
+
+Reviewed-by: Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;
+
+One thought below...
+
+&gt; ---
+&gt;  include/linux/security.h | 7 ++++---
+&gt;  kernel/auditsc.c         | 5 ++++-
+&gt;  security/security.c      | 9 ++++++---
+&gt;  3 files changed, 14 insertions(+), 7 deletions(-)
+&gt; 
+&gt; diff --git a/include/linux/security.h b/include/linux/security.h
+&gt; index c6cddeff8a17..0d5e172341fc 100644
+&gt; --- a/include/linux/security.h
+&gt; +++ b/include/linux/security.h
+&gt; @@ -413,7 +413,7 @@ int security_task_prctl(int option, unsigned long arg2, unsigned long arg3,
+&gt;  			unsigned long arg4, unsigned long arg5);
+&gt;  void security_task_to_inode(struct task_struct *p, struct inode *inode);
+&gt;  int security_ipc_permission(struct kern_ipc_perm *ipcp, short flag);
+&gt; -void security_ipc_getsecid(struct kern_ipc_perm *ipcp, u32 *secid);
+&gt; +void security_ipc_getsecid(struct kern_ipc_perm *ipcp, struct lsmblob *blob);
+&gt;  int security_msg_msg_alloc(struct msg_msg *msg);
+&gt;  void security_msg_msg_free(struct msg_msg *msg);
+&gt;  int security_msg_queue_alloc(struct kern_ipc_perm *msq);
+&gt; @@ -1098,9 +1098,10 @@ static inline int security_ipc_permission(struct kern_ipc_perm *ipcp,
+&gt;  	return 0;
+&gt;  }
+&gt;  
+&gt; -static inline void security_ipc_getsecid(struct kern_ipc_perm *ipcp, u32 *secid)
+&gt; +static inline void security_ipc_getsecid(struct kern_ipc_perm *ipcp,
+&gt; +					 struct lsmblob *blob)
+&gt;  {
+&gt; -	*secid = 0;
+&gt; +	lsmblob_init(blob, 0);
+&gt;  }
+&gt;  
+&gt;  static inline int security_msg_msg_alloc(struct msg_msg *msg)
+&gt; diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+&gt; index d31914088a82..148733ec3c72 100644
+&gt; --- a/kernel/auditsc.c
+&gt; +++ b/kernel/auditsc.c
+&gt; @@ -2268,11 +2268,14 @@ void __audit_mq_getsetattr(mqd_t mqdes, struct mq_attr *mqstat)
+&gt;  void __audit_ipc_obj(struct kern_ipc_perm *ipcp)
+&gt;  {
+&gt;  	struct audit_context *context = audit_context();
+&gt; +	struct lsmblob blob;
+&gt;  	context-&gt;ipc.uid = ipcp-&gt;uid;
+&gt;  	context-&gt;ipc.gid = ipcp-&gt;gid;
+&gt;  	context-&gt;ipc.mode = ipcp-&gt;mode;
+&gt;  	context-&gt;ipc.has_perm = 0;
+&gt; -	security_ipc_getsecid(ipcp, &amp;context-&gt;ipc.osid);
+&gt; +	security_ipc_getsecid(ipcp, &amp;blob);
+&gt; +	/* scaffolding on the [0] - change &quot;osid&quot; to a lsmblob */
+&gt; +	context-&gt;ipc.osid = blob.secid[0];
+&gt;  	context-&gt;type = AUDIT_IPC;
+&gt;  }
+&gt;  
+&gt; diff --git a/security/security.c b/security/security.c
+&gt; index 5ab07631df75..d55f01041f05 100644
+&gt; --- a/security/security.c
+&gt; +++ b/security/security.c
+&gt; @@ -1812,10 +1812,13 @@ int security_ipc_permission(struct kern_ipc_perm *ipcp, short flag)
+&gt;  	return call_int_hook(ipc_permission, 0, ipcp, flag);
+&gt;  }
+&gt;  
+&gt; -void security_ipc_getsecid(struct kern_ipc_perm *ipcp, u32 *secid)
+&gt; +void security_ipc_getsecid(struct kern_ipc_perm *ipcp, struct lsmblob *blob)
+&gt;  {
+&gt; -	*secid = 0;
+&gt; -	call_void_hook(ipc_getsecid, ipcp, secid);
+&gt; +	struct security_hook_list *hp;
+&gt; +
+&gt; +	lsmblob_init(blob, 0);
+&gt; +	hlist_for_each_entry(hp, &amp;security_hook_heads.ipc_getsecid, list)
+&gt; +		hp-&gt;hook.ipc_getsecid(ipcp, &amp;blob-&gt;secid[hp-&gt;slot]);
+
+Just for sanity when using hp-&gt;slot, it might be good to do something
+like this in the places it gets used. Like for here:
+
+	if (!WARN_ON(hp-&gt;slot &lt; 0 || hp-&gt;slot &gt;= LSMBLOB_COUNT))
+		hp-&gt;hook.ipc_getsecid(ipcp, &amp;blob-&gt;secid[hp-&gt;slot]);
+
+This _should_ be overkill, but since lists of hooks that trigger slot
+assignment is hardcoded, it seems nice to cover any future problems or
+mismatches.
+
+-- 
+Kees Cook
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="29274" href="msg29274.html">Re: [PATCH v3 10/24] Use lsmblob in security_ipc_getsecid</a></strong>
+<ul><li><em>From:</em> Casey Schaufler</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29154" href="msg29154.html">[PATCH v3 00/24] LSM: Module stacking for AppArmor</a></strong>
+<ul><li><em>From:</em> Casey Schaufler</li></ul></li>
+<li><strong><a name="29163" href="msg29163.html">[PATCH v3 10/24] Use lsmblob in security_ipc_getsecid</a></strong>
+<ul><li><em>From:</em> Casey Schaufler</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29222.html">Re: [PATCH v3 09/24] LSM: Use lsmblob in security_secid_to_secctx</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29224.html">Re: [PATCH v3 11/24] LSM: Use lsmblob in security_task_getsecid</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29163.html">[PATCH v3 10/24] Use lsmblob in security_ipc_getsecid</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29274.html">Re: [PATCH v3 10/24] Use lsmblob in security_ipc_getsecid</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29223"><strong>Date</strong></a></li>
+<li><a href="index.html#29223"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

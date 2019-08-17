@@ -1,0 +1,261 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] ALSA: hda: Fix a headphone detection issue	when using SOF -->
+<!--X-From-R13: Dnaqre Inat &#60;enaqre.jnatNyvahk.vagry.pbz> -->
+<!--X-Date: Mon, 1 Jul 2019 00:53:30 &#45;0700 -->
+<!--X-Message-Id: 20190701074630.51472&#45;1&#45;rander.wang@linux.intel.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH] ALSA: hda: Fix a headphone detection issue	when using SOF &mdash; ALSA Devel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH] ALSA: hda: Fix a headphone detection issue	when using SOF &mdash; ALSA Devel</title>
+<link rel="alternate" type="application/rss+xml" title="ALSA Devel" href="//feedproxy.google.com/AlsaDevel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] ALSA: hda: Fix a headphone detection issue	when using SOF</h1>
+[<a href="msg93387.html">Date Prev</a>][<a href="msg93389.html">Date Next</a>][<a href="msg93383.html">Thread Prev</a>][<a href="msg93401.html">Thread Next</a>][<a href="maillist.html#93388">Date Index</a>][<a href="threads.html#93388">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: tiwai@xxxxxxx, alsa-devel@xxxxxxxxxxxxxxxx</li>
+<li><em>Subject</em>: [PATCH] ALSA: hda: Fix a headphone detection issue	when using SOF</li>
+<li><em>From</em>: Rander Wang &lt;rander.wang@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon,  1 Jul 2019 15:46:30 +0800</li>
+<li><em>Cc</em>: Rander Wang &lt;rander.wang@xxxxxxxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>To save power, the hda hdmi driver in ASoC invokes snd_hdac_ext_bus_link_put
+to disable CORB/RIRB buffers DMA if there is no user of bus and invokes
+snd_hdac_ext_bus_link_get to set up CORB/RIRB buffers when it is used.
+Unsolicited responses is disabled in snd_hdac_bus_stop_cmd_io called by
+snd_hdac_ext_bus_link_put , but it is not enabled in snd_hdac_bus_init_cmd_io
+called by snd_hdac_ext_bus_link_get. So for put-get sequence, Unsolicited
+responses is disabled and headphone can't be detected by hda codecs.
+
+Now unsolicited responses is only enabled in snd_hdac_bus_reset_link
+which resets controller. The function is only called for setup of
+controller. This patch enables Unsolicited responses after RIRB is
+initialized in snd_hdac_bus_init_cmd_io which works together with
+snd_hdac_bus_reset_link to set up controller.
+
+Tested legacy hda driver and SOF driver on intel whiskeylake.
+
+Reviewed-by: Takashi Iwai &lt;tiwai@xxxxxxx&gt;
+Signed-off-by: Rander Wang &lt;rander.wang@xxxxxxxxxxxxxxx&gt;
+---
+ sound/hda/hdac_controller.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+index d6a91429c058..c24fc8d266a9 100644
+--- a/sound/hda/hdac_controller.c
++++ b/sound/hda/hdac_controller.c
+@@ -78,6 +78,8 @@ void snd_hdac_bus_init_cmd_io(struct hdac_bus *bus)
+ 	snd_hdac_chip_writew(bus, RINTCNT, 1);
+ 	/* enable rirb dma and response irq */
+ 	snd_hdac_chip_writeb(bus, RIRBCTL, AZX_RBCTL_DMA_EN | AZX_RBCTL_IRQ_EN);
++	/* Accept unsolicited responses */
++	snd_hdac_chip_updatel(bus, GCTL, AZX_GCTL_UNSOL, AZX_GCTL_UNSOL);
+ 	spin_unlock_irq(&amp;bus-&gt;reg_lock);
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_bus_init_cmd_io);
+@@ -416,9 +418,6 @@ int snd_hdac_bus_reset_link(struct hdac_bus *bus, bool full_reset)
+ 		return -EBUSY;
+ 	}
+ 
+-	/* Accept unsolicited responses */
+-	snd_hdac_chip_updatel(bus, GCTL, AZX_GCTL_UNSOL, AZX_GCTL_UNSOL);
+-
+ 	/* detect codecs */
+ 	if (!bus-&gt;codec_mask) {
+ 		bus-&gt;codec_mask = snd_hdac_chip_readw(bus, STATESTS);
+-- 
+2.14.1
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@xxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://mailman.alsa-project.org/mailman/listinfo/alsa-devel">https://mailman.alsa-project.org/mailman/listinfo/alsa-devel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="93401" href="msg93401.html">Re:  [PATCH] ALSA: hda: Fix a headphone detection issue	when using SOF</a></strong>
+<ul><li><em>From:</em> Takashi Iwai</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg93387.html">Re:  [RFC PATCH 3/5] soundwire: add module_sdw_driver	helper macro</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg93389.html">GIT: Regarding the issue we are facing in the commit	37728639ae05de702825d96bd1d42e24ae772248</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg93383.html">[PATCH RFC V3] ALSA: usb-audio: Scarlett Gen 2 mixer	interface</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg93401.html">Re:  [PATCH] ALSA: hda: Fix a headphone detection issue	when using SOF</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#93388"><strong>Date</strong></a></li>
+<li><a href="threads.html#93388"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/alsa-user/>[ALSA&nbsp;User]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/pulse-audio/>[Pulse&nbsp;Audio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=http://yosemitephotos.net/>[Photo&nbsp;Sharing]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/linux-sound/>[Linux&nbsp;Sound]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-media/>[Video&nbsp;4&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gimp/>[Gimp]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

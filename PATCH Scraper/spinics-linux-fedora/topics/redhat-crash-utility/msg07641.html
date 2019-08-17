@@ -1,0 +1,483 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re:  [PATCH] Add &#45;T option to configure task table via a	file -->
+<!--X-From-R13: Rnir Oaqrefba &#60;naqrefbaNerqung.pbz> -->
+<!--X-Date: Wed, 16 Jan 2019 07:33:18 &#45;0800 -->
+<!--X-Message-Id: 2083408547.70456555.1547652787664.JavaMail.zimbra@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 33710E6CAA200E4583255F4FB666C4E21BBBD093@G01JPEXMBYT03 -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Re:  [PATCH] Add -T option to configure task table via a	file &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  Re:  [PATCH] Add -T option to configure task table via a	file</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re:  [PATCH] Add -T option to configure task table via a	file</h1>
+[<a href="msg07640.html">Date Prev</a>][<a href="msg07642.html">Date Next</a>][<a href="msg07639.html">Thread Prev</a>][<a href="msg07643.html">Thread Next</a>][<a href="maillist.html#07641">Date Index</a>][<a href="index.html#07641">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re:  [PATCH] Add -T option to configure task table via a	file</li>
+<li><em>From</em>: Dave Anderson &lt;anderson@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 16 Jan 2019 10:33:07 -0500 (EST)</li>
+<li><em>In-reply-to</em>: &lt;33710E6CAA200E4583255F4FB666C4E21BBBD093@G01JPEXMBYT03&gt;</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>
+
+----- Original Message -----
+&gt;<i> I faced an incomplete vmcore previous week which was generated because</i>
+&gt;<i> system running in kdump kernel was somehow rebooted in the middle of</i>
+&gt;<i> copying vmcore.</i>
+&gt;<i> </i>
+&gt;<i> Unfortunately, in the incomplete vmcore, most of the tasks failed to</i>
+&gt;<i> be detected via PID hash table because the objects relevant to PID</i>
+&gt;<i> hash including ptes needed to refer to the objects were lost.</i>
+&gt;<i> </i>
+&gt;<i> Although I successfully found many of objects of task_struct from</i>
+&gt;<i> another data structure such as via a circular list of task_struct::tasks</i>
+&gt;<i> and via run queue, crash sub-commands never work with the following</i>
+&gt;<i> message if a given object is not contained in the task table:</i>
+&gt;<i> </i>
+&gt;<i>     crash&gt; bt 0xffffffff00000000</i>
+&gt;<i>     bt: invalid task or pid value: 0xffffffff00000000</i>
+&gt;<i> </i>
+&gt;<i> To address this issue, I made a patch to add a command-line option</i>
+&gt;<i> to pass a list of addresses of task_struct objects to make crash</i>
+&gt;<i> try to detect them in task table.</i>
+&gt;<i> </i>
+&gt;<i> I made this in very short time and there may be better interface</i>
+&gt;<i> than command-line option.</i>
+&gt;<i> </i>
+&gt;<i> Tested on top of crash-7.2.5.</i>
+
+Yeah, what bothers me about this patch is that even though it worked for your 
+particular half-baked vmcore, it may never be of any help to anybody else
+in the future.  
+
+It's similar in nature to patches that have posted that address a particular
+unique kernel bug that was seen in one vmcore, but it would be highly unlikely
+that the circumstances would ever be seen again.  
+
+But in this case, it's even more unlikely given that it's dealing with
+an incomplete vmcore.  You were lucky that you were able to even
+bring up a crash session at all -- and then were able to generate
+a task list after that.  
+
+Following the task_struct.tasks list doesn't gather all of the
+tasks in a task group, so it doesn't create a fully populated task
+list, correct?  
+
+Plus it doesn't make sense to add it unless it's documented *how* to
+create the task list to begin with.
+
+I don't know, let me think about this...
+
+Thanks,
+  Dave
+
+
+
+
+&gt;<i> </i>
+&gt;<i> ---</i>
+&gt;<i>  defs.h |   1 +</i>
+&gt;<i>  main.c |   7 +++-</i>
+&gt;<i>  task.c | 138</i>
+&gt;<i>  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</i>
+&gt;<i>  3 files changed, 145 insertions(+), 1 deletion(-)</i>
+&gt;<i> </i>
+&gt;<i> diff --git a/defs.h b/defs.h</i>
+&gt;<i> index 9ebdde6..150dcdb 100644</i>
+&gt;<i> --- a/defs.h</i>
+&gt;<i> +++ b/defs.h</i>
+&gt;<i> @@ -855,6 +855,7 @@ struct task_table {                      /* kernel/local</i>
+&gt;<i> task table data */</i>
+&gt;<i>  	int callbacks;</i>
+&gt;<i>  	struct task_context **context_by_task; /* task_context sorted by task addr</i>
+&gt;<i>  	*/</i>
+&gt;<i>  	ulong pid_xarray;</i>
+&gt;<i> +	char *task_table_file;</i>
+&gt;<i>  };</i>
+&gt;<i>  </i>
+&gt;<i>  #define TASK_INIT_DONE       (0x1)</i>
+&gt;<i> diff --git a/main.c b/main.c</i>
+&gt;<i> index 7248810..4f6c0a6 100644</i>
+&gt;<i> --- a/main.c</i>
+&gt;<i> +++ b/main.c</i>
+&gt;<i> @@ -89,7 +89,7 @@ main(int argc, char **argv)</i>
+&gt;<i>  	 */</i>
+&gt;<i>  	opterr = 0;</i>
+&gt;<i>  	optind = 0;</i>
+&gt;<i> -	while((c = getopt_long(argc, argv, &quot;Lkgh::e:i:sSvc:d:tfp:m:xo:&quot;,</i>
+&gt;<i> +	while((c = getopt_long(argc, argv, &quot;Lkgh::e:i:sSvc:d:tT:fp:m:xo:&quot;,</i>
+&gt;<i>         		long_options, &amp;option_index)) != -1) {</i>
+&gt;<i>  		switch (c)</i>
+&gt;<i>  		{</i>
+&gt;<i> @@ -408,6 +408,11 @@ main(int argc, char **argv)</i>
+&gt;<i>  			ramdump_elf_output_file(optarg);</i>
+&gt;<i>  			break;</i>
+&gt;<i>  </i>
+&gt;<i> +		case 'T':</i>
+&gt;<i> +			if (!tt-&gt;task_table_file)</i>
+&gt;<i> +				tt-&gt;task_table_file = optarg;</i>
+&gt;<i> +			break;</i>
+&gt;<i> +</i>
+&gt;<i>  		default:</i>
+&gt;<i>  			error(INFO, &quot;invalid option: %s\n&quot;,</i>
+&gt;<i>  				argv[optind-1]);</i>
+&gt;<i> diff --git a/task.c b/task.c</i>
+&gt;<i> index cd118e5..c57fa37 100644</i>
+&gt;<i> --- a/task.c</i>
+&gt;<i> +++ b/task.c</i>
+&gt;<i> @@ -30,6 +30,7 @@ static void refresh_hlist_task_table(void);</i>
+&gt;<i>  static void refresh_hlist_task_table_v2(void);</i>
+&gt;<i>  static void refresh_hlist_task_table_v3(void);</i>
+&gt;<i>  static void refresh_active_task_table(void);</i>
+&gt;<i> +static void refresh_task_table_from_file(void);</i>
+&gt;<i>  static int radix_tree_task_callback(ulong);</i>
+&gt;<i>  static void refresh_radix_tree_task_table(void);</i>
+&gt;<i>  static void refresh_xarray_task_table(void);</i>
+&gt;<i> @@ -598,6 +599,9 @@ task_init(void)</i>
+&gt;<i>  	if (tt-&gt;flags &amp; ACTIVE_ONLY)</i>
+&gt;<i>  		tt-&gt;refresh_task_table = refresh_active_task_table;</i>
+&gt;<i>  </i>
+&gt;<i> +	if (tt-&gt;task_table_file)</i>
+&gt;<i> +		tt-&gt;refresh_task_table = refresh_task_table_from_file;</i>
+&gt;<i> +</i>
+&gt;<i>  	tt-&gt;refresh_task_table();</i>
+&gt;<i>  </i>
+&gt;<i>  	if (tt-&gt;flags &amp; TASK_REFRESH_OFF)</i>
+&gt;<i> @@ -2798,6 +2802,140 @@ retry_active:</i>
+&gt;<i>  	tt-&gt;retries = MAX(tt-&gt;retries, retries);</i>
+&gt;<i>  }</i>
+&gt;<i>  </i>
+&gt;<i> +static void</i>
+&gt;<i> +refresh_task_table_from_file(void)</i>
+&gt;<i> +{</i>
+&gt;<i> +	int i;</i>
+&gt;<i> +	char *tp;</i>
+&gt;<i> +	int cnt;</i>
+&gt;<i> +	ulong curtask;</i>
+&gt;<i> +	ulong curpid;</i>
+&gt;<i> +	ulong retries;</i>
+&gt;<i> +	ulong *tlp;</i>
+&gt;<i> +	FILE *ttffp = NULL;</i>
+&gt;<i> +</i>
+&gt;<i> +	if (DUMPFILE() &amp;&amp; (tt-&gt;flags &amp; TASK_INIT_DONE))   /* impossible */</i>
+&gt;<i> +		return;</i>
+&gt;<i> +</i>
+&gt;<i> +	if (DUMPFILE()) {</i>
+&gt;<i> +		please_wait(&quot;gathering task table data&quot;);</i>
+&gt;<i> +		if (!symbol_exists(&quot;panic_threads&quot;))</i>
+&gt;<i> +			tt-&gt;flags |= POPULATE_PANIC;</i>
+&gt;<i> +	}</i>
+&gt;<i> +</i>
+&gt;<i> +	if (ACTIVE() &amp;&amp; !(tt-&gt;flags &amp; TASK_REFRESH))</i>
+&gt;<i> +		return;</i>
+&gt;<i> +</i>
+&gt;<i> +	curtask = NO_TASK;</i>
+&gt;<i> +	curpid = NO_PID;</i>
+&gt;<i> +	retries = 0;</i>
+&gt;<i> +</i>
+&gt;<i> +	get_active_set();</i>
+&gt;<i> +</i>
+&gt;<i> +	/*</i>
+&gt;<i> +	 * The current task's task_context entry may change,</i>
+&gt;<i> +	 * or the task may not even exist anymore.</i>
+&gt;<i> +	 */</i>
+&gt;<i> +	if (ACTIVE() &amp;&amp; (tt-&gt;flags &amp; TASK_INIT_DONE)) {</i>
+&gt;<i> +		curtask = CURRENT_TASK();</i>
+&gt;<i> +		curpid = CURRENT_PID();</i>
+&gt;<i> +	}</i>
+&gt;<i> +</i>
+&gt;<i> +retry_active:</i>
+&gt;<i> +</i>
+&gt;<i> +	if (!hq_open()) {</i>
+&gt;<i> +		error(INFO, &quot;cannot hash task_struct entries\n&quot;);</i>
+&gt;<i> +		if (!(tt-&gt;flags &amp; TASK_INIT_DONE))</i>
+&gt;<i> +			clean_exit(1);</i>
+&gt;<i> +		error(INFO, &quot;using stale task_structs\n&quot;);</i>
+&gt;<i> +		return;</i>
+&gt;<i> +	}</i>
+&gt;<i> +</i>
+&gt;<i> +	ttffp = fopen(tt-&gt;task_table_file, &quot;r&quot;);</i>
+&gt;<i> +	if (!ttffp) {</i>
+&gt;<i> +		error(INFO, &quot;failed to open %s\n&quot;, tt-&gt;task_table_file);</i>
+&gt;<i> +		return;</i>
+&gt;<i> +	}</i>
+&gt;<i> +</i>
+&gt;<i> +	/*</i>
+&gt;<i> +	 *  Get tasks from a file.</i>
+&gt;<i> +	 */</i>
+&gt;<i> +	cnt = 0;</i>
+&gt;<i> +	for (;;) {</i>
+&gt;<i> +		char line[128];</i>
+&gt;<i> +</i>
+&gt;<i> +		fgets(line, sizeof(line), ttffp);</i>
+&gt;<i> +		if (ferror(ttffp)) {</i>
+&gt;<i> +			error(INFO, &quot;failed to read task table file: %s\n&quot;,</i>
+&gt;<i> +			      strerror(errno));</i>
+&gt;<i> +			goto fail;</i>
+&gt;<i> +		}</i>
+&gt;<i> +		if (feof(ttffp))</i>
+&gt;<i> +			break;</i>
+&gt;<i> +		if (!strlen(line) || line[0] == '#')</i>
+&gt;<i> +			continue;</i>
+&gt;<i> +		strtok(line, &quot;\n&quot;);</i>
+&gt;<i> +		if (hq_enter(htol(line, RETURN_ON_ERROR, NULL)))</i>
+&gt;<i> +			cnt++;</i>
+&gt;<i> +		else</i>
+&gt;<i> +			error(WARNING, &quot;%sduplicate tasks?\n&quot;,</i>
+&gt;<i> +			      DUMPFILE() ? &quot;\n&quot; : &quot;&quot;);</i>
+&gt;<i> +	}</i>
+&gt;<i> +</i>
+&gt;<i> +	BZERO(tt-&gt;task_local, tt-&gt;max_tasks * sizeof(void *));</i>
+&gt;<i> +	cnt = retrieve_list((ulong *)tt-&gt;task_local, cnt);</i>
+&gt;<i> +</i>
+&gt;<i> +	hq_close();</i>
+&gt;<i> +</i>
+&gt;<i> +	clear_task_cache();</i>
+&gt;<i> +</i>
+&gt;<i> +	for (i = 0, tlp = (ulong *)tt-&gt;task_local, tt-&gt;running_tasks = 0;</i>
+&gt;<i> +	     i &lt; tt-&gt;max_tasks; i++, tlp++) {</i>
+&gt;<i> +		if (!(*tlp))</i>
+&gt;<i> +			continue;</i>
+&gt;<i> +</i>
+&gt;<i> +		if (!IS_TASK_ADDR(*tlp)) {</i>
+&gt;<i> +			error(WARNING,</i>
+&gt;<i> +			      &quot;%sinvalid task address found in &quot;</i>
+&gt;<i> +			      &quot;task list: %lx\n&quot;,</i>
+&gt;<i> +			      DUMPFILE() ? &quot;\n&quot; : &quot;&quot;, *tlp);</i>
+&gt;<i> +			if (DUMPFILE())</i>
+&gt;<i> +				continue;</i>
+&gt;<i> +			retries++;</i>
+&gt;<i> +			goto retry_active;</i>
+&gt;<i> +		}</i>
+&gt;<i> +</i>
+&gt;<i> +		if (!(tp = fill_task_struct(*tlp))) {</i>
+&gt;<i> +			if (DUMPFILE())</i>
+&gt;<i> +				continue;</i>
+&gt;<i> +			retries++;</i>
+&gt;<i> +			goto retry_active;</i>
+&gt;<i> +		}</i>
+&gt;<i> +</i>
+&gt;<i> +		if (!add_context(*tlp, tp) &amp;&amp; DUMPFILE())</i>
+&gt;<i> +			error(WARNING, &quot;corrupt/invalid task from file: %lx\n&quot;,</i>
+&gt;<i> +			      *tlp);</i>
+&gt;<i> +	}</i>
+&gt;<i> +</i>
+&gt;<i> +	if (!tt-&gt;running_tasks) {</i>
+&gt;<i> +		if (DUMPFILE())</i>
+&gt;<i> +			error(FATAL, &quot;cannot determine any tasks &quot;</i>
+&gt;<i> +			      &quot;from file!\n&quot;);</i>
+&gt;<i> +		retries++;</i>
+&gt;<i> +		goto retry_active;</i>
+&gt;<i> +	}</i>
+&gt;<i> +</i>
+&gt;<i> +	please_wait_done();</i>
+&gt;<i> +</i>
+&gt;<i> +	if (ACTIVE() &amp;&amp; (tt-&gt;flags &amp; TASK_INIT_DONE))</i>
+&gt;<i> +		refresh_context(curtask, curpid);</i>
+&gt;<i> +</i>
+&gt;<i> +	tt-&gt;retries = MAX(tt-&gt;retries, retries);</i>
+&gt;<i> +</i>
+&gt;<i> +fail:</i>
+&gt;<i> +	fclose(ttffp);</i>
+&gt;<i> +}</i>
+&gt;<i> +</i>
+&gt;<i>  /*</i>
+&gt;<i>   *  Initialize and return a new task_context structure with data from a</i>
+&gt;<i>   task.</i>
+&gt;<i>   *  NULL is returned on error.</i>
+&gt;<i> --</i>
+&gt;<i> 1.8.3.1</i>
+&gt;<i> </i>
+&gt;<i> </i>
+&gt;<i> --</i>
+&gt;<i> Crash-utility mailing list</i>
+&gt;<i> Crash-utility@xxxxxxxxxx</i>
+&gt;<i> <a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a></i>
+&gt;<i> </i>
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07643" href="msg07643.html">Re:  [PATCH] Add -T option to configure task table via a	file</a></strong>
+<ul><li><em>From:</em> Hatayama, Daisuke</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="07639" href="msg07639.html">[PATCH] Add -T option to configure task table via a	file</a></strong>
+<ul><li><em>From:</em> Hatayama, Daisuke</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07640.html">Not compatible with d52888aa2753 (&quot;x86/mm: Move LDT remap out of KASLR region on 5-level paging&quot;)</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07642.html">Re:  Not compatible with d52888aa2753 (&quot;x86/mm: Move LDT remap out of KASLR region on 5-level paging&quot;)</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07639.html">[PATCH] Add -T option to configure task table via a	file</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07643.html">Re:  [PATCH] Add -T option to configure task table via a	file</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07641"><strong>Date</strong></a></li>
+<li><a href="index.html#07641"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

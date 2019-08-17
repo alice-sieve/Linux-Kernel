@@ -1,0 +1,532 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 52/87] drm/amd/display: Optimize gamma calculations -->
+<!--X-From-R13: &#60;fhacrat.yvNnzq.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 14:21:58 &#45;0700 -->
+<!--X-Message-Id: 20190715212049.4584&#45;53&#45;sunpeng.li@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715212049.4584&#45;1&#45;sunpeng.li@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 52/87] drm/amd/display: Optimize gamma calculations">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 52/87] drm/amd/display: Optimize gamma calculations &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 52/87] drm/amd/display: Optimize gamma calculations</h1>
+[<a href="msg35907.html">Date Prev</a>][<a href="msg35909.html">Date Next</a>][<a href="msg35907.html">Thread Prev</a>][<a href="msg35909.html">Thread Next</a>][<a href="maillist.html#35908">Date Index</a>][<a href="index.html#35908">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: &lt;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 52/87] drm/amd/display: Optimize gamma calculations</li>
+<li><em>From</em>: &lt;sunpeng.li@xxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 17:20:14 -0400</li>
+<li><em>Cc</em>: Leo Li &lt;sunpeng.li@xxxxxxx&gt;, Aric Cyr &lt;Aric.Cyr@xxxxxxx&gt;,        Krunoslav Kovac &lt;Krunoslav.Kovac@xxxxxxx&gt;,        Anthony Koo &lt;Anthony.Koo@xxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg35850.html">20190715212049.4584-1-sunpeng.li@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg35850.html">20190715212049.4584-1-sunpeng.li@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Krunoslav Kovac &lt;Krunoslav.Kovac@xxxxxxx&gt;
+
+[Why&amp;How]
+
+1. Stack usage is pretty high as fixed31_32 struct is 8 bytes and we
+have functions with &gt;30 vars on the stack.
+
+2. Optimize gamma calculation by reducing number of calls to
+dc_fixpt_pow Our X points are divided into 32 regions wth 16 pts each.
+Each region is 2x the previous, meaning x[i] = 2*x[i-16] for i&gt;=16.
+Using (2x)^gamma = 2^gamma * x^gamma, we can recursively compute powers
+of gamma, we just need first 16 pts to start it up. dc_fixpt_pow() is
+expensive, it computes x^y by doing exp(y*logx) Exp is done by Taylor
+series approximation, and log by Newton-like approximation that also
+uses exp internally. In short, it's significantly heavier than
+run-of-the-mill addition/subtraction/multiply.
+
+Signed-off-by: Krunoslav Kovac &lt;Krunoslav.Kovac@xxxxxxx&gt;
+Reviewed-by: Anthony Koo &lt;Anthony.Koo@xxxxxxx&gt;
+Acked-by: Aric Cyr &lt;Aric.Cyr@xxxxxxx&gt;
+Acked-by: Leo Li &lt;sunpeng.li@xxxxxxx&gt;
+---
+ drivers/gpu/drm/amd/display/dc/dc_hw_types.h  |   1 -
+ .../amd/display/modules/color/color_gamma.c   | 163 +++++++++++-------
+ .../amd/display/modules/color/color_gamma.h   |   9 +
+ 3 files changed, 111 insertions(+), 62 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/dc/dc_hw_types.h b/drivers/gpu/drm/amd/display/dc/dc_hw_types.h
+index 22db5682aa6c..e9a6225f4720 100644
+--- a/drivers/gpu/drm/amd/display/dc/dc_hw_types.h
++++ b/drivers/gpu/drm/amd/display/dc/dc_hw_types.h
+@@ -482,7 +482,6 @@ struct dc_gamma {
+ 	 * is_logical_identity indicates the given gamma ramp regardless of type is identity.
+ 	 */
+ 	bool is_identity;
+-	bool is_logical_identity;
+ };
+ 
+ /* Used by both ipp amd opp functions*/
+diff --git a/drivers/gpu/drm/amd/display/modules/color/color_gamma.c b/drivers/gpu/drm/amd/display/modules/color/color_gamma.c
+index 3f413fb9f2ce..294fe4f0cb67 100644
+--- a/drivers/gpu/drm/amd/display/modules/color/color_gamma.c
++++ b/drivers/gpu/drm/amd/display/modules/color/color_gamma.c
+@@ -37,6 +37,33 @@ static struct hw_x_point coordinates_x[MAX_HW_POINTS + 2];
+ static struct fixed31_32 pq_table[MAX_HW_POINTS + 2];
+ static struct fixed31_32 de_pq_table[MAX_HW_POINTS + 2];
+ 
++// these are helpers for calculations to reduce stack usage
++// do not depend on these being preserved across calls
++static struct fixed31_32 scratch_1;
++static struct fixed31_32 scratch_2;
++static struct translate_from_linear_space_args scratch_gamma_args;
++
++/* Helper to optimize gamma calculation, only use in translate_from_linear, in
++ * particular the dc_fixpt_pow function which is very expensive
++ * The idea is that our regions for X points are exponential and currently they all use
++ * the same number of points (NUM_PTS_IN_REGION) and in each region every point
++ * is exactly 2x the one at the same index in the previous region. In other words
++ * X[i] = 2 * X[i-NUM_PTS_IN_REGION] for i&gt;=16
++ * The other fact is that (2x)^gamma = 2^gamma * x^gamma
++ * So we compute and save x^gamma for the first 16 regions, and for every next region
++ * just multiply with 2^gamma which can be computed once, and save the result so we
++ * recursively compute all the values.
++ */
++static struct fixed31_32 pow_buffer[NUM_PTS_IN_REGION];
++static struct fixed31_32 gamma_of_2; // 2^gamma
++int pow_buffer_ptr = -1;
++
++static const int32_t gamma_numerator01[] = { 31308,	180000,	0};
++static const int32_t gamma_numerator02[] = { 12920,	4500,	0};
++static const int32_t gamma_numerator03[] = { 55,	99,	0};
++static const int32_t gamma_numerator04[] = { 55,	99,	0};
++static const int32_t gamma_numerator05[] = { 2400,	2200, 2200};
++
+ static bool pq_initialized; /* = false; */
+ static bool de_pq_initialized; /* = false; */
+ 
+@@ -248,11 +275,7 @@ enum gamma_type_index {
+ 
+ static void build_coefficients(struct gamma_coefficients *coefficients, enum gamma_type_index type)
+ {
+-	static const int32_t numerator01[] = { 31308,	180000,	0};
+-	static const int32_t numerator02[] = { 12920,	4500,	0};
+-	static const int32_t numerator03[] = { 55,		99,		0};
+-	static const int32_t numerator04[] = { 55,		99,		0};
+-	static const int32_t numerator05[] = { 2400,	2200, 2200};
++
+ 
+ 	uint32_t i = 0;
+ 	uint32_t index = 0;
+@@ -264,69 +287,74 @@ static void build_coefficients(struct gamma_coefficients *coefficients, enum gam
+ 
+ 	do {
+ 		coefficients-&gt;a0[i] = dc_fixpt_from_fraction(
+-			numerator01[index], 10000000);
++			gamma_numerator01[index], 10000000);
+ 		coefficients-&gt;a1[i] = dc_fixpt_from_fraction(
+-			numerator02[index], 1000);
++			gamma_numerator02[index], 1000);
+ 		coefficients-&gt;a2[i] = dc_fixpt_from_fraction(
+-			numerator03[index], 1000);
++			gamma_numerator03[index], 1000);
+ 		coefficients-&gt;a3[i] = dc_fixpt_from_fraction(
+-			numerator04[index], 1000);
++			gamma_numerator04[index], 1000);
+ 		coefficients-&gt;user_gamma[i] = dc_fixpt_from_fraction(
+-			numerator05[index], 1000);
++			gamma_numerator05[index], 1000);
+ 
+ 		++i;
+ 	} while (i != ARRAY_SIZE(coefficients-&gt;a0));
+ }
+ 
+ static struct fixed31_32 translate_from_linear_space(
+-	struct fixed31_32 arg,
+-	struct fixed31_32 a0,
+-	struct fixed31_32 a1,
+-	struct fixed31_32 a2,
+-	struct fixed31_32 a3,
+-	struct fixed31_32 gamma)
++		struct translate_from_linear_space_args *args)
+ {
+ 	const struct fixed31_32 one = dc_fixpt_from_int(1);
+ 
+-	if (dc_fixpt_lt(one, arg))
++	if (dc_fixpt_le(one, args-&gt;arg))
+ 		return one;
+ 
+-	if (dc_fixpt_le(arg, dc_fixpt_neg(a0)))
+-		return dc_fixpt_sub(
+-			a2,
+-			dc_fixpt_mul(
+-				dc_fixpt_add(
+-					one,
+-					a3),
+-				dc_fixpt_pow(
+-					dc_fixpt_neg(arg),
+-					dc_fixpt_recip(gamma))));
+-	else if (dc_fixpt_le(a0, arg))
+-		return dc_fixpt_sub(
+-			dc_fixpt_mul(
+-				dc_fixpt_add(
+-					one,
+-					a3),
+-				dc_fixpt_pow(
+-					arg,
+-					dc_fixpt_recip(gamma))),
+-			a2);
++	if (dc_fixpt_le(args-&gt;arg, dc_fixpt_neg(args-&gt;a0))) {
++		scratch_1 = dc_fixpt_add(one, args-&gt;a3);
++		scratch_2 = dc_fixpt_pow(
++				dc_fixpt_neg(args-&gt;arg),
++				dc_fixpt_recip(args-&gt;gamma));
++		scratch_1 = dc_fixpt_mul(scratch_1, scratch_2);
++		scratch_1 = dc_fixpt_sub(args-&gt;a2, scratch_1);
++
++		return scratch_1;
++	} else if (dc_fixpt_le(args-&gt;a0, args-&gt;arg)) {
++		if (pow_buffer_ptr == 0) {
++			gamma_of_2 = dc_fixpt_pow(dc_fixpt_from_int(2),
++					dc_fixpt_recip(args-&gt;gamma));
++		}
++		scratch_1 = dc_fixpt_add(one, args-&gt;a3);
++		if (pow_buffer_ptr &lt; 16)
++			scratch_2 = dc_fixpt_pow(args-&gt;arg,
++					dc_fixpt_recip(args-&gt;gamma));
++		else
++			scratch_2 = dc_fixpt_mul(gamma_of_2,
++					pow_buffer[pow_buffer_ptr%16]);
++
++		pow_buffer[pow_buffer_ptr%16] = scratch_2;
++		pow_buffer_ptr++;
++
++		scratch_1 = dc_fixpt_mul(scratch_1, scratch_2);
++		scratch_1 = dc_fixpt_sub(scratch_1, args-&gt;a2);
++
++		return scratch_1;
++	}
+ 	else
+-		return dc_fixpt_mul(
+-			arg,
+-			a1);
++		return dc_fixpt_mul(args-&gt;arg, args-&gt;a1);
+ }
+ 
+ static struct fixed31_32 calculate_gamma22(struct fixed31_32 arg)
+ {
+ 	struct fixed31_32 gamma = dc_fixpt_from_fraction(22, 10);
+ 
+-	return translate_from_linear_space(arg,
+-			dc_fixpt_zero,
+-			dc_fixpt_zero,
+-			dc_fixpt_zero,
+-			dc_fixpt_zero,
+-			gamma);
++	scratch_gamma_args.arg = arg;
++	scratch_gamma_args.a0 = dc_fixpt_zero;
++	scratch_gamma_args.a1 = dc_fixpt_zero;
++	scratch_gamma_args.a2 = dc_fixpt_zero;
++	scratch_gamma_args.a3 = dc_fixpt_zero;
++	scratch_gamma_args.gamma = gamma;
++
++	return translate_from_linear_space(&amp;scratch_gamma_args);
+ }
+ 
+ static struct fixed31_32 translate_to_linear_space(
+@@ -362,18 +390,19 @@ static struct fixed31_32 translate_to_linear_space(
+ 	return linear;
+ }
+ 
+-static inline struct fixed31_32 translate_from_linear_space_ex(
++static struct fixed31_32 translate_from_linear_space_ex(
+ 	struct fixed31_32 arg,
+ 	struct gamma_coefficients *coeff,
+ 	uint32_t color_index)
+ {
+-	return translate_from_linear_space(
+-		arg,
+-		coeff-&gt;a0[color_index],
+-		coeff-&gt;a1[color_index],
+-		coeff-&gt;a2[color_index],
+-		coeff-&gt;a3[color_index],
+-		coeff-&gt;user_gamma[color_index]);
++	scratch_gamma_args.arg = arg;
++	scratch_gamma_args.a0 = coeff-&gt;a0[color_index];
++	scratch_gamma_args.a1 = coeff-&gt;a1[color_index];
++	scratch_gamma_args.a2 = coeff-&gt;a2[color_index];
++	scratch_gamma_args.a3 = coeff-&gt;a3[color_index];
++	scratch_gamma_args.gamma = coeff-&gt;user_gamma[color_index];
++
++	return translate_from_linear_space(&amp;scratch_gamma_args);
+ }
+ 
+ 
+@@ -712,24 +741,32 @@ static void build_regamma(struct pwl_float_data_ex *rgb_regamma,
+ {
+ 	uint32_t i;
+ 
+-	struct gamma_coefficients coeff;
++	struct gamma_coefficients *coeff;
+ 	struct pwl_float_data_ex *rgb = rgb_regamma;
+ 	const struct hw_x_point *coord_x = coordinate_x;
+ 
+-	build_coefficients(&amp;coeff, type);
++	coeff = kvzalloc(sizeof(*coeff), GFP_KERNEL);
++	if (!coeff)
++		return;
+ 
+-	i = 0;
++	build_coefficients(coeff, type);
+ 
+-	while (i != hw_points_num + 1) {
++	memset(pow_buffer, 0, NUM_PTS_IN_REGION * sizeof(struct fixed31_32));
++	pow_buffer_ptr = 0; // see variable definition for more info
++	i = 0;
++	while (i &lt;= hw_points_num) {
+ 		/*TODO use y vs r,g,b*/
+ 		rgb-&gt;r = translate_from_linear_space_ex(
+-			coord_x-&gt;x, &amp;coeff, 0);
++			coord_x-&gt;x, coeff, 0);
+ 		rgb-&gt;g = rgb-&gt;r;
+ 		rgb-&gt;b = rgb-&gt;r;
+ 		++coord_x;
+ 		++rgb;
+ 		++i;
+ 	}
++	pow_buffer_ptr = -1; // reset back to no optimize
++
++	kfree(coeff);
+ }
+ 
+ static void hermite_spline_eetf(struct fixed31_32 input_x,
+@@ -859,6 +896,8 @@ static bool build_freesync_hdr(struct pwl_float_data_ex *rgb_regamma,
+ 	else
+ 		max_content = max_display;
+ 
++	if (!use_eetf)
++		pow_buffer_ptr = 0; // see var definition for more info
+ 	rgb += 32; // first 32 points have problems with fixed point, too small
+ 	coord_x += 32;
+ 	for (i = 32; i &lt;= hw_points_num; i++) {
+@@ -897,6 +936,7 @@ static bool build_freesync_hdr(struct pwl_float_data_ex *rgb_regamma,
+ 		++coord_x;
+ 		++rgb;
+ 	}
++	pow_buffer_ptr = -1;
+ 
+ 	return true;
+ }
+@@ -1569,14 +1609,15 @@ bool mod_color_calculate_regamma_params(struct dc_transfer_func *output_tf,
+ 			output_tf-&gt;tf == TRANSFER_FUNCTION_SRGB) {
+ 		if (ramp == NULL)
+ 			return true;
+-		if ((ramp-&gt;is_logical_identity) ||
++		if ((ramp-&gt;is_identity &amp;&amp; ramp-&gt;type != GAMMA_CS_TFM_1D) ||
+ 				(!mapUserRamp &amp;&amp; ramp-&gt;type == GAMMA_RGB_256))
+ 			return true;
+ 	}
+ 
+ 	output_tf-&gt;type = TF_TYPE_DISTRIBUTED_POINTS;
+ 
+-	if (ramp &amp;&amp; (mapUserRamp || ramp-&gt;type != GAMMA_RGB_256)) {
++	if (ramp &amp;&amp; ramp-&gt;type != GAMMA_CS_TFM_1D &amp;&amp;
++			(mapUserRamp || ramp-&gt;type != GAMMA_RGB_256)) {
+ 		rgb_user = kvcalloc(ramp-&gt;num_entries + _EXTRA_POINTS,
+ 			    sizeof(*rgb_user),
+ 			    GFP_KERNEL);
+diff --git a/drivers/gpu/drm/amd/display/modules/color/color_gamma.h b/drivers/gpu/drm/amd/display/modules/color/color_gamma.h
+index 369953fafadf..69cecd2ec251 100644
+--- a/drivers/gpu/drm/amd/display/modules/color/color_gamma.h
++++ b/drivers/gpu/drm/amd/display/modules/color/color_gamma.h
+@@ -82,6 +82,15 @@ struct freesync_hdr_tf_params {
+ 	unsigned int skip_tm; // skip tm
+ };
+ 
++struct translate_from_linear_space_args {
++	struct fixed31_32 arg;
++	struct fixed31_32 a0;
++	struct fixed31_32 a1;
++	struct fixed31_32 a2;
++	struct fixed31_32 a3;
++	struct fixed31_32 gamma;
++};
++
+ void setup_x_points_distribution(void);
+ void precompute_pq(void);
+ void precompute_de_pq(void);
+-- 
+2.22.0
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="35850" href="msg35850.html">[PATCH 00/87] DC Patches 15 Jul, 2019</a></strong>
+<ul><li><em>From:</em> sunpeng.li</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35907.html">[PATCH 62/87] drm/amd/display: allocate 4 ddc engines for RV2</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35909.html">[PATCH 59/87] drm/amd/display: Fixes for some MPO cases</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35907.html">[PATCH 62/87] drm/amd/display: allocate 4 ddc engines for RV2</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35909.html">[PATCH 59/87] drm/amd/display: Fixes for some MPO cases</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35908"><strong>Date</strong></a></li>
+<li><a href="index.html#35908"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 00/29] Split the libvirtd daemon into per&#45;driver	daemons -->
+<!--X-From-R13: =?GFT&#45;8?d?Rnavry=20B=2S=20Preenat=Q3=O9?= &#60;oreenatrNerqung.pbz> -->
+<!--X-Date: Thu, 11 Jul 2019 09:05:23 &#45;0700 -->
+<!--X-Message-Id: 20190711160516.2130&#45;1&#45;berrange@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 00/29] Split the libvirtd daemon into per-driver	daemons</title>
+<meta name="description" content="libvirt: [PATCH 00/29] Split the libvirtd daemon into per-driver	daemons">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 00/29] Split the libvirtd daemon into per-driver	daemons</h1>
+[<a href="msg187197.html">Date Prev</a>][<a href="msg187199.html">Date Next</a>][<a href="msg187163.html">Thread Prev</a>][<a href="msg187200.html">Thread Next</a>][<a href="maillist.html#187198">Date Index</a>][<a href="index.html#187198">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 00/29] Split the libvirtd daemon into per-driver	daemons</li>
+<li><em>From</em>: Daniel P. Berrang&#xE9; &lt;berrange@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 11 Jul 2019 17:04:47 +0100</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This is what all the driver refactoring I've done has been about
+enabling.
+
+We gain new daemons for each driver, for the primary virt drivers:
+
+  virtlibxld
+  virtlxcd
+  virtqemud
+  virtvboxd
+  virtvzd
+
+And again for the secondary drivers
+
+  virtinterfaced
+  virtnetworkd
+  virtnodedevd
+  virtnwfilterd
+  virtsecretd
+  virtstoraged
+
+Finally to support IP connectivity, and also the legacy lbivirtd UNIX
+domain socket (for the old libvirt remote driver SSH tunnelling):
+
+  virtproxyd
+
+The the sake of facilitating upgrades, the existing libvirtd still
+exists and works the same way it always has.
+
+You either run libvirtd, or you run the per-driver daemons, never both.
+
+The remote driver will look to see whether libvirtd is running to figure
+out whether to connect to libvirtd or the new per-driver daemons.
+
+When auto-spawning daemons for nonroot users, we default to spawning the
+per-driver daemons.
+
+This can be controlled with a UR parameter &quot;?mode=direct|legacy|auto&quot;,
+where 'direct' means per-driver and 'legacy' means libvirtd (or indirect
+via virtproxyd if that's running).
+
+Still todo
+
+ - Add systemd unit files for the new daemons
+ - Make it possible to disable build of libvirtd, or of the per-driver
+   daemons so downstream vendors can decide which to ship
+ - Tuning of the daemon defaults for worker threads to better suit
+   the fact that we have per-driver daemons
+ - More work on RPM packaging to allow install of per-driver daemosn
+   without pulling in libvirtd too
+ - A bunch of stuff that doesn't occurr to me right now
+ - Identify &amp; fix more bugs I've created here
+
+Daniel P. Berrang&#xE9; (29):
+  rpc: add API for checking whether an auth scheme is in use on a server
+  remote: simplify libvirtd code for deciding if SASL auth is needed
+  logging: pass binary name not logfile name when enabling logging
+  remote: conditionalize socket names in libvirtd daemon
+  remote: conditionalize daemon name in libvirtd daemon
+  remote: conditionalize driver loading in libvirtd daemon
+  remote: conditionalize IP socket usage in libvirtd daemon
+  remote: conditionalize IP socket config in libvirtd.conf
+  remote: conditionalize IP socket config in augeas definitions
+  remote: refactor &amp; rename variables for building libvirtd
+  secret: introduce virtsecretd daemon
+  network: introduce virtnetworkd daemon
+  interface: introduce virtinterfaced daemon
+  storage: introduce virtstoraged daemon
+  nodedev: introduce virtnodedevd daemon
+  nwfilter: introduce virtnwfilterd daemon
+  libxl: introduce virtlibxld daemon
+  qemu: introduce virtqemud daemon
+  lxc: introduce virtlxcd daemon
+  vbox: introduce virtvboxd daemon
+  bhyve: introduce virtbhyved daemon
+  vz: introduce virtvzd daemon
+  remote: introduce virtproxyd daemon to handle IP connectivity
+  remote: open secondary drivers via remote driver if needed
+  remote: use enum helpers for parsing remote driver transport
+  remote: refactor the code for choosing the UNIX socket path
+  remote: switch to connect to per-driver daemons by default
+  all: don't wait for driver lock during startup
+  interface: fix driver name in state directory path
+
+ .gitignore                                    |  12 +
+ build-aux/augeas-gentest.pl                   |   2 +-
+ libvirt.spec.in                               |  10 +
+ src/bhyve/Makefile.inc.am                     |  14 +
+ src/bhyve/bhyve_driver.c                      |   2 +-
+ src/driver.h                                  |   2 +
+ src/interface/Makefile.inc.am                 |  14 +
+ src/interface/interface_backend_netcf.c       |   6 +-
+ src/interface/interface_backend_udev.c        |   6 +-
+ src/libvirt.c                                 |  24 ++
+ src/libvirt_remote.syms                       |   1 +
+ src/libxl/Makefile.inc.am                     |  14 +
+ src/libxl/libxl_driver.c                      |   2 +-
+ src/locking/lock_daemon.c                     |   2 +-
+ src/logging/log_daemon.c                      |   2 +-
+ src/lxc/Makefile.inc.am                       |  15 +
+ src/lxc/lxc_driver.c                          |   2 +-
+ src/network/Makefile.inc.am                   |  14 +
+ src/network/leaseshelper.c                    |   2 +-
+ src/node_device/Makefile.inc.am               |  14 +
+ src/node_device/node_device_hal.c             |   2 +-
+ src/node_device/node_device_udev.c            |   2 +-
+ src/nwfilter/Makefile.inc.am                  |  14 +
+ src/nwfilter/nwfilter_driver.c                |   2 +-
+ src/qemu/Makefile.inc.am                      |  14 +
+ src/qemu/qemu_driver.c                        |   2 +-
+ src/remote/Makefile.inc.am                    | 153 ++++---
+ src/remote/{libvirtd.aug =&gt; libvirtd.aug.in}  |  24 +-
+ .../{libvirtd.conf =&gt; libvirtd.conf.in}       |  42 +-
+ src/remote/remote_daemon.c                    | 221 +++++++---
+ src/remote/remote_daemon_config.c             |  41 +-
+ src/remote/remote_daemon_config.h             |   9 +-
+ src/remote/remote_daemon_dispatch.c           |  82 +++-
+ src/remote/remote_driver.c                    | 391 ++++++++++++------
+ src/remote/remote_driver.h                    |   4 -
+ src/remote/test_libvirtd.aug.in               |  16 +-
+ src/rpc/virnetserver.c                        |  17 +
+ src/rpc/virnetserver.h                        |   3 +
+ src/secret/Makefile.inc.am                    |  14 +
+ src/secret/secret_driver.c                    |   2 +-
+ src/storage/Makefile.inc.am                   |  14 +
+ src/util/virlog.c                             |  20 +-
+ src/vbox/Makefile.inc.am                      |  14 +
+ src/vz/Makefile.inc.am                        |  14 +
+ src/vz/vz_driver.c                            |   2 +-
+ 45 files changed, 938 insertions(+), 341 deletions(-)
+ rename src/remote/{libvirtd.aug =&gt; libvirtd.aug.in} (88%)
+ rename src/remote/{libvirtd.conf =&gt; libvirtd.conf.in} (95%)
+
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187197.html">Re:  [jenkins-ci PATCH 3/3] guests: add libprlsdk package to libvirt project</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187199.html">Re:  [PATCH v1 11/31] conf: Format and parse NVMe type disk</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187163.html">[PATCH v1 00/31] Introduce NVMe support</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187200.html">[PATCH 03/29] logging: pass binary name not logfile name	when enabling logging</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187198"><strong>Date</strong></a></li>
+<li><a href="index.html#187198"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

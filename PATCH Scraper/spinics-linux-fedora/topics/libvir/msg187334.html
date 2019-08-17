@@ -1,0 +1,263 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 20/25] conf: export virDomainDiskBackingStoreParse -->
+<!--X-From-R13: Brgre Yerzcn &#60;cxerzcnNerqung.pbz> -->
+<!--X-Date: Fri, 12 Jul 2019 09:07:34 &#45;0700 -->
+<!--X-Message-Id: 05ff2e6eb6f3c7038d358c5d494e589e97332c7c.1562947284.git.pkrempa@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: cover.1562947283.git.pkrempa@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 20/25] conf: export virDomainDiskBackingStoreParse</title>
+<meta name="description" content="libvirt: [PATCH 20/25] conf: export virDomainDiskBackingStoreParse">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 20/25] conf: export virDomainDiskBackingStoreParse</h1>
+[<a href="msg187333.html">Date Prev</a>][<a href="msg187335.html">Date Next</a>][<a href="msg187430.html">Thread Prev</a>][<a href="msg187431.html">Thread Next</a>][<a href="maillist.html#187334">Date Index</a>][<a href="index.html#187334">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 20/25] conf: export virDomainDiskBackingStoreParse</li>
+<li><em>From</em>: Peter Krempa &lt;pkrempa@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 12 Jul 2019 18:06:01 +0200</li>
+<li><em>Cc</em>: Peter Krempa &lt;pkrempa@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187317.html">cover.1562947283.git.pkrempa@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187317.html">cover.1562947283.git.pkrempa@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Signed-off-by: Peter Krempa &lt;pkrempa@xxxxxxxxxx&gt;
+---
+ src/conf/domain_conf.c   | 2 +-
+ src/conf/domain_conf.h   | 7 +++++++
+ src/libvirt_private.syms | 1 +
+ 3 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/src/conf/domain_conf.c b/src/conf/domain_conf.c
+index 3323c9a5b1..50a01d4e03 100644
+--- a/src/conf/domain_conf.c
++++ b/src/conf/domain_conf.c
+@@ -9326,7 +9326,7 @@ virDomainStorageSourceParse(xmlNodePtr node,
+ }
+
+
+-static int
++int
+ virDomainDiskBackingStoreParse(xmlXPathContextPtr ctxt,
+                                virStorageSourcePtr src,
+                                unsigned int flags,
+diff --git a/src/conf/domain_conf.h b/src/conf/domain_conf.h
+index c1b5fc1337..d126e24a3e 100644
+--- a/src/conf/domain_conf.h
++++ b/src/conf/domain_conf.h
+@@ -3523,6 +3523,13 @@ int virDomainStorageSourceParse(xmlNodePtr node,
+                                 virDomainXMLOptionPtr xmlopt)
+     ATTRIBUTE_NONNULL(1) ATTRIBUTE_NONNULL(2) ATTRIBUTE_NONNULL(3);
+
++int
++virDomainDiskBackingStoreParse(xmlXPathContextPtr ctxt,
++                               virStorageSourcePtr src,
++                               unsigned int flags,
++                               virDomainXMLOptionPtr xmlopt)
++    ATTRIBUTE_NONNULL(1) ATTRIBUTE_NONNULL(2) ATTRIBUTE_RETURN_CHECK;
++
+ int virDomainDefGetVcpuPinInfoHelper(virDomainDefPtr def,
+                                      int maplen,
+                                      int ncpumaps,
+diff --git a/src/libvirt_private.syms b/src/libvirt_private.syms
+index 02d5b7acce..733aa9b570 100644
+--- a/src/libvirt_private.syms
++++ b/src/libvirt_private.syms
+@@ -311,6 +311,7 @@ virDomainDeviceInfoIterate;
+ virDomainDeviceSetData;
+ virDomainDeviceTypeToString;
+ virDomainDeviceValidateAliasForHotplug;
++virDomainDiskBackingStoreParse;
+ virDomainDiskBusTypeToString;
+ virDomainDiskByAddress;
+ virDomainDiskByName;
+-- 
+2.21.0
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187333.html">[PATCH 19/25] qemu: process: Refresh -blockdev based	blockjobs on reconnect to qemu</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187335.html">[PATCH 21/25] conf: export virDomainDiskBackingStoreFormat</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187430.html">Re:  [PATCH 19/25] qemu: process: Refresh -blockdev based blockjobs on reconnect to qemu</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187431.html">Re:  [PATCH 20/25] conf: export virDomainDiskBackingStoreParse</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187334"><strong>Date</strong></a></li>
+<li><a href="index.html#187334"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,466 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] ALSA: usb&#45;audio: Fix double&#45;free in snd_usb_add_audio_stream() -->
+<!--X-From-R13: Hynqvf Rebabi &#60;iqebabiNerqung.pbz> -->
+<!--X-Date: Wed, 30 Mar 2016 12:03:26 &#45;0700 -->
+<!--X-Message-Id: 1459364602&#45;28997&#45;1&#45;git&#45;send&#45;email&#45;vdronov@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Sound: [PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Sound &mdash; [PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Sound" href="//feeds.feedburner.com/LinuxSound">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:6612422167" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()</h1>
+[<a href="msg00600.html">Date Prev</a>][<a href="msg00602.html">Date Next</a>][<a href="msg00599.html">Thread Prev</a>][<a href="msg00602.html">Thread Next</a>][<a href="maillist.html#00601">Date Index</a>][<a href="index.html#00601">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()</li>
+<li><em>From</em>: Vladis Dronov &lt;vdronov@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 30 Mar 2016 21:03:21 +0200</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Hello, Takashi, Jaroslav, all,
+Please, see the research and the following patch on a double-free bug in [snd-usb-audio].
+
+1) The upstream commits 0f886ca1, 902eb7fd and 447d6275f (many thanks to Takashi Iwai) revealed that there is a double-free bug in [snd-usb-audio] module due to alloc/free logic flaw in snd_usb_add_audio_stream() function. A double-free leads to kernel structure/list/slab corruptions and shortly to null-deref, GPF or lockup.
+
+2.1) Let me describe what happens with the current code in usb_audio_probe(), create_fixed_stream_quirk() and snd_usb_add_audio_stream():
+
+&gt; [ sound/usb/card.c ]
+&gt; static int usb_audio_probe(struct usb_interface *intf,
+&gt;                            const struct usb_device_id *usb_id)
+&gt; {
+&gt;         ...
+&gt;         if (quirk &amp;&amp; quirk-&gt;ifnum != QUIRK_NO_INTERFACE) {
+&gt;                 /* need some special handlings */
+&gt;                 err = snd_usb_create_quirk(chip, intf, &amp;usb_audio_driver, quirk);
+&gt;                 if (err &lt; 0)
+&gt;                         goto __error;
+&gt;         }
+&gt;         ...
+&gt;  __error:
+&gt;         if (chip) {
+&gt;                 if (!chip-&gt;num_interfaces)
+&gt;                         snd_card_free(chip-&gt;card);
+
+Somewhere in the middle of usb_audio_probe() the function snd_usb_create_quirk() is called, and if it returns with an error and no interfaces were created, the sound card is destroyed with &quot;snd_card_free(chip-&gt;card)&quot;.
+
+2.2) create_fixed_stream_quirk() is called from snd_usb_create_quirk():
+
+&gt; [ sound/usb/quirks.c ]
+&gt; static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+&gt;                                      struct usb_interface *iface,
+&gt;                                      struct usb_driver *driver,
+&gt;                                      const struct snd_usb_audio_quirk *quirk)
+&gt; {
+&gt;         struct audioformat *fp;
+&gt;         struct usb_host_interface *alts;
+&gt;         struct usb_interface_descriptor *altsd;
+&gt;         ...
+&gt;         fp = kmemdup(quirk-&gt;data, sizeof(*fp), GFP_KERNEL);
+&gt;         ...
+&gt; (*)     stream = (fp-&gt;endpoint &amp; USB_DIR_IN)
+&gt; (*)             ? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
+&gt; (*)     err = snd_usb_add_audio_stream(chip, stream, fp);
+&gt; (*)     if (err &lt; 0)
+&gt; (*)             goto error;
+&gt; 
+&gt;         if (fp-&gt;iface != get_iface_desc(&amp;iface-&gt;altsetting[0])-&gt;bInterfaceNumber ||
+&gt;             fp-&gt;altset_idx &gt;= iface-&gt;num_altsetting) {
+&gt;                 err = -EINVAL;
+&gt;                 goto error;
+&gt;         }
+&gt;         alts = &amp;iface-&gt;altsetting[fp-&gt;altset_idx];
+&gt;         altsd = get_iface_desc(alts);
+&gt;         if (altsd-&gt;bNumEndpoints &lt; 1) {
+&gt;                 err = -EINVAL;
+&gt;                 goto error;
+&gt;         }
+&gt;         ...
+&gt;  error:
+&gt;         kfree(fp);
+&gt;         kfree(rate_table);
+&gt;         return err;
+&gt; }
+
+2.3) *fp is allocated and passed to snd_usb_add_audio_stream() where snd_usb_init_substream() is called:
+
+&gt; [ sound/usb/stream.c ]
+&gt; int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
+&gt;                              int stream,
+&gt;                              struct audioformat *fp)
+&gt; {
+&gt;         struct snd_usb_stream *as;
+&gt;         struct snd_usb_substream *subs;
+&gt;         struct snd_pcm *pcm;
+&gt;         ...
+&gt;         /* create a new pcm */
+&gt;         as = kzalloc(sizeof(*as), GFP_KERNEL);
+&gt;         ...
+&gt;         snd_usb_init_substream(as, stream, fp);
+
+2.4) In turn snd_usb_init_substream() adds audioformat *fp by its &amp;fp-&gt;list to substream's fmt_list list:
+
+&gt; [ sound/usb/stream.c ]
+&gt; static void snd_usb_init_substream(struct snd_usb_stream *as,
+&gt;                                    int stream,
+&gt;                                    struct audioformat *fp)
+&gt; {
+&gt;         struct snd_usb_substream *subs = &amp;as-&gt;substream[stream];
+&gt; 
+&gt;         INIT_LIST_HEAD(&amp;subs-&gt;fmt_list);
+&gt;         ...
+&gt;         list_add_tail(&amp;fp-&gt;list, &amp;subs-&gt;fmt_list);
+&gt;         subs-&gt;num_formats++;
+
+2.5) Things go bad from this point in case snd_usb_add_audio_stream() or the caller go the error path. The bug is that the caller frees (see &quot;error: kfree(fp);&quot; code) *fp on the error path, BUT the pointer to the already-freed memory remains in the substream's fmt_list list.
+
+The double-free happens after create_fixed_stream_quirk() returns with an error and usb_audio_probe() calls snd_card_free()-&gt;...-&gt;snd_usb_audio_pcm_free()-&gt;free_substream(). As subs-&gt;fmt_list is already corrupted, iterating it with list_for_each_entry_safe() leads to any and unpredictable results.
+
+&gt; static void free_substream(struct snd_usb_substream *subs)
+&gt; {
+&gt;         struct audioformat *fp, *n;
+&gt;         ...
+&gt;         list_for_each_entry_safe(fp, n, &amp;subs-&gt;fmt_list, list) {
+&gt;         ...
+&gt;                 kfree(fp);
+
+3.1) The crash is reproduceable by faking the USB device with no endpoints as described in <a  rel="nofollow" href="https://bugzilla.redhat.com/show_bug.cgi?id=1283355">https://bugzilla.redhat.com/show_bug.cgi?id=1283355</a> and <a  rel="nofollow" href="https://bugzilla.redhat.com/show_bug.cgi?id=1283358">https://bugzilla.redhat.com/show_bug.cgi?id=1283358</a>.
+
+Please see as a proof the following kernel log with debug printing added to the code. First, *fp is added to fmt_list in snd_usb_init_substream():
+
+[  322.797223] usb 1-1: new full-speed USB device number 2 using xhci_hcd
+[  322.974083] usb 1-1: config 1 interface 0 altsetting 0 has 3 endpoint descriptors, different from the interface descriptor's value: 0
+[  322.987031] usb 1-1: New USB device found, idVendor=045e, idProduct=0283
+[  322.998318] usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[  323.083913] media: Linux media interface: v0.10
+[  323.231249] init_substream: add_tail() fp=ffff88003364ba80 fp-&gt;list.next=ffff8800b1e898b8 fp-&gt;list.prev=ffff8800b1e898b8 fmt_list=ffff8800b1e898b8 fmt_list.next=ffff88003364ba80 prev=ffff88003364ba80 num_formats=1
+
+As you can see we have a correct list here with head at fmt_list=ffff8800b1e898b8 and single element fp=ffff88003364ba80.
+
+3.2) The code finds out that there are too few endpoints present and goes the error path (to the &quot;error:&quot; label):
+
+[  323.307927] usb 1-1: too few endpoints
+[  323.312964] trace-before-free: substream-0 ffff8800b1e89818 numf 1 fmt_list ffff8800b1e898b8 next ffff88003364ba80
+[  323.353759] fp=ffff88003364ba80 next=ffff8800b1e898b8 prev=ffff8800b1e898b8 rate=(null) chmap=(null)
+[  323.362118] struct sane
+
+As you can see the substream's fmt_list is sane at this point.
+
+3.3) After &quot;kfree(fp)&quot; in the error path of create_fixed_stream_quirk() *fp is freed, BUT the pointer to the freed memory remains in fmt_list. After *fp is freed the list is corrupted and contains trash:
+
+[  323.371752] KFREE(fp) ffff88003364ba80
+[  323.380383] trace-after-free: substream-0 ffff8800b1e89818 numf 1 fmt_list ffff8800b1e898b8 next ffff88003364ba80
+[  323.400003] fp=ffff88003364ba80 next=ffff88003364bf80 prev=ffff8800b1e898b8 rate=(null) chmap=(null)
+[  323.406786] fp=ffff88003364bf80 next=          (null) prev=          (null) rate=(null) chmap=(null)
+[  323.422211] next == NULL: FAIL, struct INSANE
+[  323.436706] KFREE(rate_table) (null)
+
+3.4) After error return from create_fixed_stream_quirk() the sound card is destroyed with &quot;snd_card_free(chip-&gt;card)&quot; in usb_audio_probe(). In the end free_substream() is called:
+
+[  323.511256] usb 1-1: snd_usb_create_quirk() failed: -22
+[  323.565108] list_for_each_entry_safe(): fp=ffff88003364ba80 n=ffff88003364bf80
+[  323.586337] kfree fp ffff88003364ba80                                  &lt;&lt;&lt; DOUBLE-FREE
+[  323.588509] loop-end: fp=ffff88003364ba80 n=ffff88003364bf80
+[  323.599969] list_for_each_entry_safe(): fp=ffff88003364bf80 n=(null)
+[  323.610460] kfree fp ffff88003364bf80                                  &lt;&lt;&lt; FREEING SOMEONE ELSE'S MEMORY
+[  323.613181] loop-end: fp=ffff88003364bf80 n=(null)                     &lt;&lt;&lt; NULL-PTR DEREF
+...
+[  324.247113] BUG: unable to handle kernel NULL pointer dereference at           (null)
+[  324.247533] IP: [&lt;ffffffffc02d40ef&gt;] free_substream.part.0+0xef/0x100 [snd_usb_audio]
+[  324.248088] PGD 0 
+[  324.248088] Oops: 0000 [#1] SMP 
+[  324.248088] Modules linked in: snd_usb_audio(+) snd_usbmidi_lib snd_hwdep ...
+[  324.248088] CPU: 2 PID: 767 Comm: systemd-udevd Not tainted 4.5.0-vladis #25
+[  324.248088] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.8.2-0-g33fbe13 by qemu-project.org 04/01/2014
+[  324.248088] task: ffff880034718000 ti: ffff8800b2fbc000 task.ti: ffff8800b2fbc000
+[  324.248088] RIP: 0010:[&lt;ffffffffc02d40ef&gt;]  [&lt;ffffffffc02d40ef&gt;] free_substream.part.0+0xef/0x100 [snd_usb_audio]
+[  324.248088] RSP: 0018:ffff8800b2fbf898  EFLAGS: 00010217
+...
+[  324.248088] Call Trace:
+[  324.248088]  [&lt;ffffffffc02d43fa&gt;] snd_usb_audio_pcm_free+0x9a/0xa0 [snd_usb_audio]
+[  324.248088]  [&lt;ffffffffc028d982&gt;] snd_pcm_free+0x32/0xa0 [snd_pcm]
+[  324.248088]  [&lt;ffffffffc028da02&gt;] snd_pcm_dev_free+0x12/0x20 [snd_pcm]
+[  324.248088]  [&lt;ffffffffc027d279&gt;] __snd_device_free+0x29/0x70 [snd]
+[  324.248088]  [&lt;ffffffffc027d660&gt;] snd_device_free_all+0x30/0x60 [snd]
+[  324.248088]  [&lt;ffffffffc02777a4&gt;] release_card_device+0x34/0x90 [snd]
+[  324.248088]  [&lt;ffffffff815ae2b2&gt;] device_release+0x32/0x90
+[  324.248088]  [&lt;ffffffff81455f8a&gt;] kobject_release+0x7a/0x190
+[  324.248088]  [&lt;ffffffff81455e47&gt;] kobject_put+0x27/0x50
+[  324.248088]  [&lt;ffffffff815ae5f7&gt;] put_device+0x17/0x20
+[  324.248088]  [&lt;ffffffffc0277b57&gt;] snd_card_free+0x67/0x90 [snd]
+[  324.248088]  [&lt;ffffffffc02c4f14&gt;] usb_audio_probe+0x754/0x9d0 [snd_usb_audio]
+...
+
+4.1) The suggested patch consists of 2 changes. First, I suppose we should move the code in create_fixed_stream_quirk() marked as &quot;(*)&quot; (see above) after &quot;if (altsd-&gt;bNumEndpoints &lt; 1)&quot; check. This way no allocations is done if we go an error path. I've checked that fp-&gt;iface and fp-&gt;altset_idx are not changed in snd_usb_add_audio_stream() and functions called from it, so it is safe to swap these 2 pieces of code.
+
+4.2) The problem with double-free still remains. I've verified that all the callers of snd_usb_add_audio_stream() free *fp in case of error:
+
+$ git grep snd_usb_add_audio_stream
+sound/usb/quirks.c:     err = snd_usb_add_audio_stream(chip, stream, fp);
+
+&gt; *        err = snd_usb_add_audio_stream(chip, stream, fp);
+&gt; *        if (err &lt; 0)
+&gt; *                goto error;
+&gt; * error:
+&gt; *        kfree(fp);
+&gt; *        kfree(rate_table);
+&gt; *        return err;
+
+sound/usb/quirks.c:     err = snd_usb_add_audio_stream(chip, stream, fp);
+
+&gt; *        err = snd_usb_add_audio_stream(chip, stream, fp);
+&gt; *        if (err &lt; 0) {
+&gt; *                kfree(fp);
+&gt; *                return err;
+&gt; *        }
+
+sound/usb/stream.c:             err = snd_usb_add_audio_stream(chip, stream, fp);
+
+&gt; *                err = snd_usb_add_audio_stream(chip, stream, fp);
+&gt; *                if (err &lt; 0) {
+&gt; *                        kfree(fp-&gt;rate_table);
+&gt; *                        kfree(fp-&gt;chmap);
+&gt; *                        kfree(fp);
+&gt; *                        return err;
+&gt; *                }
+
+This means that snd_usb_add_audio_stream() should remove *fp from the substream's fmt_list list on the error path, if it was already added. Such places are:
+
+
+&gt; int snd_usb_add_audio_stream(struct snd_usb_audio *chip, int stream, struct audioformat *fp)
+&gt; {
+&gt;         struct snd_usb_stream *as;
+&gt;         struct snd_usb_substream *subs;
+&gt;         struct snd_pcm *pcm;
+&gt;         int err;
+&gt; 
+&gt;         list_for_each_entry(as, &amp;chip-&gt;pcm_list, list) {
+&gt;                 subs = &amp;as-&gt;substream[stream];
+&gt;                 ...
+&gt;                         list_add_tail(&amp;fp-&gt;list, &amp;subs-&gt;fmt_list); &lt;&lt;&lt; ADDING fp HERE
+&gt;                         subs-&gt;num_formats++;
+&gt;                         return 0;                                  &lt;&lt;&lt; NO ERROR PATH HERE
+&gt;                 }
+&gt;         }
+&gt; 
+&gt;         /* look for an empty stream */
+&gt;         list_for_each_entry(as, &amp;chip-&gt;pcm_list, list) {
+&gt;                 subs = &amp;as-&gt;substream[stream];
+&gt;                 ...
+&gt;                 snd_usb_init_substream(as, stream, fp);  &lt;&lt;&lt; ADDING fp HERE, IF add_chmap() FAILS
+&gt;                 return add_chmap(as-&gt;pcm, stream, subs); &lt;&lt;&lt; fp SHOULD BE REMOVED FROM fmt_list
+&gt;         }
+&gt; 
+&gt;         /* create a new pcm */
+&gt;         as = kzalloc(sizeof(*as), GFP_KERNEL);
+&gt;         err = snd_pcm_new(chip-&gt;card, &quot;USB Audio&quot;, chip-&gt;pcm_devs,
+&gt;         ...
+&gt;         if (err &lt; 0) {            &lt;&lt;&lt; fp IS NOT ADDED YET HERE, SO FINE
+&gt;                 kfree(as);
+&gt;                 return err;
+&gt;         }
+&gt;         ...
+&gt;         snd_usb_init_substream(as, stream, fp);                 &lt;&lt;&lt; ADDING fp HERE
+&gt;         ...                                                     &lt;&lt;&lt; IF add_chmap() FAILS fp SHOULD
+&gt;         return add_chmap(pcm, stream, &amp;as-&gt;substream[stream]);  &lt;&lt;&lt; BE REMOVED FROM fmt_list
+&gt; }
+
+add_chmap() itself does not add anything to fmt_list list, so we indeed need to remove only the single list element from the list. Having all the above in mind, the patch follows.
+
+4.3) How to handle possible error paths after successful call to snd_usb_add_audio_stream() in create_fixed_stream_quirk() is d
+iscussable. Properly it should be like the below, but I believe it is overcomplication here would and stick to a simple error_after_add_audio_stream: label:
+
+&gt;  error2:
+&gt;         snd_usb_del_audio_stream(...something...);
+&gt;  error:
+&gt;         kfree(fp);
+&gt;         kfree(rate_table);
+&gt;         return err;
+
+Best regards,
+Vladis Dronov | Red Hat, Inc. | Product Security Engineer
+--
+To unsubscribe from this list: send the line &quot;unsubscribe linux-sound&quot; in
+the body of a message to majordomo@xxxxxxxxxxxxxxx
+More majordomo info at  <a  rel="nofollow" href="http://vger.kernel.org/majordomo-info.html">http://vger.kernel.org/majordomo-info.html</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="00602" href="msg00602.html">[PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()</a></strong>
+<ul><li><em>From:</em> Vladis Dronov</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00600.html">Re: [PATCH] ALSA: intel8x0: Add clock quirk entry for AD1981B on IBM ThinkPad X41.</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00602.html">[PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00599.html">[PATCH] ALSA: intel8x0: Add clock quirk entry for AD1981B on IBM ThinkPad X41.</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00602.html">[PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#00601"><strong>Date</strong></a></li>
+<li><a href="index.html#00601"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/Pulseaudio/>[Pulseaudio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/alsa-devel/>[ALSA&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td valign=top align=left>&nbsp;</td>
+<td valign=top align=right>
+<a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

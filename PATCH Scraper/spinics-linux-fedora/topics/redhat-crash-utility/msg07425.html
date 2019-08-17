@@ -1,0 +1,563 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 1/4] refactor store_context => add_context -->
+<!--X-From-R13: Uert Furyra &#60;tguryraNtbbtyr.pbz> -->
+<!--X-Date: Fri, 6 Apr 2018 08:16:53 &#45;0700 -->
+<!--X-Message-Id: 20180406151504.88066&#45;2&#45;gthelen@google.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20180406151504.88066&#45;1&#45;gthelen@google.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 1/4] refactor store_context =&gt; add_context &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  [PATCH 1/4] refactor store_context =&gt; add_context</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 1/4] refactor store_context =&gt; add_context</h1>
+[<a href="msg07424.html">Date Prev</a>][<a href="msg07426.html">Date Next</a>][<a href="msg07424.html">Thread Prev</a>][<a href="msg07426.html">Thread Next</a>][<a href="maillist.html#07425">Date Index</a>][<a href="index.html#07425">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 1/4] refactor store_context =&gt; add_context</li>
+<li><em>From</em>: Greg Thelen &lt;gthelen@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri,  6 Apr 2018 08:15:01 -0700</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg07424.html">20180406151504.88066-1-gthelen@google.com</a>&gt;</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>store_context is always used add entries to the tt-&gt;context_array, so
+simply the code.  No functional change.
+
+Signed-off-by: Greg Thelen &lt;gthelen@xxxxxxxxxx&gt;
+---
+ task.c | 106 +++++++++++++++------------------------------------------
+ 1 file changed, 28 insertions(+), 78 deletions(-)
+
+diff --git a/task.c b/task.c
+index 6d31699ca209..51aa2a255326 100644
+--- a/task.c
++++ b/task.c
+@@ -32,7 +32,7 @@ static void refresh_hlist_task_table_v3(void);
+ static void refresh_active_task_table(void);
+ static int radix_tree_task_callback(ulong);
+ static void refresh_radix_tree_task_table(void);
+-static struct task_context *store_context(struct task_context *, ulong, char *);
++static struct task_context *add_context(ulong, char *);
+ static void refresh_context(ulong, ulong);
+ static ulong parent_of(ulong);
+ static void parent_list(ulong);
+@@ -822,7 +822,6 @@ refresh_fixed_task_table(void)
+ {
+ 	int i;
+ 	ulong *tlp;
+-	struct task_context *tc;
+ 	ulong curtask;
+ 	ulong retries;
+ 	ulong curpid;
+@@ -868,8 +867,7 @@ retry:
+ 
+ 	clear_task_cache();
+ 
+-        for (i = 0, tlp = (ulong *)tt-&gt;task_local, 
+-	     tt-&gt;running_tasks = 0, tc = tt-&gt;context_array;
++        for (i = 0, tlp = (ulong *)tt-&gt;task_local, tt-&gt;running_tasks = 0;
+              i &lt; tt-&gt;max_tasks; i++, tlp++) {
+                 if (TASK_IN_USE(*tlp)) {
+                 	if (!(tp = fill_task_struct(*tlp))) {
+@@ -879,10 +877,7 @@ retry:
+                         	goto retry;
+                 	}
+ 
+-                	if (store_context(tc, *tlp, tp)) {
+-                        	tc++;
+-                        	tt-&gt;running_tasks++;
+-                	}
++			add_context(*tlp, tp);
+ 		}
+         }
+ 
+@@ -966,7 +961,6 @@ refresh_unlimited_task_table(void)
+ {
+ 	int i;
+ 	ulong *tlp;
+-	struct task_context *tc;
+ 	ulong curtask;
+ 	ulong curpid;
+ 	struct list_data list_data, *ld;
+@@ -1080,8 +1074,7 @@ retry:
+ 
+ 	clear_task_cache();
+ 
+-        for (i = 0, tlp = (ulong *)tt-&gt;task_local, 
+-             tt-&gt;running_tasks = 0, tc = tt-&gt;context_array;
++        for (i = 0, tlp = (ulong *)tt-&gt;task_local, tt-&gt;running_tasks = 0;
+              i &lt; tt-&gt;max_tasks; i++, tlp++) {
+ 		if (!(*tlp))
+ 			continue;
+@@ -1108,10 +1101,7 @@ retry:
+                         goto retry;
+                 }
+ 
+-		if (store_context(tc, *tlp, tp)) {
+-                	tc++;
+-                	tt-&gt;running_tasks++;
+-		}
++		add_context(*tlp, tp);
+ 	}
+ 
+ 	if (DUMPFILE()) {
+@@ -1143,7 +1133,6 @@ refresh_pidhash_task_table(void)
+ 	char *pidhash, *tp; 
+ 	ulong *pp, next, pnext;
+ 	int len, cnt;
+-        struct task_context *tc;
+         ulong curtask;
+         ulong curpid;
+         ulong retries;
+@@ -1284,8 +1273,7 @@ retry_pidhash:
+ 
+ 	clear_task_cache();
+ 
+-        for (i = 0, tlp = (ulong *)tt-&gt;task_local, 
+-             tt-&gt;running_tasks = 0, tc = tt-&gt;context_array;
++        for (i = 0, tlp = (ulong *)tt-&gt;task_local, tt-&gt;running_tasks = 0;
+              i &lt; tt-&gt;max_tasks; i++, tlp++) {
+ 		if (!(*tlp))
+ 			continue;
+@@ -1317,10 +1305,7 @@ retry_pidhash:
+                         goto retry_pidhash;
+                 }
+ 
+-		if (store_context(tc, *tlp, tp)) {
+-			tc++;
+-			tt-&gt;running_tasks++;
+-		}
++		add_context(*tlp, tp);
+ 	}
+ 
+         FREEBUF(pidhash);
+@@ -1361,7 +1346,6 @@ refresh_pid_hash_task_table(void)
+ 	char *tp; 
+ 	ulong next, pnext;
+ 	int len, cnt;
+-        struct task_context *tc;
+         ulong curtask;
+         ulong curpid;
+         ulong retries;
+@@ -1496,8 +1480,7 @@ retry_pid_hash:
+ 
+ 	clear_task_cache();
+ 
+-        for (i = 0, tlp = (ulong *)tt-&gt;task_local, 
+-             tt-&gt;running_tasks = 0, tc = tt-&gt;context_array;
++        for (i = 0, tlp = (ulong *)tt-&gt;task_local, tt-&gt;running_tasks = 0;
+              i &lt; tt-&gt;max_tasks; i++, tlp++) {
+ 		if (!(*tlp))
+ 			continue;
+@@ -1529,10 +1512,7 @@ retry_pid_hash:
+                         goto retry_pid_hash;
+                 }
+ 
+-		if (store_context(tc, *tlp, tp)) {
+-			tc++;
+-			tt-&gt;running_tasks++;
+-		}
++		add_context(*tlp, tp);
+ 	}
+ 
+         FREEBUF(pid_hash);
+@@ -1565,7 +1545,6 @@ refresh_hlist_task_table(void)
+ 	char *nodebuf;
+ 	int plen, len, cnt;
+ 	long value;
+-        struct task_context *tc;
+         ulong curtask;
+         ulong curpid;
+         ulong retries;
+@@ -1768,8 +1747,7 @@ retry_pid_hash:
+ 
+ 	clear_task_cache();
+ 
+-        for (i = 0, tlp = (ulong *)tt-&gt;task_local, 
+-             tt-&gt;running_tasks = 0, tc = tt-&gt;context_array;
++        for (i = 0, tlp = (ulong *)tt-&gt;task_local, tt-&gt;running_tasks = 0;
+              i &lt; tt-&gt;max_tasks; i++, tlp++) {
+ 		if (!(*tlp))
+ 			continue;
+@@ -1801,10 +1779,7 @@ retry_pid_hash:
+                         goto retry_pid_hash;
+                 }
+ 
+-		if (store_context(tc, *tlp, tp)) {
+-			tc++;
+-			tt-&gt;running_tasks++;
+-		}
++		add_context(*tlp, tp);
+ 	}
+ 
+         FREEBUF(pid_hash);
+@@ -1835,7 +1810,6 @@ refresh_hlist_task_table_v2(void)
+ 	ulong next, pnext, pprev;
+ 	char *nodebuf;
+ 	int len, cnt;
+-        struct task_context *tc;
+         ulong curtask;
+         ulong curpid;
+         ulong retries;
+@@ -2003,8 +1977,7 @@ retry_pid_hash:
+ 
+ 	clear_task_cache();
+ 
+-        for (i = 0, tlp = (ulong *)tt-&gt;task_local, 
+-             tt-&gt;running_tasks = 0, tc = tt-&gt;context_array;
++        for (i = 0, tlp = (ulong *)tt-&gt;task_local, tt-&gt;running_tasks = 0;
+              i &lt; tt-&gt;max_tasks; i++, tlp++) {
+ 		if (!(*tlp))
+ 			continue;
+@@ -2036,10 +2009,7 @@ retry_pid_hash:
+                         goto retry_pid_hash;
+                 }
+ 
+-		if (store_context(tc, *tlp, tp)) {
+-			tc++;
+-			tt-&gt;running_tasks++;
+-		}
++		add_context(*tlp, tp);
+ 	}
+ 
+         FREEBUF(pid_hash);
+@@ -2070,7 +2040,6 @@ refresh_hlist_task_table_v3(void)
+ 	ulong upid;
+ 	char *nodebuf;
+ 	int len, cnt;
+-        struct task_context *tc;
+         ulong curtask;
+         ulong curpid;
+         ulong retries;
+@@ -2266,8 +2235,7 @@ chain_next:
+ 
+ 	clear_task_cache();
+ 
+-        for (i = 0, tlp = (ulong *)tt-&gt;task_local, 
+-             tt-&gt;running_tasks = 0, tc = tt-&gt;context_array;
++        for (i = 0, tlp = (ulong *)tt-&gt;task_local, tt-&gt;running_tasks = 0;
+              i &lt; tt-&gt;max_tasks; i++, tlp++) {
+ 		if (!(*tlp))
+ 			continue;
+@@ -2299,10 +2267,7 @@ chain_next:
+                         goto retry_pid_hash;
+                 }
+ 
+-		if (store_context(tc, *tlp, tp)) {
+-			tc++;
+-			tt-&gt;running_tasks++;
+-		}
++		add_context(*tlp, tp);
+ 	}
+ 
+         FREEBUF(pid_hash);
+@@ -2341,7 +2306,6 @@ refresh_radix_tree_task_table(void)
+ 	ulong *tlp;
+ 	char *tp;
+ 	struct radix_tree_pair rtp;
+-	struct task_context *tc;
+ 	char *pidbuf;
+ 
+ 	if (DUMPFILE() &amp;&amp; (tt-&gt;flags &amp; TASK_INIT_DONE))   /* impossible */
+@@ -2494,8 +2458,7 @@ retry_radix_tree:
+ 
+ 	clear_task_cache();
+ 
+-        for (i = 0, tlp = (ulong *)tt-&gt;task_local,
+-             tt-&gt;running_tasks = 0, tc = tt-&gt;context_array;
++        for (i = 0, tlp = (ulong *)tt-&gt;task_local, tt-&gt;running_tasks = 0;
+              i &lt; tt-&gt;max_tasks; i++, tlp++) {
+ 		if (!(*tlp))
+ 			continue;
+@@ -2527,10 +2490,7 @@ retry_radix_tree:
+ 			goto retry_radix_tree;
+ 		}
+ 
+-		if (store_context(tc, *tlp, tp)) {
+-			tc++;
+-			tt-&gt;running_tasks++;
+-		}
++		add_context(*tlp, tp);
+ 	}
+ 
+ 	FREEBUF(pidbuf);
+@@ -2549,7 +2509,6 @@ refresh_active_task_table(void)
+ 	int i;
+ 	char *tp; 
+ 	int cnt;
+-        struct task_context *tc;
+         ulong curtask;
+         ulong curpid;
+         ulong retries;
+@@ -2610,8 +2569,7 @@ retry_active:
+ 
+ 	clear_task_cache();
+ 
+-        for (i = 0, tlp = (ulong *)tt-&gt;task_local, 
+-             tt-&gt;running_tasks = 0, tc = tt-&gt;context_array;
++        for (i = 0, tlp = (ulong *)tt-&gt;task_local, tt-&gt;running_tasks = 0;
+              i &lt; tt-&gt;max_tasks; i++, tlp++) {
+ 		if (!(*tlp))
+ 			continue;
+@@ -2643,10 +2601,7 @@ retry_active:
+                         goto retry_active;
+                 }
+ 
+-		if (store_context(tc, *tlp, tp)) {
+-			tc++;
+-			tt-&gt;running_tasks++;
+-		} else if (DUMPFILE())
++		if (!add_context(*tlp, tp) &amp;&amp; DUMPFILE())
+ 			error(WARNING, &quot;corrupt/invalid active task: %lx\n&quot;,
+ 				*tlp);
+ 	}
+@@ -2667,11 +2622,11 @@ retry_active:
+ }
+ 
+ /*
+- *  Fill a task_context structure with the data from a task.  If a NULL
+- *  task_context pointer is passed in, use the next available one.
++ *  Initialize and return a new task_context structure with data from a task.
++ *  NULL is returned on error.
+  */
+ static struct task_context *
+-store_context(struct task_context *tc, ulong task, char *tp)
++add_context(ulong task, char *tp)
+ {
+         pid_t *pid_addr, *tgid_addr;
+         char *comm_addr;
+@@ -2680,6 +2635,7 @@ store_context(struct task_context *tc, ulong task, char *tp)
+         ulong *mm_addr;
+         int has_cpu;
+ 	int do_verify;
++	struct task_context *tc;
+ 	struct tgid_context *tg;
+ 
+ 	processor_addr = NULL;
+@@ -2699,8 +2655,7 @@ store_context(struct task_context *tc, ulong task, char *tp)
+ 	else
+ 		do_verify = 0;
+ 
+-	if (!tc)
+-		tc = tt-&gt;context_array + tt-&gt;running_tasks;
++	tc = tt-&gt;context_array + tt-&gt;running_tasks;
+ 
+         pid_addr = (pid_t *)(tp + OFFSET(task_struct_pid));
+ 	tgid_addr = (pid_t *)(tp + OFFSET(task_struct_tgid));
+@@ -2755,6 +2710,7 @@ store_context(struct task_context *tc, ulong task, char *tp)
+         if (has_cpu &amp;&amp; (tt-&gt;flags &amp; POPULATE_PANIC))
+                 tt-&gt;panic_threads[tc-&gt;processor] = tc-&gt;task;
+ 
++	tt-&gt;running_tasks++;
+ 	return tc;
+ }
+ 
+@@ -5907,12 +5863,8 @@ get_panic_context(void)
+ 			error(WARNING, 
+ 			  &quot;active task %lx on cpu %d not found in PID hash\n\n&quot;,
+ 				task, i);
+-			if ((tp = fill_task_struct(task))) {
+-				if ((tc = store_context(NULL, task, tp))) 
+-					tt-&gt;running_tasks++;
+-				else
+-					continue;
+-			}
++			if ((tp = fill_task_struct(task)))
++				add_context(task, tp);
+ 		}
+ 	}
+ 
+@@ -7180,10 +7132,8 @@ found_panic_task:
+ 		 *  If the task list was corrupted, add this one in.
+ 		 */
+                 if ((tp = fill_task_struct(lasttask))) {
+-			if ((tc = store_context(NULL, lasttask, tp))) {
+-				tt-&gt;running_tasks++;
++			if ((tc = add_context(lasttask, tp)))
+ 				return tc;
+-			}
+ 		}
+ 	} 
+ 
+-- 
+2.17.0.484.g0c8726318c-goog
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="07424" href="msg07424.html">[PATCH 0/4] speed up handling of dumps with many	tasks</a></strong>
+<ul><li><em>From:</em> Greg Thelen</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07424.html">[PATCH 0/4] speed up handling of dumps with many	tasks</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07426.html">[PATCH 3/4] remove unreachable (and slow) code</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07424.html">[PATCH 0/4] speed up handling of dumps with many	tasks</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07426.html">[PATCH 3/4] remove unreachable (and slow) code</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07425"><strong>Date</strong></a></li>
+<li><a href="index.html#07425"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

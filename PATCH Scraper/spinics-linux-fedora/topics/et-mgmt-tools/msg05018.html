@@ -1,0 +1,307 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] virt&#45;install: Add &#45;&#45;video option -->
+<!--X-From-R13: Qbyr Dbovafba &#60;pebovafbNerqung.pbz> -->
+<!--X-Date: Thu, 9 Jul 2009 12:22:29 &#45;0700 -->
+<!--X-Message-Id: 4A564479.4030303@redhat.com -->
+<!--X-Content-Type: multipart/mixed -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fedora Management Tools, [PATCH] virt-install: Add --video option">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<link rel="alternate" type="application/rss+xml" title="Fedora Management Tools" href="//feedproxy.google.com/Fedora/linuxManagementTools">
+<title>Fedora Management Tools -- [PATCH] virt-install: Add --video option</title>
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] virt-install: Add --video option</h1>
+[<a href="msg05017.html">Date Prev</a>][<a href="msg05019.html">Date Next</a>][<a href="msg05017.html">Thread Prev</a>][<a href="msg05021.html">Thread Next</a>][<a href="maillist.html#05018">Date Index</a>][<a href="index.html#05018">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] virt-install: Add --video option</li>
+<li><em>From</em>: Cole Robinson &lt;<a href="mailto:crobinso@DOMAIN.HIDDEN">crobinso@xxxxxxxxxx</a>&gt;</li>
+<li><em>Date</em>: Thu, 09 Jul 2009 15:26:49 -0400</li>
+<li><em>Reply-to</em>: Fedora/Linux Management Tools &lt;<a href="mailto:et-mgmt-tools@DOMAIN.HIDDEN">et-mgmt-tools@xxxxxxxxxx</a>&gt;</li>
+<li><em>User-agent</em>: Thunderbird 2.0.0.21 (X11/20090320)</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The attached patch adds a --video option to virt-install, for specifying the
+video device model to attach to the VM (cirrus, vga, vmvga, etc.).
+
+Pretty straightforward, the invocation is simply --video MODEL, ex:
+
+--video vga
+
+Questions or comments appreciated.
+
+- Cole
+</pre><pre># HG changeset patch
+# User Cole Robinson &lt;crobinso@xxxxxxxxxx&gt;
+# Date 1247102917 14400
+# Node ID 658d02442b2f8a55de9c6e19c498e09cb00a173e
+# Parent  7751290d749d678e6a97a32ea5455af6e2226e78
+virt-install: Add --video option.
+
+Takes the video model (cirrus, vga, etc) as the only argument. Can easily
+be expanded in the future if needed.
+
+diff -r 7751290d749d -r 658d02442b2f man/en/virt-install.pod.in
+--- a/man/en/virt-install.pod.in	Wed Jul 08 21:28:19 2009 -0400
++++ b/man/en/virt-install.pod.in	Wed Jul 08 21:28:37 2009 -0400
+@@ -573,6 +573,12 @@
+ host to render the output. If the SDL window is closed the guest may
+ be unconditionally terminated.
+ 
++=item --video=VIDEO
++
++Specify what video device model will be attached to the guest. Valid values
++for VIDEO are hypervisor specific, but some options for recent kvm are
++cirrus, vga, or vmvga (vmware).
++
+ =item  --nographics
+ 
+ No graphical console will be allocated for the guest. Fully virtualized guests
+diff -r 7751290d749d -r 658d02442b2f tests/clitest.py
+--- a/tests/clitest.py	Wed Jul 08 21:28:19 2009 -0400
++++ b/tests/clitest.py	Wed Jul 08 21:28:37 2009 -0400
+@@ -200,6 +200,8 @@
+         &quot;--sdl&quot;,
+         # VNC w/ lots of options
+         &quot;--vnc --keymap ja --vncport 5950 --vnclisten 1.2.3.4&quot;,
++        # --video option
++        &quot;--vnc --video vga&quot;,
+       ],
+ 
+       &quot;invalid&quot;: [
+@@ -207,6 +209,8 @@
+         &quot;--vnc --keymap ZZZ&quot;,
+         # Invalid port
+         &quot;--vnc --vncport -50&quot;,
++        # Invalid --video
++        &quot;--vnc --video foobar&quot;,
+       ],
+ 
+      }, # category &quot;graphics&quot;
+diff -r 7751290d749d -r 658d02442b2f virt-install
+--- a/virt-install	Wed Jul 08 21:28:19 2009 -0400
++++ b/virt-install	Wed Jul 08 21:28:37 2009 -0400
+@@ -627,6 +627,9 @@
+     parser.add_option_group(netg)
+ 
+     vncg = cli.graphics_option_group(parser)
++    vncg.add_option(&quot;&quot;, &quot;--video&quot;, dest=&quot;video&quot;, type=&quot;string&quot;,
++                    action=&quot;callback&quot;, callback=cli.check_before_append,
++                    help=_(&quot;Specify video hardware type.&quot;))
+     vncg.add_option(&quot;&quot;, &quot;--noautoconsole&quot;, action=&quot;store_false&quot;,
+                     dest=&quot;autoconsole&quot;,
+                     help=_(&quot;Don't automatically try to connect to the guest &quot;
+@@ -739,6 +742,8 @@
+         get_chardevs(VirtualDevice.VIRTUAL_DEV_PARALLEL, options.parallels,
+                      guest)
+ 
++    cli.get_video(options.video, guest)
++
+     # set up disks
+     get_disks(options.file_path, options.diskopts, options.disksize,
+               options.sparse, options.nodisks, guest, conn)
+diff -r 7751290d749d -r 658d02442b2f virtinst/cli.py
+--- a/virtinst/cli.py	Wed Jul 08 21:28:19 2009 -0400
++++ b/virtinst/cli.py	Wed Jul 08 21:28:37 2009 -0400
+@@ -716,6 +716,15 @@
+                                                           name=devname)
+         guest.hostdevs.append(dev)
+ 
++def get_video(video_models, guest):
++    if not video_models:
++        return
++
++    for model in video_models:
++        dev = virtinst.VirtualVideoDevice(guest.conn)
++        dev.model_type = model
++        guest.add_device(dev)
++
+ ### Option parsing
+ def check_before_store(option, opt_str, value, parser):
+     if len(value) == 0:
+</pre><pre>_______________________________________________
+et-mgmt-tools mailing list
+et-mgmt-tools@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/et-mgmt-tools">https://www.redhat.com/mailman/listinfo/et-mgmt-tools</a></pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="05030" href="msg05030.html">Re:  [PATCH] virt-install: Add --video option</a></strong>
+<ul><li><em>From:</em> Cole Robinson</li></ul></li>
+<li><strong><a name="05021" href="msg05021.html">Re:  [PATCH] virt-install: Add --video option</a></strong>
+<ul><li><em>From:</em> Daniel P. Berrange</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05017.html">[PATCH] virt-install: Add --serial and --parallel	options</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05019.html">[PATCH] virt-manager: Support serial and parallel devices in 'Add Hardware'</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05017.html">[PATCH] virt-install: Add --serial and --parallel	options</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05021.html">Re:  [PATCH] virt-install: Add --video option</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05018"><strong>Date</strong></a></li>
+<li><a href="index.html#05018"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fll/>[Fedora&nbsp;Legacy&nbsp;List]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-maintainers/>[Fedora&nbsp;Maintainers]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.html>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

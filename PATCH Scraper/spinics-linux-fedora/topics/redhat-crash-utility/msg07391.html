@@ -1,0 +1,550 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] vmware_vmss: read vCPUs regs and show them	in 'bt' -->
+<!--X-From-R13: Eretvb Zbcrm &#60;fycNerqung.pbz> -->
+<!--X-Date: Wed, 21 Mar 2018 05:08:52 &#45;0700 -->
+<!--X-Message-Id: 20180321120837.32765&#45;1&#45;slp@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH] vmware_vmss: read vCPUs regs and show them	in 'bt' &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  [PATCH] vmware_vmss: read vCPUs regs and show them	in 'bt'</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] vmware_vmss: read vCPUs regs and show them	in 'bt'</h1>
+[<a href="msg07390.html">Date Prev</a>][<a href="msg07392.html">Date Next</a>][<a href="msg07385.html">Thread Prev</a>][<a href="msg07393.html">Thread Next</a>][<a href="maillist.html#07391">Date Index</a>][<a href="index.html#07391">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] vmware_vmss: read vCPUs regs and show them	in 'bt'</li>
+<li><em>From</em>: Sergio Lopez &lt;slp@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 21 Mar 2018 13:08:37 +0100</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>VMSS dump files contain the state of each vCPU at the time of suspending
+the VM. This change enables 'crash' to read some relevant registers from
+each vCPU state and display them in 'bt'.
+
+This is also the first step towards implementing kaslr offset
+calculation for VMSS dump files.
+---
+ defs.h        |   3 ++
+ kernel.c      |   2 +
+ vmware_vmss.c | 148 +++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ vmware_vmss.h |  28 +++++++++++
+ x86_64.c      |  13 ++++--
+ 5 files changed, 184 insertions(+), 10 deletions(-)
+
+diff --git a/defs.h b/defs.h
+index 7998ebf..0ebd38b 100644
+--- a/defs.h
++++ b/defs.h
+@@ -283,6 +283,7 @@ struct number_option {
+ #define LKCD_KERNTYPES()    (pc-&gt;flags &amp; KERNTYPES)
+ #define KVMDUMP_DUMPFILE()  (pc-&gt;flags &amp; KVMDUMP)
+ #define SADUMP_DUMPFILE()  (pc-&gt;flags &amp; SADUMP)
++#define VMSS_DUMPFILE()     (pc-&gt;flags &amp; VMWARE_VMSS)
+ 
+ #define NETDUMP_LOCAL    (0x1)  /* netdump_data flags */
+ #define NETDUMP_REMOTE   (0x2)  
+@@ -6388,6 +6389,8 @@ int vmware_vmss_init(char *filename, FILE *ofp);
+ uint vmware_vmss_page_size(void);
+ int read_vmware_vmss(int, void *, int, ulong, physaddr_t);
+ int write_vmware_vmss(int, void *, int, ulong, physaddr_t);
++void vmware_vmss_display_regs(int, FILE *);
++void get_vmware_vmss_regs(struct bt_info *, ulong *, ulong *);
+ 
+ /*
+  *  gnu_binutils.c
+diff --git a/kernel.c b/kernel.c
+index 1bf6251..7642217 100644
+--- a/kernel.c
++++ b/kernel.c
+@@ -2969,6 +2969,8 @@ back_trace(struct bt_info *bt)
+ 		get_xendump_regs(bt, &amp;eip, &amp;esp);
+ 	else if (SADUMP_DUMPFILE())
+ 		get_sadump_regs(bt, &amp;eip, &amp;esp);
++	else if (VMSS_DUMPFILE())
++		get_vmware_vmss_regs(bt, &amp;eip, &amp;esp);
+         else if (REMOTE_PAUSED()) {
+ 		if (!is_task_active(bt-&gt;task) || !get_remote_regs(bt, &amp;eip, &amp;esp))
+ 			machdep-&gt;get_stack_frame(bt, &amp;eip, &amp;esp);
+diff --git a/vmware_vmss.c b/vmware_vmss.c
+index 667676a..10fbe9e 100644
+--- a/vmware_vmss.c
++++ b/vmware_vmss.c
+@@ -24,6 +24,9 @@
+ /* VMware only supports X86/X86_64 virtual machines. */
+ #define VMW_PAGE_SIZE (4096)
+ #define VMW_PAGE_SHIFT (12)
++#define VMW_GPREGS_SIZE (128)
++#define VMW_CR64_SIZE (72)
++#define VMW_IDTR_SIZE (10)
+ 
+ static vmssdata vmss = { 0 };
+ 
+@@ -128,7 +131,8 @@ vmware_vmss_init(char *filename, FILE *ofp)
+ 		DEBUG_PARSE_PRINT((ofp, LOGPRX&quot;Group: %-20s offset=%#llx size=0x%#llx.\n&quot;,
+ 				  grps[i].name, (ulonglong)grps[i].position, (ulonglong)grps[i].size));
+ 
+-		if (strcmp(grps[i].name, &quot;memory&quot;) != 0) {
++		if (strcmp(grps[i].name, &quot;memory&quot;) != 0 &amp;&amp;
++		    (strcmp(grps[i].name, &quot;cpu&quot;) != 0 || !machine_type(&quot;X86_64&quot;))) {
+ 			continue;
+ 		}
+ 
+@@ -198,12 +202,6 @@ vmware_vmss_init(char *filename, FILE *ofp)
+ 				}
+ 				blockpos += padsize;
+ 
+-				if (fseek(fp, blockpos + nbytes, SEEK_SET) == -1) {
+-					error(INFO, LOGPRX&quot;Cannot seek past block at %#llx.\n&quot;,
+-					      (ulonglong)(blockpos + nbytes));
+-					break;
+-				}
+-
+ 				if (strcmp(name, &quot;Memory&quot;) == 0) {
+ 					/* The things that we really care about...*/
+ 					vmss.memoffset = blockpos;
+@@ -217,11 +215,46 @@ vmware_vmss_init(char *filename, FILE *ofp)
+ 						result = FALSE;
+ 						goto exit;
+ 					}
++
++					if (fseek(fp, blockpos + nbytes, SEEK_SET) == -1) {
++						error(INFO, LOGPRX&quot;Cannot seek past block at %#llx.\n&quot;,
++						      (ulonglong)(blockpos + nbytes));
++						break;
++					}
++				} else if (strcmp(name, &quot;gpregs&quot;) == 0 &amp;&amp;
++					   nbytes == VMW_GPREGS_SIZE &amp;&amp;
++					   idx[0] &lt; vmss.num_vcpus) {
++					int cpu = idx[0];
++
++					fread(vmss.regs64[cpu], nbytes, 1, fp);
++				} else if (strcmp(name, &quot;CR64&quot;) == 0 &amp;&amp;
++					   nbytes == VMW_CR64_SIZE &amp;&amp;
++					   idx[0] &lt; vmss.num_vcpus) {
++					int cpu = idx[0];
++					uint64_t regs[9];
++
++					fread(&amp;regs[0], nbytes, 1, fp);
++					vmss.regs64[cpu]-&gt;cr3 = regs[3];
++				} else if (strcmp(name, &quot;IDTR&quot;) == 0 &amp;&amp;
++					   nbytes == VMW_IDTR_SIZE &amp;&amp;
++					   idx[0] &lt; vmss.num_vcpus) {
++					int cpu = idx[0];
++					char buf[10];
++
++					fread(&amp;buf[0], nbytes, 1, fp);
++					vmss.regs64[cpu]-&gt;cr3 = *((uint64_t *)(&amp;buf[0] + 2));
++				} else {
++					if (fseek(fp, blockpos + nbytes, SEEK_SET) == -1) {
++						error(INFO, LOGPRX&quot;Cannot seek past block at %#llx.\n&quot;,
++						      (ulonglong)(blockpos + nbytes));
++						break;
++					}
+ 				}
+ 			} else {
+ 				union {
+ 					uint8_t val[TAG_VALSIZE_MASK];
+ 					uint32_t val32;
++					uint64_t val64;
+ 				} u;
+ 				unsigned k;
+ 				unsigned valsize = TAG_VALSIZE(tag);
+@@ -253,6 +286,30 @@ vmware_vmss_init(char *filename, FILE *ofp)
+ 					if (strcmp(name, &quot;align_mask&quot;) == 0) {
+ 						vmss.alignmask = u.val32;
+ 					}
++				} else if (strcmp(grps[i].name, &quot;cpu&quot;) == 0) {
++					if (strcmp(name, &quot;cpu:numVCPUs&quot;) == 0) {
++						if (vmss.regs64 != NULL) {
++							error(INFO, LOGPRX&quot;Duplicated cpu:numVCPUs entry.\n&quot;);
++							break;
++						}
++
++						vmss.num_vcpus = u.val32;
++						vmss.regs64 = malloc(vmss.num_vcpus * sizeof(void *));
++
++						for (k = 0; k &lt; vmss.num_vcpus; k++) {
++							vmss.regs64[k] = malloc(sizeof(vmssregs64));
++							memset(vmss.regs64[k], 0, sizeof(vmssregs64));
++						}
++					} else if (strcmp(name, &quot;rip&quot;) == 0) {
++						int cpu = idx[0];
++						vmss.regs64[cpu]-&gt;rip = u.val64;
++					} else if (strcmp(name, &quot;eflags&quot;) == 0) {
++						int cpu = idx[0];
++						vmss.regs64[cpu]-&gt;eflags |= u.val32;
++					} else if (strcmp(name, &quot;EFLAGS&quot;) == 0) {
++						int cpu = idx[0];
++						vmss.regs64[cpu]-&gt;eflags |= u.val32;
++					}
+ 				}
+ 
+ 				DEBUG_PARSE_PRINT((ofp, &quot;\n&quot;));
+@@ -350,3 +407,80 @@ write_vmware_vmss(int fd, void *bufptr, int cnt, ulong addr, physaddr_t paddr)
+ 	return SEEK_ERROR;
+ }
+ 
++void
++vmware_vmss_display_regs(int cpu, FILE *ofp)
++{
++	if (cpu &gt;= vmss.num_vcpus)
++		return;
++
++	if (machine_type(&quot;X86_64&quot;)) {
++		fprintf(ofp,
++		    &quot;	 RIP: %016llx  RSP: %016llx  RFLAGS: %08llx\n&quot;
++		    &quot;	 RAX: %016llx  RBX: %016llx  RCX: %016llx\n&quot;
++		    &quot;	 RDX: %016llx  RSI: %016llx  RDI: %016llx\n&quot;
++		    &quot;	 RBP: %016llx	R8: %016llx   R9: %016llx\n&quot;
++		    &quot;	 R10: %016llx  R11: %016llx  R12: %016llx\n&quot;
++		    &quot;	 R13: %016llx  R14: %016llx  R15: %016llx\n&quot;,
++		    vmss.regs64[cpu]-&gt;rip,
++		    vmss.regs64[cpu]-&gt;rsp,
++		    vmss.regs64[cpu]-&gt;eflags,
++		    vmss.regs64[cpu]-&gt;rax,
++		    vmss.regs64[cpu]-&gt;rbx,
++		    vmss.regs64[cpu]-&gt;rcx,
++		    vmss.regs64[cpu]-&gt;rdx,
++		    vmss.regs64[cpu]-&gt;rsi,
++		    vmss.regs64[cpu]-&gt;rdi,
++		    vmss.regs64[cpu]-&gt;rbp,
++		    vmss.regs64[cpu]-&gt;r8,
++		    vmss.regs64[cpu]-&gt;r9,
++		    vmss.regs64[cpu]-&gt;r10,
++		    vmss.regs64[cpu]-&gt;r11,
++		    vmss.regs64[cpu]-&gt;r12,
++		    vmss.regs64[cpu]-&gt;r13,
++		    vmss.regs64[cpu]-&gt;r14,
++		    vmss.regs64[cpu]-&gt;r15
++		);
++	}
++}
++
++void
++get_vmware_vmss_regs(struct bt_info *bt, ulong *ipp, ulong *spp)
++{
++	ulong ip, sp;
++	struct register_set *rp;
++
++	ip = sp = 0;
++
++	if (!is_task_active(bt-&gt;task)) {
++		machdep-&gt;get_stack_frame(bt, ipp, spp);
++		return;
++	}
++
++	bt-&gt;flags |= BT_DUMPFILE_SEARCH;
++	if (machine_type(&quot;X86_64&quot;))
++		machdep-&gt;get_stack_frame(bt, ipp, spp);
++	else if (machine_type(&quot;X86&quot;))
++		get_netdump_regs_x86(bt, ipp, spp);
++	if (bt-&gt;flags &amp; BT_DUMPFILE_SEARCH)
++		return;
++
++	if ((vmss.regs64 == NULL) ||
++	    (bt-&gt;tc-&gt;processor &gt;= vmss.num_vcpus))
++		return;
++
++	ip = (ulong)vmss.regs64[bt-&gt;tc-&gt;processor]-&gt;rip;
++	sp = (ulong)vmss.regs64[bt-&gt;tc-&gt;processor]-&gt;rsp;
++	if (is_kernel_text(ip) &amp;&amp;
++	    (((sp &gt;= GET_STACKBASE(bt-&gt;task)) &amp;&amp;
++	      (sp &lt; GET_STACKTOP(bt-&gt;task))) ||
++	     in_alternate_stack(bt-&gt;tc-&gt;processor, sp))) {
++		*ipp = ip;
++		*spp = sp;
++		bt-&gt;flags |= BT_KERNEL_SPACE;
++		return;
++	}
++
++	if (!is_kernel_text(ip) &amp;&amp;
++	    in_user_stack(bt-&gt;tc-&gt;task, sp))
++		bt-&gt;flags |= BT_USER_SPACE;
++}
+diff --git a/vmware_vmss.h b/vmware_vmss.h
+index a4b8937..3c69a82 100644
+--- a/vmware_vmss.h
++++ b/vmware_vmss.h
+@@ -90,6 +90,32 @@ struct memregion {
+ typedef struct memregion	memregion;
+ 
+ #define MAX_REGIONS	3
++struct vmssregs64 {
++	/* read from vmss */
++	uint64_t	rax;
++	uint64_t	rcx;
++	uint64_t	rdx;
++	uint64_t	rbx;
++	uint64_t	rbp;
++	uint64_t	rsp;
++	uint64_t	rsi;
++	uint64_t	rdi;
++	uint64_t	r8;
++	uint64_t	r9;
++	uint64_t	r10;
++	uint64_t	r11;
++	uint64_t	r12;
++	uint64_t	r13;
++	uint64_t	r14;
++	uint64_t	r15;
++	/* manually managed */
++	uint64_t	idtr;
++	uint64_t	cr3;
++	uint64_t	rip;
++	uint64_t	eflags;
++};
++typedef struct vmssregs64 vmssregs64;
++
+ struct vmssdata {
+ 	int32_t	cpt64bit;
+ 	FILE	*dfp;
+@@ -99,6 +125,8 @@ struct vmssdata {
+         memregion	regions[MAX_REGIONS];
+ 	uint64_t	memoffset;
+ 	uint64_t	memsize;
++	uint64_t	num_vcpus;
++	vmssregs64	**regs64;
+ };
+ typedef struct vmssdata vmssdata;
+ 
+diff --git a/x86_64.c b/x86_64.c
+index 0d5e150..7b02761 100644
+--- a/x86_64.c
++++ b/x86_64.c
+@@ -3273,6 +3273,8 @@ x86_64_low_budget_back_trace_cmd(struct bt_info *bt_in)
+ 			diskdump_display_regs(bt-&gt;tc-&gt;processor, ofp);
+ 		else if (SADUMP_DUMPFILE())
+ 			sadump_display_regs(bt-&gt;tc-&gt;processor, ofp);
++		else if (VMSS_DUMPFILE())
++			vmware_vmss_display_regs(bt-&gt;tc-&gt;processor, ofp);
+ 		return;
+ 	}
+ 
+@@ -3295,13 +3297,16 @@ x86_64_low_budget_back_trace_cmd(struct bt_info *bt_in)
+ 			diskdump_display_regs(bt-&gt;tc-&gt;processor, ofp);
+ 		else if (SADUMP_DUMPFILE())
+ 			sadump_display_regs(bt-&gt;tc-&gt;processor, ofp);
++		else if (VMSS_DUMPFILE())
++			vmware_vmss_display_regs(bt-&gt;tc-&gt;processor, ofp);
+ 		else if (pc-&gt;flags2 &amp; QEMU_MEM_DUMP_ELF)
+ 			display_regs_from_elf_notes(bt-&gt;tc-&gt;processor, ofp);
+ 		return;
+ 	} else if ((bt-&gt;flags &amp; BT_KERNEL_SPACE) &amp;&amp;
+ 		   (KVMDUMP_DUMPFILE() ||
+ 		    (ELF_NOTES_VALID() &amp;&amp; DISKDUMP_DUMPFILE()) ||
+-		    SADUMP_DUMPFILE() || (pc-&gt;flags2 &amp; QEMU_MEM_DUMP_ELF))) {
++		    SADUMP_DUMPFILE() || (pc-&gt;flags2 &amp; QEMU_MEM_DUMP_ELF) ||
++		    VMSS_DUMPFILE())) {
+ 		fprintf(ofp, &quot;    [exception RIP: &quot;);
+ 		if ((sp = value_search(bt-&gt;instptr, &amp;offset))) {
+ 			fprintf(ofp, &quot;%s&quot;, sp-&gt;name);
+@@ -3317,6 +3322,8 @@ x86_64_low_budget_back_trace_cmd(struct bt_info *bt_in)
+ 			diskdump_display_regs(bt-&gt;tc-&gt;processor, ofp);
+ 		else if (SADUMP_DUMPFILE())
+ 			sadump_display_regs(bt-&gt;tc-&gt;processor, ofp);
++		else if (VMSS_DUMPFILE())
++			vmware_vmss_display_regs(bt-&gt;tc-&gt;processor, ofp);
+ 		else if (pc-&gt;flags2 &amp; QEMU_MEM_DUMP_ELF)
+ 			display_regs_from_elf_notes(bt-&gt;tc-&gt;processor, ofp);
+ 
+@@ -4941,7 +4948,7 @@ skip_stage:
+ 	if (halt_rip &amp;&amp; halt_rsp) {
+         	*rip = halt_rip;
+ 		*rsp = halt_rsp;
+-		if (KVMDUMP_DUMPFILE() || SADUMP_DUMPFILE())
++		if (KVMDUMP_DUMPFILE() || SADUMP_DUMPFILE() || VMSS_DUMPFILE())
+ 			bt_in-&gt;flags &amp;= ~(ulonglong)BT_DUMPFILE_SEARCH;
+ 		return;
+ 	}
+@@ -4986,7 +4993,7 @@ skip_stage:
+ 
+         machdep-&gt;get_stack_frame(bt, rip, rsp);
+ 
+-	if (KVMDUMP_DUMPFILE() || SADUMP_DUMPFILE())
++	if (KVMDUMP_DUMPFILE() || SADUMP_DUMPFILE() || VMSS_DUMPFILE())
+ 		bt_in-&gt;flags &amp;= ~(ulonglong)BT_DUMPFILE_SEARCH;
+ }
+ 
+-- 
+2.14.3
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07393" href="msg07393.html">Re:  [PATCH] vmware_vmss: read vCPUs regs and show	them in 'bt'</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07390.html">Re:  [PATCH v3 0/4] Generalize KASLR calculation and use it for KDUMPs</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07392.html">Re:  [PATCH v3 0/4] Generalize KASLR calculation and	use it for KDUMPs</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07385.html">[PATCH v3 0/4] Generalize KASLR calculation and use	it for KDUMPs</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07393.html">Re:  [PATCH] vmware_vmss: read vCPUs regs and show	them in 'bt'</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07391"><strong>Date</strong></a></li>
+<li><a href="index.html#07391"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

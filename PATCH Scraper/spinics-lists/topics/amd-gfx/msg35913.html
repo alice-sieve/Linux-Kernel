@@ -1,0 +1,906 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 70/87] drm/amd/display: add dcc programming for dual plane -->
+<!--X-From-R13: &#60;fhacrat.yvNnzq.pbz> -->
+<!--X-Date: Mon, 15 Jul 2019 14:22:04 &#45;0700 -->
+<!--X-Message-Id: 20190715212049.4584&#45;71&#45;sunpeng.li@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190715212049.4584&#45;1&#45;sunpeng.li@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH 70/87] drm/amd/display: add dcc programming for dual plane">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 70/87] drm/amd/display: add dcc programming for dual plane &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH 70/87] drm/amd/display: add dcc programming for dual plane</h1>
+[<a href="msg35912.html">Date Prev</a>][<a href="msg35914.html">Date Next</a>][<a href="msg35912.html">Thread Prev</a>][<a href="msg35914.html">Thread Next</a>][<a href="maillist.html#35913">Date Index</a>][<a href="index.html#35913">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: &lt;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 70/87] drm/amd/display: add dcc programming for dual plane</li>
+<li><em>From</em>: &lt;sunpeng.li@xxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 15 Jul 2019 17:20:32 -0400</li>
+<li><em>Cc</em>: Leo Li &lt;sunpeng.li@xxxxxxx&gt;, Charlene Liu &lt;Charlene.Liu@xxxxxxx&gt;,        Dmytro Laktyushkin &lt;Dmytro.Laktyushkin@xxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg35850.html">20190715212049.4584-1-sunpeng.li@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg35850.html">20190715212049.4584-1-sunpeng.li@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Dmytro Laktyushkin &lt;Dmytro.Laktyushkin@xxxxxxx&gt;
+
+Add dual plane dcc programming support for
+surfaces.
+
+Removes unions from plane size and dcc params as they
+serve no practical purpose only making our code
+more convoluted. This results in easy dual plane
+dcc and surface size programming.
+
+Signed-off-by: Dmytro Laktyushkin &lt;Dmytro.Laktyushkin@xxxxxxx&gt;
+Reviewed-by: Charlene Liu &lt;Charlene.Liu@xxxxxxx&gt;
+Acked-by: Leo Li &lt;sunpeng.li@xxxxxxx&gt;
+---
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 42 +++++++--------
+ .../gpu/drm/amd/display/dc/calcs/dce_calcs.c  |  2 +-
+ .../gpu/drm/amd/display/dc/calcs/dcn_calcs.c  |  2 +-
+ drivers/gpu/drm/amd/display/dc/core/dc.c      | 10 ++--
+ .../gpu/drm/amd/display/dc/core/dc_debug.c    | 40 +++++++-------
+ drivers/gpu/drm/amd/display/dc/dc.h           |  4 +-
+ drivers/gpu/drm/amd/display/dc/dc_hw_types.h  | 54 +++++++++----------
+ .../drm/amd/display/dc/dce/dce_mem_input.c    | 10 ++--
+ .../display/dc/dce110/dce110_mem_input_v.c    | 42 +++++++--------
+ .../gpu/drm/amd/display/dc/dcn10/dcn10_hubp.c | 20 +++----
+ .../gpu/drm/amd/display/dc/dcn10/dcn10_hubp.h |  4 +-
+ .../amd/display/dc/dcn10/dcn10_hw_sequencer.c |  4 +-
+ .../gpu/drm/amd/display/dc/dcn20/dcn20_hubp.c | 20 +++----
+ .../gpu/drm/amd/display/dc/dcn20/dcn20_hubp.h |  4 +-
+ .../drm/amd/display/dc/dcn20/dcn20_resource.c | 12 ++---
+ drivers/gpu/drm/amd/display/dc/inc/hw/hubp.h  |  2 +-
+ .../gpu/drm/amd/display/dc/inc/hw/mem_input.h |  2 +-
+ 17 files changed, 136 insertions(+), 138 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 96b32c203561..492258937d50 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -2743,7 +2743,7 @@ fill_plane_dcc_attributes(struct amdgpu_device *adev,
+ 			  const struct amdgpu_framebuffer *afb,
+ 			  const enum surface_pixel_format format,
+ 			  const enum dc_rotation_angle rotation,
+-			  const union plane_size *plane_size,
++			  const struct plane_size *plane_size,
+ 			  const union dc_tiling_info *tiling_info,
+ 			  const uint64_t info,
+ 			  struct dc_plane_dcc_param *dcc,
+@@ -2769,8 +2769,8 @@ fill_plane_dcc_attributes(struct amdgpu_device *adev,
+ 		return -EINVAL;
+ 
+ 	input.format = format;
+-	input.surface_size.width = plane_size-&gt;grph.surface_size.width;
+-	input.surface_size.height = plane_size-&gt;grph.surface_size.height;
++	input.surface_size.width = plane_size-&gt;surface_size.width;
++	input.surface_size.height = plane_size-&gt;surface_size.height;
+ 	input.swizzle_mode = tiling_info-&gt;gfx9.swizzle;
+ 
+ 	if (rotation == ROTATION_ANGLE_0 || rotation == ROTATION_ANGLE_180)
+@@ -2788,9 +2788,9 @@ fill_plane_dcc_attributes(struct amdgpu_device *adev,
+ 		return -EINVAL;
+ 
+ 	dcc-&gt;enable = 1;
+-	dcc-&gt;grph.meta_pitch =
++	dcc-&gt;meta_pitch =
+ 		AMDGPU_TILING_GET(info, DCC_PITCH_MAX) + 1;
+-	dcc-&gt;grph.independent_64b_blks = i64b;
++	dcc-&gt;independent_64b_blks = i64b;
+ 
+ 	dcc_address = get_dcc_address(afb-&gt;address, info);
+ 	address-&gt;grph.meta_addr.low_part = lower_32_bits(dcc_address);
+@@ -2806,7 +2806,7 @@ fill_plane_buffer_attributes(struct amdgpu_device *adev,
+ 			     const enum dc_rotation_angle rotation,
+ 			     const uint64_t tiling_flags,
+ 			     union dc_tiling_info *tiling_info,
+-			     union plane_size *plane_size,
++			     struct plane_size *plane_size,
+ 			     struct dc_plane_dcc_param *dcc,
+ 			     struct dc_plane_address *address)
+ {
+@@ -2819,11 +2819,11 @@ fill_plane_buffer_attributes(struct amdgpu_device *adev,
+ 	memset(address, 0, sizeof(*address));
+ 
+ 	if (format &lt; SURFACE_PIXEL_FORMAT_VIDEO_BEGIN) {
+-		plane_size-&gt;grph.surface_size.x = 0;
+-		plane_size-&gt;grph.surface_size.y = 0;
+-		plane_size-&gt;grph.surface_size.width = fb-&gt;width;
+-		plane_size-&gt;grph.surface_size.height = fb-&gt;height;
+-		plane_size-&gt;grph.surface_pitch =
++		plane_size-&gt;surface_size.x = 0;
++		plane_size-&gt;surface_size.y = 0;
++		plane_size-&gt;surface_size.width = fb-&gt;width;
++		plane_size-&gt;surface_size.height = fb-&gt;height;
++		plane_size-&gt;surface_pitch =
+ 			fb-&gt;pitches[0] / fb-&gt;format-&gt;cpp[0];
+ 
+ 		address-&gt;type = PLN_ADDR_TYPE_GRAPHICS;
+@@ -2832,20 +2832,20 @@ fill_plane_buffer_attributes(struct amdgpu_device *adev,
+ 	} else if (format &lt; SURFACE_PIXEL_FORMAT_INVALID) {
+ 		uint64_t chroma_addr = afb-&gt;address + fb-&gt;offsets[1];
+ 
+-		plane_size-&gt;video.luma_size.x = 0;
+-		plane_size-&gt;video.luma_size.y = 0;
+-		plane_size-&gt;video.luma_size.width = fb-&gt;width;
+-		plane_size-&gt;video.luma_size.height = fb-&gt;height;
+-		plane_size-&gt;video.luma_pitch =
++		plane_size-&gt;surface_size.x = 0;
++		plane_size-&gt;surface_size.y = 0;
++		plane_size-&gt;surface_size.width = fb-&gt;width;
++		plane_size-&gt;surface_size.height = fb-&gt;height;
++		plane_size-&gt;surface_pitch =
+ 			fb-&gt;pitches[0] / fb-&gt;format-&gt;cpp[0];
+ 
+-		plane_size-&gt;video.chroma_size.x = 0;
+-		plane_size-&gt;video.chroma_size.y = 0;
++		plane_size-&gt;chroma_size.x = 0;
++		plane_size-&gt;chroma_size.y = 0;
+ 		/* TODO: set these based on surface format */
+-		plane_size-&gt;video.chroma_size.width = fb-&gt;width / 2;
+-		plane_size-&gt;video.chroma_size.height = fb-&gt;height / 2;
++		plane_size-&gt;chroma_size.width = fb-&gt;width / 2;
++		plane_size-&gt;chroma_size.height = fb-&gt;height / 2;
+ 
+-		plane_size-&gt;video.chroma_pitch =
++		plane_size-&gt;chroma_pitch =
+ 			fb-&gt;pitches[1] / fb-&gt;format-&gt;cpp[1];
+ 
+ 		address-&gt;type = PLN_ADDR_TYPE_VIDEO_PROGRESSIVE;
+diff --git a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c b/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
+index f3aa7b53d2aa..fdab16ea0a2e 100644
+--- a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
++++ b/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
+@@ -2850,7 +2850,7 @@ static void populate_initial_data(
+ 			data-&gt;src_height[num_displays * 2 + j] = bw_int_to_fixed(pipe[i].bottom_pipe-&gt;plane_res.scl_data.viewport.height);
+ 			data-&gt;src_width[num_displays * 2 + j] = bw_int_to_fixed(pipe[i].bottom_pipe-&gt;plane_res.scl_data.viewport.width);
+ 			data-&gt;pitch_in_pixels[num_displays * 2 + j] = bw_int_to_fixed(
+-					pipe[i].bottom_pipe-&gt;plane_state-&gt;plane_size.grph.surface_pitch);
++					pipe[i].bottom_pipe-&gt;plane_state-&gt;plane_size.surface_pitch);
+ 			data-&gt;h_taps[num_displays * 2 + j] = bw_int_to_fixed(pipe[i].bottom_pipe-&gt;plane_res.scl_data.taps.h_taps);
+ 			data-&gt;v_taps[num_displays * 2 + j] = bw_int_to_fixed(pipe[i].bottom_pipe-&gt;plane_res.scl_data.taps.v_taps);
+ 			data-&gt;h_scale_ratio[num_displays * 2 + j] = fixed31_32_to_bw_fixed(
+diff --git a/drivers/gpu/drm/amd/display/dc/calcs/dcn_calcs.c b/drivers/gpu/drm/amd/display/dc/calcs/dcn_calcs.c
+index 38365dd911a3..061c6e3a3088 100644
+--- a/drivers/gpu/drm/amd/display/dc/calcs/dcn_calcs.c
++++ b/drivers/gpu/drm/amd/display/dc/calcs/dcn_calcs.c
+@@ -329,7 +329,7 @@ static void pipe_ctx_to_e2e_pipe_params (
+ 			dcc_support_pixel_format(pipe-&gt;plane_state-&gt;format, &amp;bpe) ? 1 : 0;
+ 	}
+ 	input-&gt;src.dcc_rate            = 1;
+-	input-&gt;src.meta_pitch          = pipe-&gt;plane_state-&gt;dcc.grph.meta_pitch;
++	input-&gt;src.meta_pitch          = pipe-&gt;plane_state-&gt;dcc.meta_pitch;
+ 	input-&gt;src.source_scan         = dm_horz;
+ 	input-&gt;src.sw_mode             = pipe-&gt;plane_state-&gt;tiling_info.gfx9.swizzle;
+ 
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
+index b2004b3056af..63d0f1386f4e 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
+@@ -1347,8 +1347,8 @@ static enum surface_update_type get_plane_info_update_type(const struct dc_surfa
+ 	}
+ 
+ 	if (u-&gt;plane_info-&gt;dcc.enable != u-&gt;surface-&gt;dcc.enable
+-			|| u-&gt;plane_info-&gt;dcc.grph.independent_64b_blks != u-&gt;surface-&gt;dcc.grph.independent_64b_blks
+-			|| u-&gt;plane_info-&gt;dcc.grph.meta_pitch != u-&gt;surface-&gt;dcc.grph.meta_pitch) {
++			|| u-&gt;plane_info-&gt;dcc.independent_64b_blks != u-&gt;surface-&gt;dcc.independent_64b_blks
++			|| u-&gt;plane_info-&gt;dcc.meta_pitch != u-&gt;surface-&gt;dcc.meta_pitch) {
+ 		update_flags-&gt;bits.dcc_change = 1;
+ 		elevate_update_type(&amp;update_type, UPDATE_TYPE_MED);
+ 	}
+@@ -1362,9 +1362,9 @@ static enum surface_update_type get_plane_info_update_type(const struct dc_surfa
+ 		elevate_update_type(&amp;update_type, UPDATE_TYPE_FULL);
+ 	}
+ 
+-	if (u-&gt;plane_info-&gt;plane_size.grph.surface_pitch != u-&gt;surface-&gt;plane_size.grph.surface_pitch
+-			|| u-&gt;plane_info-&gt;plane_size.video.luma_pitch != u-&gt;surface-&gt;plane_size.video.luma_pitch
+-			|| u-&gt;plane_info-&gt;plane_size.video.chroma_pitch != u-&gt;surface-&gt;plane_size.video.chroma_pitch) {
++	if (u-&gt;plane_info-&gt;plane_size.surface_pitch != u-&gt;surface-&gt;plane_size.surface_pitch
++			|| u-&gt;plane_info-&gt;plane_size.surface_pitch != u-&gt;surface-&gt;plane_size.surface_pitch
++			|| u-&gt;plane_info-&gt;plane_size.chroma_pitch != u-&gt;surface-&gt;plane_size.chroma_pitch) {
+ 		update_flags-&gt;bits.plane_size_change = 1;
+ 		elevate_update_type(&amp;update_type, UPDATE_TYPE_MED);
+ 	}
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_debug.c b/drivers/gpu/drm/amd/display/dc/core/dc_debug.c
+index 5903e7822f98..b9227d5de3a3 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_debug.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_debug.c
+@@ -115,16 +115,16 @@ void pre_surface_trace(
+ 				plane_state-&gt;clip_rect.height);
+ 
+ 		SURFACE_TRACE(
+-				&quot;plane_state-&gt;plane_size.grph.surface_size.x = %d;\n&quot;
+-				&quot;plane_state-&gt;plane_size.grph.surface_size.y = %d;\n&quot;
+-				&quot;plane_state-&gt;plane_size.grph.surface_size.width = %d;\n&quot;
+-				&quot;plane_state-&gt;plane_size.grph.surface_size.height = %d;\n&quot;
+-				&quot;plane_state-&gt;plane_size.grph.surface_pitch = %d;\n&quot;,
+-				plane_state-&gt;plane_size.grph.surface_size.x,
+-				plane_state-&gt;plane_size.grph.surface_size.y,
+-				plane_state-&gt;plane_size.grph.surface_size.width,
+-				plane_state-&gt;plane_size.grph.surface_size.height,
+-				plane_state-&gt;plane_size.grph.surface_pitch);
++				&quot;plane_state-&gt;plane_size.surface_size.x = %d;\n&quot;
++				&quot;plane_state-&gt;plane_size.surface_size.y = %d;\n&quot;
++				&quot;plane_state-&gt;plane_size.surface_size.width = %d;\n&quot;
++				&quot;plane_state-&gt;plane_size.surface_size.height = %d;\n&quot;
++				&quot;plane_state-&gt;plane_size.surface_pitch = %d;\n&quot;,
++				plane_state-&gt;plane_size.surface_size.x,
++				plane_state-&gt;plane_size.surface_size.y,
++				plane_state-&gt;plane_size.surface_size.width,
++				plane_state-&gt;plane_size.surface_size.height,
++				plane_state-&gt;plane_size.surface_pitch);
+ 
+ 
+ 		SURFACE_TRACE(
+@@ -202,20 +202,20 @@ void update_surface_trace(
+ 			SURFACE_TRACE(
+ 					&quot;plane_info-&gt;color_space = %d;\n&quot;
+ 					&quot;plane_info-&gt;format = %d;\n&quot;
+-					&quot;plane_info-&gt;plane_size.grph.surface_pitch = %d;\n&quot;
+-					&quot;plane_info-&gt;plane_size.grph.surface_size.height = %d;\n&quot;
+-					&quot;plane_info-&gt;plane_size.grph.surface_size.width = %d;\n&quot;
+-					&quot;plane_info-&gt;plane_size.grph.surface_size.x = %d;\n&quot;
+-					&quot;plane_info-&gt;plane_size.grph.surface_size.y = %d;\n&quot;
++					&quot;plane_info-&gt;plane_size.surface_pitch = %d;\n&quot;
++					&quot;plane_info-&gt;plane_size.surface_size.height = %d;\n&quot;
++					&quot;plane_info-&gt;plane_size.surface_size.width = %d;\n&quot;
++					&quot;plane_info-&gt;plane_size.surface_size.x = %d;\n&quot;
++					&quot;plane_info-&gt;plane_size.surface_size.y = %d;\n&quot;
+ 					&quot;plane_info-&gt;rotation = %d;\n&quot;
+ 					&quot;plane_info-&gt;stereo_format = %d;\n&quot;,
+ 					update-&gt;plane_info-&gt;color_space,
+ 					update-&gt;plane_info-&gt;format,
+-					update-&gt;plane_info-&gt;plane_size.grph.surface_pitch,
+-					update-&gt;plane_info-&gt;plane_size.grph.surface_size.height,
+-					update-&gt;plane_info-&gt;plane_size.grph.surface_size.width,
+-					update-&gt;plane_info-&gt;plane_size.grph.surface_size.x,
+-					update-&gt;plane_info-&gt;plane_size.grph.surface_size.y,
++					update-&gt;plane_info-&gt;plane_size.surface_pitch,
++					update-&gt;plane_info-&gt;plane_size.surface_size.height,
++					update-&gt;plane_info-&gt;plane_size.surface_size.width,
++					update-&gt;plane_info-&gt;plane_size.surface_size.x,
++					update-&gt;plane_info-&gt;plane_size.surface_size.y,
+ 					update-&gt;plane_info-&gt;rotation,
+ 					update-&gt;plane_info-&gt;stereo_format);
+ 
+diff --git a/drivers/gpu/drm/amd/display/dc/dc.h b/drivers/gpu/drm/amd/display/dc/dc.h
+index 489f6240f2ed..c28fca5c0a3b 100644
+--- a/drivers/gpu/drm/amd/display/dc/dc.h
++++ b/drivers/gpu/drm/amd/display/dc/dc.h
+@@ -705,7 +705,7 @@ struct dc_plane_state {
+ 	struct rect dst_rect;
+ 	struct rect clip_rect;
+ 
+-	union plane_size plane_size;
++	struct plane_size plane_size;
+ 	union dc_tiling_info tiling_info;
+ 
+ 	struct dc_plane_dcc_param dcc;
+@@ -754,7 +754,7 @@ struct dc_plane_state {
+ };
+ 
+ struct dc_plane_info {
+-	union plane_size plane_size;
++	struct plane_size plane_size;
+ 	union dc_tiling_info tiling_info;
+ 	struct dc_plane_dcc_param dcc;
+ 	enum surface_pixel_format format;
+diff --git a/drivers/gpu/drm/amd/display/dc/dc_hw_types.h b/drivers/gpu/drm/amd/display/dc/dc_hw_types.h
+index 28a2cd2d2a49..929c4eadc1dc 100644
+--- a/drivers/gpu/drm/amd/display/dc/dc_hw_types.h
++++ b/drivers/gpu/drm/amd/display/dc/dc_hw_types.h
+@@ -115,42 +115,40 @@ struct rect {
+ 	int height;
+ };
+ 
+-union plane_size {
+-	/* Grph or Video will be selected
+-	 * based on format above:
+-	 * Use Video structure if
+-	 * format &gt;= DalPixelFormat_VideoBegin
+-	 * else use Grph structure
++struct plane_size {
++	/* Graphic surface pitch in pixels.
++	 * In LINEAR_GENERAL mode, pitch
++	 * is 32 pixel aligned.
+ 	 */
+-	struct {
+-		struct rect surface_size;
+-		/* Graphic surface pitch in pixels.
+-		 * In LINEAR_GENERAL mode, pitch
+-		 * is 32 pixel aligned.
+-		 */
+-		int surface_pitch;
+-	} grph;
++	int surface_pitch;
++	int chroma_pitch;
++	struct rect surface_size;
++	struct rect chroma_size;
+ 
+-	struct {
+-		struct rect luma_size;
+-		/* Graphic surface pitch in pixels.
+-		 * In LINEAR_GENERAL mode, pitch is
+-		 * 32 pixel aligned.
+-		 */
+-		int luma_pitch;
++	union {
++		struct {
++			struct rect surface_size;
++			int surface_pitch;
++		} grph;
+ 
+-		struct rect chroma_size;
+-		/* Graphic surface pitch in pixels.
+-		 * In LINEAR_GENERAL mode, pitch is
+-		 * 32 pixel aligned.
+-		 */
+-		int chroma_pitch;
+-	} video;
++		struct {
++			struct rect luma_size;
++			int luma_pitch;
++			struct rect chroma_size;
++			int chroma_pitch;
++		} video;
++	};
+ };
+ 
+ struct dc_plane_dcc_param {
+ 	bool enable;
+ 
++	int meta_pitch;
++	bool independent_64b_blks;
++
++	int meta_pitch_c;
++	bool independent_64b_blks_c;
++
+ 	union {
+ 		struct {
+ 			int meta_pitch;
+diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_mem_input.c b/drivers/gpu/drm/amd/display/dc/dce/dce_mem_input.c
+index a24a2bda8656..1488ffddf4e3 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce/dce_mem_input.c
++++ b/drivers/gpu/drm/amd/display/dc/dce/dce_mem_input.c
+@@ -391,10 +391,10 @@ static void program_tiling(
+ static void program_size_and_rotation(
+ 	struct dce_mem_input *dce_mi,
+ 	enum dc_rotation_angle rotation,
+-	const union plane_size *plane_size)
++	const struct plane_size *plane_size)
+ {
+-	const struct rect *in_rect = &amp;plane_size-&gt;grph.surface_size;
+-	struct rect hw_rect = plane_size-&gt;grph.surface_size;
++	const struct rect *in_rect = &amp;plane_size-&gt;surface_size;
++	struct rect hw_rect = plane_size-&gt;surface_size;
+ 	const uint32_t rotation_angles[ROTATION_ANGLE_COUNT] = {
+ 			[ROTATION_ANGLE_0] = 0,
+ 			[ROTATION_ANGLE_90] = 1,
+@@ -423,7 +423,7 @@ static void program_size_and_rotation(
+ 			GRPH_Y_END, hw_rect.height);
+ 
+ 	REG_SET(GRPH_PITCH, 0,
+-			GRPH_PITCH, plane_size-&gt;grph.surface_pitch);
++			GRPH_PITCH, plane_size-&gt;surface_pitch);
+ 
+ 	REG_SET(HW_ROTATION, 0,
+ 			GRPH_ROTATION_ANGLE, rotation_angles[rotation]);
+@@ -505,7 +505,7 @@ static void dce_mi_program_surface_config(
+ 	struct mem_input *mi,
+ 	enum surface_pixel_format format,
+ 	union dc_tiling_info *tiling_info,
+-	union plane_size *plane_size,
++	struct plane_size *plane_size,
+ 	enum dc_rotation_angle rotation,
+ 	struct dc_plane_dcc_param *dcc,
+ 	bool horizontal_mirror)
+diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_mem_input_v.c b/drivers/gpu/drm/amd/display/dc/dce110/dce110_mem_input_v.c
+index 9b9fc3d96c07..d54172d88f5f 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_mem_input_v.c
++++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_mem_input_v.c
+@@ -229,26 +229,26 @@ static void program_tiling(
+ static void program_size_and_rotation(
+ 	struct dce_mem_input *mem_input110,
+ 	enum dc_rotation_angle rotation,
+-	const union plane_size *plane_size)
++	const struct plane_size *plane_size)
+ {
+ 	uint32_t value = 0;
+-	union plane_size local_size = *plane_size;
++	struct plane_size local_size = *plane_size;
+ 
+ 	if (rotation == ROTATION_ANGLE_90 ||
+ 		rotation == ROTATION_ANGLE_270) {
+ 
+-		swap(local_size.video.luma_size.x,
+-		     local_size.video.luma_size.y);
+-		swap(local_size.video.luma_size.width,
+-		     local_size.video.luma_size.height);
+-		swap(local_size.video.chroma_size.x,
+-		     local_size.video.chroma_size.y);
+-		swap(local_size.video.chroma_size.width,
+-		     local_size.video.chroma_size.height);
++		swap(local_size.surface_size.x,
++		     local_size.surface_size.y);
++		swap(local_size.surface_size.width,
++		     local_size.surface_size.height);
++		swap(local_size.chroma_size.x,
++		     local_size.chroma_size.y);
++		swap(local_size.chroma_size.width,
++		     local_size.chroma_size.height);
+ 	}
+ 
+ 	value = 0;
+-	set_reg_field_value(value, local_size.video.luma_pitch,
++	set_reg_field_value(value, local_size.surface_pitch,
+ 			UNP_GRPH_PITCH_L, GRPH_PITCH_L);
+ 
+ 	dm_write_reg(
+@@ -257,7 +257,7 @@ static void program_size_and_rotation(
+ 		value);
+ 
+ 	value = 0;
+-	set_reg_field_value(value, local_size.video.chroma_pitch,
++	set_reg_field_value(value, local_size.chroma_pitch,
+ 			UNP_GRPH_PITCH_C, GRPH_PITCH_C);
+ 	dm_write_reg(
+ 		mem_input110-&gt;base.ctx,
+@@ -297,8 +297,8 @@ static void program_size_and_rotation(
+ 		value);
+ 
+ 	value = 0;
+-	set_reg_field_value(value, local_size.video.luma_size.x +
+-			local_size.video.luma_size.width,
++	set_reg_field_value(value, local_size.surface_size.x +
++			local_size.surface_size.width,
+ 			UNP_GRPH_X_END_L, GRPH_X_END_L);
+ 	dm_write_reg(
+ 		mem_input110-&gt;base.ctx,
+@@ -306,8 +306,8 @@ static void program_size_and_rotation(
+ 		value);
+ 
+ 	value = 0;
+-	set_reg_field_value(value, local_size.video.chroma_size.x +
+-			local_size.video.chroma_size.width,
++	set_reg_field_value(value, local_size.chroma_size.x +
++			local_size.chroma_size.width,
+ 			UNP_GRPH_X_END_C, GRPH_X_END_C);
+ 	dm_write_reg(
+ 		mem_input110-&gt;base.ctx,
+@@ -315,8 +315,8 @@ static void program_size_and_rotation(
+ 		value);
+ 
+ 	value = 0;
+-	set_reg_field_value(value, local_size.video.luma_size.y +
+-			local_size.video.luma_size.height,
++	set_reg_field_value(value, local_size.surface_size.y +
++			local_size.surface_size.height,
+ 			UNP_GRPH_Y_END_L, GRPH_Y_END_L);
+ 	dm_write_reg(
+ 		mem_input110-&gt;base.ctx,
+@@ -324,8 +324,8 @@ static void program_size_and_rotation(
+ 		value);
+ 
+ 	value = 0;
+-	set_reg_field_value(value, local_size.video.chroma_size.y +
+-			local_size.video.chroma_size.height,
++	set_reg_field_value(value, local_size.chroma_size.y +
++			local_size.chroma_size.height,
+ 			UNP_GRPH_Y_END_C, GRPH_Y_END_C);
+ 	dm_write_reg(
+ 		mem_input110-&gt;base.ctx,
+@@ -637,7 +637,7 @@ void dce_mem_input_v_program_surface_config(
+ 	struct mem_input *mem_input,
+ 	enum surface_pixel_format format,
+ 	union dc_tiling_info *tiling_info,
+-	union plane_size *plane_size,
++	struct plane_size *plane_size,
+ 	enum dc_rotation_angle rotation,
+ 	struct dc_plane_dcc_param *dcc,
+ 	bool horizotal_mirror)
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hubp.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hubp.c
+index a16128814d62..03f5aa10c4c4 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hubp.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hubp.c
+@@ -163,7 +163,7 @@ void hubp1_program_tiling(
+ void hubp1_program_size(
+ 	struct hubp *hubp,
+ 	enum surface_pixel_format format,
+-	const union plane_size *plane_size,
++	const struct plane_size *plane_size,
+ 	struct dc_plane_dcc_param *dcc)
+ {
+ 	struct dcn10_hubp *hubp1 = TO_DCN10_HUBP(hubp);
+@@ -173,16 +173,16 @@ void hubp1_program_size(
+ 	 * 444 or 420 luma
+ 	 */
+ 	if (format &gt;= SURFACE_PIXEL_FORMAT_VIDEO_BEGIN &amp;&amp; format &lt; SURFACE_PIXEL_FORMAT_SUBSAMPLE_END) {
+-		ASSERT(plane_size-&gt;video.chroma_pitch != 0);
++		ASSERT(plane_size-&gt;chroma_pitch != 0);
+ 		/* Chroma pitch zero can cause system hang! */
+ 
+-		pitch = plane_size-&gt;video.luma_pitch - 1;
+-		meta_pitch = dcc-&gt;video.meta_pitch_l - 1;
+-		pitch_c = plane_size-&gt;video.chroma_pitch - 1;
+-		meta_pitch_c = dcc-&gt;video.meta_pitch_c - 1;
++		pitch = plane_size-&gt;surface_pitch - 1;
++		meta_pitch = dcc-&gt;meta_pitch - 1;
++		pitch_c = plane_size-&gt;chroma_pitch - 1;
++		meta_pitch_c = dcc-&gt;meta_pitch_c - 1;
+ 	} else {
+-		pitch = plane_size-&gt;grph.surface_pitch - 1;
+-		meta_pitch = dcc-&gt;grph.meta_pitch - 1;
++		pitch = plane_size-&gt;surface_pitch - 1;
++		meta_pitch = dcc-&gt;meta_pitch - 1;
+ 		pitch_c = 0;
+ 		meta_pitch_c = 0;
+ 	}
+@@ -526,13 +526,13 @@ void hubp1_program_surface_config(
+ 	struct hubp *hubp,
+ 	enum surface_pixel_format format,
+ 	union dc_tiling_info *tiling_info,
+-	union plane_size *plane_size,
++	struct plane_size *plane_size,
+ 	enum dc_rotation_angle rotation,
+ 	struct dc_plane_dcc_param *dcc,
+ 	bool horizontal_mirror,
+ 	unsigned int compat_level)
+ {
+-	hubp1_dcc_control(hubp, dcc-&gt;enable, dcc-&gt;grph.independent_64b_blks);
++	hubp1_dcc_control(hubp, dcc-&gt;enable, dcc-&gt;independent_64b_blks);
+ 	hubp1_program_tiling(hubp, tiling_info, format);
+ 	hubp1_program_size(hubp, format, plane_size, dcc);
+ 	hubp1_program_rotation(hubp, rotation, horizontal_mirror);
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hubp.h b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hubp.h
+index 8f4bcdc74116..344e446e337d 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hubp.h
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hubp.h
+@@ -685,7 +685,7 @@ void hubp1_program_surface_config(
+ 	struct hubp *hubp,
+ 	enum surface_pixel_format format,
+ 	union dc_tiling_info *tiling_info,
+-	union plane_size *plane_size,
++	struct plane_size *plane_size,
+ 	enum dc_rotation_angle rotation,
+ 	struct dc_plane_dcc_param *dcc,
+ 	bool horizontal_mirror,
+@@ -707,7 +707,7 @@ void hubp1_program_pixel_format(
+ void hubp1_program_size(
+ 	struct hubp *hubp,
+ 	enum surface_pixel_format format,
+-	const union plane_size *plane_size,
++	const struct plane_size *plane_size,
+ 	struct dc_plane_dcc_param *dcc);
+ 
+ void hubp1_program_rotation(
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+index 58d118a3ee8e..96aae19c3d6c 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+@@ -2131,7 +2131,7 @@ void update_dchubp_dpp(
+ 	struct hubp *hubp = pipe_ctx-&gt;plane_res.hubp;
+ 	struct dpp *dpp = pipe_ctx-&gt;plane_res.dpp;
+ 	struct dc_plane_state *plane_state = pipe_ctx-&gt;plane_state;
+-	union plane_size size = plane_state-&gt;plane_size;
++	struct plane_size size = plane_state-&gt;plane_size;
+ 	unsigned int compat_level = 0;
+ 
+ 	/* depends on DML calculation, DPP clock value may change dynamically */
+@@ -2177,7 +2177,7 @@ void update_dchubp_dpp(
+ 			&amp;pipe_ctx-&gt;ttu_regs);
+ 	}
+ 
+-	size.grph.surface_size = pipe_ctx-&gt;plane_res.scl_data.viewport;
++	size.surface_size = pipe_ctx-&gt;plane_res.scl_data.viewport;
+ 
+ 	if (plane_state-&gt;update_flags.bits.full_update ||
+ 		plane_state-&gt;update_flags.bits.bpp_change)
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hubp.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hubp.c
+index a167f867cb72..487de87b03eb 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hubp.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hubp.c
+@@ -397,7 +397,7 @@ static void hubp2_program_tiling(
+ void hubp2_program_size(
+ 	struct hubp *hubp,
+ 	enum surface_pixel_format format,
+-	const union plane_size *plane_size,
++	const struct plane_size *plane_size,
+ 	struct dc_plane_dcc_param *dcc)
+ {
+ 	struct dcn20_hubp *hubp2 = TO_DCN20_HUBP(hubp);
+@@ -410,16 +410,16 @@ void hubp2_program_size(
+ 	use_pitch_c = format &gt;= SURFACE_PIXEL_FORMAT_VIDEO_BEGIN
+ 		&amp;&amp; format &lt; SURFACE_PIXEL_FORMAT_SUBSAMPLE_END;
+ 	if (use_pitch_c) {
+-		ASSERT(plane_size-&gt;video.chroma_pitch != 0);
++		ASSERT(plane_size-&gt;chroma_pitch != 0);
+ 		/* Chroma pitch zero can cause system hang! */
+ 
+-		pitch = plane_size-&gt;video.luma_pitch - 1;
+-		meta_pitch = dcc-&gt;video.meta_pitch_l - 1;
+-		pitch_c = plane_size-&gt;video.chroma_pitch - 1;
+-		meta_pitch_c = dcc-&gt;video.meta_pitch_c - 1;
++		pitch = plane_size-&gt;surface_pitch - 1;
++		meta_pitch = dcc-&gt;meta_pitch - 1;
++		pitch_c = plane_size-&gt;chroma_pitch - 1;
++		meta_pitch_c = dcc-&gt;meta_pitch_c - 1;
+ 	} else {
+-		pitch = plane_size-&gt;grph.surface_pitch - 1;
+-		meta_pitch = dcc-&gt;grph.meta_pitch - 1;
++		pitch = plane_size-&gt;surface_pitch - 1;
++		meta_pitch = dcc-&gt;meta_pitch - 1;
+ 		pitch_c = 0;
+ 		meta_pitch_c = 0;
+ 	}
+@@ -592,7 +592,7 @@ void hubp2_program_surface_config(
+ 	struct hubp *hubp,
+ 	enum surface_pixel_format format,
+ 	union dc_tiling_info *tiling_info,
+-	union plane_size *plane_size,
++	struct plane_size *plane_size,
+ 	enum dc_rotation_angle rotation,
+ 	struct dc_plane_dcc_param *dcc,
+ 	bool horizontal_mirror,
+@@ -600,7 +600,7 @@ void hubp2_program_surface_config(
+ {
+ 	struct dcn20_hubp *hubp2 = TO_DCN20_HUBP(hubp);
+ 
+-	hubp2_dcc_control(hubp, dcc-&gt;enable, dcc-&gt;grph.independent_64b_blks);
++	hubp2_dcc_control(hubp, dcc-&gt;enable, dcc-&gt;independent_64b_blks);
+ 	hubp2_program_tiling(hubp2, tiling_info, format);
+ 	hubp2_program_size(hubp, format, plane_size, dcc);
+ 	hubp2_program_rotation(hubp, rotation, horizontal_mirror);
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hubp.h b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hubp.h
+index c8418235e154..1c53af4811e8 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hubp.h
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hubp.h
+@@ -273,7 +273,7 @@ void hubp2_dcc_control(struct hubp *hubp, bool enable,
+ void hubp2_program_size(
+ 	struct hubp *hubp,
+ 	enum surface_pixel_format format,
+-	const union plane_size *plane_size,
++	const struct plane_size *plane_size,
+ 	struct dc_plane_dcc_param *dcc);
+ 
+ void hubp2_program_rotation(
+@@ -289,7 +289,7 @@ void hubp2_program_surface_config(
+ 	struct hubp *hubp,
+ 	enum surface_pixel_format format,
+ 	union dc_tiling_info *tiling_info,
+-	union plane_size *plane_size,
++	struct plane_size *plane_size,
+ 	enum dc_rotation_angle rotation,
+ 	struct dc_plane_dcc_param *dcc,
+ 	bool horizontal_mirror,
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
+index 5571b8bfc942..296bc7e4c4a2 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
+@@ -1820,13 +1820,13 @@ int dcn20_populate_dml_pipes_from_context(
+ 			pipes[pipe_cnt].pipe.src.viewport_height = scl-&gt;viewport.height;
+ 			pipes[pipe_cnt].pipe.src.viewport_height_c = scl-&gt;viewport_c.height;
+ 			if (pln-&gt;format &gt;= SURFACE_PIXEL_FORMAT_VIDEO_BEGIN) {
+-				pipes[pipe_cnt].pipe.src.data_pitch = pln-&gt;plane_size.video.luma_pitch;
+-				pipes[pipe_cnt].pipe.src.data_pitch_c = pln-&gt;plane_size.video.chroma_pitch;
+-				pipes[pipe_cnt].pipe.src.meta_pitch = pln-&gt;dcc.video.meta_pitch_l;
+-				pipes[pipe_cnt].pipe.src.meta_pitch_c = pln-&gt;dcc.video.meta_pitch_c;
++				pipes[pipe_cnt].pipe.src.data_pitch = pln-&gt;plane_size.surface_pitch;
++				pipes[pipe_cnt].pipe.src.data_pitch_c = pln-&gt;plane_size.chroma_pitch;
++				pipes[pipe_cnt].pipe.src.meta_pitch = pln-&gt;dcc.meta_pitch;
++				pipes[pipe_cnt].pipe.src.meta_pitch_c = pln-&gt;dcc.meta_pitch_c;
+ 			} else {
+-				pipes[pipe_cnt].pipe.src.data_pitch = pln-&gt;plane_size.grph.surface_pitch;
+-				pipes[pipe_cnt].pipe.src.meta_pitch = pln-&gt;dcc.grph.meta_pitch;
++				pipes[pipe_cnt].pipe.src.data_pitch = pln-&gt;plane_size.surface_pitch;
++				pipes[pipe_cnt].pipe.src.meta_pitch = pln-&gt;dcc.meta_pitch;
+ 			}
+ 			pipes[pipe_cnt].pipe.src.dcc = pln-&gt;dcc.enable;
+ 			pipes[pipe_cnt].pipe.dest.recout_width = scl-&gt;recout.width;
+diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw/hubp.h b/drivers/gpu/drm/amd/display/dc/inc/hw/hubp.h
+index 51bff8717cc9..61cd4f8752c3 100644
+--- a/drivers/gpu/drm/amd/display/dc/inc/hw/hubp.h
++++ b/drivers/gpu/drm/amd/display/dc/inc/hw/hubp.h
+@@ -103,7 +103,7 @@ struct hubp_funcs {
+ 		struct hubp *hubp,
+ 		enum surface_pixel_format format,
+ 		union dc_tiling_info *tiling_info,
+-		union plane_size *plane_size,
++		struct plane_size *plane_size,
+ 		enum dc_rotation_angle rotation,
+ 		struct dc_plane_dcc_param *dcc,
+ 		bool horizontal_mirror,
+diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw/mem_input.h b/drivers/gpu/drm/amd/display/dc/inc/hw/mem_input.h
+index da89c2edb07c..7193acfcd779 100644
+--- a/drivers/gpu/drm/amd/display/dc/inc/hw/mem_input.h
++++ b/drivers/gpu/drm/amd/display/dc/inc/hw/mem_input.h
+@@ -149,7 +149,7 @@ struct mem_input_funcs {
+ 		struct mem_input *mem_input,
+ 		enum surface_pixel_format format,
+ 		union dc_tiling_info *tiling_info,
+-		union plane_size *plane_size,
++		struct plane_size *plane_size,
+ 		enum dc_rotation_angle rotation,
+ 		struct dc_plane_dcc_param *dcc,
+ 		bool horizontal_mirror);
+-- 
+2.22.0
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="35850" href="msg35850.html">[PATCH 00/87] DC Patches 15 Jul, 2019</a></strong>
+<ul><li><em>From:</em> sunpeng.li</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35912.html">[PATCH 55/87] drm/amd/display: Add MPC 3DLUT resource management</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35914.html">[PATCH 61/87] drm/amd/display: Hook up calls to do stereo mux and dig programming to stereo control interface</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35912.html">[PATCH 55/87] drm/amd/display: Add MPC 3DLUT resource management</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35914.html">[PATCH 61/87] drm/amd/display: Hook up calls to do stereo mux and dig programming to stereo control interface</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35913"><strong>Date</strong></a></li>
+<li><a href="index.html#35913"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

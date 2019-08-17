@@ -1,0 +1,338 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2] KVM: arm/arm64: Introduce kvm_pmu_vcpu_init() to setup PMU counter idx -->
+<!--X-From-R13: Lratuhv Kh &#60;lhmratuhvNuhnjrv.pbz> -->
+<!--X-Date: Thu, 18 Jul 2019 01:17:58 &#45;0700 -->
+<!--X-Message-Id: 1563437710&#45;30756&#45;1&#45;git&#45;send&#45;email&#45;yuzenghui@huawei.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH v2] KVM: arm/arm64: Introduce kvm_pmu_vcpu_init() to setup PMU counter idx">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH v2] KVM: arm/arm64: Introduce kvm_pmu_vcpu_init() to setup PMU counter idx &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH v2] KVM: arm/arm64: Introduce kvm_pmu_vcpu_init() to setup PMU counter idx</h1>
+[<a href="msg741725.html">Date Prev</a>][<a href="msg741727.html">Date Next</a>][<a href="msg741723.html">Thread Prev</a>][<a href="msg741727.html">Thread Next</a>][<a href="maillist.html#741726">Date Index</a>][<a href="threads.html#741726">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v2] KVM: arm/arm64: Introduce kvm_pmu_vcpu_init() to setup PMU counter idx</li>
+<li><em>From</em>: Zenghui Yu &lt;yuzenghui@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Thu, 18 Jul 2019 08:15:10 +0000</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>We use &quot;pmc-&gt;idx&quot; and the &quot;chained&quot; bitmap to determine if the pmc is
+chained, in kvm_pmu_pmc_is_chained().  But idx might be uninitialized
+(and random) when we doing this decision, through a KVM_ARM_VCPU_INIT
+ioctl -&gt; kvm_pmu_vcpu_reset(). And the test_bit() against this random
+idx will potentially hit a KASAN BUG [1].
+
+In general, idx is the static property of a PMU counter that is not
+expected to be modified across resets, as suggested by Julien.  It
+looks more reasonable if we can setup the PMU counter idx for a vcpu
+in its creation time. Introduce a new function - kvm_pmu_vcpu_init()
+for this basic setup. Oh, and the KASAN BUG will get fixed this way.
+
+[1] <a  rel="nofollow" href="https://www.spinics.net/lists/kvm-arm/msg36700.html">https://www.spinics.net/lists/kvm-arm/msg36700.html</a>
+
+Fixes: 80f393a23be6 (&quot;KVM: arm/arm64: Support chained PMU counters&quot;)
+Suggested-by: Andrew Murray &lt;andrew.murray@xxxxxxx&gt;
+Suggested-by: Julien Thierry &lt;julien.thierry@xxxxxxx&gt;
+Cc: Marc Zyngier &lt;maz@xxxxxxxxxx&gt;
+Signed-off-by: Zenghui Yu &lt;yuzenghui@xxxxxxxxxx&gt;
+---
+
+Changes since v1:
+ - Introduce kvm_pmu_vcpu_init() in vcpu's creation time, move the
+   assignment of pmc-&gt;idx into it.
+ - Thus change the subject. The old one is &quot;KVM: arm/arm64: Assign
+   pmc-&gt;idx before kvm_pmu_stop_counter()&quot;.
+
+Julien, I haven't collected your Acked-by into this version. If you're
+still happy with the change, please Ack again. Thanks!
+
+ include/kvm/arm_pmu.h |  2 ++
+ virt/kvm/arm/arm.c    |  2 ++
+ virt/kvm/arm/pmu.c    | 18 +++++++++++++++---
+ 3 files changed, 19 insertions(+), 3 deletions(-)
+
+diff --git a/include/kvm/arm_pmu.h b/include/kvm/arm_pmu.h
+index 16c769a..6db0304 100644
+--- a/include/kvm/arm_pmu.h
++++ b/include/kvm/arm_pmu.h
+@@ -34,6 +34,7 @@ struct kvm_pmu {
+ u64 kvm_pmu_get_counter_value(struct kvm_vcpu *vcpu, u64 select_idx);
+ void kvm_pmu_set_counter_value(struct kvm_vcpu *vcpu, u64 select_idx, u64 val);
+ u64 kvm_pmu_valid_counter_mask(struct kvm_vcpu *vcpu);
++void kvm_pmu_vcpu_init(struct kvm_vcpu *vcpu);
+ void kvm_pmu_vcpu_reset(struct kvm_vcpu *vcpu);
+ void kvm_pmu_vcpu_destroy(struct kvm_vcpu *vcpu);
+ void kvm_pmu_disable_counter_mask(struct kvm_vcpu *vcpu, u64 val);
+@@ -71,6 +72,7 @@ static inline u64 kvm_pmu_valid_counter_mask(struct kvm_vcpu *vcpu)
+ {
+ 	return 0;
+ }
++static inline void kvm_pmu_vcpu_init(struct kvm_vcpu *vcpu) {}
+ static inline void kvm_pmu_vcpu_reset(struct kvm_vcpu *vcpu) {}
+ static inline void kvm_pmu_vcpu_destroy(struct kvm_vcpu *vcpu) {}
+ static inline void kvm_pmu_disable_counter_mask(struct kvm_vcpu *vcpu, u64 val) {}
+diff --git a/virt/kvm/arm/arm.c b/virt/kvm/arm/arm.c
+index f645c0f..c704fa6 100644
+--- a/virt/kvm/arm/arm.c
++++ b/virt/kvm/arm/arm.c
+@@ -340,6 +340,8 @@ int kvm_arch_vcpu_init(struct kvm_vcpu *vcpu)
+ 	/* Set up the timer */
+ 	kvm_timer_vcpu_init(vcpu);
+ 
++	kvm_pmu_vcpu_init(vcpu);
++
+ 	kvm_arm_reset_debug_ptr(vcpu);
+ 
+ 	return kvm_vgic_vcpu_init(vcpu);
+diff --git a/virt/kvm/arm/pmu.c b/virt/kvm/arm/pmu.c
+index 3dd8238..362a018 100644
+--- a/virt/kvm/arm/pmu.c
++++ b/virt/kvm/arm/pmu.c
+@@ -215,6 +215,20 @@ static void kvm_pmu_stop_counter(struct kvm_vcpu *vcpu, struct kvm_pmc *pmc)
+ }
+ 
+ /**
++ * kvm_pmu_vcpu_init - assign pmu counter idx for cpu
++ * @vcpu: The vcpu pointer
++ *
++ */
++void kvm_pmu_vcpu_init(struct kvm_vcpu *vcpu)
++{
++	int i;
++	struct kvm_pmu *pmu = &amp;vcpu-&gt;arch.pmu;
++
++	for (i = 0; i &lt; ARMV8_PMU_MAX_COUNTERS; i++)
++		pmu-&gt;pmc[i].idx = i;
++}
++
++/**
+  * kvm_pmu_vcpu_reset - reset pmu state for cpu
+  * @vcpu: The vcpu pointer
+  *
+@@ -224,10 +238,8 @@ void kvm_pmu_vcpu_reset(struct kvm_vcpu *vcpu)
+ 	int i;
+ 	struct kvm_pmu *pmu = &amp;vcpu-&gt;arch.pmu;
+ 
+-	for (i = 0; i &lt; ARMV8_PMU_MAX_COUNTERS; i++) {
++	for (i = 0; i &lt; ARMV8_PMU_MAX_COUNTERS; i++)
+ 		kvm_pmu_stop_counter(vcpu, &amp;pmu-&gt;pmc[i]);
+-		pmu-&gt;pmc[i].idx = i;
+-	}
+ 
+ 	bitmap_zero(vcpu-&gt;arch.pmu.chained, ARMV8_PMU_MAX_COUNTER_PAIRS);
+ }
+-- 
+1.8.3.1
+
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741725.html">Re: [PATCH 1/2] arm64: dts: imx8mq: Add gpio-ranges property</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741727.html">[PATCH] firmware: imx: Add DSP IPC protocol interface</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741723.html">[PATCH v1 0/2] AUXADC: support efuse calibration on MT818</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741727.html">[PATCH] firmware: imx: Add DSP IPC protocol interface</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741726"><strong>Date</strong></a></li>
+<li><a href="threads.html#741726"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

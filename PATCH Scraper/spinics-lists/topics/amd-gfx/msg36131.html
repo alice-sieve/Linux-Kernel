@@ -1,0 +1,323 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v2] drm/amdgpu: Default disable GDS for compute VMIDs -->
+<!--X-From-R13: "Uerngubhfr, Xbfrcu" &#60;Xbfrcu.UerngubhfrNnzq.pbz> -->
+<!--X-Date: Wed, 17 Jul 2019 11:23:25 &#45;0700 -->
+<!--X-Message-Id: 20190717182233.93031&#45;1&#45;Joseph.Greathouse@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 28783441&#45;080b&#45;1696&#45;b4ea&#45;f6ec24901fb1@amd.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH v2] drm/amdgpu: Default disable GDS for compute VMIDs">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH v2] drm/amdgpu: Default disable GDS for compute VMIDs &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH v2] drm/amdgpu: Default disable GDS for compute VMIDs</h1>
+[<a href="msg36130.html">Date Prev</a>][<a href="msg36132.html">Date Next</a>][<a href="msg36129.html">Thread Prev</a>][<a href="msg36132.html">Thread Next</a>][<a href="maillist.html#36131">Date Index</a>][<a href="index.html#36131">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: &quot;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&quot; &lt;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH v2] drm/amdgpu: Default disable GDS for compute VMIDs</li>
+<li><em>From</em>: &quot;Greathouse, Joseph&quot; &lt;Joseph.Greathouse@xxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 17 Jul 2019 18:23:21 +0000</li>
+<li><em>Accept-language</em>: en-US</li>
+<li><em>Cc</em>: &quot;Greathouse, Joseph&quot; &lt;Joseph.Greathouse@xxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg36129.html">28783441-080b-1696-b4ea-f6ec24901fb1@amd.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg36129.html">28783441-080b-1696-b4ea-f6ec24901fb1@amd.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The GDS and GWS blocks default to allowing all VMIDs to
+access all entries. Graphics VMIDs can handle setting
+these limits when the driver launches work. However,
+compute workloads under HWS control don't go through the
+kernel driver. Instead, HWS firmware should set these
+limits when a process is put into a VMID slot.
+
+Disable access to these devices by default by turning off
+all mask bits (for OA) and setting BASE=SIZE=0 (for GDS
+and GWS) for all compute VMIDs. If a process wants to use
+these resources, they can request this from the HWS
+firmware (when such capabilities are enabled). HWS will
+then handle setting the base and limit for the process when
+it is assigned to a VMID.
+
+This will also prevent user kernels from getting 'stuck' in
+GWS by accident if they write GWS-using code but HWS
+firmware is not set up to handle GWS reset. Until HWS is
+enabled to handle GWS properly, all GWS accesses will
+MEM_VIOL fault the kernel.
+
+v2: Move initialization outside of SRBM mutex
+
+Change-Id: I8edcea9d0b14d16a7444bcf9fbf9451aef8b707d
+Signed-off-by: Joseph Greathouse &lt;Joseph.Greathouse@xxxxxxx&gt;
+---
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c | 9 +++++++++
+ drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c  | 9 +++++++++
+ drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c  | 9 +++++++++
+ drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c  | 9 +++++++++
+ 4 files changed, 36 insertions(+)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+index 618291df659b..73dcb632a3ce 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+@@ -1516,6 +1516,15 @@ static void gfx_v10_0_init_compute_vmid(struct amdgpu_device *adev)
+ 	}
+ 	nv_grbm_select(adev, 0, 0, 0, 0);
+ 	mutex_unlock(&amp;adev-&gt;srbm_mutex);
++
++	/* Initialize all compute VMIDs to have no GDS, GWS, or OA
++	   acccess. These should be enabled by FW for target VMIDs. */
++	for (i = FIRST_COMPUTE_VMID; i &lt; LAST_COMPUTE_VMID; i++) {
++		WREG32_SOC15_OFFSET(GC, 0, mmGDS_VMID0_BASE, 2 * i, 0);
++		WREG32_SOC15_OFFSET(GC, 0, mmGDS_VMID0_SIZE, 2 * i, 0);
++		WREG32_SOC15_OFFSET(GC, 0, mmGDS_GWS_VMID0, i, 0);
++		WREG32_SOC15_OFFSET(GC, 0, mmGDS_OA_VMID0, i, 0);
++	}
+ }
+ 
+ static void gfx_v10_0_tcp_harvest(struct amdgpu_device *adev)
+diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c
+index e1e2a44ee13c..3f98624772a4 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c
+@@ -1877,6 +1877,15 @@ static void gfx_v7_0_init_compute_vmid(struct amdgpu_device *adev)
+ 	}
+ 	cik_srbm_select(adev, 0, 0, 0, 0);
+ 	mutex_unlock(&amp;adev-&gt;srbm_mutex);
++
++	/* Initialize all compute VMIDs to have no GDS, GWS, or OA
++	   acccess. These should be enabled by FW for target VMIDs. */
++	for (i = FIRST_COMPUTE_VMID; i &lt; LAST_COMPUTE_VMID; i++) {
++		WREG32(amdgpu_gds_reg_offset[i].mem_base, 0);
++		WREG32(amdgpu_gds_reg_offset[i].mem_size, 0);
++		WREG32(amdgpu_gds_reg_offset[i].gws, 0);
++		WREG32(amdgpu_gds_reg_offset[i].oa, 0);
++	}
+ }
+ 
+ static void gfx_v7_0_config_init(struct amdgpu_device *adev)
+diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c
+index 8c590a554675..e4028d54f8f7 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c
+@@ -3702,6 +3702,15 @@ static void gfx_v8_0_init_compute_vmid(struct amdgpu_device *adev)
+ 	}
+ 	vi_srbm_select(adev, 0, 0, 0, 0);
+ 	mutex_unlock(&amp;adev-&gt;srbm_mutex);
++
++	/* Initialize all compute VMIDs to have no GDS, GWS, or OA
++	   acccess. These should be enabled by FW for target VMIDs. */
++	for (i = FIRST_COMPUTE_VMID; i &lt; LAST_COMPUTE_VMID; i++) {
++		WREG32(amdgpu_gds_reg_offset[i].mem_base, 0);
++		WREG32(amdgpu_gds_reg_offset[i].mem_size, 0);
++		WREG32(amdgpu_gds_reg_offset[i].gws, 0);
++		WREG32(amdgpu_gds_reg_offset[i].oa, 0);
++	}
+ }
+ 
+ static void gfx_v8_0_config_init(struct amdgpu_device *adev)
+diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+index 5af60e1c735a..259a35395fec 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+@@ -2025,6 +2025,15 @@ static void gfx_v9_0_init_compute_vmid(struct amdgpu_device *adev)
+ 	}
+ 	soc15_grbm_select(adev, 0, 0, 0, 0);
+ 	mutex_unlock(&amp;adev-&gt;srbm_mutex);
++
++	/* Initialize all compute VMIDs to have no GDS, GWS, or OA
++	   acccess. These should be enabled by FW for target VMIDs. */
++	for (i = FIRST_COMPUTE_VMID; i &lt; LAST_COMPUTE_VMID; i++) {
++		WREG32_SOC15_OFFSET(GC, 0, mmGDS_VMID0_BASE, 2 * i, 0);
++		WREG32_SOC15_OFFSET(GC, 0, mmGDS_VMID0_SIZE, 2 * i, 0);
++		WREG32_SOC15_OFFSET(GC, 0, mmGDS_GWS_VMID0, i, 0);
++		WREG32_SOC15_OFFSET(GC, 0, mmGDS_OA_VMID0, i, 0);
++	}
+ }
+ 
+ static void gfx_v9_0_constants_init(struct amdgpu_device *adev)
+-- 
+2.19.1
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="36132" href="msg36132.html">Re: [PATCH v2] drm/amdgpu: Default disable GDS for compute VMIDs</a></strong>
+<ul><li><em>From:</em> Kuehling, Felix</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="36129" href="msg36129.html">Re: [PATCH] drm/amdgpu: Default disable GDS for compute VMIDs</a></strong>
+<ul><li><em>From:</em> Kuehling, Felix</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg36130.html">[PATCH] drm/amdgpu/pm: remove check for pp funcs in freq sysfs handlers</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg36132.html">Re: [PATCH v2] drm/amdgpu: Default disable GDS for compute VMIDs</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg36129.html">Re: [PATCH] drm/amdgpu: Default disable GDS for compute VMIDs</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg36132.html">Re: [PATCH v2] drm/amdgpu: Default disable GDS for compute VMIDs</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#36131"><strong>Date</strong></a></li>
+<li><a href="index.html#36131"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

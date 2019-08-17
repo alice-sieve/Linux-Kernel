@@ -1,0 +1,248 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re:  [PATCH v3 1/4] Move kaslr related functions	from	sadump.c to kaslr_helper.c -->
+<!--X-From-R13: Eretvb Zbcrm &#60;fycNerqung.pbz> -->
+<!--X-Date: Tue, 27 Mar 2018 03:13:24 &#45;0700 -->
+<!--X-Message-Id: 20180327101315.vtczrbhp7mzuza62@dritchie -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20180320124852.1763&#45;1&#45;slp@redhat.com -->
+<!--X-Reference: 20180320124852.1763&#45;2&#45;slp@redhat.com -->
+<!--X-Reference: 33710E6CAA200E4583255F4FB666C4E21B4C2E26@G01JPEXMBYT03 -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Re:  [PATCH v3 1/4] Move kaslr related functions	from	sadump.c to kaslr_helper.c &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  Re:  [PATCH v3 1/4] Move kaslr related functions	from	sadump.c to kaslr_helper.c</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re:  [PATCH v3 1/4] Move kaslr related functions	from	sadump.c to kaslr_helper.c</h1>
+[<a href="msg07408.html">Date Prev</a>][<a href="msg07410.html">Date Next</a>][<a href="msg07396.html">Thread Prev</a>][<a href="msg07387.html">Thread Next</a>][<a href="maillist.html#07409">Date Index</a>][<a href="index.html#07409">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re:  [PATCH v3 1/4] Move kaslr related functions	from	sadump.c to kaslr_helper.c</li>
+<li><em>From</em>: Sergio Lopez &lt;slp@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 27 Mar 2018 12:13:15 +0200</li>
+<li><em>Cc</em>: &quot;crash-utility@xxxxxxxxxx&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;33710E6CAA200E4583255F4FB666C4E21B4C2E26@G01JPEXMBYT03&gt;</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+<li><em>User-agent</em>: NeoMutt/20180223</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On Thu, Mar 22, 2018 at 06:38:43AM +0000, Hatayama, Daisuke wrote:
+&gt;<i> &gt; diff --git a/kaslr_helper.c b/kaslr_helper.c</i>
+&gt;<i> &gt; new file mode 100644</i>
+&gt;<i> &gt; index 0000000..65256ab</i>
+&gt;<i> &gt; --- /dev/null</i>
+&gt;<i> &gt; +++ b/kaslr_helper.c</i>
+&gt;<i> &gt; @@ -0,0 +1,460 @@</i>
+&gt;<i> &gt; +/*</i>
+&gt;<i> &gt; + * kaslr_helper - helper for kaslr offset calculation</i>
+&gt;<i> &gt; + *</i>
+&gt;<i> &gt; + * Copyright (c) 2011 FUJITSU LIMITED</i>
+&gt;<i> &gt; + * Copyright (c) 2018 Red Hat Inc.</i>
+&gt;<i> &gt; + *</i>
+&gt;<i> &gt; + * This program is free software; you can redistribute it and/or modify</i>
+&gt;<i> &gt; + * it under the terms of the GNU General Public License as published by</i>
+&gt;<i> &gt; + * the Free Software Foundation; either version 2 of the License, or</i>
+&gt;<i> &gt; + * (at your option) any later version.</i>
+&gt;<i> &gt; + *</i>
+&gt;<i> &gt; + * This program is distributed in the hope that it will be useful,</i>
+&gt;<i> &gt; + * but WITHOUT ANY WARRANTY; without even the implied warranty of</i>
+&gt;<i> &gt; + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</i>
+&gt;<i> &gt; + * GNU General Public License for more details.</i>
+&gt;<i> &gt; + *</i>
+&gt;<i> &gt; + * Author: HATAYAMA Daisuke &lt;d.hatayama@xxxxxxxxxxxxxx&gt;</i>
+&gt;<i> </i>
+&gt;<i> Indoh-san, too? How do you think Indoh-san? :)</i>
+&gt;<i> </i>
+&gt;<i> Sergio, it seems good to me in my first look, but please wait until next week</i>
+&gt;<i> since I need to prepare sadump dump files for test from now on because I don't</i>
+&gt;<i> have them now.</i>
+
+OK, thanks. I've just sent a fourth of the patchset which, in addition
+to implementing support for VMware VMSS dumps, it fixes the missing
+brackets and updates the copyright notices.
+
+Perhaps you may want to try directly with that one.
+
+Sergio.
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="07385" href="msg07385.html">[PATCH v3 0/4] Generalize KASLR calculation and use	it for KDUMPs</a></strong>
+<ul><li><em>From:</em> Sergio Lopez</li></ul></li>
+<li><strong><a name="07386" href="msg07386.html">[PATCH v3 1/4] Move kaslr related functions from	sadump.c to kaslr_helper.c</a></strong>
+<ul><li><em>From:</em> Sergio Lopez</li></ul></li>
+<li><strong><a name="07396" href="msg07396.html">Re:  [PATCH v3 1/4] Move kaslr related functions from	sadump.c to kaslr_helper.c</a></strong>
+<ul><li><em>From:</em> Hatayama, Daisuke</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07408.html">[PATCH v4 5/6] vmware_vmss: infer kaslr offset for	VMSS dumps</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07410.html">Re:  [PATCH v3] vmware_vmss: read vCPUs regs and	show them in 'bt'</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07396.html">Re:  [PATCH v3 1/4] Move kaslr related functions from	sadump.c to kaslr_helper.c</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07387.html">[PATCH v3 3/4] netdump: infer kaslr offset for QEMU	ELF dumps without vmcoreinfo</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07409"><strong>Date</strong></a></li>
+<li><a href="index.html#07409"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

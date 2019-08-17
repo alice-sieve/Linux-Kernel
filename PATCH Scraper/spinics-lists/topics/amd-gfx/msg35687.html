@@ -1,0 +1,298 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] drm/ttm: Fix the memory delay free issue -->
+<!--X-From-R13: Szvyl Rrat &#60;Szvyl.RratNnzq.pbz> -->
+<!--X-Date: Wed, 10 Jul 2019 02:29:42 &#45;0700 -->
+<!--X-Message-Id: 1562750971&#45;1628&#45;1&#45;git&#45;send&#45;email&#45;Emily.Deng@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH] drm/ttm: Fix the memory delay free issue">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH] drm/ttm: Fix the memory delay free issue &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH] drm/ttm: Fix the memory delay free issue</h1>
+[<a href="msg35686.html">Date Prev</a>][<a href="msg35688.html">Date Next</a>][<a href="msg35681.html">Thread Prev</a>][<a href="msg35690.html">Thread Next</a>][<a href="maillist.html#35687">Date Index</a>][<a href="index.html#35687">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: &lt;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH] drm/ttm: Fix the memory delay free issue</li>
+<li><em>From</em>: Emily Deng &lt;Emily.Deng@xxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 10 Jul 2019 17:29:31 +0800</li>
+<li><em>Cc</em>: Emily Deng &lt;Emily.Deng@xxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>For vulkan cts allocation test cases, they will create a series of bos, and then free
+them. As it has lots of alloction test cases with the same vm, as per vm
+bo feature enable, all of those bos' resv are the same. But the bo free is quite slow,
+as they use the same resv object, for every time, free a bo,
+it will check the resv whether signal, if it signal, then will free it. But
+as the test cases will continue to create bo, and the resv fence is increasing. So the
+free is more slower than creating. It will cause memory exhausting.
+
+Method:
+When the resv signal, release all the bos which are use the same
+resv object.
+
+Signed-off-by: Emily Deng &lt;Emily.Deng@xxxxxxx&gt;
+---
+ drivers/gpu/drm/ttm/ttm_bo.c | 29 ++++++++++++++++++++++++-----
+ 1 file changed, 24 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+index f9a3d4c..57ec59b 100644
+--- a/drivers/gpu/drm/ttm/ttm_bo.c
++++ b/drivers/gpu/drm/ttm/ttm_bo.c
+@@ -543,6 +543,7 @@ static int ttm_bo_cleanup_refs(struct ttm_buffer_object *bo,
+ {
+ 	struct ttm_bo_global *glob = bo-&gt;bdev-&gt;glob;
+ 	struct reservation_object *resv;
++	struct ttm_buffer_object *resv_bo, *resv_bo_next;
+ 	int ret;
+ 
+ 	if (unlikely(list_empty(&amp;bo-&gt;ddestroy)))
+@@ -566,10 +567,14 @@ static int ttm_bo_cleanup_refs(struct ttm_buffer_object *bo,
+ 							   interruptible,
+ 							   30 * HZ);
+ 
+-		if (lret &lt; 0)
++		if (lret &lt; 0) {
++			kref_put(&amp;bo-&gt;list_kref, ttm_bo_release_list);
+ 			return lret;
+-		else if (lret == 0)
++		}
++		else if (lret == 0) {
++			kref_put(&amp;bo-&gt;list_kref, ttm_bo_release_list);
+ 			return -EBUSY;
++		}
+ 
+ 		spin_lock(&amp;glob-&gt;lru_lock);
+ 		if (unlock_resv &amp;&amp; !kcl_reservation_object_trylock(bo-&gt;resv)) {
+@@ -582,6 +587,7 @@ static int ttm_bo_cleanup_refs(struct ttm_buffer_object *bo,
+ 			 * here.
+ 			 */
+ 			spin_unlock(&amp;glob-&gt;lru_lock);
++			kref_put(&amp;bo-&gt;list_kref, ttm_bo_release_list);
+ 			return 0;
+ 		}
+ 		ret = 0;
+@@ -591,15 +597,29 @@ static int ttm_bo_cleanup_refs(struct ttm_buffer_object *bo,
+ 		if (unlock_resv)
+ 			kcl_reservation_object_unlock(bo-&gt;resv);
+ 		spin_unlock(&amp;glob-&gt;lru_lock);
++		kref_put(&amp;bo-&gt;list_kref, ttm_bo_release_list);
+ 		return ret;
+ 	}
+ 
+ 	ttm_bo_del_from_lru(bo);
+ 	list_del_init(&amp;bo-&gt;ddestroy);
+ 	kref_put(&amp;bo-&gt;list_kref, ttm_bo_ref_bug);
+-
+ 	spin_unlock(&amp;glob-&gt;lru_lock);
+ 	ttm_bo_cleanup_memtype_use(bo);
++	kref_put(&amp;bo-&gt;list_kref, ttm_bo_release_list);
++
++	spin_lock(&amp;glob-&gt;lru_lock);
++	list_for_each_entry_safe(resv_bo, resv_bo_next, &amp;bo-&gt;bdev-&gt;ddestroy, ddestroy) {
++		if (resv_bo-&gt;resv == bo-&gt;resv) {
++			ttm_bo_del_from_lru(resv_bo);
++			list_del_init(&amp;resv_bo-&gt;ddestroy);
++			spin_unlock(&amp;glob-&gt;lru_lock);
++			ttm_bo_cleanup_memtype_use(resv_bo);
++			kref_put(&amp;resv_bo-&gt;list_kref, ttm_bo_release_list);
++			spin_lock(&amp;glob-&gt;lru_lock);
++		}
++	}
++	spin_unlock(&amp;glob-&gt;lru_lock);
+ 
+ 	if (unlock_resv)
+ 		kcl_reservation_object_unlock(bo-&gt;resv);
+@@ -639,9 +659,8 @@ static bool ttm_bo_delayed_delete(struct ttm_bo_device *bdev, bool remove_all)
+ 			ttm_bo_cleanup_refs(bo, false, !remove_all, true);
+ 		} else {
+ 			spin_unlock(&amp;glob-&gt;lru_lock);
++			kref_put(&amp;bo-&gt;list_kref, ttm_bo_release_list);
+ 		}
+-
+-		kref_put(&amp;bo-&gt;list_kref, ttm_bo_release_list);
+ 		spin_lock(&amp;glob-&gt;lru_lock);
+ 	}
+ 	list_splice_tail(&amp;removed, &amp;bdev-&gt;ddestroy);
+-- 
+2.7.4
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="35690" href="msg35690.html">Re: [PATCH] drm/ttm: Fix the memory delay free issue</a></strong>
+<ul><li><em>From:</em> Chunming Zhou</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35686.html">Re: [PATCH 1/3] drm/amdgpu: Add flag for allocating memory for sensitive data</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35688.html">Re: [PATCH 07/10] drm/i915: Implement MST Aux device registration</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35681.html">[PATCH 1/5] drm/amdgpu: Add flag to wipe VRAM on release</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35690.html">Re: [PATCH] drm/ttm: Fix the memory delay free issue</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35687"><strong>Date</strong></a></li>
+<li><a href="index.html#35687"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

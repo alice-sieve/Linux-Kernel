@@ -1,0 +1,328 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 2/2] ALSA: firewire&#45;lib: fix to process MIDI	conformant data channel for AM824 format -->
+<!--X-From-R13: Fnxnfuv Enxnzbgb &#60;b&#45;gnxnfuvNfnxnzbppuv.wc> -->
+<!--X-Date: Thu, 27 Jun 2019 22:55:35 &#45;0700 -->
+<!--X-Message-Id: 20190628055331.1427&#45;3&#45;o&#45;takashi@sakamocchi.jp -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190628055331.1427&#45;1&#45;o&#45;takashi@sakamocchi.jp -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 2/2] ALSA: firewire-lib: fix to process MIDI	conformant data channel for AM824 format &mdash; ALSA Devel">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 2/2] ALSA: firewire-lib: fix to process MIDI	conformant data channel for AM824 format &mdash; ALSA Devel</title>
+<link rel="alternate" type="application/rss+xml" title="ALSA Devel" href="//feedproxy.google.com/AlsaDevel">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 2/2] ALSA: firewire-lib: fix to process MIDI	conformant data channel for AM824 format</h1>
+[<a href="msg93290.html">Date Prev</a>][<a href="msg93292.html">Date Next</a>][<a href="msg93290.html">Thread Prev</a>][<a href="msg93301.html">Thread Next</a>][<a href="maillist.html#93291">Date Index</a>][<a href="threads.html#93291">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: clemens@xxxxxxxxxx, tiwai@xxxxxxx</li>
+<li><em>Subject</em>: [PATCH 2/2] ALSA: firewire-lib: fix to process MIDI	conformant data channel for AM824 format</li>
+<li><em>From</em>: Takashi Sakamoto &lt;o-takashi@xxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 28 Jun 2019 14:53:31 +0900</li>
+<li><em>Cc</em>: alsa-devel@xxxxxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg93290.html">20190628055331.1427-1-o-takashi@sakamocchi.jp</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg93290.html">20190628055331.1427-1-o-takashi@sakamocchi.jp</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>In IEC 61883-6, 8 MIDI data streams are multiplexed into single MIDI
+conformant data channel. The index of stream is calculated by modulo 8
+of the value of data block counter. Therefore data block processing
+layer requires valid value of data block counter.
+
+In recent changes of ALSA IEC 61883-1/6 engine, the value of data block
+counter is changed before calling data block processing layer. This
+brings miss detection of MIDI messages in non-blocking transmission
+method is used.
+
+This commit fixes the bug by changing chached data block counter after
+calling data block processing layer.
+
+Fixes: e335425b6596 (&quot;ALSA: firewire-lib: split helper function to check incoming CIP header&quot;)
+Signed-off-by: Takashi Sakamoto &lt;o-takashi@xxxxxxxxxxxxx&gt;
+---
+ sound/firewire/amdtp-stream.c | 26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
+
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index b341bd86605e..91b890241840 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -614,11 +614,10 @@ static int check_cip_header(struct amdtp_stream *s, const __be32 *buf,
+ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+ 			       const __be32 *ctx_header,
+ 			       unsigned int *payload_length,
+-			       unsigned int *data_blocks,
++			       unsigned int *data_blocks, unsigned int *dbc,
+ 			       unsigned int *syt, unsigned int index)
+ {
+ 	const __be32 *cip_header;
+-	unsigned int dbc;
+ 	int err;
+ 
+ 	*payload_length = be32_to_cpu(ctx_header[0]) &gt;&gt; ISO_DATA_LENGTH_SHIFT;
+@@ -633,32 +632,28 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+ 	if (!(s-&gt;flags &amp; CIP_NO_HEADER)) {
+ 		cip_header = ctx_header + 2;
+ 		err = check_cip_header(s, cip_header, *payload_length,
+-				       data_blocks, &amp;dbc, syt);
++				       data_blocks, dbc, syt);
+ 		if (err &lt; 0) {
+ 			if (err != -EAGAIN)
+ 				return err;
+ 
+ 			*data_blocks = 0;
+-			dbc = s-&gt;data_block_counter;
+ 		}
+ 	} else {
+ 		cip_header = NULL;
+ 		err = 0;
+ 		*data_blocks = *payload_length / sizeof(__be32) /
+ 			       s-&gt;data_block_quadlets;
+-		dbc = s-&gt;data_block_counter;
++		*dbc = s-&gt;data_block_counter;
+ 		*syt = 0;
+ 	}
+ 
+ 	if (err &gt;= 0 &amp;&amp; s-&gt;flags &amp; CIP_DBC_IS_END_EVENT)
+-		s-&gt;data_block_counter = dbc;
++		s-&gt;data_block_counter = *dbc;
+ 
+ 	trace_amdtp_packet(s, cycle, cip_header, *payload_length, *data_blocks,
+ 			   index);
+ 
+-	if (err &gt;= 0 &amp;&amp; !(s-&gt;flags &amp; CIP_DBC_IS_END_EVENT))
+-		s-&gt;data_block_counter = (dbc + *data_blocks) &amp; 0xff;
+-
+ 	return err;
+ }
+ 
+@@ -761,7 +756,8 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 	for (i = 0; i &lt; packets; i++) {
+ 		u32 cycle;
+ 		unsigned int payload_length;
+-		unsigned int data_block;
++		unsigned int data_blocks;
++		unsigned int dbc;
+ 		unsigned int syt;
+ 		__be32 *buffer;
+ 		unsigned int pcm_frames = 0;
+@@ -771,13 +767,19 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 
+ 		cycle = compute_cycle_count(ctx_header[1]);
+ 		err = parse_ir_ctx_header(s, cycle, ctx_header, &amp;payload_length,
+-					  &amp;data_block, &amp;syt, i);
++					  &amp;data_blocks, &amp;dbc, &amp;syt, i);
+ 		if (err &lt; 0 &amp;&amp; err != -EAGAIN)
+ 			break;
++
+ 		if (err &gt;= 0) {
+ 			buffer = s-&gt;buffer.packets[s-&gt;packet_index].buffer;
+ 			pcm_frames = s-&gt;process_data_blocks(s, buffer,
+-							    data_block, &amp;syt);
++							    data_blocks, &amp;syt);
++
++			if (!(s-&gt;flags &amp; CIP_DBC_IS_END_EVENT)) {
++				s-&gt;data_block_counter =
++						(dbc + data_blocks) &amp; 0xff;
++			}
+ 		}
+ 
+ 		if (queue_in_packet(s, &amp;params) &lt; 0)
+-- 
+2.20.1
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@xxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://mailman.alsa-project.org/mailman/listinfo/alsa-devel">https://mailman.alsa-project.org/mailman/listinfo/alsa-devel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="93301" href="msg93301.html">Re:  [PATCH 2/2] ALSA: firewire-lib: fix to process	MIDI conformant data channel for AM824 format</a></strong>
+<ul><li><em>From:</em> Takashi Iwai</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="93290" href="msg93290.html">[PATCH 0/2] ALSA: firewire-lib: fix miss detection	from MIDI conformant data channel in AM824 format for IR context</a></strong>
+<ul><li><em>From:</em> Takashi Sakamoto</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg93290.html">[PATCH 0/2] ALSA: firewire-lib: fix miss detection	from MIDI conformant data channel in AM824 format for IR context</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg93292.html">[PATCH 1/2] ALSA: firewire-lib: cache next	data_block_counter after probing tracepoints event for IR context</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg93290.html">[PATCH 0/2] ALSA: firewire-lib: fix miss detection	from MIDI conformant data channel in AM824 format for IR context</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg93301.html">Re:  [PATCH 2/2] ALSA: firewire-lib: fix to process	MIDI conformant data channel for AM824 format</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#93291"><strong>Date</strong></a></li>
+<li><a href="threads.html#93291"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/alsa-user/>[ALSA&nbsp;User]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/pulse-audio/>[Pulse&nbsp;Audio]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Kernel&nbsp;Archive]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=http://yosemitephotos.net/>[Photo&nbsp;Sharing]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/linux-sound/>[Linux&nbsp;Sound]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-media/>[Video&nbsp;4&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gimp/>[Gimp]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,569 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v10 1/9] namei: obey trailing magic&#45;link DAC permissions -->
+<!--X-From-R13: Oyrxfn Enenv &#60;plcuneNplcune.pbz> -->
+<!--X-Date: Fri, 19 Jul 2019 09:43:53 &#45;0700 -->
+<!--X-Message-Id: 20190719164225.27083&#45;2&#45;cyphar@cyphar.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190719164225.27083&#45;1&#45;cyphar@cyphar.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<meta name="description" content="Linux ARM, OMAP, Xscale Kernel: [PATCH v10 1/9] namei: obey trailing magic-link DAC permissions">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[PATCH v10 1/9] namei: obey trailing magic-link DAC permissions &mdash; ARM, OMAP, Xscale Linux Kernel</title>
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feedproxy.google.com/LinuxArmKernel">
+<link rel="alternate" type="application/rss+xml" title="Linux ARM Kernel" href="//feeds.feedburner.com/LinuxArmxscaleEtc">
+<link rel="alternate" type="application/rss+xml" title="Fedora ARM" href="//feeds.feedburner.com/FedoraArm">
+<link rel="alternate" type="application/rss+xml" title="Linux for OMAP" href="//feedproxy.google.com/LinuxOmap">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<td align=right><form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en" async></script>
+<h1 itemprop="name">[PATCH v10 1/9] namei: obey trailing magic-link DAC permissions</h1>
+[<a href="msg741978.html">Date Prev</a>][<a href="msg741980.html">Date Next</a>][<a href="msg741978.html">Thread Prev</a>][<a href="msg741980.html">Thread Next</a>][<a href="maillist.html#741979">Date Index</a>][<a href="threads.html#741979">Thread Index</a>] 
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v10 1/9] namei: obey trailing magic-link DAC permissions</li>
+<li><em>From</em>: Aleksa Sarai &lt;cyphar@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Sat, 20 Jul 2019 02:42:17 +1000</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg741978.html">20190719164225.27083-1-cyphar@cyphar.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>The ability for userspace to &quot;re-open&quot; file descriptors through
+/proc/self/fd has been a very useful tool for all sorts of usecases
+(container runtimes are one common example). However, the current
+interface for doing this has resulted in some pretty subtle security
+holes. Userspace can re-open a file descriptor with more permissions
+than the original, which can result in cases such as /proc/$pid/exe
+being re-opened O_RDWR at a later date even though (by definition)
+/proc/$pid/exe cannot be opened for writing. When combined with O_PATH
+the results can get even more confusing.
+
+We cannot block this outright. Aside from userspace already depending on
+it, it's a useful feature which can actually increase the security of
+userspace. For instance, LXC keeps an O_PATH of the container's
+/dev/pts/ptmx that gets re-opened to create new ptys and then uses
+TIOCGPTPEER to get the slave end. This allows for pty allocation without
+resolving paths inside an (untrusted) container's rootfs. There isn't a
+trivial way of doing this that is as straight-forward and safe as O_PATH
+re-opening.
+
+Instead we have to restrict it in such a way that it doesn't break
+(good) users but does block potential attackers. The solution applied in
+this patch is to restrict *re-opening* (not resolution through)
+magic-links by requiring that mode of the link be obeyed. Normal
+symlinks have modes of a+rwx but magic-links have other modes. These
+magic-link modes were historically ignored during path resolution, but
+they've now been re-purposed for more useful ends.
+
+It is also necessary to define semantics for the mode of an O_PATH
+descriptor, since re-opening a magic-link through an O_PATH needs to be
+just as restricted as the corresponding magic-link -- otherwise the
+above protection can be bypassed. There are two distinct cases:
+
+ 1. The target is a regular file (not a magic-link). Userspace depends
+    on being able to re-open the O_PATH of a regular file, so we must
+    define the mode to be a+rwx.
+
+ 2. The target is a magic-link. In this case, we simply copy the mode of
+    the magic-link. This results in an O_PATH of a magic-link
+    effectively acting as a no-op in terms of how much re-opening
+    privileges a process has.
+
+CAP_DAC_OVERRIDE can be used to override all of these restrictions, but
+we only permit &amp;init_userns's capabilities to affect these semantics.
+The reason for this is that there isn't a clear way to track what
+user_ns is the original owner of a given O_PATH chain -- thus an
+unprivileged user could create a new userns and O_PATH the file
+descriptor, owning it. All signs would indicate that the user really
+does have CAP_DAC_OVERRIDE over the new descriptor and the protection
+would be bypassed. We thus opt for the more conservative approach.
+
+I have run this patch on several machines for several days. So far, the
+only processes which have hit this case (&quot;loadkeys&quot; and &quot;kbd_mode&quot; from
+the kbd package[1]) gracefully handle the permission error and do not
+cause any user-visible problems. In order to give users a heads-up, a
+warning is output to dmesg whenever may_open_magiclink() refuses access.
+
+[1]: <a  rel="nofollow" href="http://git.altlinux.org/people/legion/packages/kbd.git">http://git.altlinux.org/people/legion/packages/kbd.git</a>
+
+Co-developed-by: Andy Lutomirski &lt;luto@xxxxxxxxxx&gt;
+Co-developed-by: Christian Brauner &lt;christian@xxxxxxxxxx&gt;
+Signed-off-by: Aleksa Sarai &lt;cyphar@xxxxxxxxxx&gt;
+---
+ Documentation/filesystems/path-lookup.rst |  12 +--
+ fs/internal.h                             |   1 +
+ fs/namei.c                                | 105 +++++++++++++++++++---
+ fs/open.c                                 |   3 +-
+ fs/proc/fd.c                              |  23 ++++-
+ include/linux/fs.h                        |   4 +
+ include/linux/namei.h                     |   1 +
+ 7 files changed, 130 insertions(+), 19 deletions(-)
+
+diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/filesystems/path-lookup.rst
+index 434a07b0002b..a57d78ec8bee 100644
+--- a/Documentation/filesystems/path-lookup.rst
++++ b/Documentation/filesystems/path-lookup.rst
+@@ -1310,12 +1310,14 @@ longer needed.
+ ``LOOKUP_JUMPED`` means that the current dentry was chosen not because
+ it had the right name but for some other reason.  This happens when
+ following &quot;``..``&quot;, following a symlink to ``/``, crossing a mount point
+-or accessing a &quot;``/proc/$PID/fd/$FD``&quot; symlink.  In this case the
+-filesystem has not been asked to revalidate the name (with
+-``d_revalidate()``).  In such cases the inode may still need to be
+-revalidated, so ``d_op-&gt;d_weak_revalidate()`` is called if
++or accessing a &quot;``/proc/$PID/fd/$FD``&quot; symlink (also known as a &quot;magic
++link&quot;). In this case the filesystem has not been asked to revalidate the
++name (with ``d_revalidate()``).  In such cases the inode may still need
++to be revalidated, so ``d_op-&gt;d_weak_revalidate()`` is called if
+ ``LOOKUP_JUMPED`` is set when the look completes - which may be at the
+-final component or, when creating, unlinking, or renaming, at the penultimate component.
++final component or, when creating, unlinking, or renaming, at the
++penultimate component. ``LOOKUP_MAGICLINK_JUMPED`` is set alongside
++``LOOKUP_JUMPED`` if a magic-link was traversed.
+ 
+ Final-component flags
+ ~~~~~~~~~~~~~~~~~~~~~
+diff --git a/fs/internal.h b/fs/internal.h
+index a48ef81be37d..12847f502f49 100644
+--- a/fs/internal.h
++++ b/fs/internal.h
+@@ -119,6 +119,7 @@ struct open_flags {
+ 	int acc_mode;
+ 	int intent;
+ 	int lookup_flags;
++	fmode_t opath_mask;
+ };
+ extern struct file *do_filp_open(int dfd, struct filename *pathname,
+ 		const struct open_flags *op);
+diff --git a/fs/namei.c b/fs/namei.c
+index 20831c2fbb34..c6ba4ccafc51 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -872,7 +872,7 @@ void nd_jump_link(struct path *path)
+ 
+ 	nd-&gt;path = *path;
+ 	nd-&gt;inode = nd-&gt;path.dentry-&gt;d_inode;
+-	nd-&gt;flags |= LOOKUP_JUMPED;
++	nd-&gt;flags |= LOOKUP_JUMPED | LOOKUP_MAGICLINK_JUMPED;
+ }
+ 
+ static inline void put_link(struct nameidata *nd)
+@@ -1066,6 +1066,7 @@ const char *get_link(struct nameidata *nd)
+ 		return ERR_PTR(error);
+ 
+ 	nd-&gt;last_type = LAST_BIND;
++	nd-&gt;flags &amp;= ~LOOKUP_MAGICLINK_JUMPED;
+ 	res = READ_ONCE(inode-&gt;i_link);
+ 	if (!res) {
+ 		const char * (*get)(struct dentry *, struct inode *,
+@@ -3501,16 +3502,73 @@ static int do_tmpfile(struct nameidata *nd, unsigned flags,
+ 	return error;
+ }
+ 
+-static int do_o_path(struct nameidata *nd, unsigned flags, struct file *file)
++/**
++ * may_reopen_magiclink - Check permissions for opening a trailing magic-link
++ * @opath_mask: the O_PATH mask of the magic-link
++ * @acc_mode: ACC_MODE which the user is attempting
++ *
++ * We block magic-link re-opening if the @opath_mask is more strict than the
++ * @acc_mode being requested, unless the user is capable(CAP_DAC_OVERRIDE).
++ *
++ * Returns 0 if successful, -ve on error.
++ */
++static int may_open_magiclink(fmode_t opath_mask, int acc_mode)
+ {
+-	struct path path;
+-	int error = path_lookupat(nd, flags, &amp;path);
+-	if (!error) {
+-		audit_inode(nd-&gt;name, path.dentry, 0);
+-		error = vfs_open(&amp;path, file);
+-		path_put(&amp;path);
+-	}
+-	return error;
++	/*
++	 * We only allow for init_userns to be able to override magic-links.
++	 * This is done to avoid cases where an unprivileged userns could take
++	 * an O_PATH of the fd, resulting in it being very unclear whether
++	 * CAP_DAC_OVERRIDE should work on the new O_PATH fd (given that it
++	 * pipes through to the underlying file).
++	 */
++	if (capable(CAP_DAC_OVERRIDE))
++		return 0;
++
++	if ((acc_mode &amp; MAY_READ) &amp;&amp;
++	    !(opath_mask &amp; (FMODE_READ | FMODE_PATH_READ)))
++		goto err;
++	if ((acc_mode &amp; MAY_WRITE) &amp;&amp;
++	    !(opath_mask &amp; (FMODE_WRITE | FMODE_PATH_WRITE)))
++		goto err;
++
++	return 0;
++
++err:
++	pr_warn_ratelimited(&quot;%s[%d]: magic-link re-open blocked (acc_mode=%s%s%s, opath_mask=%s%s%s%s)&quot;,
++		current-&gt;comm, task_pid_nr(current),
++		(acc_mode &amp; MAY_READ) ? &quot;r&quot;: &quot;&quot;,
++		(acc_mode &amp; MAY_WRITE) ? &quot;w&quot;: &quot;&quot;,
++		(acc_mode &amp; MAY_EXEC) ? &quot;x&quot;: &quot;&quot;,
++		(opath_mask &amp; FMODE_READ) ? &quot;R&quot; : &quot;&quot;,
++		(opath_mask &amp; FMODE_PATH_READ) ? &quot;r&quot; : &quot;&quot;,
++		(opath_mask &amp; FMODE_WRITE) ? &quot;W&quot; : &quot;&quot;,
++		(opath_mask &amp; FMODE_PATH_WRITE) ? &quot;w&quot; : &quot;&quot;);
++	return -EACCES;
++}
++
++static int trailing_magiclink(struct nameidata *nd, int acc_mode,
++			      fmode_t *opath_mask)
++{
++	struct inode *inode = nd-&gt;link_inode;
++	fmode_t new_mask = 0;
++
++	/* Trailing symlink was not a magic-link. */
++	if (!(nd-&gt;flags &amp; LOOKUP_MAGICLINK_JUMPED))
++		return 0;
++
++	/*
++	 * Figure out the O_PATH mask. Rather than using acl_permission_check,
++	 * we check whether any of the rw bits are set in the mode.
++	 */
++	if (inode-&gt;i_mode &amp; S_IRUGO)
++		new_mask |= FMODE_PATH_READ;
++	if (inode-&gt;i_mode &amp; S_IWUGO)
++		new_mask |= FMODE_PATH_WRITE;
++	if (opath_mask)
++		*opath_mask &amp;= new_mask;
++
++	/* Is the new opath_mask more restrictive than acc_mode? */
++	return may_open_magiclink(new_mask, acc_mode);
+ }
+ 
+ static struct file *path_openat(struct nameidata *nd,
+@@ -3526,13 +3584,38 @@ static struct file *path_openat(struct nameidata *nd,
+ 	if (unlikely(file-&gt;f_flags &amp; __O_TMPFILE)) {
+ 		error = do_tmpfile(nd, flags, op, file);
+ 	} else if (unlikely(file-&gt;f_flags &amp; O_PATH)) {
+-		error = do_o_path(nd, flags, file);
++		/* Inlined path_lookupat() with a trailing_magiclink() check. */
++		const char *s = path_init(nd, flags);
++		fmode_t opath_mask = op-&gt;opath_mask;
++
++		while (!(error = link_path_walk(s, nd))
++			&amp;&amp; ((error = lookup_last(nd)) &gt; 0)) {
++			s = trailing_symlink(nd);
++			error = trailing_magiclink(nd, op-&gt;acc_mode, &amp;opath_mask);
++			if (error)
++				s = ERR_PTR(error);
++		}
++		if (!error)
++			error = complete_walk(nd);
++
++		if (!error &amp;&amp; nd-&gt;flags &amp; LOOKUP_DIRECTORY)
++			if (!d_can_lookup(nd-&gt;path.dentry))
++				error = -ENOTDIR;
++		if (!error) {
++			audit_inode(nd-&gt;name, nd-&gt;path.dentry, 0);
++			error = vfs_open(&amp;nd-&gt;path, file);
++			file-&gt;f_mode |= opath_mask;
++		}
++		terminate_walk(nd);
+ 	} else {
+ 		const char *s = path_init(nd, flags);
+ 		while (!(error = link_path_walk(s, nd)) &amp;&amp;
+ 			(error = do_last(nd, file, op)) &gt; 0) {
+ 			nd-&gt;flags &amp;= ~(LOOKUP_OPEN|LOOKUP_CREATE|LOOKUP_EXCL);
+ 			s = trailing_symlink(nd);
++			error = trailing_magiclink(nd, op-&gt;acc_mode, NULL);
++			if (error)
++				s = ERR_PTR(error);
+ 		}
+ 		terminate_walk(nd);
+ 	}
+diff --git a/fs/open.c b/fs/open.c
+index b5b80469b93d..ab20eae39df7 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -982,8 +982,9 @@ static inline int build_open_flags(int flags, umode_t mode, struct open_flags *o
+ 		acc_mode |= MAY_APPEND;
+ 
+ 	op-&gt;acc_mode = acc_mode;
+-
+ 	op-&gt;intent = flags &amp; O_PATH ? 0 : LOOKUP_OPEN;
++	/* For O_PATH backwards-compatibility we default to an all-set mask. */
++	op-&gt;opath_mask = FMODE_PATH_READ | FMODE_PATH_WRITE;
+ 
+ 	if (flags &amp; O_CREAT) {
+ 		op-&gt;intent |= LOOKUP_CREATE;
+diff --git a/fs/proc/fd.c b/fs/proc/fd.c
+index 81882a13212d..9b7d8becb002 100644
+--- a/fs/proc/fd.c
++++ b/fs/proc/fd.c
+@@ -104,11 +104,30 @@ static void tid_fd_update_inode(struct task_struct *task, struct inode *inode,
+ 	task_dump_owner(task, 0, &amp;inode-&gt;i_uid, &amp;inode-&gt;i_gid);
+ 
+ 	if (S_ISLNK(inode-&gt;i_mode)) {
++		/*
++		 * Always set +x (depending on the fmode type), since there
++		 * currently aren't FMODE_PATH_EXEC restrictions and there is
++		 * no O_MAYEXEC yet. This might change in the future, in which
++		 * case we will restrict +x.
++		 */
+ 		unsigned i_mode = S_IFLNK;
++		if (f_mode &amp; FMODE_PATH)
++			i_mode |= S_IXGRP;
++		else
++			i_mode |= S_IXUSR;
++		/*
++		 * Construct the mode bits based on the open-mode. The u+rwx
++		 * bits are for &quot;ordinary&quot; open modes while g+rwx are for
++		 * O_PATH modes.
++		 */
+ 		if (f_mode &amp; FMODE_READ)
+-			i_mode |= S_IRUSR | S_IXUSR;
++			i_mode |= S_IRUSR;
+ 		if (f_mode &amp; FMODE_WRITE)
+-			i_mode |= S_IWUSR | S_IXUSR;
++			i_mode |= S_IWUSR;
++		if (f_mode &amp; FMODE_PATH_READ)
++			i_mode |= S_IRGRP;
++		if (f_mode &amp; FMODE_PATH_WRITE)
++			i_mode |= S_IWGRP;
+ 		inode-&gt;i_mode = i_mode;
+ 	}
+ 	security_task_to_inode(task, inode);
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index f7fdfe93e25d..f7df213405ea 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -173,6 +173,10 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, loff_t offset,
+ /* File does not contribute to nr_files count */
+ #define FMODE_NOACCOUNT		((__force fmode_t)0x20000000)
+ 
++/* File is an O_PATH descriptor which can be upgraded to (read, write). */
++#define FMODE_PATH_READ		((__force fmode_t)0x40000000)
++#define FMODE_PATH_WRITE	((__force fmode_t)0x80000000)
++
+ /*
+  * Flag for rw_copy_check_uvector and compat_rw_copy_check_uvector
+  * that indicates that they should check the contents of the iovec are
+diff --git a/include/linux/namei.h b/include/linux/namei.h
+index 9138b4471dbf..bd6d3eb7764d 100644
+--- a/include/linux/namei.h
++++ b/include/linux/namei.h
+@@ -49,6 +49,7 @@ enum {LAST_NORM, LAST_ROOT, LAST_DOT, LAST_DOTDOT, LAST_BIND};
+ #define LOOKUP_ROOT		0x2000
+ #define LOOKUP_EMPTY		0x4000
+ #define LOOKUP_DOWN		0x8000
++#define LOOKUP_MAGICLINK_JUMPED	0x10000
+ 
+ extern int path_pts(struct path *path);
+ 
+-- 
+2.22.0
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@xxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="741978" href="msg741978.html">[PATCH v10 0/9] namei: openat2(2) path resolution restrictions</a></strong>
+<ul><li><em>From:</em> Aleksa Sarai</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg741978.html">[PATCH v10 0/9] namei: openat2(2) path resolution restrictions</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg741980.html">[PATCH v10 2/9] procfs: switch magic-link modes to be more sane</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg741978.html">[PATCH v10 0/9] namei: openat2(2) path resolution restrictions</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg741980.html">[PATCH v10 2/9] procfs: switch magic-link modes to be more sane</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#741979"><strong>Date</strong></a></li>
+<li><a href="threads.html#741979"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm/>[Linux&nbsp;ARM&nbsp;(vger)]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-arm-msm/>[Linux&nbsp;ARM&nbsp;MSM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/centos-arm-devel/>[CentOS&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;Arm]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-tegra/>[Linux&nbsp;Tegra]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;for&nbsp;Samsung&nbsp;SOC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[eCos]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fastboot/>[Linux&nbsp;Fastboot]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/gcchelp/>[Gcc&nbsp;Help]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/git/>[Git]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/dccp/>[DCCP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann>[IETF&nbsp;Announce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

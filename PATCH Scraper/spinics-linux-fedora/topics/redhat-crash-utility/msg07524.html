@@ -1,0 +1,411 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: Re:  [PATCH v2] x86_64: Make the conversion between 4level and 5level paging automatically -->
+<!--X-From-R13: Rnir Oaqrefba &#60;naqrefbaNerqung.pbz> -->
+<!--X-Date: Tue, 10 Jul 2018 12:33:24 &#45;0700 -->
+<!--X-Message-Id: 565100554.17253347.1531251196995.JavaMail.zimbra@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20180710025116.23089&#45;1&#45;douly.fnst@cn.fujitsu.com -->
+<!--X-Reference: 1145621120.17155603.1531236656002.JavaMail.zimbra@redhat.com -->
+<!--X-Reference: 1299029561.17213494.1531245714382.JavaMail.zimbra@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Re:  [PATCH v2] x86_64: Make the conversion between 4level and 5level paging automatically &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  Re:  [PATCH v2] x86_64: Make the conversion between 4level and 5level paging automatically</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">Re:  [PATCH v2] x86_64: Make the conversion between 4level and 5level paging automatically</h1>
+[<a href="msg07523.html">Date Prev</a>][<a href="msg07525.html">Date Next</a>][<a href="msg07523.html">Thread Prev</a>][<a href="msg07532.html">Thread Next</a>][<a href="maillist.html#07524">Date Index</a>][<a href="index.html#07524">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: Re:  [PATCH v2] x86_64: Make the conversion between 4level and 5level paging automatically</li>
+<li><em>From</em>: Dave Anderson &lt;anderson@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Tue, 10 Jul 2018 15:33:17 -0400 (EDT)</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg07523.html">1299029561.17213494.1531245714382.JavaMail.zimbra@redhat.com</a>&gt;</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>
+
+----- Original Message -----
+&gt;<i> </i>
+&gt;<i> </i>
+&gt;<i> ----- Original Message -----</i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; Hello Dou,</i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; This patch was failing on most -- but not all -- of my test dumpfiles, because of</i>
+&gt;<i> &gt; fatal read or seek errors during session initialization.</i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; As it turns out, the &quot;l5_enabled&quot; local variable needs to be zeroed-out, because</i>
+&gt;<i> &gt; if neither the &quot;if&quot; or the &quot;else&quot; are true, it uses whatever old stack garbage</i>
+&gt;<i> &gt; that l5_enabled contains:</i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; &gt; +		/* Check for 5-level paging */</i>
+&gt;<i> &gt; &gt; +		if (!(machdep-&gt;flags &amp; VM_5LEVEL)) {</i>
+&gt;<i> &gt; &gt; +			int l5_enabled;</i>
+&gt;<i> &gt; &gt; +			if ((string = pc-&gt;read_vmcoreinfo(&quot;NUMBER(pgtable_l5_enabled)&quot;))) {</i>
+&gt;<i> &gt; &gt; +				l5_enabled = 1;</i>
+&gt;<i> &gt; &gt; +				free(string);</i>
+&gt;<i> &gt; &gt; +			} else if (kernel_symbol_exists(&quot;__pgtable_l5_enabled&quot;))</i>
+&gt;<i> &gt; &gt; +				readmem(symbol_value(&quot;__pgtable_l5_enabled&quot;), KVADDR,</i>
+&gt;<i> &gt; &gt; +					&amp;l5_enabled, sizeof(int), &quot;__pgtable_l5_enabled&quot;,</i>
+&gt;<i> &gt; &gt; +					FAULT_ON_ERROR);</i>
+&gt;<i> &gt; &gt; +</i>
+&gt;<i> &gt; &gt; +			if (l5_enabled)</i>
+&gt;<i> &gt; &gt; +				machdep-&gt;flags |= VM_5LEVEL;</i>
+&gt;<i> &gt; &gt; +		}</i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; I'll fix that and retest.</i>
+&gt;<i> </i>
+&gt;<i> It still fails on 4.17 and later kernels that have this in their VMCOREINFO:</i>
+&gt;<i> </i>
+&gt;<i>   NUMBER(pgtable_l5_enabled)=0</i>
+&gt;<i> </i>
+&gt;<i> You need to do atoi(string) to get its value.  I'll fix that and retest</i>
+&gt;<i> again...</i>
+&gt;<i> </i>
+&gt;<i> Dave</i>
+
+Hi Dou,
+
+The updated patch is queued for crash-7.2.4:
+
+  <a  rel="nofollow" href="https://github.com/crash-utility/crash/commit/b21633026a725a10b9394aabc65d8c57d5bbe33a">https://github.com/crash-utility/crash/commit/b21633026a725a10b9394aabc65d8c57d5bbe33a</a>
+
+Thanks for all your help in implementing this support -- it is much appreciated.
+
+The final phase of support would be making this work:
+
+  static int
+  x86_64_task_uses_5level(struct task_context *tc)
+  {
+          return FALSE;
+  }
+
+Have you had a chance to look at how that can be done?
+
+Thanks,
+  Dave
+
+
+&gt;<i> &gt; </i>
+&gt;<i> &gt; Thanks,</i>
+&gt;<i> &gt;   Dave</i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; ----- Original Message -----</i>
+&gt;<i> &gt; &gt; Currently, Crash only enable support for kernel-only 5-level page tables</i>
+&gt;<i> &gt; &gt; by</i>
+&gt;<i> &gt; &gt; entering the command line option &quot;--machdep vm=5level&quot;. Since Linux 4.17,</i>
+&gt;<i> &gt; &gt; the Linux kernel can be both 4level and 5level page tables. This command</i>
+&gt;<i> &gt; &gt; line</i>
+&gt;<i> &gt; &gt; can't work well for this.</i>
+&gt;<i> &gt; &gt; </i>
+&gt;<i> &gt; &gt; Using the &quot;pgtable_l5_enabled&quot; to detect whether the kernel proper for 5</i>
+&gt;<i> &gt; &gt; level</i>
+&gt;<i> &gt; &gt; page tables automatically. Also move the 5-level paging setup from</i>
+&gt;<i> &gt; &gt; machdep_init(PRE_GDB)</i>
+&gt;<i> &gt; &gt; to machdep_init(POST_RELOC).</i>
+&gt;<i> &gt; &gt; </i>
+&gt;<i> &gt; &gt; Signed-off-by: Dave Anderson &lt;anderson@xxxxxxxxxx&gt;</i>
+&gt;<i> &gt; &gt; Signed-off-by: Dou Liyang &lt;douly.fnst@xxxxxxxxxxxxxx&gt;</i>
+&gt;<i> &gt; &gt; ---</i>
+&gt;<i> &gt; &gt; Changelog v1 --&gt; v2</i>
+&gt;<i> &gt; &gt; </i>
+&gt;<i> &gt; &gt;  1. Make it support live systems suggested by Dave</i>
+&gt;<i> &gt; &gt;  2. Using __pgtable_l5_enabled for check.</i>
+&gt;<i> &gt; &gt;  3. Do some tests in both kdump(5level and 4level) and virsh dump(5level</i>
+&gt;<i> &gt; &gt;  and</i>
+&gt;<i> &gt; &gt;  4level)</i>
+&gt;<i> &gt; &gt; ---</i>
+&gt;<i> &gt; &gt;  x86_64.c | 56 +++++++++++++++++++++++++++++++++++++-------------------</i>
+&gt;<i> &gt; &gt;  1 file changed, 37 insertions(+), 19 deletions(-)</i>
+&gt;<i> &gt; &gt; </i>
+&gt;<i> &gt; &gt; diff --git a/x86_64.c b/x86_64.c</i>
+&gt;<i> &gt; &gt; index 6d1ae2f..07b6aa9 100644</i>
+&gt;<i> &gt; &gt; --- a/x86_64.c</i>
+&gt;<i> &gt; &gt; +++ b/x86_64.c</i>
+&gt;<i> &gt; &gt; @@ -294,25 +294,6 @@ x86_64_init(int when)</i>
+&gt;<i> &gt; &gt;  			machdep-&gt;machspec-&gt;pgdir_shift = PGDIR_SHIFT;</i>
+&gt;<i> &gt; &gt;  			machdep-&gt;machspec-&gt;ptrs_per_pgd = PTRS_PER_PGD;</i>
+&gt;<i> &gt; &gt;  			break;</i>
+&gt;<i> &gt; &gt; -</i>
+&gt;<i> &gt; &gt; -		case VM_5LEVEL:</i>
+&gt;<i> &gt; &gt; -			machdep-&gt;machspec-&gt;userspace_top = USERSPACE_TOP_5LEVEL;</i>
+&gt;<i> &gt; &gt; -			machdep-&gt;machspec-&gt;page_offset = PAGE_OFFSET_5LEVEL;</i>
+&gt;<i> &gt; &gt; -			machdep-&gt;machspec-&gt;vmalloc_start_addr = VMALLOC_START_ADDR_5LEVEL;</i>
+&gt;<i> &gt; &gt; -			machdep-&gt;machspec-&gt;vmalloc_end = VMALLOC_END_5LEVEL;</i>
+&gt;<i> &gt; &gt; -			machdep-&gt;machspec-&gt;modules_vaddr = MODULES_VADDR_5LEVEL;</i>
+&gt;<i> &gt; &gt; -			machdep-&gt;machspec-&gt;modules_end = MODULES_END_5LEVEL;</i>
+&gt;<i> &gt; &gt; -			machdep-&gt;machspec-&gt;vmemmap_vaddr = VMEMMAP_VADDR_5LEVEL;</i>
+&gt;<i> &gt; &gt; -			machdep-&gt;machspec-&gt;vmemmap_end = VMEMMAP_END_5LEVEL;</i>
+&gt;<i> &gt; &gt; -			if (symbol_exists(&quot;vmemmap_populate&quot;))</i>
+&gt;<i> &gt; &gt; -				machdep-&gt;flags |= VMEMMAP;</i>
+&gt;<i> &gt; &gt; -			machdep-&gt;machspec-&gt;physical_mask_shift =</i>
+&gt;<i> &gt; &gt; __PHYSICAL_MASK_SHIFT_5LEVEL;</i>
+&gt;<i> &gt; &gt; -			machdep-&gt;machspec-&gt;pgdir_shift = PGDIR_SHIFT_5LEVEL;</i>
+&gt;<i> &gt; &gt; -			machdep-&gt;machspec-&gt;ptrs_per_pgd = PTRS_PER_PGD_5LEVEL;</i>
+&gt;<i> &gt; &gt; -			if ((machdep-&gt;machspec-&gt;p4d = (char *)malloc(PAGESIZE())) == NULL)</i>
+&gt;<i> &gt; &gt; -				error(FATAL, &quot;cannot malloc p4d space.&quot;);</i>
+&gt;<i> &gt; &gt; -			machdep-&gt;machspec-&gt;last_p4d_read = 0;</i>
+&gt;<i> &gt; &gt; -			machdep-&gt;uvtop = x86_64_uvtop_level4;  /* 5-level is optional</i>
+&gt;<i> &gt; &gt; per-task</i>
+&gt;<i> &gt; &gt; */</i>
+&gt;<i> &gt; &gt;  		}</i>
+&gt;<i> &gt; &gt;  	        machdep-&gt;kvbase = (ulong)PAGE_OFFSET;</i>
+&gt;<i> &gt; &gt;  		machdep-&gt;identity_map_base = (ulong)PAGE_OFFSET;</i>
+&gt;<i> &gt; &gt; @@ -346,6 +327,43 @@ x86_64_init(int when)</i>
+&gt;<i> &gt; &gt;  		break;</i>
+&gt;<i> &gt; &gt;  </i>
+&gt;<i> &gt; &gt;  	case POST_RELOC:</i>
+&gt;<i> &gt; &gt; +		/* Check for 5-level paging */</i>
+&gt;<i> &gt; &gt; +		if (!(machdep-&gt;flags &amp; VM_5LEVEL)) {</i>
+&gt;<i> &gt; &gt; +			int l5_enabled;</i>
+&gt;<i> &gt; &gt; +			if ((string = pc-&gt;read_vmcoreinfo(&quot;NUMBER(pgtable_l5_enabled)&quot;))) {</i>
+&gt;<i> &gt; &gt; +				l5_enabled = 1;</i>
+&gt;<i> &gt; &gt; +				free(string);</i>
+&gt;<i> &gt; &gt; +			} else if (kernel_symbol_exists(&quot;__pgtable_l5_enabled&quot;))</i>
+&gt;<i> &gt; &gt; +				readmem(symbol_value(&quot;__pgtable_l5_enabled&quot;), KVADDR,</i>
+&gt;<i> &gt; &gt; +					&amp;l5_enabled, sizeof(int), &quot;__pgtable_l5_enabled&quot;,</i>
+&gt;<i> &gt; &gt; +					FAULT_ON_ERROR);</i>
+&gt;<i> &gt; &gt; +</i>
+&gt;<i> &gt; &gt; +			if (l5_enabled)</i>
+&gt;<i> &gt; &gt; +				machdep-&gt;flags |= VM_5LEVEL;</i>
+&gt;<i> &gt; &gt; +		}</i>
+&gt;<i> &gt; &gt; +		if (machdep-&gt;flags &amp; VM_5LEVEL) {</i>
+&gt;<i> &gt; &gt; +			machdep-&gt;machspec-&gt;userspace_top = USERSPACE_TOP_5LEVEL;</i>
+&gt;<i> &gt; &gt; +			machdep-&gt;machspec-&gt;page_offset = PAGE_OFFSET_5LEVEL;</i>
+&gt;<i> &gt; &gt; +			machdep-&gt;machspec-&gt;vmalloc_start_addr = VMALLOC_START_ADDR_5LEVEL;</i>
+&gt;<i> &gt; &gt; +			machdep-&gt;machspec-&gt;vmalloc_end = VMALLOC_END_5LEVEL;</i>
+&gt;<i> &gt; &gt; +			machdep-&gt;machspec-&gt;modules_vaddr = MODULES_VADDR_5LEVEL;</i>
+&gt;<i> &gt; &gt; +			machdep-&gt;machspec-&gt;modules_end = MODULES_END_5LEVEL;</i>
+&gt;<i> &gt; &gt; +			machdep-&gt;machspec-&gt;vmemmap_vaddr = VMEMMAP_VADDR_5LEVEL;</i>
+&gt;<i> &gt; &gt; +			machdep-&gt;machspec-&gt;vmemmap_end = VMEMMAP_END_5LEVEL;</i>
+&gt;<i> &gt; &gt; +			if (symbol_exists(&quot;vmemmap_populate&quot;))</i>
+&gt;<i> &gt; &gt; +				machdep-&gt;flags |= VMEMMAP;</i>
+&gt;<i> &gt; &gt; +			machdep-&gt;machspec-&gt;physical_mask_shift =</i>
+&gt;<i> &gt; &gt; __PHYSICAL_MASK_SHIFT_5LEVEL;</i>
+&gt;<i> &gt; &gt; +			machdep-&gt;machspec-&gt;pgdir_shift = PGDIR_SHIFT_5LEVEL;</i>
+&gt;<i> &gt; &gt; +			machdep-&gt;machspec-&gt;ptrs_per_pgd = PTRS_PER_PGD_5LEVEL;</i>
+&gt;<i> &gt; &gt; +			if ((machdep-&gt;machspec-&gt;p4d = (char *)malloc(PAGESIZE())) == NULL)</i>
+&gt;<i> &gt; &gt; +				error(FATAL, &quot;cannot malloc p4d space.&quot;);</i>
+&gt;<i> &gt; &gt; +			machdep-&gt;machspec-&gt;last_p4d_read = 0;</i>
+&gt;<i> &gt; &gt; +			machdep-&gt;uvtop = x86_64_uvtop_level4;  /* 5-level is optional</i>
+&gt;<i> &gt; &gt; per-task</i>
+&gt;<i> &gt; &gt; */</i>
+&gt;<i> &gt; &gt; +			machdep-&gt;kvbase = (ulong)PAGE_OFFSET;</i>
+&gt;<i> &gt; &gt; +			machdep-&gt;identity_map_base = (ulong)PAGE_OFFSET;</i>
+&gt;<i> &gt; &gt; +</i>
+&gt;<i> &gt; &gt; +		}</i>
+&gt;<i> &gt; &gt; +</i>
+&gt;<i> &gt; &gt;  		/*</i>
+&gt;<i> &gt; &gt;  		 *  Check for CONFIG_RANDOMIZE_MEMORY, and set page_offset here.</i>
+&gt;<i> &gt; &gt;  		 *  The remainder of the virtual address range setups will get</i>
+&gt;<i> &gt; &gt; --</i>
+&gt;<i> &gt; &gt; 2.14.3</i>
+&gt;<i> &gt; &gt; </i>
+&gt;<i> &gt; &gt; </i>
+&gt;<i> &gt; &gt; </i>
+&gt;<i> &gt; &gt; </i>
+&gt;<i> &gt; </i>
+&gt;<i> &gt; --</i>
+&gt;<i> &gt; Crash-utility mailing list</i>
+&gt;<i> &gt; Crash-utility@xxxxxxxxxx</i>
+&gt;<i> &gt; <a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a></i>
+&gt;<i> &gt; </i>
+&gt;<i> </i>
+&gt;<i> --</i>
+&gt;<i> Crash-utility mailing list</i>
+&gt;<i> Crash-utility@xxxxxxxxxx</i>
+&gt;<i> <a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a></i>
+&gt;<i> </i>
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07532" href="msg07532.html">Re:  [PATCH v2] x86_64: Make the conversion between 4level and 5level paging automatically</a></strong>
+<ul><li><em>From:</em> Dou Liyang</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="07521" href="msg07521.html">[PATCH v2] x86_64: Make the conversion between	4level and 5level paging automatically</a></strong>
+<ul><li><em>From:</em> Dou Liyang</li></ul></li>
+<li><strong><a name="07522" href="msg07522.html">Re:  [PATCH v2] x86_64: Make the conversion between 4level and 5level paging automatically</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+<li><strong><a name="07523" href="msg07523.html">Re:  [PATCH v2] x86_64: Make the conversion between 4level and 5level paging automatically</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07523.html">Re:  [PATCH v2] x86_64: Make the conversion between 4level and 5level paging automatically</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07525.html">[PATCH 0/5] Add Brent algorithm as an option for	the 'list' command</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07523.html">Re:  [PATCH v2] x86_64: Make the conversion between 4level and 5level paging automatically</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07532.html">Re:  [PATCH v2] x86_64: Make the conversion between 4level and 5level paging automatically</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07524"><strong>Date</strong></a></li>
+<li><a href="index.html#07524"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

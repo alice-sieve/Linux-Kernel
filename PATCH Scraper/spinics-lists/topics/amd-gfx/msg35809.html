@@ -1,0 +1,229 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] drm/amdgpu: Fix unaligned memory copies -->
+<!--X-From-R13: "Yhruyvat, Tryvk" &#60;Tryvk.YhruyvatNnzq.pbz> -->
+<!--X-Date: Fri, 12 Jul 2019 23:43:01 &#45;0700 -->
+<!--X-Message-Id: 20190713064245.20097&#45;1&#45;Felix.Kuehling@amd.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AMD GFX: [PATCH] drm/amdgpu: Fix unaligned memory copies">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH] drm/amdgpu: Fix unaligned memory copies &mdash; Linux AMD GFX</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AMD GFX" href="//feeds.feedburner.com/LinuxAmdGraphics">
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" async defer></script>
+<h1 itemprop="name">[PATCH] drm/amdgpu: Fix unaligned memory copies</h1>
+[<a href="msg35808.html">Date Prev</a>][<a href="msg35810.html">Date Next</a>][<a href="msg35807.html">Thread Prev</a>][<a href="msg35842.html">Thread Next</a>][<a href="maillist.html#35809">Date Index</a>][<a href="index.html#35809">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: &quot;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&quot; &lt;amd-gfx@xxxxxxxxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH] drm/amdgpu: Fix unaligned memory copies</li>
+<li><em>From</em>: &quot;Kuehling, Felix&quot; &lt;Felix.Kuehling@xxxxxxx&gt;</li>
+<li><em>Date</em>: Sat, 13 Jul 2019 06:42:57 +0000</li>
+<li><em>Accept-language</em>: en-US</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>When starting a new mm_node, the page_offset becomes 0.
+
+Signed-off-by: Felix Kuehling &lt;Felix.Kuehling@xxxxxxx&gt;
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+index 37d9a3b09946..d0f6c23ec7cf 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@ -386,6 +386,7 @@ int amdgpu_ttm_copy_mem_to_mem(struct amdgpu_device *adev,
+ 			src_node_start = amdgpu_mm_node_addr(src-&gt;bo, ++src_mm,
+ 							     src-&gt;mem);
+ 			src_node_size = (src_mm-&gt;size &lt;&lt; PAGE_SHIFT);
++			src_page_offset = 0;
+ 		} else {
+ 			src_node_start += cur_size;
+ 			src_page_offset = src_node_start &amp; (PAGE_SIZE - 1);
+@@ -395,6 +396,7 @@ int amdgpu_ttm_copy_mem_to_mem(struct amdgpu_device *adev,
+ 			dst_node_start = amdgpu_mm_node_addr(dst-&gt;bo, ++dst_mm,
+ 							     dst-&gt;mem);
+ 			dst_node_size = (dst_mm-&gt;size &lt;&lt; PAGE_SHIFT);
++			dst_page_offset = 0;
+ 		} else {
+ 			dst_node_start += cur_size;
+ 			dst_page_offset = dst_node_start &amp; (PAGE_SIZE - 1);
+-- 
+2.17.1
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@xxxxxxxxxxxxxxxxxxxxx
+<a  rel="nofollow" href="https://lists.freedesktop.org/mailman/listinfo/amd-gfx">https://lists.freedesktop.org/mailman/listinfo/amd-gfx</a>
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="35842" href="msg35842.html">Re: [PATCH] drm/amdgpu: Fix unaligned memory copies</a></strong>
+<ul><li><em>From:</em> Alex Deucher</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg35808.html">[PATCH 2/2] drm/amdgpu: Fix silent amdgpu_bo_move failures</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg35810.html">Re: [PATCH 27/27] drm/amdgpu: Fix GTT size calculation</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg35807.html">[PATCH 1/2] drm/amdgpu: Dump PDEs and PTEs on VM faults (v3)</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg35842.html">Re: [PATCH] drm/amdgpu: Fix unaligned memory copies</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#35809"><strong>Date</strong></a></li>
+<li><a href="index.html#35809"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

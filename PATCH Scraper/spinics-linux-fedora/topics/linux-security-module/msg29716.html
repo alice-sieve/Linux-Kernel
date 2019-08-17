@@ -1,0 +1,426 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v5 03/12] S.A.R.A.: cred blob management -->
+<!--X-From-R13: Enyingber [rfbenpn &#60;f.zrfbenpn16Ntznvy.pbz> -->
+<!--X-Date: Sat, 6 Jul 2019 03:55:18 &#45;0700 -->
+<!--X-Message-Id: 1562410493&#45;8661&#45;4&#45;git&#45;send&#45;email&#45;s.mesoraca16@gmail.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1562410493&#45;8661&#45;1&#45;git&#45;send&#45;email&#45;s.mesoraca16@gmail.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, [PATCH v5 03/12] S.A.R.A.: cred blob management">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- [PATCH v5 03/12] S.A.R.A.: cred blob management</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v5 03/12] S.A.R.A.: cred blob management</h1>
+[<a href="msg29715.html">Date Prev</a>][<a href="msg29717.html">Date Next</a>][<a href="msg29901.html">Thread Prev</a>][<a href="msg29900.html">Thread Next</a>][<a href="maillist.html#29716">Date Index</a>][<a href="index.html#29716">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v5 03/12] S.A.R.A.: cred blob management</li>
+<li><em>From</em>: Salvatore Mesoraca &lt;s.mesoraca16@xxxxxxxxx&gt;</li>
+<li><em>Date</em>: Sat,  6 Jul 2019 12:54:44 +0200</li>
+<li><em>Cc</em>: kernel-hardening@xxxxxxxxxxxxxxxxxx, linux-mm@xxxxxxxxx,        linux-security-module@xxxxxxxxxxxxxxx,        Alexander Viro &lt;viro@xxxxxxxxxxxxxxxxxx&gt;,        Brad Spengler &lt;spender@xxxxxxxxxxxxxx&gt;,        Casey Schaufler &lt;casey@xxxxxxxxxxxxxxxx&gt;,        Christoph Hellwig &lt;hch@xxxxxxxxxxxxx&gt;,        James Morris &lt;james.l.morris@xxxxxxxxxx&gt;, Jann Horn &lt;jannh@xxxxxxxxxx&gt;,        Kees Cook &lt;keescook@xxxxxxxxxxxx&gt;, PaX Team &lt;pageexec@xxxxxxxxxxx&gt;,        Salvatore Mesoraca &lt;s.mesoraca16@xxxxxxxxx&gt;,        &quot;Serge E. Hallyn&quot; &lt;serge@xxxxxxxxxx&gt;,        Thomas Gleixner &lt;tglx@xxxxxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29714.html">1562410493-8661-1-git-send-email-s.mesoraca16@gmail.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg29714.html">1562410493-8661-1-git-send-email-s.mesoraca16@gmail.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Creation of the S.A.R.A. cred blob management &quot;API&quot;.
+In order to allow S.A.R.A. to be stackable with other LSMs, it doesn't use
+the &quot;security&quot; field of struct cred, instead it uses an ad hoc field named
+security_sara.
+This solution is probably not acceptable for upstream, so this part will
+be modified as soon as the LSM stackable cred blob management will be
+available.
+
+Signed-off-by: Salvatore Mesoraca &lt;s.mesoraca16@xxxxxxxxx&gt;
+---
+ security/sara/Makefile            |  2 +-
+ security/sara/include/sara_data.h | 84 +++++++++++++++++++++++++++++++++++++++
+ security/sara/main.c              |  7 ++++
+ security/sara/sara_data.c         | 69 ++++++++++++++++++++++++++++++++
+ 4 files changed, 161 insertions(+), 1 deletion(-)
+ create mode 100644 security/sara/include/sara_data.h
+ create mode 100644 security/sara/sara_data.c
+
+diff --git a/security/sara/Makefile b/security/sara/Makefile
+index 8acd291..14bf7a8 100644
+--- a/security/sara/Makefile
++++ b/security/sara/Makefile
+@@ -1,3 +1,3 @@
+ obj-$(CONFIG_SECURITY_SARA) := sara.o
+ 
+-sara-y := main.o securityfs.o utils.o
++sara-y := main.o securityfs.o utils.o sara_data.o
+diff --git a/security/sara/include/sara_data.h b/security/sara/include/sara_data.h
+new file mode 100644
+index 0000000..9216c47
+--- /dev/null
++++ b/security/sara/include/sara_data.h
+@@ -0,0 +1,84 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++/*
++ * S.A.R.A. Linux Security Module
++ *
++ * Copyright (C) 2017 Salvatore Mesoraca &lt;s.mesoraca16@xxxxxxxxx&gt;
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2, as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#ifndef __SARA_DATA_H
++#define __SARA_DATA_H
++
++#include &lt;linux/cred.h&gt;
++#include &lt;linux/init.h&gt;
++#include &lt;linux/lsm_hooks.h&gt;
++#include &lt;linux/spinlock.h&gt;
++
++int sara_data_init(void) __init;
++
++extern struct lsm_blob_sizes sara_blob_sizes __lsm_ro_after_init;
++
++#ifdef CONFIG_SECURITY_SARA_WXPROT
++
++struct sara_data {
++	unsigned long	relro_page;
++	struct file	*relro_file;
++	u16		wxp_flags;
++	u16		execve_flags;
++	bool		relro_page_found;
++	bool		mmap_blocked;
++};
++
++struct sara_shm_data {
++	bool		no_exec;
++	bool		no_write;
++	spinlock_t	lock;
++};
++
++
++static inline struct sara_data *get_sara_data(const struct cred *cred)
++{
++	return cred-&gt;security + sara_blob_sizes.lbs_cred;
++}
++
++#define get_current_sara_data() get_sara_data(current_cred())
++
++#define get_sara_wxp_flags(X) (get_sara_data((X))-&gt;wxp_flags)
++#define get_current_sara_wxp_flags() get_sara_wxp_flags(current_cred())
++
++#define get_sara_execve_flags(X) (get_sara_data((X))-&gt;execve_flags)
++#define get_current_sara_execve_flags() get_sara_execve_flags(current_cred())
++
++#define get_sara_relro_page(X) (get_sara_data((X))-&gt;relro_page)
++#define get_current_sara_relro_page() get_sara_relro_page(current_cred())
++
++#define get_sara_relro_file(X) (get_sara_data((X))-&gt;relro_file)
++#define get_current_sara_relro_file() get_sara_relro_file(current_cred())
++
++#define get_sara_relro_page_found(X) (get_sara_data((X))-&gt;relro_page_found)
++#define get_current_sara_relro_page_found() \
++	get_sara_relro_page_found(current_cred())
++
++#define get_sara_mmap_blocked(X) (get_sara_data((X))-&gt;mmap_blocked)
++#define get_current_sara_mmap_blocked() get_sara_mmap_blocked(current_cred())
++
++
++static inline struct sara_shm_data *get_sara_shm_data(
++					const struct kern_ipc_perm *ipc)
++{
++	return ipc-&gt;security + sara_blob_sizes.lbs_ipc;
++}
++
++#define get_sara_shm_no_exec(X) (get_sara_shm_data((X))-&gt;no_exec)
++#define get_sara_shm_no_write(X) (get_sara_shm_data((X))-&gt;no_write)
++#define lock_sara_shm(X) (spin_lock(&amp;get_sara_shm_data((X))-&gt;lock))
++#define unlock_sara_shm(X) (spin_unlock(&amp;get_sara_shm_data((X))-&gt;lock))
++
++#endif
++
++#endif /* __SARA_H */
+diff --git a/security/sara/main.c b/security/sara/main.c
+index 52e6d18..dc5dda4 100644
+--- a/security/sara/main.c
++++ b/security/sara/main.c
+@@ -18,6 +18,7 @@
+ #include &lt;linux/printk.h&gt;
+ 
+ #include &quot;include/sara.h&quot;
++#include &quot;include/sara_data.h&quot;
+ #include &quot;include/securityfs.h&quot;
+ 
+ static const int sara_version = SARA_VERSION;
+@@ -93,6 +94,11 @@ static int __init sara_init(void)
+ 		goto error;
+ 	}
+ 
++	if (sara_data_init()) {
++		pr_crit(&quot;impossible to initialize creds.\n&quot;);
++		goto error;
++	}
++
+ 	pr_debug(&quot;initialized.\n&quot;);
+ 
+ 	if (sara_enabled)
+@@ -112,4 +118,5 @@ static int __init sara_init(void)
+ 	.name = &quot;sara&quot;,
+ 	.enabled = &amp;sara_enabled,
+ 	.init = sara_init,
++	.blobs = &amp;sara_blob_sizes,
+ };
+diff --git a/security/sara/sara_data.c b/security/sara/sara_data.c
+new file mode 100644
+index 0000000..9afca37
+--- /dev/null
++++ b/security/sara/sara_data.c
+@@ -0,0 +1,69 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * S.A.R.A. Linux Security Module
++ *
++ * Copyright (C) 2017 Salvatore Mesoraca &lt;s.mesoraca16@xxxxxxxxx&gt;
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2, as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include &quot;include/sara_data.h&quot;
++
++#ifdef CONFIG_SECURITY_SARA_WXPROT
++#include &lt;linux/cred.h&gt;
++#include &lt;linux/lsm_hooks.h&gt;
++#include &lt;linux/mm.h&gt;
++#include &lt;linux/spinlock.h&gt;
++
++static int sara_cred_prepare(struct cred *new, const struct cred *old,
++			     gfp_t gfp)
++{
++	*get_sara_data(new) = *get_sara_data(old);
++	return 0;
++}
++
++static void sara_cred_transfer(struct cred *new, const struct cred *old)
++{
++	*get_sara_data(new) = *get_sara_data(old);
++}
++
++static int sara_shm_alloc_security(struct kern_ipc_perm *shp)
++{
++	struct sara_shm_data *d;
++
++	d = get_sara_shm_data(shp);
++	spin_lock_init(&amp;d-&gt;lock);
++	return 0;
++}
++
++static struct security_hook_list data_hooks[] __lsm_ro_after_init = {
++	LSM_HOOK_INIT(cred_prepare, sara_cred_prepare),
++	LSM_HOOK_INIT(cred_transfer, sara_cred_transfer),
++	LSM_HOOK_INIT(shm_alloc_security, sara_shm_alloc_security),
++};
++
++struct lsm_blob_sizes sara_blob_sizes __lsm_ro_after_init = {
++	.lbs_cred = sizeof(struct sara_data),
++	.lbs_ipc = sizeof(struct sara_shm_data),
++};
++
++int __init sara_data_init(void)
++{
++	security_add_hooks(data_hooks, ARRAY_SIZE(data_hooks), &quot;sara&quot;);
++	return 0;
++}
++
++#else /* CONFIG_SECURITY_SARA_WXPROT */
++
++struct lsm_blob_sizes sara_blob_sizes __lsm_ro_after_init = { };
++
++int __init sara_data_init(void)
++{
++	return 0;
++}
++
++#endif
+-- 
+1.9.1
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="29900" href="msg29900.html">Re: [PATCH v5 03/12] S.A.R.A.: cred blob management</a></strong>
+<ul><li><em>From:</em> James Morris</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29714" href="msg29714.html">[PATCH v5 00/12] S.A.R.A. a new stacked LSM</a></strong>
+<ul><li><em>From:</em> Salvatore Mesoraca</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29715.html">[PATCH v5 01/12] S.A.R.A.: add documentation</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29717.html">[PATCH v5 09/12] S.A.R.A.: WX protection procattr interface</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29901.html">Re: [PATCH v5 01/12] S.A.R.A.: add documentation</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29900.html">Re: [PATCH v5 03/12] S.A.R.A.: cred blob management</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29716"><strong>Date</strong></a></li>
+<li><a href="index.html#29716"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v6 bpf&#45;next 0/5] libbpf: add perf buffer abstraction and API -->
+<!--X-From-R13: Oaqevv @nxelvxb &#60;naqevvaNso.pbz> -->
+<!--X-Date: Fri, 5 Jul 2019 23:02:29 &#45;0700 -->
+<!--X-Message-Id: 20190706060220.1801632&#45;1&#45;andriin@fb.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BPF: [PATCH v6 bpf-next 0/5] libbpf: add perf buffer abstraction and API">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH v6 bpf-next 0/5] libbpf: add perf buffer abstraction and API &mdash; BPF</title>
+<link rel="alternate" type="application/rss+xml" title="BPF" href="//feeds.feedburner.com/packetfilters">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" bgcolor=white vlink=green link=blue>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v6 bpf-next 0/5] libbpf: add perf buffer abstraction and API</h1>
+[<a href="msg05026.html">Date Prev</a>][<a href="msg05028.html">Date Next</a>][<a href="msg05023.html">Thread Prev</a>][<a href="msg05028.html">Thread Next</a>][<a href="maillist.html#05027">Date Index</a>][<a href="index.html#05027">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v6 bpf-next 0/5] libbpf: add perf buffer abstraction and API</li>
+<li><em>From</em>: Andrii Nakryiko &lt;andriin@xxxxxx&gt;</li>
+<li><em>Date</em>: Fri, 5 Jul 2019 23:02:15 -0700</li>
+<li><em>Cc</em>: Andrii Nakryiko &lt;andriin@xxxxxx&gt;</li>
+<li><em>Smtp-origin-cluster</em>: prn2c23</li>
+<li><em>Smtp-origin-hostname</em>: dev101.prn2.facebook.com</li>
+<li><em>Smtp-origin-hostprefix</em>: dev</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>This patchset adds a high-level API for setting up and polling perf buffers
+associated with BPF_MAP_TYPE_PERF_EVENT_ARRAY map. Details of APIs are
+described in corresponding commit.
+
+Patch #1 adds a set of APIs to set up and work with perf buffer.
+Patch #2 enhances libbpf to support auto-setting PERF_EVENT_ARRAY map size.
+Patch #3 adds test.
+Patch #4 converts bpftool map event_pipe to new API.
+Patch #5 updates README to mention perf_buffer_ prefix.
+
+v5-&gt;v6:
+- fix C99 for loop variable initialization usage (Yonghong);
+v4-&gt;v5:
+- initialize perf_buffer_raw_opts in bpftool map event_pipe (Jakub);
+- add perf_buffer_ to README;
+v3-&gt;v4:
+- fixed bpftool event_pipe cmd error handling (Jakub);
+v2-&gt;v3:
+- added perf_buffer__new_raw for more low-level control;
+- converted bpftool map event_pipe to new API (Daniel);
+- fixed bug with error handling in create_maps (Song);
+v1-&gt;v2:
+- add auto-sizing of PERF_EVENT_ARRAY maps;
+
+Andrii Nakryiko (5):
+  libbpf: add perf buffer API
+  libbpf: auto-set PERF_EVENT_ARRAY size to number of CPUs
+  selftests/bpf: test perf buffer API
+  tools/bpftool: switch map event_pipe to libbpf's perf_buffer
+  libbpf: add perf_buffer_ prefix to README
+
+ tools/bpf/bpftool/map_perf_ring.c             | 201 +++------
+ tools/lib/bpf/README.rst                      |   3 +-
+ tools/lib/bpf/libbpf.c                        | 397 +++++++++++++++++-
+ tools/lib/bpf/libbpf.h                        |  49 +++
+ tools/lib/bpf/libbpf.map                      |   4 +
+ .../selftests/bpf/prog_tests/perf_buffer.c    |  94 +++++
+ .../selftests/bpf/progs/test_perf_buffer.c    |  25 ++
+ 7 files changed, 628 insertions(+), 145 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_buffer.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_perf_buffer.c
+
+-- 
+2.17.1
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="05036" href="msg05036.html">Re: [PATCH v6 bpf-next 0/5] libbpf: add perf buffer abstraction and API</a></strong>
+<ul><li><em>From:</em> Yonghong Song</li></ul></li>
+<li><strong><a name="05032" href="msg05032.html">[PATCH v6 bpf-next 4/5] tools/bpftool: switch map event_pipe to libbpf's perf_buffer</a></strong>
+<ul><li><em>From:</em> Andrii Nakryiko</li></ul></li>
+<li><strong><a name="05031" href="msg05031.html">[PATCH v6 bpf-next 5/5] libbpf: add perf_buffer_ prefix to README</a></strong>
+<ul><li><em>From:</em> Andrii Nakryiko</li></ul></li>
+<li><strong><a name="05030" href="msg05030.html">[PATCH v6 bpf-next 3/5] selftests/bpf: test perf buffer API</a></strong>
+<ul><li><em>From:</em> Andrii Nakryiko</li></ul></li>
+<li><strong><a name="05029" href="msg05029.html">[PATCH v6 bpf-next 2/5] libbpf: auto-set PERF_EVENT_ARRAY size to number of CPUs</a></strong>
+<ul><li><em>From:</em> Andrii Nakryiko</li></ul></li>
+<li><strong><a name="05028" href="msg05028.html">[PATCH v6 bpf-next 1/5] libbpf: add perf buffer API</a></strong>
+<ul><li><em>From:</em> Andrii Nakryiko</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg05026.html">Re: [PATCH v5 bpf-next 1/5] libbpf: add perf buffer API</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg05028.html">[PATCH v6 bpf-next 1/5] libbpf: add perf buffer API</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg05023.html">[PATCH bpf-next] selftests/bpf: fix test_attach_probe map definition</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg05028.html">[PATCH v6 bpf-next 1/5] libbpf: add perf buffer API</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#05027"><strong>Date</strong></a></li>
+<li><a href="index.html#05027"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-samsung-soc/>[Linux&nbsp;Samsung&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-rockchip/>[Linux&nbsp;Rockchip&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-actions/>[Linux&nbsp;Actions&nbsp;SoC]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-snps-arc/>[Linux&nbsp;for&nbsp;Synopsys&nbsp;ARC&nbsp;Processors]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nfs/>[Linux&nbsp;NFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-nilfs/>[Linux&nbsp;NILFS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-usb/>[Linux&nbsp;USB&nbsp;Devel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/vfl/>[Video&nbsp;for&nbsp;Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-audio-users/>[Linux&nbsp;Audio&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info/>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kernel/>[Linux&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-scsi/>[Linux&nbsp;SCSI]</a>
+</font>
+</center>
+<p>
+<hr>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

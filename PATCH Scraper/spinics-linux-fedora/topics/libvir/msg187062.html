@@ -1,0 +1,326 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 3/5] virsh: add command 'guestusers' implementing	VirDomainGetGuestUsers -->
+<!--X-From-R13: Xbanguba Xbatfzn &#60;wwbatfznNerqung.pbz> -->
+<!--X-Date: Wed, 10 Jul 2019 13:07:57 &#45;0700 -->
+<!--X-Message-Id: 20190710200747.745&#45;4&#45;jjongsma@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190710200747.745&#45;1&#45;jjongsma@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>libvirt &mdash; [PATCH 3/5] virsh: add command 'guestusers' implementing	VirDomainGetGuestUsers</title>
+<meta name="description" content="libvirt: [PATCH 3/5] virsh: add command 'guestusers' implementing	VirDomainGetGuestUsers">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="alternate" type="application/rss+xml" title="Libvirt Development" href="//feeds.feedburner.com/Libvir">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:8422278960" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1>[PATCH 3/5] virsh: add command 'guestusers' implementing	VirDomainGetGuestUsers</h1>
+[<a href="msg187061.html">Date Prev</a>][<a href="msg187063.html">Date Next</a>][<a href="msg187129.html">Thread Prev</a>][<a href="msg187063.html">Thread Next</a>][<a href="maillist.html#187062">Date Index</a>][<a href="index.html#187062">Thread Index</a>] 
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH 3/5] virsh: add command 'guestusers' implementing	VirDomainGetGuestUsers</li>
+<li><em>From</em>: Jonathon Jongsma &lt;jjongsma@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 10 Jul 2019 15:07:45 -0500</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg187060.html">20190710200747.745-1-jjongsma@redhat.com</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg187060.html">20190710200747.745-1-jjongsma@redhat.com</a>&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Signed-off-by: Jonathon Jongsma &lt;jjongsma@xxxxxxxxxx&gt;
+---
+ tools/virsh-domain.c | 76 ++++++++++++++++++++++++++++++++++++++++++++
+ tools/virsh.pod      |  4 +++
+ 2 files changed, 80 insertions(+)
+
+diff --git a/tools/virsh-domain.c b/tools/virsh-domain.c
+index 828ae30789..b964608987 100644
+--- a/tools/virsh-domain.c
++++ b/tools/virsh-domain.c
+@@ -14030,6 +14030,76 @@ cmdDomFSInfo(vshControl *ctl, const vshCmd *cmd)
+     return ret;
+ }
+ 
++/*
++ * &quot;guestusers&quot; command
++ */
++static const vshCmdInfo info_guestusers[] = {
++    {.name = &quot;help&quot;,
++     .data = N_(&quot;query the users logged on in the guest (via agent)&quot;)
++    },
++    {.name = &quot;desc&quot;,
++     .data = N_(&quot;Use the guest agent to query the list of logged in users from guest's &quot;
++                &quot;point of view&quot;)
++    },
++    {.name = NULL}
++};
++
++static const vshCmdOptDef opts_guestusers[] = {
++    VIRSH_COMMON_OPT_DOMAIN_FULL(VIR_CONNECT_LIST_DOMAINS_ACTIVE),
++    {.name = NULL}
++};
++
++static bool
++cmdGuestusers(vshControl *ctl, const vshCmd *cmd)
++{
++    virDomainPtr dom;
++    virDomainUserInfoPtr *userinfo = NULL;
++    int ninfo = 0;
++    size_t i;
++    bool ret = false;
++    vshTablePtr table = NULL;
++
++    if (!(dom = virshCommandOptDomain(ctl, cmd, NULL)))
++        return false;
++
++    if ((ninfo = virDomainGetGuestUsers(dom, &amp;userinfo, 0)) &lt; 0)
++        goto cleanup;
++
++    if (userinfo != NULL) {
++        table = vshTableNew(_(&quot;User&quot;), _(&quot;Domain&quot;), _(&quot;Login Time&quot;),  NULL);
++        if (!table)
++            goto cleanup;
++
++        for (i = 0; i &lt; ninfo; i++) {
++            VIR_AUTOFREE(char *) loginstr = virTimeStringThen(userinfo[i]-&gt;loginTime);
++            if (loginstr == NULL)
++                goto cleanup;
++
++            if (vshTableRowAppend(table,
++                                  userinfo[i]-&gt;user,
++                                  userinfo[i]-&gt;domain ? userinfo[i]-&gt;domain : &quot;&quot;,
++                                  loginstr,
++                                  NULL) &lt; 0)
++                goto cleanup;
++        }
++
++        vshTablePrintToStdout(table, ctl);
++    } else {
++        vshPrintExtra(ctl, _(&quot;No active users in the domain&quot;));
++    }
++
++    ret = true;
++
++cleanup:
++    if (ninfo &gt;= 0) {
++        for (i = 0; i &lt; ninfo; i++)
++            virDomainUserInfoFree(userinfo[i]);
++    }
++    VIR_FREE(userinfo);
++    virshDomainFree(dom);
++    return ret;
++}
++
+ const vshCmdDef domManagementCmds[] = {
+     {.name = &quot;attach-device&quot;,
+      .handler = cmdAttachDevice,
+@@ -14645,5 +14715,11 @@ const vshCmdDef domManagementCmds[] = {
+      .info = info_domblkthreshold,
+      .flags = 0
+     },
++    {.name = &quot;guestusers&quot;,
++     .handler = cmdGuestusers,
++     .opts = opts_guestusers,
++     .info = info_guestusers,
++     .flags = 0
++    },
+     {.name = NULL}
+ };
+diff --git a/tools/virsh.pod b/tools/virsh.pod
+index 5168fa96b6..59cf3d5857 100644
+--- a/tools/virsh.pod
++++ b/tools/virsh.pod
+@@ -3072,6 +3072,10 @@ provided too. The desired operation is then executed on the domain.
+ 
+ See B&lt;vcpupin&gt; for information on I&lt;cpulist&gt;.
+ 
++=item B&lt;guestusers&gt; I&lt;domain&gt;
++
++Query the list of logged in users from guest's point of view using the guest agent.
++
+ =item B&lt;vncdisplay&gt; I&lt;domain&gt;
+ 
+ Output the IP address and port number for the VNC display. If the information
+-- 
+2.20.1
+
+--
+libvir-list mailing list
+libvir-list@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/libvir-list">https://www.redhat.com/mailman/listinfo/libvir-list</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg187061.html">[PATCH 1/5] lib: add API to query info about logged-in	users</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg187063.html">[PATCH 2/5] remote: implement remote protocol for	virDomainGetGuestUsers</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg187129.html">Re:  [PATCH 1/5] lib: add API to query info about logged-in users</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg187063.html">[PATCH 2/5] remote: implement remote protocol for	virDomainGetGuestUsers</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#187062"><strong>Date</strong></a></li>
+<li><a href="index.html#187062"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/virt-tools/>[Virt&nbsp;Tools]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libvirt-users/>[Libvirt&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/libosinfo/>[Lib&nbsp;OS&nbsp;Info]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=http://www.ske-art.com/z/biglist.php>[Big&nbsp;List&nbsp;of&nbsp;Linux&nbsp;Books]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

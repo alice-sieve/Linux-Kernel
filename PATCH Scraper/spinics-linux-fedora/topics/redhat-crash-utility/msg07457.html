@@ -1,0 +1,281 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH] tree: help fixes and &#45;t radix vs. &#45;l mutual	exclusivity check -->
+<!--X-From-R13: Rnavry Hnprx &#60;arrykNerqung.pbz> -->
+<!--X-Date: Wed, 18 Apr 2018 04:19:21 &#45;0700 -->
+<!--X-Message-Id: 1524050353&#45;6556&#45;1&#45;git&#45;send&#45;email&#45;neelx@redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 1721459275.21856398.1523974513190.JavaMail.zimbra@redhat.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH] tree: help fixes and -t radix vs. -l mutual	exclusivity check &mdash; Red Hat Crash Utility">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Red Hat Crash Utility &mdash;  [PATCH] tree: help fixes and -t radix vs. -l mutual	exclusivity check</title>
+<link rel="alternate" type="application/rss+xml" title="Red Hat Crash Utility" href="//feeds.feedburner.com/RedHatCrashUtility">
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH] tree: help fixes and -t radix vs. -l mutual	exclusivity check</h1>
+[<a href="msg07456.html">Date Prev</a>][<a href="msg07458.html">Date Next</a>][<a href="msg07456.html">Thread Prev</a>][<a href="msg07458.html">Thread Next</a>][<a href="maillist.html#07457">Date Index</a>][<a href="index.html#07457">Thread Index</a>]
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<g:plusone size="small"></g:plusone>
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH] tree: help fixes and -t radix vs. -l mutual	exclusivity check</li>
+<li><em>From</em>: Daniel Vacek &lt;neelx@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Wed, 18 Apr 2018 13:19:13 +0200</li>
+<li><em>Cc</em>: Daniel Vacek &lt;neelx@xxxxxxxxxx&gt;</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg07455.html">1721459275.21856398.1523974513190.JavaMail.zimbra@redhat.com</a>&gt;</li>
+<li><em>Reply-to</em>: &quot;Discussion list for crash utility usage,	maintenance and development&quot; &lt;crash-utility@xxxxxxxxxx&gt;</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" defer async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>---
+ help.c  |  7 ++++---
+ tools.c | 11 +++++++----
+ 2 files changed, 11 insertions(+), 7 deletions(-)
+
+diff --git a/help.c b/help.c
+index 5061c48dcdec..24700d05f1d6 100644
+--- a/help.c
++++ b/help.c
+@@ -5658,12 +5658,15 @@ NULL
+ char *help_tree[] = {
+ &quot;tree&quot;,
+ &quot;display radix tree or red-black tree&quot;,
+-&quot;-t [radix|rbtree] [-r offset] [-[s|S] struct[.member[,member]] -[x|d]]\n          [-o offset] [-p] [-l] [-N] start&quot;,
++&quot;[-t {radix|rbtree}] [-l] [-p] [{-s|-S} struct[.member[,member]] [-x|-d]]\n          [-o offset] [-r offset|-N] start&quot;,
+ &quot;  This command dumps the contents of a radix tree or a red-black tree.&quot;,
+ &quot;  The arguments are as follows:\n&quot;,
+ &quot;    -t type  The type of tree to dump; the type string can be either &quot;,
+ &quot;             \&quot;radix\&quot; or \&quot;rbtree\&quot;, although only the first two characters&quot;,
+ &quot;             are required.  If not specified, rbtree is the default type.&quot;,
++&quot;         -l  For red-black trees, dump the tree sorted in linear order starting&quot;,
++&quot;             with the leftmost node and progressing to the right.  This option&quot;,
++&quot;             does not apply to radix trees.&quot;,
+ &quot;  -r offset  If the \&quot;start\&quot; argument is the address of a data structure that&quot;,
+ &quot;             contains the radix_tree_root or rb_root structure, then this is&quot;, 
+ &quot;             the offset to that structure member.  If the offset is non-zero,&quot;,
+@@ -5698,8 +5701,6 @@ char *help_tree[] = {
+ &quot;             indicates \&quot;root/l/r\&quot; means that the node is the right child&quot;,
+ &quot;             of the left child of the root node.  For radix trees, the height&quot;,
+ &quot;             and slot index values are shown with respect to the root.&quot;,
+-&quot;         -l  Dump the tree sorted in linear order starting with the leftmost&quot;,
+-&quot;             node and progressing to the right.&quot;,
+ &quot; &quot;,
+ &quot;  The meaning of the \&quot;start\&quot; argument, which can be expressed either in&quot;,
+ &quot;  hexadecimal format or symbolically, depends upon whether the -N option&quot;,
+diff --git a/tools.c b/tools.c
+index cd8947147480..b09e564fd3cc 100644
+--- a/tools.c
++++ b/tools.c
+@@ -3946,6 +3946,10 @@ cmd_tree()
+ 				
+ 			break;
+ 
++		case 'l':
++			td-&gt;flags |= TREE_LINEAR_ORDER;
++			break;
++
+ 		case 'r':
+ 			if (td-&gt;flags &amp; TREE_ROOT_OFFSET_ENTERED) 
+ 				error(FATAL,
+@@ -3993,10 +3997,6 @@ cmd_tree()
+ 			td-&gt;flags |= TREE_POSITION_DISPLAY;
+ 			break;
+ 
+-		case 'l':
+-			td-&gt;flags |= TREE_LINEAR_ORDER;
+-			break;
+-
+ 		case 'N':
+ 			td-&gt;flags |= TREE_NODE_POINTER;
+ 			break;
+@@ -4023,6 +4023,9 @@ cmd_tree()
+ 	if (argerrs)
+ 		cmd_usage(pc-&gt;curcmd, SYNOPSIS);
+ 
++	if ((type_flag &amp; RADIXTREE_REQUEST) &amp;&amp; (td-&gt;flags |= TREE_LINEAR_ORDER))
++		error(INFO, &quot;-l option does not apply for radix trees, ignoring\n&quot;);
++
+ 	if ((type_flag &amp; RADIXTREE_REQUEST) &amp;&amp; (td-&gt;flags &amp; TREE_NODE_OFFSET_ENTERED))
+ 		error(FATAL, &quot;-o option is not applicable to radix trees\n&quot;);
+ 
+-- 
+2.17.0
+
+--
+Crash-utility mailing list
+Crash-utility@xxxxxxxxxx
+<a  rel="nofollow" href="https://www.redhat.com/mailman/listinfo/crash-utility">https://www.redhat.com/mailman/listinfo/crash-utility</a>
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="07458" href="msg07458.html">Re:  [PATCH] tree: help fixes and -t radix vs. -l mutual	exclusivity check</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="07455" href="msg07455.html">Re:  [PATCH v2 0/3] couple of trivial tree patches</a></strong>
+<ul><li><em>From:</em> Dave Anderson</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg07456.html">Re:  [PATCH v2 0/3] couple of trivial tree patches</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg07458.html">Re:  [PATCH] tree: help fixes and -t radix vs. -l mutual	exclusivity check</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg07456.html">Re:  [PATCH v2 0/3] couple of trivial tree patches</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg07458.html">Re:  [PATCH] tree: help fixes and -t radix vs. -l mutual	exclusivity check</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#07457"><strong>Date</strong></a></li>
+<li><a href="index.html#07457"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-devel/>[Fedora&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-tools/>[Fedora&nbsp;Tools]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width="100%">
+<tr>
+<td align=left>&nbsp;</td>
+<td valign=top align=right><H1><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></H1></td>
+</tr></table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH 03/27] autofs&#45;5.1.3 &#45; fix ordering of seteuid/setegid in do_spawn() -->
+<!--X-From-R13: Wna Yrag &#60;eniraNgurznj.arg> -->
+<!--X-Date: Mon, 11 Dec 2017 00:57:54 &#45;0800 -->
+<!--X-Message-Id: 151298265688.19722.10749622212199681047.stgit@pluto.themaw.net -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 151298256987.19722.18421086447160152668.stgit@pluto.themaw.net -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="[PATCH 03/27] autofs-5.1.3 - fix ordering of seteuid/setegid in do_spawn() &mdash; Linux AutoFS">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>[PATCH 03/27] autofs-5.1.3 - fix ordering of seteuid/setegid in do_spawn() &mdash; Linux AutoFS</title>
+<link rel="alternate" type="application/rss+xml" title="Linux AutoFS" href="//feeds.feedburner.com/autofs">
+<script type="text/javascript">
+var addthis_config = addthis_config||{};
+addthis_config.data_track_addressbar = false;
+</script>
+</head>
+<body itemscope itemtype="//schema.org/Article" vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com/cse" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:isdiegq275o" />
+    <input type="hidden" name="ie" value="ISO-8859-1" />
+    <input type="text" name="q" size="37" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH 03/27] autofs-5.1.3 - fix ordering of seteuid/setegid in do_spawn()</h1>
+[<a href="msg01797.html">Date Prev</a>][<a href="msg01799.html">Date Next</a>][<a href="msg01797.html">Thread Prev</a>][<a href="msg01799.html">Thread Next</a>][<a href="maillist.html#01798">Date Index</a>][<a href="index.html#01798">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: autofs mailing list &lt;autofs@xxxxxxxxxxxxxxx&gt;</li>
+<li><em>Subject</em>: [PATCH 03/27] autofs-5.1.3 - fix ordering of seteuid/setegid in do_spawn()</li>
+<li><em>From</em>: Ian Kent &lt;raven@xxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 11 Dec 2017 16:57:36 +0800</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg01795.html">151298256987.19722.18421086447160152668.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>References</em>: &lt;<a href="msg01795.html">151298256987.19722.18421086447160152668.stgit@pluto.themaw.net</a>&gt;</li>
+<li><em>User-agent</em>: StGit/0.17.1-dirty</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Jeff Mahoney &lt;jeffm@xxxxxxxx&gt;
+
+In do_spawn, We call seteuid() prior to calling setegid() which means
+that, when we're using an unprivileged uid, we won't have permissions
+to set the effective group anymore.
+
+We also don't touch the group memberships so the permissions used to
+open the directory will will include all of root's supplementary groups
+and none of the user's.
+
+This patch reverses the ordering and uses initgroups() to reset the
+supplementary groups to the unprivileged user's groups.
+
+Signed-off-by: Jeff Mahoney &lt;jeffm@xxxxxxxx&gt;
+Signed-off-by: Ian Kent &lt;raven@xxxxxxxxxx&gt;
+---
+ CHANGELOG      |    1 +
+ daemon/spawn.c |   13 +++++++++++--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 48f0b67c..34b596a6 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -37,6 +37,7 @@ xx/xx/2017 autofs-5.1.4
+ - the port option should not behave like nobind option.
+ - handle additional nfs versions in mount_nfs.c.
+ - fix symlink option passthrough in mount_nfs.c.
++- fix ordering of seteuid/setegid in do_spawn().
+ 
+ 24/05/2017 autofs-5.1.3
+ =======================
+diff --git a/daemon/spawn.c b/daemon/spawn.c
+index 7c56ba7b..6557c066 100644
+--- a/daemon/spawn.c
++++ b/daemon/spawn.c
+@@ -20,6 +20,7 @@
+ #include &lt;string.h&gt;
+ #include &lt;sys/types.h&gt;
+ #include &lt;dirent.h&gt;
++#include &lt;grp.h&gt;
+ #include &lt;time.h&gt;
+ #include &lt;poll.h&gt;
+ #include &lt;sys/wait.h&gt;
+@@ -195,14 +196,22 @@ static int do_spawn(unsigned logopt, unsigned int wait,
+ 			 * program group to trigger mount
+ 			 */
+ 			if (euid) {
+-				if (seteuid(euid) == -1)
++				if (!tsv-&gt;user)
+ 					fprintf(stderr,
+-						&quot;warning: seteuid: %s\n&quot;,
++						&quot;warning: can't init groups\n&quot;);
++				else if (initgroups(tsv-&gt;user, egid) == -1)
++					fprintf(stderr,
++						&quot;warning: initgroups: %s\n&quot;,
+ 						strerror(errno));
++
+ 				if (setegid(egid) == -1)
+ 					fprintf(stderr,
+ 						&quot;warning: setegid: %s\n&quot;,
+ 						strerror(errno));
++				if (seteuid(euid) == -1)
++					fprintf(stderr,
++						&quot;warning: seteuid: %s\n&quot;,
++						strerror(errno));
+ 			}
+ 			setpgrp();
+ 
+
+--
+To unsubscribe from this list: send the line &quot;unsubscribe autofs&quot; in
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="01795" href="msg01795.html">[PATCH 00/27] Still trying to get 5.1.4 released</a></strong>
+<ul><li><em>From:</em> Ian Kent</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg01797.html">[PATCH 02/27] autofs-5.1.3 - fix symlink option passthrough in mount_nfs.c</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg01799.html">[PATCH 04/27] autofs-5.1.3 - Fix two typos</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg01797.html">[PATCH 02/27] autofs-5.1.3 - fix symlink option passthrough in mount_nfs.c</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg01799.html">[PATCH 04/27] autofs-5.1.3 - Fix two typos</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#01798"><strong>Date</strong></a></li>
+<li><a href="index.html#01798"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-fsdevel/>[Linux&nbsp;Filesystem&nbsp;Development]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-ext4/>[Linux&nbsp;Ext4]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm-kernel/>[Linux&nbsp;ARM&nbsp;Kernel]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/arm/>[Linux&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;Omap]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-arm/>[Fedora&nbsp;ARM]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ietf-ann/>[IETF&nbsp;Annouce]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/security/>[Security]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/bugtraq/>[Bugtraq]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/>[Linux]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-omap/>[Linux&nbsp;OMAP]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/mips/>[Linux&nbsp;MIPS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/ecos/>[ECOS]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/asterisk/>[Asterisk&nbsp;Internet&nbsp;PBX]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/linux-api/>[Linux&nbsp;API]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!-- MHonArc v2.6.19 -->
+<!--X-Subject: [PATCH v3 04/24] LSM: Create and manage the lsmblob data structure. -->
+<!--X-From-R13: Xbua Xbunafra &#60;wbua.wbunafraNpnabavpny.pbz> -->
+<!--X-Date: Mon, 24 Jun 2019 11:38:32 &#45;0700 -->
+<!--X-Message-Id: 0510f853&#45;e80f&#45;1683&#45;6391&#45;eb4c4eba576c@canonical.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Reference: 20190621185233.6766&#45;1&#45;casey@schaufler&#45;ca.com -->
+<!--X-Reference: 20190621185233.6766&#45;5&#45;casey@schaufler&#45;ca.com -->
+<!--X-Head-End-->
+<!doctype html public "-//W3C//DTD HTML//EN">
+<html>
+<head>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3422782820843221",
+          enable_page_level_ads: true
+     });
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Linux Security Module, [PATCH v3 04/24] LSM: Create and manage the lsmblob data structure.">
+<style>
+<!--
+ pre {white-space: pre-wrap;}
+-->
+</style>
+<title>Linux Security Module -- [PATCH v3 04/24] LSM: Create and manage the lsmblob data structure.</title>
+<link rel="alternate" type="application/rss+xml" title="Linux Security Module" href="//feeds.feedburner.com/LinuxSecurityModule">
+</head>
+<body vlink=green>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<form action="//www.google.com" id="cse-search-box" target="_blank">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-3422782820843221:9580497365" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="25" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+<script type="text/javascript" src="//www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+<h1 itemprop="name">[PATCH v3 04/24] LSM: Create and manage the lsmblob data structure.</h1>
+[<a href="msg29278.html">Date Prev</a>][<a href="msg29280.html">Date Next</a>][<a href="msg29217.html">Thread Prev</a>][<a href="msg29158.html">Thread Next</a>][<a href="maillist.html#29279">Date Index</a>][<a href="index.html#29279">Thread Index</a>]
+
+
+<p>&nbsp;<br>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive test for archives -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="6345952567"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<hr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>Subject</em>: [PATCH v3 04/24] LSM: Create and manage the lsmblob data structure.</li>
+<li><em>From</em>: John Johansen &lt;john.johansen@xxxxxxxxxxxxx&gt;</li>
+<li><em>Date</em>: Mon, 24 Jun 2019 11:38:19 -0700</li>
+<li><em>Cc</em>: keescook@xxxxxxxxxxxx, penguin-kernel@xxxxxxxxxxxxxxxxxxx,        paul@xxxxxxxxxxxxxx, sds@xxxxxxxxxxxxx</li>
+<li><em>In-reply-to</em>: &lt;<a href="msg29157.html">20190621185233.6766-5-casey@schaufler-ca.com</a>&gt;</li>
+<li><em>Openpgp</em>: preference=signencrypt</li>
+<li><em>Organization</em>: Canonical</li>
+<li><em>References</em>: &lt;<a href="msg29154.html">20190621185233.6766-1-casey@schaufler-ca.com</a>&gt; &lt;<a href="msg29157.html">20190621185233.6766-5-casey@schaufler-ca.com</a>&gt;</li>
+<li><em>User-agent</em>: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Thunderbird/60.7.1</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style ">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5196c2ae1be43d18&async=1&domready=1" async></script>
+<!-- AddThis Button END -->
+<hr>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- responsive link 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="8681825769"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<p>
+<div class="content" itemprop="articleBody">
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>On 6/21/19 11:52 AM, Casey Schaufler wrote:
+&gt; When more than one security module is exporting data to
+&gt; audit and networking sub-systems a single 32 bit integer
+&gt; is no longer sufficient to represent the data. Add a
+&gt; structure to be used instead.
+&gt; 
+&gt; The lsmblob structure is currently an array of
+&gt; u32 &quot;secids&quot;. There is an entry for each of the
+&gt; security modules built into the system that would
+&gt; use secids if active. The system assigns the module
+&gt; a &quot;slot&quot; when it registers hooks. If modules are
+&gt; compiled in but not registered there will be unused
+&gt; slots.
+&gt; 
+&gt; Signed-off-by: Casey Schaufler &lt;casey@xxxxxxxxxxxxxxxx&gt;
+
+See below
+
+
+&gt; ---
+&gt;  include/linux/lsm_hooks.h |  1 +
+&gt;  include/linux/security.h  | 62 +++++++++++++++++++++++++++++++++++++++
+&gt;  security/security.c       | 36 +++++++++++++++++++++++
+&gt;  3 files changed, 99 insertions(+)
+&gt; 
+&gt; diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+&gt; index 3fe39abccc8f..4d1ddf1a2aa6 100644
+&gt; --- a/include/linux/lsm_hooks.h
+&gt; +++ b/include/linux/lsm_hooks.h
+&gt; @@ -2038,6 +2038,7 @@ struct security_hook_list {
+&gt;  	struct hlist_head		*head;
+&gt;  	union security_list_options	hook;
+&gt;  	char				*lsm;
+&gt; +	int				slot;
+&gt;  } __randomize_layout;
+&gt;
+
+I agree with Kees, *lsm and slot should be moved to the lsm_info
+and a lsm_info * should take their place here. This will help
+with slot assignment below. But this can come as a separate
+patch later.
+
+
+
+&gt;  /*
+&gt; diff --git a/include/linux/security.h b/include/linux/security.h
+&gt; index 49f2685324b0..0aa9417a5762 100644
+&gt; --- a/include/linux/security.h
+&gt; +++ b/include/linux/security.h
+&gt; @@ -76,6 +76,68 @@ enum lsm_event {
+&gt;  	LSM_POLICY_CHANGE,
+&gt;  };
+&gt;  
+&gt; +/*
+&gt; + * Data exported by the security modules
+&gt; + */
+&gt; +#define LSMBLOB_ENTRIES ( \
+&gt; +	(IS_ENABLED(CONFIG_SECURITY_SELINUX) ? 1 : 0) + \
+&gt; +	(IS_ENABLED(CONFIG_SECURITY_SMACK) ? 1 : 0) + \
+&gt; +	(IS_ENABLED(CONFIG_SECURITY_APPARMOR) ? 1 : 0))
+&gt; +
+&gt; +struct lsmblob {
+&gt; +	u32     secid[LSMBLOB_ENTRIES];
+&gt; +};
+&gt; +
+&gt; +#define LSMBLOB_INVALID	-1
+&gt; +
+&gt; +/**
+&gt; + * lsmblob_init - initialize an lsmblob structure.
+&gt; + * @blob: Pointer to the data to initialize
+&gt; + * @secid: The initial secid value
+&gt; + *
+&gt; + * Set all secid for all modules to the specified value.
+&gt; + */
+&gt; +static inline void lsmblob_init(struct lsmblob *blob, u32 secid)
+&gt; +{
+&gt; +	int i;
+&gt; +
+&gt; +	for (i = 0; i &lt; LSMBLOB_ENTRIES; i++)
+&gt; +		blob-&gt;secid[i] = secid;
+&gt; +}
+&gt; +
+&gt; +/**
+&gt; + * lsmblob_is_set - report if there is an value in the lsmblob
+&gt; + * @blob: Pointer to the exported LSM data
+&gt; + *
+&gt; + * Returns true if there is a secid set, false otherwise
+&gt; + */
+&gt; +static inline bool lsmblob_is_set(struct lsmblob *blob)
+&gt; +{
+&gt; +	int i;
+&gt; +
+&gt; +	for (i = 0; i &lt; LSMBLOB_ENTRIES; i++)
+&gt; +		if (blob-&gt;secid[i] != 0)
+&gt; +			return true;
+&gt; +	return false;
+&gt; +}
+&gt; +
+&gt; +/**
+&gt; + * lsmblob_equal - report if the two lsmblob's are equal
+&gt; + * @bloba: Pointer to one LSM data
+&gt; + * @blobb: Pointer to the other LSM data
+&gt; + *
+&gt; + * Returns true if all entries in the two are equal, false otherwise
+&gt; + */
+&gt; +static inline bool lsmblob_equal(struct lsmblob *bloba, struct lsmblob *blobb)
+&gt; +{
+&gt; +	int i;
+&gt; +
+&gt; +	for (i = 0; i &lt; LSMBLOB_ENTRIES; i++)
+&gt; +		if (bloba-&gt;secid[i] != blobb-&gt;secid[i])
+&gt; +			return false;
+&gt; +	return true;
+&gt; +}
+&gt; +
+&gt;  /* These functions are in security/commoncap.c */
+&gt;  extern int cap_capable(const struct cred *cred, struct user_namespace *ns,
+&gt;  		       int cap, unsigned int opts);
+&gt; diff --git a/security/security.c b/security/security.c
+&gt; index d05f00a40e82..7618c761060d 100644
+&gt; --- a/security/security.c
+&gt; +++ b/security/security.c
+&gt; @@ -317,6 +317,7 @@ static void __init ordered_lsm_init(void)
+&gt;  	init_debug(&quot;sock blob size       = %d\n&quot;, blob_sizes.lbs_sock);
+&gt;  	init_debug(&quot;superblock blob size = %d\n&quot;, blob_sizes.lbs_superblock);
+&gt;  	init_debug(&quot;task blob size       = %d\n&quot;, blob_sizes.lbs_task);
+&gt; +	init_debug(&quot;lsmblob size         = %lu\n&quot;, sizeof(struct lsmblob));
+&gt;  
+&gt;  	/*
+&gt;  	 * Create any kmem_caches needed for blobs
+&gt; @@ -420,6 +421,11 @@ static int lsm_append(char *new, char **result)
+&gt;  	return 0;
+&gt;  }
+&gt;  
+&gt; +/*
+&gt; + * Current index to use while initializing the lsmblob secid list.
+&gt; + */
+&gt; +static int lsm_slot __initdata;
+&gt; +
+&gt;  /**
+&gt;   * security_add_hooks - Add a modules hooks to the hook lists.
+&gt;   * @hooks: the hooks to add
+&gt; @@ -427,15 +433,45 @@ static int lsm_append(char *new, char **result)
+&gt;   * @lsm: the name of the security module
+&gt;   *
+&gt;   * Each LSM has to register its hooks with the infrastructure.
+&gt; + * If the LSM is using hooks that export secids allocate a slot
+&gt; + * for it in the lsmblob.
+&gt;   */
+&gt;  void __init security_add_hooks(struct security_hook_list *hooks, int count,
+&gt;  				char *lsm)
+&gt;  {
+&gt; +	int slot = LSMBLOB_INVALID;
+&gt;  	int i;
+&gt;  
+&gt;  	for (i = 0; i &lt; count; i++) {
+&gt;  		hooks[i].lsm = lsm;
+&gt;  		hlist_add_tail_rcu(&amp;hooks[i].list, hooks[i].head);
+&gt; +		/*
+&gt; +		 * If this is one of the hooks that uses a secid
+&gt; +		 * note it so that a slot can in allocated for the
+&gt; +		 * secid in the lsmblob structure.
+&gt; +		 */
+&gt; +		if (hooks[i].head == &amp;security_hook_heads.audit_rule_match ||
+&gt; +		    hooks[i].head == &amp;security_hook_heads.kernel_act_as ||
+&gt; +		    hooks[i].head ==
+&gt; +			&amp;security_hook_heads.socket_getpeersec_dgram ||
+&gt; +		    hooks[i].head == &amp;security_hook_heads.getprocattr ||
+&gt; +		    hooks[i].head == &amp;security_hook_heads.setprocattr ||
+&gt; +		    hooks[i].head == &amp;security_hook_heads.secctx_to_secid ||
+&gt; +		    hooks[i].head == &amp;security_hook_heads.secid_to_secctx ||
+&gt; +		    hooks[i].head == &amp;security_hook_heads.ipc_getsecid ||
+&gt; +		    hooks[i].head == &amp;security_hook_heads.task_getsecid ||
+&gt; +		    hooks[i].head == &amp;security_hook_heads.inode_getsecid ||
+&gt; +		    hooks[i].head == &amp;security_hook_heads.cred_getsecid) {
+&gt; +			if (slot == LSMBLOB_INVALID) {
+&gt; +				slot = lsm_slot++;
+&gt; +				if (slot &gt;= LSMBLOB_ENTRIES)
+&gt; +					panic(&quot;%s Too many LSMs registered.\n&quot;,
+&gt; +					      __func__);
+&gt; +				init_debug(&quot;%s assigned lsmblob slot %d\n&quot;,
+&gt; +					hooks[i].lsm, slot);
+&gt; +			}
+&gt; +		}
+&gt; +		hooks[i].slot = slot;
+
+This is inconsistent, it sets hooks[i].slot before the first occurrence of a hook
+in the above list to LSMBLOB_INVALID and the rest of the hooks[i].slots to the
+assigned slot value.
+
+If this should only be assigned to the hooks that use a secid then move the
+hooks[i].slot = slot assignment into the if. Otherwise we should make sure all
+hooks get assigned the same slot value.
+
+
+&gt;  	}
+&gt;  	if (lsm_append(lsm, &amp;lsm_names) &lt; 0)
+&gt;  		panic(&quot;%s - Cannot get early memory.\n&quot;, __func__);
+&gt; 
+
+
+
+
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+</div>
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<ul><li><strong>References</strong>:
+<ul>
+<li><strong><a name="29154" href="msg29154.html">[PATCH v3 00/24] LSM: Module stacking for AppArmor</a></strong>
+<ul><li><em>From:</em> Casey Schaufler</li></ul></li>
+<li><strong><a name="29157" href="msg29157.html">[PATCH v3 04/24] LSM: Create and manage the lsmblob data structure.</a></strong>
+<ul><li><em>From:</em> Casey Schaufler</li></ul></li>
+</ul></li></ul>
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg29278.html">[PATCH v3 03/24] LSM: Infrastructure management of the key blob</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg29280.html">[PATCH v3 06/24] LSM: Use lsmblob in security_kernel_act_as</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg29217.html">Re: [PATCH v3 04/24] LSM: Create and manage the lsmblob data structure.</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg29158.html">[PATCH v3 07/24] net: Prepare UDS for secuirty module stacking</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="maillist.html#29279"><strong>Date</strong></a></li>
+<li><a href="index.html#29279"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<center>
+<font size=-1>
+<a href=/lists/>[Index&nbsp;of&nbsp;Archives]</a>
+&nbsp;
+&nbsp;
+<a href=/linux/fedora/fedora-users/>[Fedora&nbsp;Users]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-desktop/>[Fedora&nbsp;Desktop]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/fedora-selinux/>[Fedora&nbsp;SELinux]</a>
+&nbsp;
+&nbsp;
+<a href=https://yosemitenews.info>[Yosemite&nbsp;News]</a>
+&nbsp;
+&nbsp;
+<a href=/lists/kde/>[KDE&nbsp;Users]</a>
+</font>
+</center>
+<hr>
+<p>
+<div>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-3422782820843221"
+     data-ad-slot="1424524564"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+<table width=100%>
+<tr>
+<td align=left>&nbsp;</td>
+<td align=right><a href=/lists/><img src=/button_01.gif border=0 alt="Powered by Linux"></a></td>
+</tr>
+</table>
+<!--X-User-Footer-End-->
+<script type="text/javascript"> 
+ function initAddThis() {
+    addthis.init()
+ }
+initAddThis();
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-760190-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>
